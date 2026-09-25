@@ -169,18 +169,7 @@
   endif
 -%}
 
-<script>
-(function(){
-  if(document.getElementById('gf-fg'))return;
-  var s=document.createElement('style');s.id='gf-fg';
-  s.textContent='.product-details .text-block p{visibility:hidden!important}html.gf-fonts-ok .product-details .text-block p{visibility:visible!important}';
-  document.head.appendChild(s);
-  /* ne pas forcer font-display:block — le thème est en swap (conforme Lighthouse) ;
-     l'anti-FOUT est déjà géré par le gate visibility ci-dessus */
-  var d=false;function r(){if(d)return;d=true;document.documentElement.classList.add('gf-fonts-ok');}
-  setTimeout(r,800);document.fonts.ready.then(r);
-})();
-</script>
+{%- comment -%} (gate visibility retiré : polices préchargées, plus de texte caché puis révélé) {%- endcomment -%}
 <style>
   #gfp-{{ gf_id }},
   #gfp-{{ gf_id }} *,

@@ -665,11 +665,11 @@
       "settings": {
         "style": "noir",
         "product_title": "LE CHEWING GUM QUI MUSCLE TA MÂCHOIRE",
-        "cta_text": "SHOP",
+        "cta_text": "COMMANDER",
         "show_image": true,
         "product_image": "shopify://shop_images/Ontwerp_zonder_titel_82_7a99febc-00ea-4bce-bc77-f2ebbe7d44dc.png",
         "image_size": 42,
-        "show_rating": false,
+        "show_rating": true,
         "rating_text": "4.8",
         "rating_image": "shopify://shop_images/trust_45_1.svg",
         "rating_image_height": 14,

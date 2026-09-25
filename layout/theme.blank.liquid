@@ -34,13 +34,6 @@
     {%- render 'theme-styles-variables' -%}
     {%- render 'color-schemes' -%}
 
-    {%- comment -%} polices 700 (portées ailleurs par la barre d'annonce, absente ici) {%- endcomment -%}
-    {%- liquid
-      assign gf_body7 = settings.type_body_font | font_modify: 'weight', 'bold'
-      assign gf_head7 = settings.type_heading_font | font_modify: 'weight', 'bold'
-    -%}
-    {%- if gf_body7 -%}<link rel="preload" as="font" type="font/woff2" href="{{ gf_body7 | font_url }}" crossorigin>{%- endif -%}
-    {%- if gf_head7 -%}<link rel="preload" as="font" type="font/woff2" href="{{ gf_head7 | font_url }}" crossorigin>{%- endif -%}
 
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}

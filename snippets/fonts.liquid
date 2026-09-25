@@ -1,67 +1,63 @@
 {% # theme-check-disable %}
-{%- unless settings.type_body_font.system? -%}
+{%- comment -%}
+  GF : Manrope et Oswald sont servies en polices variables auto-hébergées
+  (snippets/gf-variable-fonts.liquid) → un seul fichier par famille, préchargé
+  en priorité haute : le texte est peint directement dans la bonne police,
+  aucune graisse n'arrive « en retard ». Si le marchand choisit d'autres
+  polices dans l'éditeur, on retombe sur les fichiers Shopify.
+{%- endcomment -%}
+{%- if settings.type_body_font.family == 'Manrope' -%}
   <link
     rel="preload"
     as="font"
-    href="{{ settings.type_body_font | font_url }}"
-    type="font/woff2"
-    crossorigin
-    fetchpriority="low"
-  >
-{%- endunless -%}
-{%- unless settings.type_subheading_font.system? -%}
-  <link
-    rel="preload"
-    as="font"
-    href="{{ settings.type_subheading_font | font_url }}"
-    type="font/woff2"
-    crossorigin
-    fetchpriority="low"
-  >
-{%- endunless -%}
-{%- unless settings.type_heading_font.system? -%}
-  <link
-    rel="preload"
-    as="font"
-    href="{{ settings.type_heading_font | font_url }}"
+    href="{{ 'gf-manrope-var-latin.woff2' | asset_url }}"
     type="font/woff2"
     crossorigin
     fetchpriority="high"
   >
-{%- endunless -%}
-{%- unless settings.type_accent_font.system? -%}
+{%- else -%}
+  {%- unless settings.type_body_font.system? -%}
+    <link
+      rel="preload"
+      as="font"
+      href="{{ settings.type_body_font | font_url }}"
+      type="font/woff2"
+      crossorigin
+      fetchpriority="high"
+    >
+  {%- endunless -%}
+{%- endif -%}
+{%- if settings.type_heading_font.family == 'Oswald' -%}
   <link
     rel="preload"
     as="font"
-    href="{{ settings.type_accent_font | font_url }}"
+    href="{{ 'gf-oswald-var-latin.woff2' | asset_url }}"
     type="font/woff2"
     crossorigin
-    fetchpriority="low"
+    fetchpriority="high"
   >
-{%- endunless -%}
-{%- comment -%} GF : les graisses 700 sont utilisées partout (titres, prix, CTA) → préchargées ici, une seule fois {%- endcomment -%}
-{%- liquid
-  assign gf_body_bold = settings.type_body_font | font_modify: 'weight', 'bold'
-  assign gf_heading_bold = settings.type_heading_font | font_modify: 'weight', 'bold'
--%}
-{%- if gf_body_bold -%}{%- unless settings.type_body_font.system? -%}
-  <link
-    rel="preload"
-    as="font"
-    href="{{ gf_body_bold | font_url }}"
-    type="font/woff2"
-    crossorigin
-    fetchpriority="low"
-  >
-{%- endunless -%}{%- endif -%}
-{%- if gf_heading_bold -%}{%- unless settings.type_heading_font.system? -%}
-  <link
-    rel="preload"
-    as="font"
-    href="{{ gf_heading_bold | font_url }}"
-    type="font/woff2"
-    crossorigin
-    fetchpriority="low"
-  >
-{%- endunless -%}{%- endif -%}
+{%- else -%}
+  {%- unless settings.type_heading_font.system? -%}
+    <link
+      rel="preload"
+      as="font"
+      href="{{ settings.type_heading_font | font_url }}"
+      type="font/woff2"
+      crossorigin
+      fetchpriority="high"
+    >
+  {%- endunless -%}
+{%- endif -%}
+{%- if settings.type_subheading_font.family != 'Manrope' and settings.type_subheading_font.family != 'Oswald' -%}
+  {%- unless settings.type_subheading_font.system? -%}
+    <link
+      rel="preload"
+      as="font"
+      href="{{ settings.type_subheading_font | font_url }}"
+      type="font/woff2"
+      crossorigin
+      fetchpriority="low"
+    >
+  {%- endunless -%}
+{%- endif -%}
 {% # theme-check-enable %}

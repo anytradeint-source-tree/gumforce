@@ -167,6 +167,29 @@
   </sticky-add-to-cart>
 {% endif %}
 
+{%- comment -%}
+  GF : les blocs de la colonne produit (product card, badge, offre…) portent du
+  CSS inline qui restyle aussi la galerie. Comme la colonne arrive APRÈS la
+  galerie dans le HTML, le navigateur peignait la galerie puis la re-disposait
+  (saut visible au chargement). On extrait ici ces <style> et on les émet avant
+  le grid → une seule mise en page, rien ne bouge.
+{%- endcomment -%}
+{%- liquid
+  assign gf_css = ''
+  assign gf_parts = product_details | split: '<style>'
+  if gf_parts.size > 1
+    assign gf_html = gf_parts[0]
+    for gf_part in gf_parts offset: 1
+      assign gf_seg = gf_part | split: '</style>'
+      assign gf_css = gf_css | append: gf_seg[0] | append: ' '
+      assign gf_rest = gf_part | remove_first: gf_seg[0] | remove_first: '</style>'
+      assign gf_html = gf_html | append: gf_rest
+    endfor
+    assign product_details = gf_html
+  endif
+-%}
+{%- if gf_css != blank -%}<style data-gf-hoisted>{{ gf_css }}</style>{%- endif -%}
+
 {% render 'product-information-content',
   product_media_size: closest.product.media.size,
   section_id: section.id,

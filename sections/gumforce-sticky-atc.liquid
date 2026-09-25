@@ -1,10 +1,11 @@
 {% comment %}
   ============================================================================
-  GUMFORCE Sticky Add-to-Cart — Floating Bar
+  GUMFORCE Sticky Add-to-Cart — barre flottante
   ============================================================================
-  Frosted-glass floating bar that materialises after scrolling past
-  the bundle picker and dissolves near the footer.
-  "Shop Now" scrolls smoothly back to the bundle-picker section.
+  Apparaît quand l'offre (pack offer) est sortie de l'écran, disparaît près du
+  footer. Se synchronise avec l'offre sélectionnée (nom + prix) et, par défaut,
+  envoie directement au checkout via le lien panier /cart/variante:1
+  (une seule navigation, comme le bouton principal). Sinon : scroll vers l'offre.
   ============================================================================
 {% endcomment %}
 
@@ -17,6 +18,7 @@
   assign rating_text  = s.rating_text | default: '4.8'
   assign rating_img   = s.rating_image
   assign rating_h     = s.rating_image_height | default: 14
+  assign rating_h_3x  = rating_h | times: 3
   assign show_price   = s.show_price
   assign prod         = s.price_product | default: product
   if s.price_text != blank
@@ -34,21 +36,12 @@
   else
     assign price_text = ''
   endif
-  if s.compare_price != blank
-    assign compare_text = s.compare_price
-  elsif prod != blank and prod.compare_at_price != blank and prod.compare_at_price > prod.price
-    assign compare_text = prod.compare_at_price | money
-    if gf_curcode
-      assign compare_text = prod.compare_at_price | money_with_currency
-    endif
-  else
-    assign compare_text = ''
-  endif
-  assign cta_text     = s.cta_text | default: 'SHOP NOW'
+  assign cta_text     = s.cta_text | default: 'COMMANDER'
+  assign cta_action   = s.cta_action | default: 'checkout'
 
   assign show_image   = s.show_image
   assign product_img  = s.product_image
-  assign img_size     = s.image_size | default: 32
+  assign img_size     = s.image_size | default: 44
   assign img_size_3x  = img_size | times: 3
 
   assign style        = s.style | default: 'noir'
@@ -94,26 +87,15 @@
   endcase
   assign bg_rgba      = bg_color | color_modify: 'alpha', bg_alpha
 
-  assign bar_radius   = s.bar_radius | default: 16
-  assign cta_radius   = s.cta_radius | default: 10
+  assign bar_radius   = s.bar_radius | default: 22
+  assign cta_radius   = s.cta_radius | default: 16
   assign blur_px      = s.blur_strength | default: 20
-
-  assign rating_h_3x  = rating_h | times: 3
 -%}
 
 <style>
-  /* ── Zero the section wrapper so it takes no document flow ── */
-  section.gf-satc-section {
-    height: 0;
-    overflow: visible;
-    margin: 0;
-    padding: 0;
-    border: none;
-  }
+  /* La section ne prend aucune place dans le flux : la barre est fixed */
+  section.gf-satc-section { height: 0; overflow: visible; margin: 0; padding: 0; border: none; }
 
-  /* ================================================================
-     BAR — frosted-glass capsule, fixed to bottom-center
-     ================================================================ */
   #gf-satc-{{ sid }} {
     --satc-bg:         {{ bg_rgba }};
     --satc-text:       {{ text_color }};
@@ -124,178 +106,107 @@
     --satc-cta-radius: {{ cta_radius }}px;
 
     position: fixed;
-    bottom: calc(16px + env(safe-area-inset-bottom));
+    bottom: calc(14px + env(safe-area-inset-bottom));
     left: 50%;
     z-index: 9990;
-
-    width: calc(100% - 32px);
-    max-width: 680px;
-
+    width: min(calc(100% - 24px), 640px);
     background: var(--satc-bg);
     {%- if is_glass %}
     backdrop-filter: blur(var(--satc-blur)) saturate(1.5);
     -webkit-backdrop-filter: blur(var(--satc-blur)) saturate(1.5);
     {%- endif %}
-
     border: 1px solid {{ border_color }};
     border-radius: var(--satc-radius);
-    box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.30),
-      0 0 0 0.5px rgba(0, 0, 0, 0.10);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.18);
+    color: var(--satc-text);
+    font-family: var(--font-body--family, 'Manrope', sans-serif);
 
-    /* ── hidden state ── */
+    /* état caché */
     opacity: 0;
     pointer-events: none;
-    transform: translateX(-50%) translateY(20px);
-    transition:
-      opacity   0.45s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
+    transform: translate(-50%, calc(100% + 28px));
+    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
-
-  /* ── visible state ── */
   #gf-satc-{{ sid }}.is-visible {
     opacity: 1;
     pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
+    transform: translate(-50%, 0);
   }
-
-  /* ── accent gradient hairline ── */
+  /* liseré lumineux en haut */
   #gf-satc-{{ sid }}::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 12%;
-    right: 12%;
+    top: 0; left: 14%; right: 14%;
     height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.12) 40%,
-      rgba(255, 255, 255, 0.12) 60%,
-      transparent
-    );
-    border-radius: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14) 40%, rgba(255,255,255,0.14) 60%, transparent);
     pointer-events: none;
   }
 
-  /* ================================================================
-     INNER LAYOUT
-     ================================================================ */
   .gf-satc__inner {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 12px 16px 12px 20px;
-  }
-
-  /* ── Left: title + rating ── */
-  .gf-satc__info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-    flex: 1 1 auto;
+    gap: 12px;
+    padding: 8px 8px 8px 12px;
   }
 
   .gf-satc__img {
     width: {{ img_size }}px;
     height: {{ img_size }}px;
-    border-radius: 6px;
+    border-radius: 12px;
     object-fit: cover;
     flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.06);
   }
 
+  .gf-satc__text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
   .gf-satc__title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--satc-text);
-    letter-spacing: 0.01em;
-    line-height: 1.2;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    line-height: 1.15;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-width: 0;
   }
-
-  /* ── Rating capsule ── */
-  .gf-satc__rating {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    flex-shrink: 0;
-  }
-
-  .gf-satc__rating::before {
-    content: '\00B7';
-    color: rgba(255, 255, 255, 0.22);
-    font-size: 18px;
-    line-height: 1;
-    margin-right: 1px;
-  }
-
-  .gf-satc__stars-img {
-    height: {{ rating_h }}px;
-    width: auto;
-    display: block;
-    flex-shrink: 0;
-  }
-
-  .gf-satc__stars-fallback {
-    color: #FFC857;
-    font-size: 13px;
-    line-height: 1;
-    letter-spacing: -0.5px;
-  }
-
-  .gf-satc__rating-val {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--satc-text);
-    opacity: 0.65;
-    line-height: 1;
-  }
-
-  /* ── Price ── */
-  .gf-satc__price {
+  .gf-satc__sub {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 6px;
-    flex-shrink: 0;
-  }
-
-  .gf-satc__price-current {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--satc-text);
-    line-height: 1;
-  }
-
-  .gf-satc__price-compare {
     font-size: 12px;
-    color: var(--satc-text);
-    opacity: 0.35;
-    text-decoration: line-through;
-    text-decoration-thickness: 1px;
     line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    opacity: 0.8;
   }
+  .gf-satc__stars-img { height: {{ rating_h }}px; width: auto; display: block; flex-shrink: 0; }
+  .gf-satc__stars-fallback { color: #FFC857; font-size: 12px; line-height: 1; }
+  .gf-satc__rating-val { font-weight: 600; }
+  .gf-satc__dot { opacity: 0.45; }
+  .gf-satc__offer { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+  .gf-satc__price { font-weight: 800; opacity: 1; }
+  .gf-satc__sub > [hidden] { display: none; }
 
-  /* ================================================================
-     CTA BUTTON
-     ================================================================ */
   .gf-satc__cta {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 26px;
+    gap: 8px;
+    height: 44px;
+    padding: 0 22px;
     background: var(--satc-cta-bg);
     color: var(--satc-cta-text);
-    font-family: var(--font-body--family, 'Manrope', sans-serif);
+    font-family: inherit;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     line-height: 1;
@@ -306,222 +217,158 @@
     flex-shrink: 0;
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
-    transition:
-      transform  0.2s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, opacity 0.2s ease;
   }
-
-  /* Hover overlay — brightens any CTA color universally */
+  .gf-satc__cta-price { font-weight: 600; opacity: 0.7; letter-spacing: 0; }
+  .gf-satc__cta-price:empty { display: none; }
   .gf-satc__cta::after {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: rgba(255, 255, 255, 0);
     transition: background 0.2s ease;
     pointer-events: none;
   }
-
-  .gf-satc__cta:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+  .gf-satc__cta:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22); }
+  .gf-satc__cta:hover::after { background: rgba(255, 255, 255, 0.08); }
+  .gf-satc__cta:active { transform: translateY(0) scale(0.97); box-shadow: none; transition-duration: 0.08s; }
+  .gf-satc__cta:focus-visible { outline: 2px solid var(--satc-cta-bg); outline-offset: 3px; }
+  .gf-satc__cta.is-busy { opacity: 0.75; pointer-events: none; }
+  .gf-satc__cta.is-busy > span:first-child::before {
+    content: '';
+    width: 13px; height: 13px; margin-right: 8px;
+    border: 2px solid rgba(0,0,0,.25); border-top-color: currentColor; border-radius: 50%;
+    display: inline-block; vertical-align: -2px;
+    animation: gf-satc-rot .7s linear infinite;
   }
+  @keyframes gf-satc-rot { to { transform: rotate(360deg); } }
 
-  .gf-satc__cta:hover::after {
-    background: rgba(255, 255, 255, 0.08);
-  }
-
-  .gf-satc__cta:active {
-    transform: translateY(0) scale(0.97);
-    box-shadow: none;
-    transition-duration: 0.08s;
-  }
-
-  .gf-satc__cta:focus-visible {
-    outline: 2px solid var(--satc-cta-bg);
-    outline-offset: 3px;
-  }
-
-  /* ================================================================
-     MOBILE
-     ================================================================ */
   @media (max-width: 749px) {
-    #gf-satc-{{ sid }} {
-      width: calc(100% - 24px);
-      bottom: calc(12px + env(safe-area-inset-bottom));
-    }
-
-    .gf-satc__inner {
-      padding: 10px 12px 10px 16px;
-      gap: 10px;
-    }
-
-    .gf-satc__img {
-      width: {{ img_size | minus: 4 }}px;
-      height: {{ img_size | minus: 4 }}px;
-    }
-
-    .gf-satc__title {
-      font-size: 13px;
-    }
-
-    .gf-satc__cta {
-      padding: 10px 18px;
-      font-size: 11px;
-      letter-spacing: 0.06em;
-    }
-
-    .gf-satc__rating {
-      display: none;
-    }
+    #gf-satc-{{ sid }} { width: calc(100% - 20px); bottom: calc(10px + env(safe-area-inset-bottom)); }
+    .gf-satc__inner { gap: 10px; padding: 7px 7px 7px 10px; }
+    .gf-satc__img { width: {{ img_size | minus: 4 }}px; height: {{ img_size | minus: 4 }}px; border-radius: 10px; }
+    .gf-satc__title { font-size: 12px; }
+    .gf-satc__sub { font-size: 11px; }
+    .gf-satc__cta { height: 42px; padding: 0 16px; font-size: 12px; }
+    .gf-satc__cta-price { display: none; }
   }
 
-  /* ================================================================
-     REDUCED MOTION
-     ================================================================ */
   @media (prefers-reduced-motion: reduce) {
-    #gf-satc-{{ sid }} {
-      transition: opacity 0.15s ease;
-      transform: translateX(-50%);
-    }
-    #gf-satc-{{ sid }}.is-visible {
-      transform: translateX(-50%);
-    }
-    .gf-satc__cta {
-      transition: none;
-    }
+    #gf-satc-{{ sid }} { transition: opacity 0.15s ease; transform: translate(-50%, 0); }
+    .gf-satc__cta { transition: none; }
   }
 
-  /* ================================================================
-     BACKDROP-FILTER FALLBACK
-     ================================================================ */
   @supports not (backdrop-filter: blur(1px)) {
-    #gf-satc-{{ sid }} {
-      background: {{ bg_color | color_modify: 'alpha', 0.97 }};
-    }
+    #gf-satc-{{ sid }} { background: {{ bg_color | color_modify: 'alpha', 0.97 }}; }
   }
 </style>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     HTML
-     ═══════════════════════════════════════════════════════════ -->
-<div id="gf-satc-{{ sid }}" aria-label="Quick purchase" role="complementary">
+<div id="gf-satc-{{ sid }}" role="region" aria-label="Commander">
   <div class="gf-satc__inner">
 
-    <!-- Left: title + rating -->
-    <div class="gf-satc__info">
-      {%- if show_image and product_img -%}
+    {%- if show_image and product_img -%}
       <img
         class="gf-satc__img"
         src="{{ product_img | image_url: width: img_size_3x }}"
-        alt="{{ title | escape }}"
+        alt=""
         width="{{ img_size }}"
         height="{{ img_size }}"
         loading="lazy"
         decoding="async">
-      {%- endif -%}
-      <span class="gf-satc__title">{{ title }}</span>
-
-      {%- if show_rating -%}
-      <span class="gf-satc__rating">
-        {%- if rating_img -%}
-          <img
-            class="gf-satc__stars-img"
-            src="{{ rating_img | image_url: height: rating_h_3x }}"
-            alt="Rating"
-            height="{{ rating_h }}"
-            loading="lazy"
-            decoding="async">
-        {%- else -%}
-          <span class="gf-satc__stars-fallback" aria-hidden="true">&#9733;</span>
-        {%- endif -%}
-        <span class="gf-satc__rating-val">{{ rating_text }}</span>
-      </span>
-      {%- endif -%}
-    </div>
-
-    <!-- Center: price (optional, hidden on mobile) -->
-    {%- if show_price and price_text != blank -%}
-    <div class="gf-satc__price">
-      <span class="gf-satc__price-current">{{ price_text }}</span>
-      {%- if compare_text != blank -%}
-      <span class="gf-satc__price-compare">{{ compare_text }}</span>
-      {%- endif -%}
-    </div>
+    {%- else -%}
+      <span></span>
     {%- endif -%}
 
-    <!-- Right: CTA -->
+    <div class="gf-satc__text">
+      <span class="gf-satc__title">{{ title }}</span>
+      <span class="gf-satc__sub">
+        {%- if show_rating -%}
+          {%- if rating_img -%}
+            <img class="gf-satc__stars-img" src="{{ rating_img | image_url: height: rating_h_3x }}" alt="Note {{ rating_text }} sur 5" height="{{ rating_h }}" loading="lazy" decoding="async">
+          {%- else -%}
+            <span class="gf-satc__stars-fallback" aria-hidden="true">&#9733;</span>
+          {%- endif -%}
+          <span class="gf-satc__rating-val">{{ rating_text }}</span>
+          <span class="gf-satc__dot" aria-hidden="true">&middot;</span>
+        {%- endif -%}
+        <span class="gf-satc__offer" data-satc-offer hidden></span>
+        <span class="gf-satc__dot" data-satc-dot aria-hidden="true" hidden>&middot;</span>
+        <span class="gf-satc__price" data-satc-price{% unless show_price and price_text != blank %} hidden{% endunless %}>{{ price_text }}</span>
+      </span>
+    </div>
+
     <button class="gf-satc__cta" type="button">
-      {{ cta_text }}
+      <span>{{ cta_text }}</span>
+      <span class="gf-satc__cta-price" data-satc-cta-price></span>
     </button>
 
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     JAVASCRIPT — IntersectionObserver + scroll-to-bundle
-     ═══════════════════════════════════════════════════════════ -->
 <script>
 (function () {
   var bar = document.getElementById('gf-satc-{{ sid }}');
   if (!bar) return;
 
-  /* ── Wrapper hors du flux flex : la barre est fixed, son wrapper vide dans la
-     colonne produit générait un gap de 12px (pas d'overflow:hidden : ne jamais
-     risquer de clipper la barre fixed) ── */
+  /* Wrapper hors du flux (la barre est fixed ; un wrapper vide créait un gap) */
   var wrap = bar.closest('[id^="shopify-block-"]');
   if (wrap) { wrap.style.cssText += ';position:absolute!important;width:0!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;'; }
 
-  /* ── Design mode: always visible for styling ── */
   {% if request.design_mode %}
     bar.classList.add('is-visible');
-    return;
   {% endif %}
 
-  var scrolledPast = false;
-  var nearFooter   = false;
-
-  function sync() {
-    if (scrolledPast && !nearFooter) {
-      bar.classList.add('is-visible');
-    } else {
-      bar.classList.remove('is-visible');
-    }
+  /* ── Synchronisation avec l'offre sélectionnée (pack offer) ── */
+  var elOffer = bar.querySelector('[data-satc-offer]');
+  var elDot   = bar.querySelector('[data-satc-dot]');
+  var elPrice = bar.querySelector('[data-satc-price]');
+  var elCtaP  = bar.querySelector('[data-satc-cta-price]');
+  function currentTier() {
+    var inp = document.querySelector('input[name^="gfp-tier-"]:checked');
+    var lab = inp ? inp.closest('.gfp-tier') : document.querySelector('.gfp-tier.gfp-sel');
+    if (!lab || lab.getAttribute('data-gfp-avail') === 'false') return null;
+    var name = lab.querySelector('.gfp-tname');
+    return {
+      vid:   parseInt(lab.getAttribute('data-gfp-vid'), 10) || 0,
+      total: lab.getAttribute('data-gfp-total') || '',
+      name:  name ? name.textContent.trim() : ''
+    };
   }
+  function syncOffer() {
+    var t = currentTier();
+    if (!t) return;
+    if (elOffer && t.name) { elOffer.textContent = t.name; elOffer.hidden = false; }
+    if (elPrice && t.total) { elPrice.textContent = t.total; elPrice.hidden = false; }
+    if (elDot) elDot.hidden = !(elOffer && !elOffer.hidden && elPrice && !elPrice.hidden);
+    if (elCtaP) elCtaP.textContent = t.total ? ('· ' + t.total) : '';
+  }
+  syncOffer();
+  document.addEventListener('change', function (e) {
+    if (e.target && e.target.name && e.target.name.indexOf('gfp-tier-') === 0) syncOffer();
+  });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) { cta.classList.remove('is-busy'); busy = false; syncOffer(); } });
 
-  /* ─────────────────────────────────────────────
-     CIBLE UNIVERSELLE — trouve "l'offre" sur N'IMPORTE quel template.
-     Cascade : ancre explicite → blocs offre GF (pack/trial/offer) →
-     form produit → colonne produit → page. Jamais la barre elle-même.
-     ───────────────────────────────────────────── */
+  /* ── Affichage : après avoir scrollé sous l'offre, masqué près du footer ── */
+  var scrolledPast = false, nearFooter = false;
+  function sync() {
+    if (scrolledPast && !nearFooter) bar.classList.add('is-visible');
+    else bar.classList.remove('is-visible');
+  }
   function findOffer(strict) {
-    var sels = [
-      '[data-gf-scroll-target]',
-      '[id^="gfp-"]', '.gfp-w',
-      '[id^="gft-"]', '.gft-w',
-      '[id^="gfo-"]', '.gfo-root', '.gf-options',
-      'form[action*="/cart/add"]',
-      'product-form',
-      '[id^="ProductInformation"]',
-      '.product-details'
-    ];
+    var sels = ['[data-gf-scroll-target]', '[id^="gfp-"]', '.gfp-w', '[id^="gft-"]', '.gft-w', '[id^="gfo-"]', '.gfo-root', '.gf-options', 'form[action*="/cart/add"]', 'product-form', '[id^="ProductInformation"]', '.product-details'];
     if (!strict) sels.push('#MainContent');
     for (var i = 0; i < sels.length; i++) {
       var els = document.querySelectorAll(sels[i]);
       for (var j = 0; j < els.length; j++) {
         var el = els[j];
-        if (el === bar || bar.contains(el)) continue;               /* jamais la barre */
+        if (el === bar || bar.contains(el)) continue;
         if (el.tagName === 'STYLE' || el.tagName === 'SCRIPT') continue;
-        if (el.offsetParent === null && el.tagName !== 'BODY') continue; /* caché/replié */
+        if (el.offsetParent === null && el.tagName !== 'BODY') continue;
         return el;
       }
     }
     return null;
   }
-
-  /* ─────────────────────────────────────────────
-     SHOW — après avoir scrollé sous l'offre
-     (fallback : après 600px de scroll si rien trouvé)
-     ───────────────────────────────────────────── */
+  {% unless request.design_mode %}
   var trigger = findOffer(true);
   if (trigger) {
     new IntersectionObserver(function (entries) {
@@ -535,14 +382,7 @@
       sync();
     }, { passive: true });
   }
-
-  /* ─────────────────────────────────────────────
-     HIDE — at the very bottom of the product page
-     (guarantee section, footer, or page end)
-     ───────────────────────────────────────────── */
-  var hideEls = document.querySelectorAll(
-    '.gfg-section, .gff-footer-wrapper, footer, #shopify-section-footer'
-  );
+  var hideEls = document.querySelectorAll('.gfg-section, .gff-footer-wrapper, footer, #shopify-section-footer');
   if (hideEls.length) {
     var hideObs = new IntersectionObserver(function (entries) {
       nearFooter = entries.some(function (e) { return e.isIntersecting; });
@@ -550,23 +390,31 @@
     }, { threshold: 0 });
     hideEls.forEach(function (el) { hideObs.observe(el); });
   }
+  {% endunless %}
 
-  /* ─────────────────────────────────────────────
-     CTA — scroll vers l'offre (cible re-cherchée au clic,
-     scroll-margin pour ne pas finir sous le header sticky)
-     ───────────────────────────────────────────── */
+  /* ── CTA : checkout direct avec l'offre sélectionnée, sinon scroll vers l'offre ── */
   var cta = bar.querySelector('.gf-satc__cta');
-  if (cta) {
-    cta.addEventListener('click', function (evt) {
-      evt.preventDefault();
-      var target = findOffer(false);
-      if (!target) return;
-      var head = document.querySelector('header-component, header, .header');
-      var off = 12 + (head ? Math.max(0, head.getBoundingClientRect().height) : 80);
-      target.style.scrollMarginTop = off + 'px';
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }
+  var busy = false;
+  var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+  cta.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    if (busy) return;
+    {%- if cta_action == 'checkout' -%}
+    var t = currentTier();
+    if (t && t.vid) {
+      busy = true;
+      cta.classList.add('is-busy');
+      window.location.href = root + 'cart/' + t.vid + ':1';
+      return;
+    }
+    {%- endif -%}
+    var target = findOffer(false);
+    if (!target) return;
+    var head = document.querySelector('header-component, header, .header');
+    var off = 12 + (head ? Math.max(0, head.getBoundingClientRect().height) : 80);
+    target.style.scrollMarginTop = off + 'px';
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 })();
 </script>
 
@@ -576,218 +424,62 @@
   "tag": "section",
   "class": "gf-satc-section",
   "settings": [
-    {
-      "type": "header",
-      "content": "Style"
-    },
+    { "type": "header", "content": "Style" },
     {
       "type": "select",
       "id": "style",
       "label": "Style de la barre",
       "default": "noir",
-      "info": "Style pret a l'emploi, raccord avec la marque. 'Personnalise' utilise la section Couleurs plus bas.",
+      "info": "Style prêt à l'emploi, raccord avec la marque. « Personnalisé » utilise la section Couleurs plus bas.",
       "options": [
-        { "value": "noir", "label": "Noir mat (CTA teal)" },
+        { "value": "noir", "label": "Noir mat (CTA blanc)" },
         { "value": "vert", "label": "Vert signature" },
-        { "value": "glass", "label": "Verre teinte" },
+        { "value": "glass", "label": "Verre teinté" },
         { "value": "clair", "label": "Clair premium" },
-        { "value": "custom", "label": "Personnalise" }
+        { "value": "custom", "label": "Personnalisé" }
       ]
     },
+    { "type": "header", "content": "Contenu" },
+    { "type": "text", "id": "product_title", "label": "Titre", "default": "GUMFORCE" },
+    { "type": "text", "id": "cta_text", "label": "Texte du bouton", "default": "COMMANDER" },
     {
-      "type": "header",
-      "content": "Content"
+      "type": "select",
+      "id": "cta_action",
+      "label": "Action du bouton",
+      "default": "checkout",
+      "info": "Checkout direct : envoie au paiement avec l'offre sélectionnée dans le pack offer (une seule navigation). Sinon, remonte vers l'offre.",
+      "options": [
+        { "value": "checkout", "label": "Checkout direct (offre sélectionnée)" },
+        { "value": "scroll", "label": "Remonter vers l'offre" }
+      ]
     },
-    {
-      "type": "text",
-      "id": "product_title",
-      "label": "Product title",
-      "default": "GUMFORCE Creatine Gum"
-    },
-    {
-      "type": "text",
-      "id": "cta_text",
-      "label": "Button text",
-      "default": "J'EN PROFITE"
-    },
-    {
-      "type": "header",
-      "content": "Product image"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_image",
-      "label": "Show product image",
-      "default": true
-    },
-    {
-      "type": "image_picker",
-      "id": "product_image",
-      "label": "Product image",
-      "info": "Small thumbnail shown on the left. Upload a square or pouch image."
-    },
-    {
-      "type": "range",
-      "id": "image_size",
-      "label": "Image size",
-      "min": 20,
-      "max": 48,
-      "step": 2,
-      "unit": "px",
-      "default": 32
-    },
-    {
-      "type": "header",
-      "content": "Rating"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_rating",
-      "label": "Show rating",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "rating_text",
-      "label": "Rating value",
-      "default": "4.8"
-    },
-    {
-      "type": "image_picker",
-      "id": "rating_image",
-      "label": "Star image",
-      "info": "Upload a star image (e.g. 4.5 or 5 stars). Falls back to ★ if empty."
-    },
-    {
-      "type": "range",
-      "id": "rating_image_height",
-      "label": "Star image height",
-      "min": 8,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "default": 14
-    },
-    {
-      "type": "header",
-      "content": "Price"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_price",
-      "label": "Afficher le prix",
-      "info": "Recupere automatiquement le prix du produit.",
-      "default": true
-    },
-    {
-      "type": "product",
-      "id": "price_product",
-      "label": "Produit (source du prix)",
-      "info": "Vide = produit de la page. Le prix (et le prix barre si promo) s'affiche tout seul."
-    },
-    {
-      "type": "text",
-      "id": "price_text",
-      "label": "Prix manuel (optionnel)",
-      "info": "Laisser vide = prix auto. Remplir force ce texte (ex. 19,90 €)."
-    },
-    {
-      "type": "text",
-      "id": "compare_price",
-      "label": "Prix barre manuel (optionnel)",
-      "info": "Vide = prix barre auto si le produit est en promo."
-    },
-    {
-      "type": "header",
-      "content": "Couleurs (mode Personnalise uniquement)"
-    },
-    {
-      "type": "color",
-      "id": "bg_color",
-      "label": "Bar background",
-      "default": "#121212"
-    },
-    {
-      "type": "range",
-      "id": "bg_opacity",
-      "label": "Background opacity",
-      "min": 50,
-      "max": 100,
-      "step": 1,
-      "unit": "%",
-      "default": 92,
-      "info": "Lower = more transparent / stronger glass effect."
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#F4F4F4"
-    },
-    {
-      "type": "color",
-      "id": "cta_bg",
-      "label": "Button background",
-      "default": "#F4F4F4"
-    },
-    {
-      "type": "color",
-      "id": "cta_text_color",
-      "label": "Button text color",
-      "default": "#121212"
-    },
-    {
-      "type": "header",
-      "content": "Style"
-    },
-    {
-      "type": "range",
-      "id": "bar_radius",
-      "label": "Bar corner radius",
-      "min": 0,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "default": 14
-    },
-    {
-      "type": "range",
-      "id": "cta_radius",
-      "label": "Button corner radius",
-      "min": 0,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "default": 8
-    },
-    {
-      "type": "range",
-      "id": "blur_strength",
-      "label": "Blur intensity",
-      "min": 8,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "default": 20,
-      "info": "Higher = stronger frosted glass effect."
-    }
+    { "type": "header", "content": "Image produit" },
+    { "type": "checkbox", "id": "show_image", "label": "Afficher l'image", "default": true },
+    { "type": "image_picker", "id": "product_image", "label": "Image", "info": "Vignette carrée à gauche." },
+    { "type": "range", "id": "image_size", "label": "Taille de l'image", "min": 28, "max": 56, "step": 2, "unit": "px", "default": 44 },
+    { "type": "header", "content": "Note" },
+    { "type": "checkbox", "id": "show_rating", "label": "Afficher la note", "default": true },
+    { "type": "text", "id": "rating_text", "label": "Valeur", "default": "4.8" },
+    { "type": "image_picker", "id": "rating_image", "label": "Image étoiles", "info": "Vide = ★" },
+    { "type": "range", "id": "rating_image_height", "label": "Hauteur des étoiles", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 14 },
+    { "type": "header", "content": "Prix" },
+    { "type": "checkbox", "id": "show_price", "label": "Afficher le prix", "info": "Le prix de l'offre sélectionnée remplace automatiquement cette valeur quand un pack offer est présent.", "default": true },
+    { "type": "product", "id": "price_product", "label": "Produit (source du prix)", "info": "Vide = produit de la page." },
+    { "type": "text", "id": "price_text", "label": "Prix manuel (optionnel)" },
+    { "type": "text", "id": "compare_price", "label": "Prix barré manuel (optionnel)", "info": "Non affiché dans cette version compacte, conservé pour compatibilité." },
+    { "type": "header", "content": "Couleurs (mode Personnalisé uniquement)" },
+    { "type": "color", "id": "bg_color", "label": "Fond de la barre", "default": "#121212" },
+    { "type": "range", "id": "bg_opacity", "label": "Opacité du fond", "min": 50, "max": 100, "step": 1, "unit": "%", "default": 92 },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#F4F4F4" },
+    { "type": "color", "id": "cta_bg", "label": "Fond du bouton", "default": "#F4F4F4" },
+    { "type": "color", "id": "cta_text_color", "label": "Texte du bouton", "default": "#121212" },
+    { "type": "header", "content": "Forme" },
+    { "type": "range", "id": "bar_radius", "label": "Arrondi de la barre", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 22 },
+    { "type": "range", "id": "cta_radius", "label": "Arrondi du bouton", "min": 0, "max": 22, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "blur_strength", "label": "Flou (styles verre / personnalisé)", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 20 }
   ],
   "presets": [
-    {
-      "name": "GF Sticky ATC",
-      "settings": {
-        "style": "noir",
-        "product_title": "GUMFORCE",
-        "show_image": true,
-        "image_size": 32,
-        "show_rating": true,
-        "rating_text": "4.8",
-        "show_price": true,
-        "cta_text": "J'EN PROFITE",
-        "bar_radius": 16,
-        "cta_radius": 10
-      }
-    }
+    { "name": "GF Sticky ATC" }
   ]
 }
 {% endschema %}

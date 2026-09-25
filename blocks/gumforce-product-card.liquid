@@ -17,6 +17,8 @@
 {%- assign gf_hide_marker = s.hide_alt_marker | default: '#checkout' | strip -%}
 {%- assign gf_hm_css = gf_hide_marker | replace: '"', '' -%}
 <style>
+  /* Wrapper du bloc hors du flux dès le rendu (plus de saut de 22 px au DOMContentLoaded) */
+  #shopify-block-{{ block.id }} { position:absolute !important; width:0 !important; height:0 !important; min-height:0 !important; margin:0 !important; padding:0 !important; border:0 !important; overflow:hidden !important; }
   /* Carrousel : enlève le fond gris (#f4f4f4) des slides */
   slideshow-container, slideshow-slide, slideshow-slides, slideshow-component {
     background-color: transparent !important;

@@ -9,7 +9,7 @@
   Ne rend rien si la police est absente (font_modify → nil) ou système.
 {% endcomment %}
 {%- if font -%}
-  {%- unless font.system? -%}
+  {%- unless font.system? or font.family == 'Manrope' or font.family == 'Oswald' -%}
 @font-face {
   font-family: "GF {{ font.family | remove: '"' }}";
   font-style: {{ font.style }};

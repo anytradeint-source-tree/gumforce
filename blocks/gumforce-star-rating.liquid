@@ -74,12 +74,12 @@
 
       {{- s.stars_image | image_url: height: img_h_retina | image_tag:
           class: 'gfsr-img',
-          loading: 'lazy',
+          loading: 'eager',
           alt: 'Star rating' -}}
 
     {%- elsif s.stars_image_url != blank -%}
 
-      <img src="{{ s.stars_image_url }}" class="gfsr-img" alt="Star rating" loading="lazy">
+      <img src="{{ s.stars_image_url }}" class="gfsr-img" alt="Star rating" loading="eager" decoding="async">
 
     {%- else -%}
 
