@@ -136,19 +136,19 @@
     # GF : noms de famille isolés (voir snippets/gf-font-face.liquid)
     assign gf_body_family = settings.type_body_font.family
     unless settings.type_body_font.system?
-      assign gf_body_family = 'GF ' | append: settings.type_body_font.family | prepend: '"' | append: '"'
+      assign gf_body_family = settings.type_body_font.family | remove: '"' | prepend: 'GF ' | prepend: '"' | append: '"'
     endunless
     assign gf_subheading_family = settings.type_subheading_font.family
     unless settings.type_subheading_font.system?
-      assign gf_subheading_family = 'GF ' | append: settings.type_subheading_font.family | prepend: '"' | append: '"'
+      assign gf_subheading_family = settings.type_subheading_font.family | remove: '"' | prepend: 'GF ' | prepend: '"' | append: '"'
     endunless
     assign gf_heading_family = settings.type_heading_font.family
     unless settings.type_heading_font.system?
-      assign gf_heading_family = 'GF ' | append: settings.type_heading_font.family | prepend: '"' | append: '"'
+      assign gf_heading_family = settings.type_heading_font.family | remove: '"' | prepend: 'GF ' | prepend: '"' | append: '"'
     endunless
     assign gf_accent_family = settings.type_accent_font.family
     unless settings.type_accent_font.system?
-      assign gf_accent_family = 'GF ' | append: settings.type_accent_font.family | prepend: '"' | append: '"'
+      assign gf_accent_family = settings.type_accent_font.family | remove: '"' | prepend: 'GF ' | prepend: '"' | append: '"'
     endunless
   %}
 
