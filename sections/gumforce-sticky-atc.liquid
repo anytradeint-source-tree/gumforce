@@ -186,6 +186,7 @@
     overflow: hidden;
     opacity: 0.8;
   }
+  .gf-satc__rating { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
   .gf-satc__stars-img { height: {{ rating_h }}px; width: auto; display: block; flex-shrink: 0; }
   .gf-satc__stars-fallback { color: #FFC857; font-size: 12px; line-height: 1; }
   .gf-satc__rating-val { font-weight: 600; }
@@ -250,6 +251,7 @@
     .gf-satc__sub { font-size: 11px; }
     .gf-satc__cta { height: 42px; padding: 0 16px; font-size: 12px; }
     .gf-satc__cta-price { display: none; }
+    .gf-satc__rating { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -282,6 +284,7 @@
       <span class="gf-satc__title">{{ title }}</span>
       <span class="gf-satc__sub">
         {%- if show_rating -%}
+          <span class="gf-satc__rating">
           {%- if rating_img -%}
             <img class="gf-satc__stars-img" src="{{ rating_img | image_url: height: rating_h_3x }}" alt="Note {{ rating_text }} sur 5" height="{{ rating_h }}" loading="lazy" decoding="async">
           {%- else -%}
@@ -289,6 +292,7 @@
           {%- endif -%}
           <span class="gf-satc__rating-val">{{ rating_text }}</span>
           <span class="gf-satc__dot" aria-hidden="true">&middot;</span>
+          </span>
         {%- endif -%}
         <span class="gf-satc__offer" data-satc-offer hidden></span>
         <span class="gf-satc__dot" data-satc-dot aria-hidden="true" hidden>&middot;</span>

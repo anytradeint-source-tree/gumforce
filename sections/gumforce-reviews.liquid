@@ -1015,9 +1015,9 @@
   }
   {%- endif %}
   }
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function(e,o){if(e[0].isIntersecting){o.disconnect();_boot();}},{rootMargin:'1500px'}).observe(root);
-  } else _boot();
+  /* Mise en page immédiate (la section est sous la ligne de flottaison : aucun saut visible),
+     au lieu d'attendre l'approche à 1500 px, qui faisait sauter FAQ + bouton de 0,5 CLS au scroll rapide. */
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _boot); else _boot();
 })();
 </script>
 
