@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -119,12 +128,12 @@
               "type": "gumforce-star-rating",
               "name": "GF Star Rating",
               "settings": {
-                "stars_image": "shopify:\/\/shop_images\/1_2.avif",
+                "stars_image": "shopify://shop_images/1_2.avif",
                 "stars_image_url": "",
                 "stars_image_height": 16,
                 "rating": "4.8",
                 "show_number": false,
-                "review_count": "4.8\/5 Excellent | 849 Avis",
+                "review_count": "4.8/5 Excellent | 849 Avis",
                 "review_link": "#reviews",
                 "star_size": 18,
                 "color_star": "#f5a623",
@@ -177,7 +186,7 @@
                   "type": "text",
                   "name": "Product title",
                   "settings": {
-                    "text": "<p>GUMFORCE - LE CHEWING-GUM QUI MUSCLE TA MÂCHOIRE<\/p>",
+                    "text": "<p>GUMFORCE - LE CHEWING-GUM QUI MUSCLE TA MÂCHOIRE</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -203,7 +212,7 @@
                   "type": "text",
                   "name": "t:names.text",
                   "settings": {
-                    "text": "<p>1 CHEWING-GUM = 1 ENTRAÎNEMENT DE 15 MIN<\/p>",
+                    "text": "<p>1 CHEWING-GUM = 1 ENTRAÎNEMENT DE 15 MIN</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -321,14 +330,14 @@
                 "tier1_product": "",
                 "tier1_variant": 1,
                 "tier1_name": "1 sachet",
-                "tier1_image": "shopify:\/\/shop_images\/2_fc020120-22cb-49c7-9987-c52504fb3fe6.png",
+                "tier1_image": "shopify://shop_images/2_fc020120-22cb-49c7-9987-c52504fb3fe6.png",
                 "tier1_sachets": 1,
                 "tier1_badge": "",
                 "tier1_ship": "",
                 "tier2_product": "",
                 "tier2_variant": 2,
                 "tier2_name": "2 + 2 offerts",
-                "tier2_image": "shopify:\/\/shop_images\/1_6c796416-5fa9-45da-9bbd-4c02d9525f0c.png",
+                "tier2_image": "shopify://shop_images/1_6c796416-5fa9-45da-9bbd-4c02d9525f0c.png",
                 "tier2_sachets": 4,
                 "tier2_badge": "offre valable aujourd'hui",
                 "tier2_ship": "Livraison gratuite",
@@ -352,7 +361,6 @@
                 "offer_prefix": "Offre valable le",
                 "show_quantity": false,
                 "qty_label": "Quantité",
-                "qty_max": 10,
                 "cta_text": "Ajouter au panier",
                 "cta_bg": "#111111",
                 "cta_text_color": "#ffffff",
@@ -365,14 +373,14 @@
                 "cta_guarantee_text": "Satisfait ou remboursé · 90 jours",
                 "show_guarantee": false,
                 "guarantee_text": "Garantie 90 jours : résultat ou 100 % remboursé (vraiment)",
-                "guarantee_expanded": "<p>On a tellement confiance en GUMFORCE qu'on te laisse 90 jours pour juger. Pas de résultat ? On te rembourse l'intégralité. Zéro risque de ton côté. Valable uniquement sur l'offre 2+2 (4 sachets = 90 jours d'entraînement).<\/p>",
+                "guarantee_expanded": "<p>On a tellement confiance en GUMFORCE qu'on te laisse 90 jours pour juger. Pas de résultat ? On te rembourse l'intégralité. Zéro risque de ton côté. Valable uniquement sur l'offre 2+2 (4 sachets = 90 jours d'entraînement).</p>",
                 "show_reassure": false,
                 "reassure1": "Paiement sécurisé",
                 "reassure2": "Livraison en 48h",
                 "reassure3": "Garantie 90 jours",
                 "show_contact": true,
                 "contact_title": "Une question ?",
-                "contact_sub": "Parle-nous en direct, on répond 7 j\/7.",
+                "contact_sub": "Parle-nous en direct, on répond 7 j/7.",
                 "contact_badge": "Réponse < 2 h",
                 "contact_whatsapp": "+33 6 44 65 10 54",
                 "contact_email": "hello@gumforce.co",
@@ -389,9 +397,9 @@
                 "nut_perpack": "35 pièces par sachet",
                 "nut_col1": "Par portion",
                 "nut_col2": "Pour 100g",
-                "nut_rows": "Énergie;12 kJ \/ 3 kcal;445 kJ \/ 106 kcal\nMatières grasses;0 g;0 g\n-dont saturées;0 g;0 g\nGlucides;1 g;37 g\n-dont sucres;0 g;0 g\nProtéines;0 g;0 g\nSel;0 g;0 g",
-                "nut_ref": "Apports de référence pour un adulte type (8400 kJ \/ 2000 kcal).",
-                "nut_notes": "<p>Une consommation excessive peut avoir des effets laxatifs.<\/p><p><strong>Créatine Monohydrate : 500 mg par pièce.<\/strong><\/p>"
+                "nut_rows": "Énergie;12 kJ / 3 kcal;445 kJ / 106 kcal\nMatières grasses;0 g;0 g\n-dont saturées;0 g;0 g\nGlucides;1 g;37 g\n-dont sucres;0 g;0 g\nProtéines;0 g;0 g\nSel;0 g;0 g",
+                "nut_ref": "Apports de référence pour un adulte type (8400 kJ / 2000 kcal).",
+                "nut_notes": "<p>Une consommation excessive peut avoir des effets laxatifs.</p><p><strong>Créatine Monohydrate : 500 mg par pièce.</strong></p>"
               },
               "blocks": {}
             },
@@ -545,7 +553,7 @@
         "video_nKaAfL": {
           "type": "video",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/RO2.mp4",
+            "video": "shopify://files/videos/RO2.mp4",
             "name": "Elio, 27 ans",
             "role": "3 semaines d'utilisation"
           }
@@ -553,7 +561,7 @@
         "video_D3Hpc9": {
           "type": "video",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/YA7.mp4",
+            "video": "shopify://files/videos/YA7.mp4",
             "name": "Yann, 26 ans",
             "role": "3 semaines d'utilisation"
           }
@@ -561,7 +569,7 @@
         "video_xRpACe": {
           "type": "video",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/PAUL HENRI1.mp4",
+            "video": "shopify://files/videos/PAUL HENRI1.mp4",
             "name": "Paul-Henri, 24 ans",
             "role": "2 mois d'utilisation"
           }
@@ -569,7 +577,7 @@
         "video_9Jq3GL": {
           "type": "video",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/0722(1).mp4",
+            "video": "shopify://files/videos/0722(1).mp4",
             "name": "Fanny, 32 ans",
             "role": "1 mois d'utilisation"
           }
@@ -577,7 +585,7 @@
         "video_4AtHWX": {
           "type": "video",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/JULIEN1.mp4",
+            "video": "shopify://files/videos/JULIEN1.mp4",
             "name": "Julien, 31 ans",
             "role": "3 mois d'utilisation"
           }
@@ -585,7 +593,7 @@
         "video_gt3efb": {
           "type": "video",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/EL5.mp4",
+            "video": "shopify://files/videos/EL5.mp4",
             "name": "Ethan, 25 ans",
             "role": "1 mois d'utilisation"
           }
@@ -594,7 +602,7 @@
           "type": "video",
           "disabled": true,
           "settings": {
-            "video": "shopify:\/\/files\/videos\/BEN 1.mp4",
+            "video": "shopify://files/videos/BEN 1.mp4",
             "name": "Ben, 32 ans",
             "role": "2 semaines d'utilisation"
           }
@@ -602,7 +610,7 @@
         "video_LXRVPL": {
           "type": "video",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/LUCAS5.mp4",
+            "video": "shopify://files/videos/LUCAS5.mp4",
             "name": "Lucas, 26 ans",
             "role": "2 mois d'utilisation"
           }
@@ -610,7 +618,7 @@
         "video_ck9ziC": {
           "type": "video",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/0721-copy.mp4",
+            "video": "shopify://files/videos/0721-copy.mp4",
             "name": "Quan, 25 ans",
             "role": "1 mois d'utilisation"
           }
@@ -619,7 +627,7 @@
           "type": "video",
           "disabled": true,
           "settings": {
-            "video": "shopify:\/\/files\/videos\/0722 (2).mp4",
+            "video": "shopify://files/videos/0722 (2).mp4",
             "name": "Dorian, 31 ans",
             "role": "2 mois d'utilisation"
           }
@@ -671,11 +679,11 @@
         "product_title": "GUMFORCE - CHEWING GUM",
         "cta_text": "SHOP",
         "show_image": true,
-        "product_image": "shopify:\/\/shop_images\/hf_20260402_155854_1d525629-3fc0-4015-a3d3-cc3b02c54a39.jpg",
+        "product_image": "shopify://shop_images/hf_20260402_155854_1d525629-3fc0-4015-a3d3-cc3b02c54a39.jpg",
         "image_size": 42,
         "show_rating": false,
         "rating_text": "4.8",
-        "rating_image": "shopify:\/\/shop_images\/trust_45_1.svg",
+        "rating_image": "shopify://shop_images/trust_45_1.svg",
         "rating_image_height": 14,
         "show_price": false,
         "price_product": "",
@@ -697,7 +705,7 @@
         "card_JANfz3": {
           "type": "card",
           "settings": {
-            "image": "shopify:\/\/shop_images\/Remove_Margins.jpg",
+            "image": "shopify://shop_images/Remove_Margins.jpg",
             "name": "Igor Leroy",
             "role": "Modèle à la Fashion Week de Paris 2026"
           }
@@ -705,7 +713,7 @@
         "card_ciMprA": {
           "type": "card",
           "settings": {
-            "image": "shopify:\/\/shop_images\/ChatGPT_Image_17_juin_2026_23_08_35_2cdd4133-7bff-4783-95db-cc8bee46d6a1.png",
+            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_08_35_2cdd4133-7bff-4783-95db-cc8bee46d6a1.png",
             "name": "Edgar Icon",
             "role": "Fondateur de Elwood"
           }
@@ -713,7 +721,7 @@
         "card_tcWqe8": {
           "type": "card",
           "settings": {
-            "image": "shopify:\/\/shop_images\/ChatGPT_Image_17_juin_2026_23_43_21.png",
+            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_43_21.png",
             "name": "Sebastian Vale",
             "role": "Athlète Hyrox"
           }
@@ -721,7 +729,7 @@
         "card_bdnyPL": {
           "type": "card",
           "settings": {
-            "image": "shopify:\/\/shop_images\/ChatGPT_Image_17_juin_2026_23_20_33.png",
+            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_20_33.png",
             "name": "Aurélien Delmas",
             "role": "Acteur et modèle"
           }
@@ -766,7 +774,7 @@
         "card_GHiRRp": {
           "type": "card",
           "settings": {
-            "image": "shopify:\/\/shop_images\/c9e112a0-8c0c-457d-9b6e-b6e22bf9888a.png",
+            "image": "shopify://shop_images/c9e112a0-8c0c-457d-9b6e-b6e22bf9888a.png",
             "name": "Igor Leroy",
             "role": "Modèle à la Fashion Week de Paris 2026"
           }
@@ -774,7 +782,7 @@
         "card_QjiXfp": {
           "type": "card",
           "settings": {
-            "image": "shopify:\/\/shop_images\/ChatGPT_Image_17_juin_2026_22_59_13.png",
+            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_59_13.png",
             "name": "Edgar Icon",
             "role": "Fondateur de Elwood"
           }
@@ -782,7 +790,7 @@
         "card_YEMwcx": {
           "type": "card",
           "settings": {
-            "image": "shopify:\/\/shop_images\/ChatGPT_Image_17_juin_2026_23_43_21.png",
+            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_43_21.png",
             "name": "Sebastian Vale",
             "role": "Athlète Hyrox"
           }
@@ -790,7 +798,7 @@
         "card_ieLqwb": {
           "type": "card",
           "settings": {
-            "image": "shopify:\/\/shop_images\/Untitled_design_17_copie_b4af2629-b2a7-48c4-b8d9-985bdefec8c6.png",
+            "image": "shopify://shop_images/Untitled_design_17_copie_b4af2629-b2a7-48c4-b8d9-985bdefec8c6.png",
             "name": "Aurélien Delmas",
             "role": "Acteur et modèle"
           }
@@ -826,16 +834,16 @@
     },
     "gumforce_before_after_eyaDmY": {
       "type": "gumforce-before-after",
-      "name": "GF Avant \/ Après",
+      "name": "GF Avant / Après",
       "settings": {
         "badge_text": "",
         "heading": "Une transformation en 30 jours",
-        "subheading": "<p>Deux chewing-gums Gumforce par jour.<\/p>",
+        "subheading": "<p>Deux chewing-gums Gumforce par jour.</p>",
         "heading_tag": "h2",
         "heading_size": 32,
         "body_size": 15,
-        "before_image": "shopify:\/\/shop_images\/hf_20260619_184846_copie_80b47765-5311-4511-8712-ccf5c50ae6a3.png",
-        "after_image": "shopify:\/\/shop_images\/1_87a93929-a781-4db6-92b9-3ff0d3a412e8.jpg",
+        "before_image": "shopify://shop_images/hf_20260619_184846_copie_80b47765-5311-4511-8712-ccf5c50ae6a3.png",
+        "after_image": "shopify://shop_images/1_87a93929-a781-4db6-92b9-3ff0d3a412e8.jpg",
         "before_label": "Avant",
         "after_label": "Après",
         "show_arrow": true,
@@ -849,10 +857,10 @@
         "image_gap": 12,
         "card_radius": 16,
         "enable_animation": true,
-        "padding_top": 60,
-        "padding_bottom": 32,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 32,
         "use_theme_font": true
       }
     },
@@ -904,7 +912,7 @@
         "trust_badge_9RhJCe": {
           "type": "trust_badge",
           "settings": {
-            "icon": "shopify:\/\/shop_images\/Ontwerp_zonder_titel_63.png",
+            "icon": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
             "text": "90-Day Money Back Guarantee"
           }
         }
@@ -922,7 +930,7 @@
       "name": "GUMFORCE Social Proof",
       "settings": {
         "bg_color": "#121212",
-        "column_split": "60\/40",
+        "column_split": "60/40",
         "content_valign": "center",
         "content_gap": 16,
         "text_alignment": "center",
@@ -931,11 +939,11 @@
         "headline_number_size": 60,
         "headline_number_color": "#00b5b4",
         "show_badge": false,
-        "headline_text": "<p>have already chosen GUMFORCE<\/p>",
+        "headline_text": "<p>have already chosen GUMFORCE</p>",
         "headline_text_tag": "h2",
         "headline_text_size": 28,
         "headline_text_color": "#f4f4f4",
-        "subtitle": "<p>The World's First Jawline Gum with Creatine Monohydrate<\/p>",
+        "subtitle": "<p>The World's First Jawline Gum with Creatine Monohydrate</p>",
         "subtitle_size": 16,
         "subtitle_color": "#c0c0c0",
         "benefit_title_tag": "h6",
@@ -958,7 +966,7 @@
         "trust_icon_size": 18,
         "trust_full_image_height": 36,
         "accent_color": "#2ab5b4",
-        "hero_image": "shopify:\/\/shop_images\/Ontwerp_zonder_titel_69_2.jpg",
+        "hero_image": "shopify://shop_images/Ontwerp_zonder_titel_69_2.jpg",
         "hero_aspect": "1:1",
         "hero_position": "center",
         "hero_radius": 12,
@@ -978,8 +986,8 @@
         "result_card_aidfH6": {
           "type": "result_card",
           "settings": {
-            "image_before": "shopify:\/\/shop_images\/3_d7d63888-1066-45e2-a96e-24562fd1322a.jpg",
-            "image_after": "shopify:\/\/shop_images\/Ontwerp_zonder_titel_78.jpg",
+            "image_before": "shopify://shop_images/3_d7d63888-1066-45e2-a96e-24562fd1322a.jpg",
+            "image_after": "shopify://shop_images/Ontwerp_zonder_titel_78.jpg",
             "client_name": "Vincenzo T.",
             "show_verified_check": true,
             "location": "Austin, TX",
@@ -994,8 +1002,8 @@
         "result_card_hVCrnK": {
           "type": "result_card",
           "settings": {
-            "image_before": "shopify:\/\/shop_images\/2_e9567129-fa92-4ac7-9abd-5c775211ad1b.jpg",
-            "image_after": "shopify:\/\/shop_images\/1_aefa3bb7-5f47-4e5d-b5f6-8f5046a7ff32.jpg",
+            "image_before": "shopify://shop_images/2_e9567129-fa92-4ac7-9abd-5c775211ad1b.jpg",
+            "image_after": "shopify://shop_images/1_aefa3bb7-5f47-4e5d-b5f6-8f5046a7ff32.jpg",
             "client_name": "Jake R.",
             "show_verified_check": true,
             "location": "Miami, FL",
@@ -1010,8 +1018,8 @@
         "result_card_TtGn73": {
           "type": "result_card",
           "settings": {
-            "image_before": "shopify:\/\/shop_images\/Ontwerp_zonder_titel_75.jpg",
-            "image_after": "shopify:\/\/shop_images\/Ontwerp_zonder_titel_74.jpg",
+            "image_before": "shopify://shop_images/Ontwerp_zonder_titel_75.jpg",
+            "image_after": "shopify://shop_images/Ontwerp_zonder_titel_74.jpg",
             "client_name": "Mike K.",
             "show_verified_check": true,
             "location": "London, UK",
@@ -1058,7 +1066,7 @@
         "star_color": "#f5a623",
         "pill_text_color": "#000000",
         "verified_color": "#f1f4f0",
-        "verified_badge_image": "shopify:\/\/shop_images\/a_1.png",
+        "verified_badge_image": "shopify://shop_images/a_1.png",
         "verified_badge_url": "",
         "verified_badge_height": 16,
         "padding_top": 80,
@@ -1072,14 +1080,14 @@
       "type": "gumforce-image-text",
       "name": "GUMFORCE Image + Text",
       "settings": {
-        "image": "shopify:\/\/shop_images\/6e82e52e-c7f1-4d72-b7f7-6b32a3436cf1.png",
+        "image": "shopify://shop_images/6e82e52e-c7f1-4d72-b7f7-6b32a3436cf1.png",
         "image_ratio": "1:1",
         "image_radius": 12,
         "image_shadow": false,
-        "heading": "<p>Disponible en magasin<\/p>",
+        "heading": "<p>Disponible en magasin</p>",
         "heading_tag": "h2",
         "heading_size": 32,
-        "body_text": "<p>Officiellement disponible dans tous les magasins Decathlon en France, Belgique, Espagne et Suisse.<\/p>",
+        "body_text": "<p>Officiellement disponible dans tous les magasins Decathlon en France, Belgique, Espagne et Suisse.</p>",
         "body_size": 14,
         "cta_text": "J'EN PROFITE →",
         "cta_scroll_to_bundle": true,
@@ -1090,13 +1098,13 @@
         "cta_style": "filled",
         "cta_width": "full",
         "guarantee_text": "Satisfait ou remboursé sous 90 jours",
-        "guarantee_icon": "shopify:\/\/shop_images\/Ontwerp_zonder_titel_79.png",
+        "guarantee_icon": "shopify://shop_images/Ontwerp_zonder_titel_79.png",
         "guarantee_icon_size": 16,
         "guarantee_font_size": 13,
         "text_align": "center",
         "mobile_layout": "text_image_cta",
         "image_side": "left",
-        "column_split": "50\/50",
+        "column_split": "50/50",
         "vertical_align": "center",
         "content_gap": 48,
         "text_gap": 24,
@@ -1104,10 +1112,10 @@
         "text_color": "#6b6b6b",
         "text_muted": "#6b6b6b",
         "color_scheme": "scheme-1",
-        "padding_top": 60,
-        "padding_bottom": 60,
         "padding_top_mobile": 32,
         "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 60,
         "enable_animations": true
       }
     },
@@ -1116,14 +1124,14 @@
       "disabled": true,
       "name": "GUMFORCE Image + Text",
       "settings": {
-        "image": "shopify:\/\/shop_images\/0d8009c9-7e26-4f6e-8c77-129883d00ef6_1.jpg",
+        "image": "shopify://shop_images/0d8009c9-7e26-4f6e-8c77-129883d00ef6_1.jpg",
         "image_ratio": "1:1",
         "image_radius": 12,
         "image_shadow": false,
-        "heading": "<p>Your Jaw Is a Muscle. <\/p><p>Train It Like One.<\/p>",
+        "heading": "<p>Your Jaw Is a Muscle. </p><p>Train It Like One.</p>",
         "heading_tag": "h2",
         "heading_size": 32,
-        "body_text": "<p>Your masseter muscle is <br\/><strong>one of the strongest<\/strong> in your body. <\/p><p>GUMFORCE is <strong>10x harder than standard gum<\/strong>. <br\/>Built to sculpt your jawline.<\/p>",
+        "body_text": "<p>Your masseter muscle is <br/><strong>one of the strongest</strong> in your body. </p><p>GUMFORCE is <strong>10x harder than standard gum</strong>. <br/>Built to sculpt your jawline.</p>",
         "body_size": 14,
         "cta_text": "SHOP NOW",
         "cta_scroll_to_bundle": true,
@@ -1134,13 +1142,13 @@
         "cta_style": "filled",
         "cta_width": "full",
         "guarantee_text": "90-Day Money Back Guarantee",
-        "guarantee_icon": "shopify:\/\/shop_images\/Ontwerp_zonder_titel_63.png",
+        "guarantee_icon": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
         "guarantee_icon_size": 18,
         "guarantee_font_size": 13,
         "text_align": "center",
         "mobile_layout": "image_text",
         "image_side": "left",
-        "column_split": "50\/50",
+        "column_split": "50/50",
         "vertical_align": "center",
         "content_gap": 48,
         "text_gap": 24,
@@ -1148,10 +1156,10 @@
         "text_color": "#262626",
         "text_muted": "#6b6b6b",
         "color_scheme": "scheme-2",
-        "padding_top": 60,
-        "padding_bottom": 60,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 60,
         "enable_animations": true
       }
     },
@@ -1160,14 +1168,14 @@
       "disabled": true,
       "name": "GUMFORCE Image + Text",
       "settings": {
-        "image": "shopify:\/\/shop_images\/0d0685cf-ee8e-4fb9-8c50-fe501134c912_1.jpg",
+        "image": "shopify://shop_images/0d0685cf-ee8e-4fb9-8c50-fe501134c912_1.jpg",
         "image_ratio": "1:1",
         "image_radius": 12,
         "image_shadow": false,
-        "heading": "<p>Creatine: The Most Proven Supplement in Sports Nutrition<\/p>",
+        "heading": "<p>Creatine: The Most Proven Supplement in Sports Nutrition</p>",
         "heading_tag": "h2",
         "heading_size": 32,
-        "body_text": "<p>Creatine monohydrate is one of the most researched performance compounds around. <\/p><p>Each GUMFORCE piece packs 500mg of the highest quality.<\/p>",
+        "body_text": "<p>Creatine monohydrate is one of the most researched performance compounds around. </p><p>Each GUMFORCE piece packs 500mg of the highest quality.</p>",
         "body_size": 14,
         "cta_text": "",
         "cta_scroll_to_bundle": false,
@@ -1183,7 +1191,7 @@
         "text_align": "left",
         "mobile_layout": "image_text",
         "image_side": "right",
-        "column_split": "50\/50",
+        "column_split": "50/50",
         "vertical_align": "center",
         "content_gap": 48,
         "text_gap": 24,
@@ -1191,10 +1199,10 @@
         "text_color": "#262626",
         "text_muted": "#6b6b6b",
         "color_scheme": "scheme-2",
-        "padding_top": 60,
-        "padding_bottom": 60,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 60,
         "enable_animations": true
       }
     },
@@ -1269,12 +1277,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Alex M.",
-            "review_date": "02\/04\/2026",
+            "review_date": "02/04/2026",
             "rating": 5,
             "verified": false,
             "review_text": "Franchement surpris par la qualité. La résistance est vraiment plus forte qu’un chewing-gum classique, on sent direct que ça travaille la mâchoire. Livraison en 7 jours à Paris.",
             "highlight_text": "Franchement surpris par la qualité.",
-            "review_image": "shopify:\/\/shop_images\/2214ac48-e356-4524-8382-2a1d08f5a479.png",
+            "review_image": "shopify://shop_images/2214ac48-e356-4524-8382-2a1d08f5a479.png",
             "item_type": ""
           }
         },
@@ -1282,12 +1290,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Jordan K.",
-            "review_date": "28\/03\/2026",
+            "review_date": "28/03/2026",
             "rating": 5,
             "verified": false,
             "review_text": "Le meilleur chewing-gum pour la mâchoire que j'ai essayé. La créatine est un vrai plus et le goût menthe est puissant. Je recommande.",
             "highlight_text": "",
-            "review_image": "shopify:\/\/shop_images\/ChatGPT_Image_17_juin_2026_22_25_19.png",
+            "review_image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_25_19.png",
             "item_type": "Menthe Fraîche"
           }
         },
@@ -1295,12 +1303,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Simon T.",
-            "review_date": "25\/03\/2026",
+            "review_date": "25/03/2026",
             "rating": 5,
             "verified": false,
             "review_text": "Le packaging est super propre et premium. Reçu avec un petit code promo pour Décathlon, ça fait plaisir.",
             "highlight_text": "Le packaging est super propre et premium.",
-            "review_image": "shopify:\/\/shop_images\/IMG_2012_2.jpg",
+            "review_image": "shopify://shop_images/IMG_2012_2.jpg",
             "item_type": "Menthe Fraîche"
           }
         },
@@ -1308,12 +1316,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Timothée R.",
-            "review_date": "22\/03\/2026",
+            "review_date": "22/03/2026",
             "rating": 5,
             "verified": false,
             "review_text": "Je recommande surtout pour ceux qui veulent entraîner leur mâchoire discrètement au quotidien. Perso je mâche pendant le travail ou à la salle. Livraison rapide sur Grenoble.",
             "highlight_text": "",
-            "review_image": "shopify:\/\/shop_images\/IMG_2008_2.jpg",
+            "review_image": "shopify://shop_images/IMG_2008_2.jpg",
             "item_type": ""
           }
         },
@@ -1321,12 +1329,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Chris B.",
-            "review_date": "20\/03\/2026",
+            "review_date": "20/03/2026",
             "rating": 4,
             "verified": false,
             "review_text": "Très bon produit. C’est intense au début, puis on s’y habitue rapidement. On sent vraiment les muscles travailler. J’aimerais juste voir plus de goûts dispo.",
             "highlight_text": "On sent vraiment les muscles travailler.",
-            "review_image": "shopify:\/\/shop_images\/IMG_1189.jpg",
+            "review_image": "shopify://shop_images/IMG_1189.jpg",
             "item_type": ""
           }
         },
@@ -1334,12 +1342,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "David L.",
-            "review_date": "18\/03\/2026",
+            "review_date": "18/03/2026",
             "rating": 5,
             "verified": false,
             "review_text": "Je l’utilise tous les matins avant le sport. Ça réveille direct les muscles de la mâchoire.",
             "highlight_text": "",
-            "review_image": "shopify:\/\/shop_images\/IMG_1185.jpg",
+            "review_image": "shopify://shop_images/IMG_1185.jpg",
             "item_type": "Menthe Fraîche"
           }
         },
@@ -1347,12 +1355,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Nathan W.",
-            "review_date": "15\/03\/2026",
+            "review_date": "15/03/2026",
             "rating": 5,
             "verified": false,
             "review_text": "J’étais sceptique au début mais le produit est vraiment efficace. La texture reste ferme longtemps contrairement aux chewing-gums normaux.",
             "highlight_text": "",
-            "review_image": "shopify:\/\/shop_images\/Untitled_design_18_copie_2702648f-ae04-4897-826b-981bcaa0803d.png",
+            "review_image": "shopify://shop_images/Untitled_design_18_copie_2702648f-ae04-4897-826b-981bcaa0803d.png",
             "item_type": ""
           }
         },
@@ -1360,12 +1368,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Rayan H.",
-            "review_date": "12\/03\/2026",
+            "review_date": "12/03/2026",
             "rating": 5,
             "verified": false,
             "review_text": "J’adore l’ajout de créatine. Pouvoir prendre ma créatine tout en travaillant ma mâchoire, c’est franchement malin. Et le goût est top aussi. Livraison en 8 jours à Bruxelles.",
             "highlight_text": "",
-            "review_image": "shopify:\/\/shop_images\/ChatGPT_Image_17_juin_2026_22_22_38.png",
+            "review_image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_22_38.png",
             "item_type": ""
           }
         },
@@ -1373,12 +1381,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Jake P.",
-            "review_date": "10\/03\/2026",
+            "review_date": "10/03/2026",
             "rating": 5,
             "verified": false,
             "review_text": "J’étais sceptique au début, mais le produit tient vraiment ses promesses. Bien plus résistant que tous les autres chewing-gums que j’ai testés. Après 10 minutes, tu sens clairement les masséters travailler.",
             "highlight_text": "",
-            "review_image": "shopify:\/\/shop_images\/ChatGPT_Image_17_juin_2026_22_40_31.png",
+            "review_image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_40_31.png",
             "item_type": ""
           }
         },
@@ -1386,12 +1394,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Ethan C.",
-            "review_date": "08\/03\/2026",
+            "review_date": "08/03/2026",
             "rating": 4,
             "verified": false,
             "review_text": "Bon produit. Le chewing-gum est vraiment résistant. Je mets 4 étoiles seulement parce que j’aimerais que le goût menthe dure un peu plus longtemps, mais niveau résistance, c’est incomparable.",
             "highlight_text": "",
-            "review_image": "shopify:\/\/shop_images\/IMG_1188.jpg",
+            "review_image": "shopify://shop_images/IMG_1188.jpg",
             "item_type": ""
           }
         },
@@ -1399,12 +1407,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Ben D.",
-            "review_date": "05\/03\/2026",
+            "review_date": "05/03/2026",
             "rating": 5,
             "verified": false,
             "review_text": "J'adore. J'ai déjà commandé un deuxième sachet.",
             "highlight_text": "",
-            "review_image": "shopify:\/\/shop_images\/Untitled_design_18_copie_7.png",
+            "review_image": "shopify://shop_images/Untitled_design_18_copie_7.png",
             "item_type": "Menthe Fraîche"
           }
         },
@@ -1412,12 +1420,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Oscar F.",
-            "review_date": "03\/03\/2026",
+            "review_date": "03/03/2026",
             "rating": 5,
             "verified": false,
             "review_text": "Enfin un chewing-gum vraiment résistant. Les chewing-gums classiques paraissent fades après avoir testé GUMFORCE. Et les 500 mg de créatine par chewing-gum, c’est un vrai plus.",
             "highlight_text": "",
-            "review_image": "shopify:\/\/shop_images\/IMG_1186.jpg",
+            "review_image": "shopify://shop_images/IMG_1186.jpg",
             "item_type": ""
           }
         },
@@ -1425,7 +1433,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Kai S.",
-            "review_date": "01\/03\/2026",
+            "review_date": "01/03/2026",
             "rating": 5,
             "verified": false,
             "review_text": "Le packaging est propre, le goût est bon, et le chewing-gum offre une vraie résistance. Franchement, que demander de plus ?",
@@ -1437,7 +1445,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Adrian V.",
-            "review_date": "27\/02\/2026",
+            "review_date": "27/02/2026",
             "rating": 5,
             "verified": false,
             "review_text": "Je travaille ma mâchoire tous les jours maintenant. C’est devenu une habitude, comme aller à la salle. Après 6 semaines, mon visage paraît déjà plus dessiné.",
@@ -1449,7 +1457,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Daniel G.",
-            "review_date": "25\/02\/2026",
+            "review_date": "25/02/2026",
             "rating": 4,
             "verified": false,
             "review_text": "Très bon chewing-gum. Ultra résistant, bon goût. Mon seul reproche, c’est que je termine les sachets assez vite avec 3 à 4 chewing-gums par jour.",
@@ -1461,12 +1469,12 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Leo N.",
-            "review_date": "22\/02\/2026",
+            "review_date": "22/02/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Mes amis n'arrêtent pas de me demander ce que je fais de différent. C'est le chewing-gum. Aussi simple que ça.",
             "highlight_text": "Mes amis n'arrêtent pas de me demander ce que je fais de différent.",
-            "review_image": "shopify:\/\/shop_images\/Untitled_design_18.png",
+            "review_image": "shopify://shop_images/Untitled_design_18.png",
             "item_type": "Menthe Fraîche"
           }
         },
@@ -1474,10 +1482,10 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Mason R.",
-            "review_date": "20\/02\/2026",
+            "review_date": "20/02/2026",
             "rating": 5,
             "verified": true,
-            "review_text": "Sans sucre et riche en créatine! Et puis la dureté est réelle. 10\/10.",
+            "review_text": "Sans sucre et riche en créatine! Et puis la dureté est réelle. 10/10.",
             "highlight_text": "",
             "item_type": ""
           }
@@ -1486,7 +1494,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Brandon J.",
-            "review_date": "18\/02\/2026",
+            "review_date": "18/02/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Ordered on Monday, arrived Thursday. Popped a piece and immediately felt the difference from regular gum. My masseter was tired after 20 min.",
@@ -1498,7 +1506,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Sam E.",
-            "review_date": "15\/02\/2026",
+            "review_date": "15/02/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Commandé le lundi, arrivé le jeudi. J'ai mâché un morceau et j'ai immédiatement senti la différence par rapport à un chewing-gum ordinaire. Mon masséter était fatigué après 20 minutes.",
@@ -1510,7 +1518,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Connor A.",
-            "review_date": "12\/02\/2026",
+            "review_date": "12/02/2026",
             "rating": 5,
             "verified": false,
             "review_text": "La saveur menthe est en fait très bonne. Elle n'a pas du tout un goût artificiel. Et la résistance est parfaite pour l'entraînement de la mâchoire.",
@@ -1522,7 +1530,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Will T.",
-            "review_date": "10\/02\/2026",
+            "review_date": "10/02/2026",
             "rating": 4,
             "verified": true,
             "review_text": "J'ai essayé la gomme de mastic, la gomme Falim et les exerciseurs de mâchoire. C'est mieux que tous ces produits combinés. Pratique, efficace et bon goût.",
@@ -1534,7 +1542,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Noah Z.",
-            "review_date": "08\/02\/2026",
+            "review_date": "08/02/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Vraiment satisfait de ce produit. La dureté est exactement ce que je voulais. La saveur pourrait être légèrement plus prononcée, mais c'est un détail. Excellent produit dans l'ensemble.",
@@ -1546,7 +1554,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Jaden M.",
-            "review_date": "05\/02\/2026",
+            "review_date": "05/02/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Révolutionnaire. Je mâche un morceau pendant chaque trajet. Ma mâchoire est visiblement plus définie après 3 semaines. La créatine est la cerise sur le gâteau.",
@@ -1558,7 +1566,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Evan K.",
-            "review_date": "02\/02\/2026",
+            "review_date": "02/02/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Des ingrédients propres, des résultats réels. Ce n'est pas un artifice. Ma mâchoire travaille vraiment à chaque fois que je mâche.",
@@ -1570,7 +1578,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Mike L.",
-            "review_date": "30\/01\/2026",
+            "review_date": "30/01/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Deuxième mois d'utilisation de GumForce. Ma mâchoire est visiblement plus nette. Les gens le remarquent. Ça vaut chaque centime.",
@@ -1582,7 +1590,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Derek H.",
-            "review_date": "28\/01\/2026",
+            "review_date": "28/01/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Sans hésiter le meilleur produit d'entraînement de la mâchoire du marché. Le format chewing-gum est tellement plus facile à utiliser que les jouets à mâcher en silicone. Et il a vraiment bon goût.",
@@ -1594,7 +1602,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Caleb O.",
-            "review_date": "25\/01\/2026",
+            "review_date": "25/01/2026",
             "rating": 5,
             "verified": true,
             "review_text": "J'ai commandé le pack de 3 et j'en ai donné un à mon frère. Nous sommes tous les deux accros. On sent littéralement les muscles de la mâchoire se mettre en marche après quelques minutes.",
@@ -1606,7 +1614,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Trevor P.",
-            "review_date": "23\/01\/2026",
+            "review_date": "23/01/2026",
             "rating": 4,
             "verified": true,
             "review_text": "Ça a vraiment bon goût et la résistance est constante du début à la fin. En plus la créatine. C'est évident.",
@@ -1618,7 +1626,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Austin W.",
-            "review_date": "20\/01\/2026",
+            "review_date": "20/01/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Chewing gum vraiment dur. J'ai eu des courbatures les deux premiers jours, mais maintenant ça devient plus facile. Ça veut dire que ça marche. Bon produit.",
@@ -1630,7 +1638,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Bryce F.",
-            "review_date": "18\/01\/2026",
+            "review_date": "18/01/2026",
             "rating": 5,
             "verified": false,
             "review_text": "Je mâche depuis 6 semaines maintenant. On me complimente sur ma mâchoire. C'est vraiment efficace.",
@@ -1642,7 +1650,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Dante R.",
-            "review_date": "15\/01\/2026",
+            "review_date": "15/01/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Je dépensais 30 $ pour du chewing-gum de mastic qui avait le goût d'écorce d'arbre. C'est le même entraînement avec un vrai goût de menthe et de la créatine. J'ai changé pour de bon.",
@@ -1654,7 +1662,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Kevin Y.",
-            "review_date": "12\/01\/2026",
+            "review_date": "12/01/2026",
             "rating": 5,
             "verified": true,
             "review_text": "La dureté est parfaite. Pas trop dure pour ne pas faire mal, mais assez pour sentir la mâchoire travailler. Très bon équilibre.",
@@ -1666,7 +1674,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Zach S.",
-            "review_date": "10\/01\/2026",
+            "review_date": "10/01/2026",
             "rating": 4,
             "verified": true,
             "review_text": "Mon visage était rond. Après 2 mois de mastication quotidienne, ma mâchoire est beaucoup plus dessinée.",
@@ -1678,7 +1686,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Grant B.",
-            "review_date": "08\/01\/2026",
+            "review_date": "08/01/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Impressionné par la qualité. L'emballage est premium, le chewing gum est vraiment dur, et la menthe est parfaite. J'aimerais juste qu'ils aient plus de saveurs.",
@@ -1690,7 +1698,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Dominic A.",
-            "review_date": "05\/01\/2026",
+            "review_date": "05/01/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Je fais du MMA et la force de ma mâchoire est importante. Ce chewing-gum fait maintenant partie de ma routine quotidienne. Morsure plus forte, mâchoire plus nette. Gagnant-gagnant.",
@@ -1702,7 +1710,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Patrick M.",
-            "review_date": "03\/01\/2026",
+            "review_date": "03/01/2026",
             "rating": 5,
             "verified": false,
             "review_text": "J'ai vu ça sur TikTok et je me suis dit que j'allais essayer. Cela fait 3 semaines et j'en suis déjà à mon deuxième paquet. La différence est notable.",
@@ -1714,7 +1722,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Ricky J.",
-            "review_date": "01\/01\/2026",
+            "review_date": "01/01/2026",
             "rating": 5,
             "verified": true,
             "review_text": "Le meilleur investissement que j'aie fait pour mon apparence. Moins cher que les produits de comblement et vraiment naturel. Il suffit de mâcher tous les jours et de laisser agir.",
@@ -1726,7 +1734,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Shane D.",
-            "review_date": "28\/12\/2025",
+            "review_date": "28/12/2025",
             "rating": 4,
             "verified": true,
             "review_text": "Nouvelle année, nouvelle mâchoire. J'ai commencé le 1er janvier et je vois déjà des résultats à la fin du mois. Le coup de pouce de la créatine est un avantage appréciable.",
@@ -1738,7 +1746,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Victor C.",
-            "review_date": "25\/12\/2025",
+            "review_date": "25/12/2025",
             "rating": 5,
             "verified": true,
             "review_text": "Difficile comme annoncé. Le premier morceau m'a surpris. Ma mâchoire était fatiguée après 15 minutes. La saveur a duré plus longtemps que prévu aussi.",
@@ -1750,7 +1758,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Blake N.",
-            "review_date": "22\/12\/2025",
+            "review_date": "22/12/2025",
             "rating": 5,
             "verified": true,
             "review_text": "Je l'ai reçu comme cadeau de Noël. Honnêtement, le meilleur cadeau que j'aie jamais reçu. Je l'utilise quotidiennement et ma mâchoire est déjà plus ferme.",
@@ -1762,7 +1770,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Trent G.",
-            "review_date": "20\/12\/2025",
+            "review_date": "20/12/2025",
             "rating": 5,
             "verified": true,
             "review_text": "Je fais un travail de bureau et je mâche ça toute la journée. Un entraînement efficace de la mâchoire sans même y penser. Un produit absolument génial.",
@@ -1774,10 +1782,10 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Ian Q.",
-            "review_date": "18\/12\/2025",
+            "review_date": "18/12/2025",
             "rating": 5,
             "verified": false,
-            "review_text": "Quatrième commande. La transformation de ma mâchoire est incroyable. Les photos avant\/après ne mentent pas. GumForce, c'est la vérité.",
+            "review_text": "Quatrième commande. La transformation de ma mâchoire est incroyable. Les photos avant/après ne mentent pas. GumForce, c'est la vérité.",
             "highlight_text": "",
             "item_type": ""
           }
@@ -1786,7 +1794,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Chase E.",
-            "review_date": "15\/12\/2025",
+            "review_date": "15/12/2025",
             "rating": 5,
             "verified": true,
             "review_text": "Je faisais des exercices pour la mâchoire avec ces trucs en silicone, mais ça a l'air ridicule. Là, c'est juste de la gomme. Personne ne sait que tu t'entraînes. Tellement mieux.",
@@ -1798,7 +1806,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Reid L.",
-            "review_date": "12\/12\/2025",
+            "review_date": "12/12/2025",
             "rating": 4,
             "verified": true,
             "review_text": "C'est vraiment dur. Ma jawline se développe visiblement.",
@@ -1810,7 +1818,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Hugo T.",
-            "review_date": "10\/12\/2025",
+            "review_date": "10/12/2025",
             "rating": 5,
             "verified": true,
             "review_text": "Super chewing-gum. Résistante, mentholée et efficace. L'absorption de créatine par la mastication est une approche astucieuse. J'en rachèterais.",
@@ -1822,7 +1830,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Max V.",
-            "review_date": "07\/12\/2025",
+            "review_date": "07/12/2025",
             "rating": 5,
             "verified": true,
             "review_text": "Ma copine a remarqué la différence avant moi. Un menton plus acéré, une mâchoire plus définie. Elle m'a demandé si je faisais plus de sport. Non, je mâche, c'est tout.",
@@ -1834,7 +1842,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Aaron U.",
-            "review_date": "05\/12\/2025",
+            "review_date": "05/12/2025",
             "rating": 5,
             "verified": true,
             "review_text": "C'est top, rien à redire.",
@@ -1846,7 +1854,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Finn W.",
-            "review_date": "02\/12\/2025",
+            "review_date": "02/12/2025",
             "rating": 5,
             "verified": false,
             "review_text": "Je suis entraîneur personnel et je le recommande à tous mes clients qui souhaitent améliorer l'esthétique de leur visage. Rien d'autre sur le marché ne s'en approche.",
@@ -1858,7 +1866,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Miles B.",
-            "review_date": "30\/11\/2025",
+            "review_date": "30/11/2025",
             "rating": 4,
             "verified": true,
             "review_text": "Commandé à l'international et arrivé en 5 jours. La qualité est excellente. Le chewing-gum reste dur pendant toute la mastication, contrairement aux alternatives bon marché.",
@@ -1870,7 +1878,7 @@
           "type": "review",
           "settings": {
             "reviewer_name": "Theo K.",
-            "review_date": "28\/11\/2025",
+            "review_date": "28/11/2025",
             "rating": 5,
             "verified": true,
             "review_text": "Un entraînement de mâchoire solide. Livre en 7 jours à Paris.",
@@ -1937,12 +1945,12 @@
         "heading_text": "Ils en parlent mieux que nous",
         "header_rating": "4.8",
         "header_count": "849 Avis",
-        "stars_img_5": "shopify:\/\/shop_images\/trust5_1.svg",
-        "stars_img_4_5": "shopify:\/\/shop_images\/trust_45_1.svg",
-        "stars_img_4": "shopify:\/\/shop_images\/trust4_1.svg",
+        "stars_img_5": "shopify://shop_images/trust5_1.svg",
+        "stars_img_4_5": "shopify://shop_images/trust_45_1.svg",
+        "stars_img_4": "shopify://shop_images/trust4_1.svg",
         "stars_header_height": 16,
         "stars_card_height": 13,
-        "verified_badge_image": "shopify:\/\/shop_images\/a_1.png",
+        "verified_badge_image": "shopify://shop_images/a_1.png",
         "verified_badge_url": "",
         "verified_badge_height": 14,
         "initial_count": 8,
@@ -1968,10 +1976,10 @@
         "btn_bg": "#1a1a1a",
         "btn_text_color": "#ffffff",
         "btn_radius": 30,
-        "padding_top": 64,
-        "padding_bottom": 64,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
+        "padding_top": 64,
+        "padding_bottom": 64,
         "enable_animations": true
       }
     },
@@ -1982,42 +1990,42 @@
           "type": "faq",
           "settings": {
             "question": "Comment l'utiliser ?",
-            "answer": "<p>Mâche un chewing-gum à la fois en utilisant tes molaires. Alterne les côtés toutes les quelques minutes pour travailler les deux côtés de façon équilibrée. Chaque session doit durer entre 10 et 15 minutes maximum. Nous recommandons 3 à 4 chewing-gums maximum répartis dans la journée.<\/p><p>N’en fais pas trop. Ta mâchoire est un muscle comme un autre. Si tu ressens une douleur ou un inconfort, arrête et repose-toi. Augmente progressivement, surtout pendant la première semaine.<\/p>"
+            "answer": "<p>Mâche un chewing-gum à la fois en utilisant tes molaires. Alterne les côtés toutes les quelques minutes pour travailler les deux côtés de façon équilibrée. Chaque session doit durer entre 10 et 15 minutes maximum. Nous recommandons 3 à 4 chewing-gums maximum répartis dans la journée.</p><p>N’en fais pas trop. Ta mâchoire est un muscle comme un autre. Si tu ressens une douleur ou un inconfort, arrête et repose-toi. Augmente progressivement, surtout pendant la première semaine.</p>"
           }
         },
         "faq_dgrBAD": {
           "type": "faq",
           "settings": {
             "question": "Est-ce que ça marche vraiment ?",
-            "answer": "<p>GUMFORCE est 10× plus résistant qu’un chewing-gum classique. Cela permet de vraiment solliciter les muscles masséters — les principaux muscles responsables d’une mâchoire plus définie. Comme tous les muscles, ils réagissent à un entraînement régulier et progressif.<\/p><p>Chaque chewing-gum contient également 500 mg de créatine monohydrate, l’un des compléments sportifs les plus étudiés au monde.<\/p><p>Les résultats viennent avant tout de la régularité, associés à une bonne condition physique et à un faible taux de masse grasse pour une définition visible.<\/p>"
+            "answer": "<p>GUMFORCE est 10× plus résistant qu’un chewing-gum classique. Cela permet de vraiment solliciter les muscles masséters — les principaux muscles responsables d’une mâchoire plus définie. Comme tous les muscles, ils réagissent à un entraînement régulier et progressif.</p><p>Chaque chewing-gum contient également 500 mg de créatine monohydrate, l’un des compléments sportifs les plus étudiés au monde.</p><p>Les résultats viennent avant tout de la régularité, associés à une bonne condition physique et à un faible taux de masse grasse pour une définition visible.</p>"
           }
         },
         "faq_gnbWhW": {
           "type": "faq",
           "settings": {
             "question": "Qu'est-ce qu'il y a dedans ?",
-            "answer": "<p>Chaque chewing-gum contient 500 mg de créatine monohydrate. Pas d’ingrédients inutiles, pas de sous-dosage, pas de mauvaise surprise.<\/p><p>Sans sucre. Des chewing-gums blancs, denses et ultra résistants. Tu sens la différence dès les premières secondes.<\/p><p>Sachet refermable de 100 g. Convient aux végans.<\/p>"
+            "answer": "<p>Chaque chewing-gum contient 500 mg de créatine monohydrate. Pas d’ingrédients inutiles, pas de sous-dosage, pas de mauvaise surprise.</p><p>Sans sucre. Des chewing-gums blancs, denses et ultra résistants. Tu sens la différence dès les premières secondes.</p><p>Sachet refermable de 100 g. Convient aux végans.</p>"
           }
         },
         "faq_k3U3zJ": {
           "type": "faq",
           "settings": {
             "question": "Dans combien de temps verrai-je des résultats ?",
-            "answer": "<p>La plupart des clients sentent leurs mâchoires travailler dès la première utilisation. Une mâchoire plus définie apparaît généralement après 2 à 6 semaines d’utilisation quotidienne, selon ton point de départ, ton taux de masse grasse et ta régularité.<\/p>"
+            "answer": "<p>La plupart des clients sentent leurs mâchoires travailler dès la première utilisation. Une mâchoire plus définie apparaît généralement après 2 à 6 semaines d’utilisation quotidienne, selon ton point de départ, ton taux de masse grasse et ta régularité.</p>"
           }
         },
         "faq_gMMnPE": {
           "type": "faq",
           "settings": {
             "question": "La créatine est-elle efficace en étant mâchée ?",
-            "answer": "<p>Oui. La créatine monohydrate est absorbée à la fois par les muqueuses buccales et par la digestion classique une fois avalée avec la salive. Chaque chewing-gum délivre une dose complète de 500 mg.<\/p>"
+            "answer": "<p>Oui. La créatine monohydrate est absorbée à la fois par les muqueuses buccales et par la digestion classique une fois avalée avec la salive. Chaque chewing-gum délivre une dose complète de 500 mg.</p>"
           }
         },
         "faq_hTKgm3": {
           "type": "faq",
           "settings": {
             "question": "Livraison et retours",
-            "answer": "<p>Nous livrons dans le monde entier. Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement entre 5 et 8 jours ouvrés selon ta localisation. Suivi inclus avec chaque commande.<\/p><p>Garantie satisfait ou remboursé pendant 90 jours. Pas satisfait ? Contacte-nous et nous trouverons une solution.<\/p>"
+            "answer": "<p>Nous livrons dans le monde entier. Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement entre 5 et 8 jours ouvrés selon ta localisation. Suivi inclus avec chaque commande.</p><p>Garantie satisfait ou remboursé pendant 90 jours. Pas satisfait ? Contacte-nous et nous trouverons une solution.</p>"
           }
         }
       },
@@ -2044,10 +2052,10 @@
         "border_color": "#1e1e1e",
         "icon_color": "#2ab5b4",
         "heading_size": 34,
-        "padding_top": 80,
-        "padding_bottom": 80,
         "padding_top_mobile": 32,
         "padding_bottom_mobile": 32,
+        "padding_top": 80,
+        "padding_bottom": 80,
         "enable_animations": true
       }
     },
@@ -2081,11 +2089,11 @@
       "name": "GF Guarantee",
       "settings": {
         "layout_centered": true,
-        "badge_image": "shopify:\/\/shop_images\/Ontwerp_zonder_titel_79.png",
+        "badge_image": "shopify://shop_images/Ontwerp_zonder_titel_79.png",
         "badge_url": "",
         "badge_size": 72,
         "heading": "Garantie de remboursement de 90 jours",
-        "body": "<p>Nous utilisons GUMFORCE nous-mêmes. Si tu n'es pas satisfait de tes résultats dans 90 jours, contacte-nous et on remboursera ta commande.<\/p>",
+        "body": "<p>Nous utilisons GUMFORCE nous-mêmes. Si tu n'es pas satisfait de tes résultats dans 90 jours, contacte-nous et on remboursera ta commande.</p>",
         "cta_text": "J'EN PROFITE →",
         "cta_link": "",
         "cta_scroll_bundle": true,
@@ -2097,10 +2105,10 @@
         "cta_bg_color": "#1a1a1a",
         "cta_text_color": "#ffffff",
         "heading_size": 34,
-        "padding_top": 0,
-        "padding_bottom": 64,
         "padding_top_mobile": 48,
         "padding_bottom_mobile": 48,
+        "padding_top": 0,
+        "padding_bottom": 64,
         "enable_animations": true
       }
     }

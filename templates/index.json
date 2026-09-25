@@ -1,1 +1,866 @@
-{"sections":{"gumforce_hero_VXkr7T":{"type":"gumforce-hero","name":"GF Hero","settings":{"image_desktop":"shopify:\/\/shop_images\/Ontwerp_zonder_titel_91_1.jpg","desktop_format":"16\/9","image_mobile":"shopify:\/\/shop_images\/Ontwerp_zonder_titel_90_1.jpg","mobile_format":"screen100","image_alt":"Quatre hommes sur un banc, sachets de chewing-gums GUMFORCE en main, l'un met un chewing-gum en bouche","overlay_opacity":0,"scrim_intensity":60,"enable_parallax":false,"subheading":"3 CHEWING-GUMS PAR JOUR","heading":"Transforme ton visage","heading_tag":"h1","heading_size_desktop":52,"heading_size_mobile":24,"heading_weight":"600","heading_tracking":-2,"subheading_size_desktop":13,"subheading_size_mobile":11,"subheading_tracking":3,"cta_text":"SHOP","cta_link":"shopify:\/\/products\/gumforce","cta_scroll_to_bundle":false,"cta_style":"outline","cta_bg":"#ffffff","cta_text_color":"#ffffff","cta_radius":30,"text_color":"#ffffff","content_align":"flex-start","content_position":"center","content_align_mobile":"center","content_position_mobile":"bottom"}},"gumforce_fond_degrade_section_MUPgXF":{"type":"gumforce-fond-degrade-section","name":"GF Fond dégradé","settings":{"color_safe":"#121212","safe_end":12,"color_top":"#a6d4da","color_mid":"#f0faf7","color_bottom":"#e3e7ea","mid_position":55}},"gumforce_creatine_benefits_TcT3rz":{"type":"gumforce-creatine-benefits","blocks":{"benefit_XMCeiR":{"type":"benefit","settings":{"icon_type":"strength","keyword":"Force","description":"Plus de répétitions, des charges plus lourdes."}},"benefit_FPHDCf":{"type":"benefit","settings":{"icon_type":"power","keyword":"Puissance","description":"De l'explosivité quand ça compte."}},"benefit_gMk4VK":{"type":"benefit","settings":{"icon_type":"recovery","keyword":"Récupération","description":"Moins de courbatures entre les séances."}},"benefit_DDWtwL":{"type":"benefit","settings":{"icon_type":"mind","keyword":"Mental","description":"Plus de concentration et d'endurance mentale."}}},"block_order":["benefit_XMCeiR","benefit_FPHDCf","benefit_gMk4VK","benefit_DDWtwL"],"name":"Creatine Benefits","settings":{"heading":"POURQUOI ON AIME LA CRÉATINE","subheading":"","bg_color":"#ffffff","heading_color":"#1a1a1a","subheading_color":"#666666","keyword_color":"#000000","desc_color":"#999999","accent_color":"#2ab5b4","divider_color":"#1e1e1e","icon_size":34,"heading_size":34,"mobile_layout":"grid","padding_top":80,"padding_bottom":80,"padding_top_mobile":48,"padding_bottom_mobile":48,"enable_animations":true}},"gumforce_guarantee_FRjGTc":{"type":"gumforce-guarantee","blocks":{"detail_GAcTUP":{"type":"detail","settings":{"text":"Remboursement intégral sous 90 jours"}},"detail_aGxDbJ":{"type":"detail","settings":{"text":"Résultats garantis"}},"detail_inxnTX":{"type":"detail","settings":{"text":"Sans poser de questions"}}},"block_order":["detail_GAcTUP","detail_aGxDbJ","detail_inxnTX"],"name":"GF Guarantee","settings":{"layout_centered":true,"badge_image":"shopify:\/\/shop_images\/Ontwerp_zonder_titel_79.png","badge_url":"","badge_size":72,"heading":"Garantie de remboursement de 90 jours","body":"<p>Nous utilisons GUMFORCE nous-mêmes. Si tu n'es pas satisfait de tes résultats dans 90 jours, contacte-nous et on remboursera ta commande.<\/p>","cta_text":"J'EN PROFITE →","cta_link":"shopify:\/\/products\/gumforce","cta_scroll_bundle":false,"cta_radius":30,"bg_color":"#ffffff","heading_color":"#1a1a1a","body_color":"#999999","accent_color":"#2ab5b4","cta_bg_color":"#1a1a1a","cta_text_color":"#ffffff","heading_size":34,"padding_top_mobile":48,"padding_bottom_mobile":48,"padding_top":0,"padding_bottom":64,"enable_animations":true}},"gumforce_social_proof_8HtMRh":{"type":"gumforce-social-proof","blocks":{"benefit_y4gx4p":{"type":"benefit","settings":{"title":"10x Harder Than Regular Gum","description":"Real resistance. Real results."}},"benefit_xYzP37":{"type":"benefit","settings":{"title":"500mg Creatine Per Piece","description":"The world's most proven supplement."}},"benefit_FLtg6X":{"type":"benefit","settings":{"title":"First & Only Jawline Gum With Creatine","description":"No other gum does this."}},"benefit_HQYiPL":{"type":"benefit","settings":{"title":"Train Your Jaw. Anywhere. Anytime.","description":"Commute. Desk. Gym. Date night."}},"benefit_wQ9yxc":{"type":"benefit","settings":{"title":"Flavor That Doesn't Quit","description":"No bland gum. No flavor fade."}},"benefit_LAUFUz":{"type":"benefit","settings":{"title":"Looks Like Regular Gum","description":"No one knows you're training."}},"trust_badge_EpU6D4":{"type":"trust_badge","settings":{"icon":"shopify:\/\/shop_images\/Ontwerp_zonder_titel_63.png","text":"90-Day Money Back Guarantee"}}},"block_order":["benefit_y4gx4p","benefit_xYzP37","benefit_FLtg6X","benefit_HQYiPL","benefit_wQ9yxc","benefit_LAUFUz","trust_badge_EpU6D4"],"disabled":true,"name":"GUMFORCE Social Proof","settings":{"bg_color":"#121212","column_split":"60\/40","content_valign":"center","content_gap":16,"text_alignment":"center","headline_number":"350,000+","headline_number_tag":"h1","headline_number_size":60,"headline_number_color":"#00b5b4","show_badge":false,"headline_text":"<p>have already chosen GUMFORCE<\/p>","headline_text_tag":"h2","headline_text_size":28,"headline_text_color":"#f4f4f4","subtitle":"<p>The World's First Jawline Gum with Creatine Monohydrate<\/p>","subtitle_size":16,"subtitle_color":"#c0c0c0","benefit_title_tag":"h6","benefit_desc_tag":"p","benefit_title_size":15,"benefit_title_color":"#f4f4f4","benefit_desc_size":13,"benefit_desc_color":"#a0a0a0","benefit_icon_size":28,"benefits_gap":24,"cta_text":"SHOP NOW","cta_scroll_to_bundle":false,"cta_link":"shopify:\/\/products\/gumforce1","cta_bg_color":"#f4f4f4","cta_text_color":"#121212","cta_radius":30,"cta_style":"filled","cta_width":"auto","trust_text_color":"#a0a0a0","trust_icon_size":18,"trust_full_image_height":36,"accent_color":"#2ab5b4","hero_image":"shopify:\/\/shop_images\/Ontwerp_zonder_titel_69_2.jpg","hero_aspect":"1:1","hero_position":"center","hero_radius":12,"hero_overlay_color":"#000000","hero_overlay_opacity":0,"show_hero_mobile":true,"padding_top":56,"padding_bottom":56,"padding_top_mobile":36,"padding_bottom_mobile":36,"enable_animations":true}},"media_with_content_RVymQU":{"type":"media-with-content","blocks":{"media":{"type":"_media-without-appearance","static":true,"settings":{"media_type":"image","image":"shopify:\/\/shop_images\/hf_20260417_141216_4ffc13e2-663c-4ef7-9413-6f10872b866a_1.jpg","link":"","video_loop":true,"video_autoplay":false,"image_position":"cover","video_position":"cover"},"blocks":{}},"content":{"type":"_content-without-appearance","static":true,"settings":{"horizontal_alignment_flex_direction_column":"flex-start","vertical_alignment_flex_direction_column":"flex-end","gap":24},"blocks":{"text_H46yFc":{"type":"text","name":"t:names.heading","settings":{"text":"<p>Transform Your Jawline with Every Chew<\/p>","width":"fit-content","max_width":"normal","alignment":"left","type_preset":"h3","font":"var(--font-heading--family)","font_size":"2rem","line_height":"tight","letter_spacing":"tight","case":"none","wrap":"pretty","color":"var(--color-foreground-heading)","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":40},"blocks":{}},"text_V3cHwr":{"type":"text","name":"t:names.text","settings":{"text":"<p>Unleash your true potential<\/p>","width":"100%","max_width":"normal","alignment":"left","type_preset":"h5","font":"var(--font-body--family)","font_size":"1rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"var(--color-foreground)","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"button_G8VDwn":{"type":"button","name":"t:names.button","settings":{"label":"SHOP NOW","link":"shopify:\/\/products\/gumforce1","open_in_new_tab":false,"style_class":"button","width":"fit-content","custom_width":100,"width_mobile":"fit-content","custom_width_mobile":100},"blocks":{}}},"block_order":["text_H46yFc","text_V3cHwr","button_G8VDwn"]}},"disabled":true,"name":"t:names.editorial","settings":{"media_position":"right","media_width":"wide","media_height":"60svh","section_width":"full-width","extend_media":false,"color_scheme":"scheme-4","padding-block-start":0,"padding-block-end":48}},"product_list_themegen":{"type":"product-list","blocks":{"static-header":{"type":"_product-list-content","name":"t:names.header","disabled":true,"static":true,"settings":{"content_direction":"row","vertical_on_mobile":false,"horizontal_alignment":"center","vertical_alignment":"center","align_baseline":true,"horizontal_alignment_flex_direction_column":"flex-start","vertical_alignment_flex_direction_column":"center","gap":12,"width":"fill","custom_width":100,"width_mobile":"fill","custom_width_mobile":100,"height":"fit","custom_height":100,"inherit_color_scheme":true,"color_scheme":"","background_media":"none","video_position":"cover","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"product_list_text_Bd9pVh":{"type":"_product-list-text","name":"t:names.collection_title","settings":{"text":"<h3>Featured products<\/h3>","width":"fit-content","max_width":"normal","alignment":"left","type_preset":"rte","font":"var(--font-body--family)","font_size":"","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}}},"block_order":["product_list_text_Bd9pVh"]},"static-product-card":{"type":"_product-card","name":"t:names.product_card","static":true,"settings":{"product_card_gap":8,"inherit_color_scheme":true,"color_scheme":"","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"product_card_gallery_PhczVC":{"type":"_product-card-gallery","name":"t:names.product_card_media","settings":{"image_ratio":"square","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"group_McqFAT":{"type":"_product-card-group","name":"t:names.group","settings":{"content_direction":"column","vertical_on_mobile":true,"horizontal_alignment":"flex-start","vertical_alignment":"center","align_baseline":false,"horizontal_alignment_flex_direction_column":"flex-start","vertical_alignment_flex_direction_column":"center","gap":0,"width":"fill","custom_width":100,"width_mobile":"fill","custom_width_mobile":100,"height":"fit","custom_height":100,"inherit_color_scheme":true,"color_scheme":"","background_media":"none","video_position":"cover","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"toggle_overlay":false,"overlay_color":"#00000026","overlay_style":"solid","gradient_direction":"to top","link":"","open_in_new_tab":false,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"text_MEKzFi":{"type":"text","name":"t:names.text","settings":{"text":"<h5><strong>{{ closest.product.title }}<\/strong><\/h5>","width":"100%","max_width":"normal","alignment":"left","type_preset":"custom","font":"var(--font-heading--family)","font_size":"1.5rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"price_37riDf":{"type":"price","name":"t:names.product_price","settings":{"show_sale_price_first":true,"show_installments":false,"show_tax_info":false,"type_preset":"paragraph","width":"100%","alignment":"left","font":"var(--font-body--family)","font_size":"1rem","line_height":"normal","letter_spacing":"normal","case":"none","color":"var(--color-foreground)","padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"swatches_87VJC8":{"type":"swatches","name":"t:names.swatches","settings":{"product_swatches_alignment":"flex-start","product_swatches_alignment_mobile":"flex-start","hide_padding":false,"product_swatches_padding_top":4,"product_swatches_padding_bottom":0,"product_swatches_padding_left":0,"product_swatches_padding_right":0},"blocks":{}}},"block_order":["text_MEKzFi","price_37riDf","swatches_87VJC8"]}},"block_order":["product_card_gallery_PhczVC","group_McqFAT"]}},"disabled":true,"name":"t:names.products_grid","settings":{"collection":"vitamins-and-supplements-example-products","layout_type":"grid","carousel_on_mobile":false,"max_products":4,"columns":4,"mobile_columns":"1","mobile_card_size":"60cqw","columns_gap":40,"rows_gap":60,"icons_style":"arrow","icons_shape":"none","section_width":"page-width","horizontal_alignment":"flex-start","gap":28,"color_scheme":"scheme-4","padding-block-start":0,"padding-block-end":60}},"section_UpjyCL":{"type":"section","blocks":{"group_Q3JCUr":{"type":"group","settings":{"content_direction":"column","vertical_on_mobile":true,"horizontal_alignment":"flex-start","vertical_alignment":"center","align_baseline":false,"horizontal_alignment_flex_direction_column":"center","vertical_alignment_flex_direction_column":"space-between","gap":16,"width":"fill","custom_width":100,"width_mobile":"fill","custom_width_mobile":100,"height":"fill","custom_height":100,"inherit_color_scheme":false,"color_scheme":"scheme-2","background_media":"image","video_position":"cover","background_image":"shopify:\/\/shop_images\/vitamins-supplements-minimal-3.jpg","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"toggle_overlay":true,"overlay_color":"#00000094","overlay_style":"gradient","gradient_direction":"to bottom","link":"","open_in_new_tab":false,"placeholder":"","padding-block-start":40,"padding-block-end":40,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"text_B96CeQ":{"type":"text","settings":{"text":"<h2>Enhanced jawline definition<\/h2>","width":"100%","max_width":"normal","alignment":"center","type_preset":"h4","font":"var(--font-body--family)","font_size":"1rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"var(--color-foreground)","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"button_tBGzW4":{"type":"button","settings":{"label":"Shop now","link":"shopify:\/\/collections\/all","open_in_new_tab":false,"style_class":"button","width":"fit-content","custom_width":100,"width_mobile":"fit-content","custom_width_mobile":100},"blocks":{}}},"block_order":["text_B96CeQ","button_tBGzW4"]},"group_bJKmfz":{"type":"group","settings":{"content_direction":"column","vertical_on_mobile":true,"horizontal_alignment":"flex-start","vertical_alignment":"center","align_baseline":false,"horizontal_alignment_flex_direction_column":"center","vertical_alignment_flex_direction_column":"space-between","gap":16,"width":"fill","custom_width":100,"width_mobile":"fill","custom_width_mobile":100,"height":"fill","custom_height":100,"inherit_color_scheme":false,"color_scheme":"scheme-2","background_media":"image","video_position":"cover","background_image":"shopify:\/\/shop_images\/vitamins-supplements-minimal-2.jpg","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"toggle_overlay":true,"overlay_color":"#00000099","overlay_style":"gradient","gradient_direction":"to bottom","link":"","open_in_new_tab":false,"placeholder":"","padding-block-start":40,"padding-block-end":40,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"text_NHBb9V":{"type":"text","settings":{"text":"<h2>Vitality on the go<\/h2>","width":"100%","max_width":"normal","alignment":"center","type_preset":"h4","font":"var(--font-body--family)","font_size":"1rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"var(--color-foreground)","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"button_yRN4A4":{"type":"button","settings":{"label":"Shop now","link":"shopify:\/\/collections\/all","open_in_new_tab":false,"style_class":"button","width":"fit-content","custom_width":100,"width_mobile":"fit-content","custom_width_mobile":100},"blocks":{}}},"block_order":["text_NHBb9V","button_yRN4A4"]}},"block_order":["group_Q3JCUr","group_bJKmfz"],"disabled":true,"name":"t:names.split_showcase","settings":{"content_direction":"row","vertical_on_mobile":true,"horizontal_alignment":"flex-start","vertical_alignment":"center","align_baseline":false,"horizontal_alignment_flex_direction_column":"flex-start","vertical_alignment_flex_direction_column":"center","gap":0,"section_width":"full-width","section_height":"large","section_height_custom":50,"color_scheme":"","background_media":"none","video_position":"cover","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"toggle_overlay":false,"overlay_color":"#00000026","overlay_style":"solid","gradient_direction":"to top","padding-block-start":0,"padding-block-end":0}}},"order":["gumforce_hero_VXkr7T","gumforce_fond_degrade_section_MUPgXF","gumforce_creatine_benefits_TcT3rz","gumforce_guarantee_FRjGTc","gumforce_social_proof_8HtMRh","media_with_content_RVymQU","product_list_themegen","section_UpjyCL"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "gumforce_hero_VXkr7T": {
+      "type": "gumforce-hero",
+      "name": "GF Hero",
+      "settings": {
+        "image_desktop": "shopify://shop_images/Ontwerp_zonder_titel_91_1.jpg",
+        "desktop_format": "16/9",
+        "image_mobile": "shopify://shop_images/Ontwerp_zonder_titel_90_1.jpg",
+        "mobile_format": "screen100",
+        "image_alt": "Quatre hommes sur un banc, sachets de chewing-gums GUMFORCE en main, l'un met un chewing-gum en bouche",
+        "overlay_opacity": 0,
+        "scrim_intensity": 60,
+        "enable_parallax": false,
+        "subheading": "3 CHEWING-GUMS PAR JOUR",
+        "heading": "Transforme ton visage",
+        "heading_tag": "h1",
+        "heading_size_desktop": 52,
+        "heading_size_mobile": 24,
+        "heading_weight": "600",
+        "heading_tracking": -2,
+        "subheading_size_desktop": 13,
+        "subheading_size_mobile": 11,
+        "subheading_tracking": 3,
+        "cta_text": "SHOP",
+        "cta_link": "shopify://products/gumforce",
+        "cta_scroll_to_bundle": false,
+        "cta_style": "outline",
+        "cta_bg": "#ffffff",
+        "cta_text_color": "#ffffff",
+        "cta_radius": 30,
+        "text_color": "#ffffff",
+        "content_align": "flex-start",
+        "content_position": "center",
+        "content_align_mobile": "center",
+        "content_position_mobile": "bottom"
+      }
+    },
+    "gumforce_fond_degrade_section_MUPgXF": {
+      "type": "gumforce-fond-degrade-section",
+      "name": "GF Fond dégradé",
+      "settings": {
+        "color_safe": "#121212",
+        "safe_end": 12,
+        "color_top": "#a6d4da",
+        "color_mid": "#f0faf7",
+        "color_bottom": "#e3e7ea",
+        "mid_position": 55
+      }
+    },
+    "gumforce_creatine_benefits_TcT3rz": {
+      "type": "gumforce-creatine-benefits",
+      "blocks": {
+        "benefit_XMCeiR": {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "strength",
+            "keyword": "Force",
+            "description": "Plus de répétitions, des charges plus lourdes."
+          }
+        },
+        "benefit_FPHDCf": {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "power",
+            "keyword": "Puissance",
+            "description": "De l'explosivité quand ça compte."
+          }
+        },
+        "benefit_gMk4VK": {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "recovery",
+            "keyword": "Récupération",
+            "description": "Moins de courbatures entre les séances."
+          }
+        },
+        "benefit_DDWtwL": {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "mind",
+            "keyword": "Mental",
+            "description": "Plus de concentration et d'endurance mentale."
+          }
+        }
+      },
+      "block_order": [
+        "benefit_XMCeiR",
+        "benefit_FPHDCf",
+        "benefit_gMk4VK",
+        "benefit_DDWtwL"
+      ],
+      "name": "Creatine Benefits",
+      "settings": {
+        "heading": "POURQUOI ON AIME LA CRÉATINE",
+        "subheading": "",
+        "bg_color": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "subheading_color": "#666666",
+        "keyword_color": "#000000",
+        "desc_color": "#999999",
+        "accent_color": "#2ab5b4",
+        "divider_color": "#1e1e1e",
+        "icon_size": 34,
+        "heading_size": 34,
+        "mobile_layout": "grid",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48,
+        "enable_animations": true
+      }
+    },
+    "gumforce_guarantee_FRjGTc": {
+      "type": "gumforce-guarantee",
+      "blocks": {
+        "detail_GAcTUP": {
+          "type": "detail",
+          "settings": {
+            "text": "Remboursement intégral sous 90 jours"
+          }
+        },
+        "detail_aGxDbJ": {
+          "type": "detail",
+          "settings": {
+            "text": "Résultats garantis"
+          }
+        },
+        "detail_inxnTX": {
+          "type": "detail",
+          "settings": {
+            "text": "Sans poser de questions"
+          }
+        }
+      },
+      "block_order": [
+        "detail_GAcTUP",
+        "detail_aGxDbJ",
+        "detail_inxnTX"
+      ],
+      "name": "GF Guarantee",
+      "settings": {
+        "layout_centered": true,
+        "badge_image": "shopify://shop_images/Ontwerp_zonder_titel_79.png",
+        "badge_url": "",
+        "badge_size": 72,
+        "heading": "Garantie de remboursement de 90 jours",
+        "body": "<p>Nous utilisons GUMFORCE nous-mêmes. Si tu n'es pas satisfait de tes résultats dans 90 jours, contacte-nous et on remboursera ta commande.</p>",
+        "cta_text": "J'EN PROFITE →",
+        "cta_link": "shopify://products/gumforce",
+        "cta_scroll_bundle": false,
+        "cta_radius": 30,
+        "bg_color": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "body_color": "#999999",
+        "accent_color": "#2ab5b4",
+        "cta_bg_color": "#1a1a1a",
+        "cta_text_color": "#ffffff",
+        "heading_size": 34,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48,
+        "padding_top": 0,
+        "padding_bottom": 64,
+        "enable_animations": true
+      }
+    },
+    "gumforce_social_proof_8HtMRh": {
+      "type": "gumforce-social-proof",
+      "blocks": {
+        "benefit_y4gx4p": {
+          "type": "benefit",
+          "settings": {
+            "title": "10x Harder Than Regular Gum",
+            "description": "Real resistance. Real results."
+          }
+        },
+        "benefit_xYzP37": {
+          "type": "benefit",
+          "settings": {
+            "title": "500mg Creatine Per Piece",
+            "description": "The world's most proven supplement."
+          }
+        },
+        "benefit_FLtg6X": {
+          "type": "benefit",
+          "settings": {
+            "title": "First & Only Jawline Gum With Creatine",
+            "description": "No other gum does this."
+          }
+        },
+        "benefit_HQYiPL": {
+          "type": "benefit",
+          "settings": {
+            "title": "Train Your Jaw. Anywhere. Anytime.",
+            "description": "Commute. Desk. Gym. Date night."
+          }
+        },
+        "benefit_wQ9yxc": {
+          "type": "benefit",
+          "settings": {
+            "title": "Flavor That Doesn't Quit",
+            "description": "No bland gum. No flavor fade."
+          }
+        },
+        "benefit_LAUFUz": {
+          "type": "benefit",
+          "settings": {
+            "title": "Looks Like Regular Gum",
+            "description": "No one knows you're training."
+          }
+        },
+        "trust_badge_EpU6D4": {
+          "type": "trust_badge",
+          "settings": {
+            "icon": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
+            "text": "90-Day Money Back Guarantee"
+          }
+        }
+      },
+      "block_order": [
+        "benefit_y4gx4p",
+        "benefit_xYzP37",
+        "benefit_FLtg6X",
+        "benefit_HQYiPL",
+        "benefit_wQ9yxc",
+        "benefit_LAUFUz",
+        "trust_badge_EpU6D4"
+      ],
+      "disabled": true,
+      "name": "GUMFORCE Social Proof",
+      "settings": {
+        "bg_color": "#121212",
+        "column_split": "60/40",
+        "content_valign": "center",
+        "content_gap": 16,
+        "text_alignment": "center",
+        "headline_number": "350,000+",
+        "headline_number_tag": "h1",
+        "headline_number_size": 60,
+        "headline_number_color": "#00b5b4",
+        "show_badge": false,
+        "headline_text": "<p>have already chosen GUMFORCE</p>",
+        "headline_text_tag": "h2",
+        "headline_text_size": 28,
+        "headline_text_color": "#f4f4f4",
+        "subtitle": "<p>The World's First Jawline Gum with Creatine Monohydrate</p>",
+        "subtitle_size": 16,
+        "subtitle_color": "#c0c0c0",
+        "benefit_title_tag": "h6",
+        "benefit_desc_tag": "p",
+        "benefit_title_size": 15,
+        "benefit_title_color": "#f4f4f4",
+        "benefit_desc_size": 13,
+        "benefit_desc_color": "#a0a0a0",
+        "benefit_icon_size": 28,
+        "benefits_gap": 24,
+        "cta_text": "SHOP NOW",
+        "cta_scroll_to_bundle": false,
+        "cta_link": "shopify://products/gumforce1",
+        "cta_bg_color": "#f4f4f4",
+        "cta_text_color": "#121212",
+        "cta_radius": 30,
+        "cta_style": "filled",
+        "cta_width": "auto",
+        "trust_text_color": "#a0a0a0",
+        "trust_icon_size": 18,
+        "trust_full_image_height": 36,
+        "accent_color": "#2ab5b4",
+        "hero_image": "shopify://shop_images/Ontwerp_zonder_titel_69_2.jpg",
+        "hero_aspect": "1:1",
+        "hero_position": "center",
+        "hero_radius": 12,
+        "hero_overlay_color": "#000000",
+        "hero_overlay_opacity": 0,
+        "show_hero_mobile": true,
+        "padding_top": 56,
+        "padding_bottom": 56,
+        "padding_top_mobile": 36,
+        "padding_bottom_mobile": 36,
+        "enable_animations": true
+      }
+    },
+    "media_with_content_RVymQU": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/hf_20260417_141216_4ffc13e2-663c-4ef7-9413-6f10872b866a_1.jpg",
+            "link": "",
+            "video_loop": true,
+            "video_autoplay": false,
+            "image_position": "cover",
+            "video_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "flex-end",
+            "gap": 24
+          },
+          "blocks": {
+            "text_H46yFc": {
+              "type": "text",
+              "name": "t:names.heading",
+              "settings": {
+                "text": "<p>Transform Your Jawline with Every Chew</p>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h3",
+                "font": "var(--font-heading--family)",
+                "font_size": "2rem",
+                "line_height": "tight",
+                "letter_spacing": "tight",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground-heading)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 40
+              },
+              "blocks": {}
+            },
+            "text_V3cHwr": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "<p>Unleash your true potential</p>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h5",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "button_G8VDwn": {
+              "type": "button",
+              "name": "t:names.button",
+              "settings": {
+                "label": "SHOP NOW",
+                "link": "shopify://products/gumforce1",
+                "open_in_new_tab": false,
+                "style_class": "button",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_H46yFc",
+            "text_V3cHwr",
+            "button_G8VDwn"
+          ]
+        }
+      },
+      "disabled": true,
+      "name": "t:names.editorial",
+      "settings": {
+        "media_position": "right",
+        "media_width": "wide",
+        "media_height": "60svh",
+        "section_width": "full-width",
+        "extend_media": false,
+        "color_scheme": "scheme-4",
+        "padding-block-start": 0,
+        "padding-block-end": 48
+      }
+    },
+    "product_list_themegen": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content",
+          "name": "t:names.header",
+          "disabled": true,
+          "static": true,
+          "settings": {
+            "content_direction": "row",
+            "vertical_on_mobile": false,
+            "horizontal_alignment": "center",
+            "vertical_alignment": "center",
+            "align_baseline": true,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_list_text_Bd9pVh": {
+              "type": "_product-list-text",
+              "name": "t:names.collection_title",
+              "settings": {
+                "text": "<h3>Featured products</h3>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "product_list_text_Bd9pVh"
+          ]
+        },
+        "static-product-card": {
+          "type": "_product-card",
+          "name": "t:names.product_card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 8,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_card_gallery_PhczVC": {
+              "type": "_product-card-gallery",
+              "name": "t:names.product_card_media",
+              "settings": {
+                "image_ratio": "square",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "group_McqFAT": {
+              "type": "_product-card-group",
+              "name": "t:names.group",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 0,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "inherit_color_scheme": true,
+                "color_scheme": "",
+                "background_media": "none",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "text_MEKzFi": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<h5><strong>{{ closest.product.title }}</strong></h5>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "custom",
+                    "font": "var(--font-heading--family)",
+                    "font_size": "1.5rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "price_37riDf": {
+                  "type": "price",
+                  "name": "t:names.product_price",
+                  "settings": {
+                    "show_sale_price_first": true,
+                    "show_installments": false,
+                    "show_tax_info": false,
+                    "type_preset": "paragraph",
+                    "width": "100%",
+                    "alignment": "left",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "color": "var(--color-foreground)",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "swatches_87VJC8": {
+                  "type": "swatches",
+                  "name": "t:names.swatches",
+                  "settings": {
+                    "product_swatches_alignment": "flex-start",
+                    "product_swatches_alignment_mobile": "flex-start",
+                    "hide_padding": false,
+                    "product_swatches_padding_top": 4,
+                    "product_swatches_padding_bottom": 0,
+                    "product_swatches_padding_left": 0,
+                    "product_swatches_padding_right": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_MEKzFi",
+                "price_37riDf",
+                "swatches_87VJC8"
+              ]
+            }
+          },
+          "block_order": [
+            "product_card_gallery_PhczVC",
+            "group_McqFAT"
+          ]
+        }
+      },
+      "disabled": true,
+      "name": "t:names.products_grid",
+      "settings": {
+        "collection": "vitamins-and-supplements-example-products",
+        "layout_type": "grid",
+        "carousel_on_mobile": false,
+        "max_products": 4,
+        "columns": 4,
+        "mobile_columns": "1",
+        "mobile_card_size": "60cqw",
+        "columns_gap": 40,
+        "rows_gap": 60,
+        "icons_style": "arrow",
+        "icons_shape": "none",
+        "section_width": "page-width",
+        "horizontal_alignment": "flex-start",
+        "gap": 28,
+        "color_scheme": "scheme-4",
+        "padding-block-start": 0,
+        "padding-block-end": 60
+      }
+    },
+    "section_UpjyCL": {
+      "type": "section",
+      "blocks": {
+        "group_Q3JCUr": {
+          "type": "group",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "space-between",
+            "gap": 16,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fill",
+            "custom_height": 100,
+            "inherit_color_scheme": false,
+            "color_scheme": "scheme-2",
+            "background_media": "image",
+            "video_position": "cover",
+            "background_image": "shopify://shop_images/vitamins-supplements-minimal-3.jpg",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "toggle_overlay": true,
+            "overlay_color": "#00000094",
+            "overlay_style": "gradient",
+            "gradient_direction": "to bottom",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 40,
+            "padding-block-end": 40,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "text_B96CeQ": {
+              "type": "text",
+              "settings": {
+                "text": "<h2>Enhanced jawline definition</h2>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "center",
+                "type_preset": "h4",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "button_tBGzW4": {
+              "type": "button",
+              "settings": {
+                "label": "Shop now",
+                "link": "shopify://collections/all",
+                "open_in_new_tab": false,
+                "style_class": "button",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_B96CeQ",
+            "button_tBGzW4"
+          ]
+        },
+        "group_bJKmfz": {
+          "type": "group",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "space-between",
+            "gap": 16,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fill",
+            "custom_height": 100,
+            "inherit_color_scheme": false,
+            "color_scheme": "scheme-2",
+            "background_media": "image",
+            "video_position": "cover",
+            "background_image": "shopify://shop_images/vitamins-supplements-minimal-2.jpg",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "toggle_overlay": true,
+            "overlay_color": "#00000099",
+            "overlay_style": "gradient",
+            "gradient_direction": "to bottom",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 40,
+            "padding-block-end": 40,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "text_NHBb9V": {
+              "type": "text",
+              "settings": {
+                "text": "<h2>Vitality on the go</h2>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "center",
+                "type_preset": "h4",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "button_yRN4A4": {
+              "type": "button",
+              "settings": {
+                "label": "Shop now",
+                "link": "shopify://collections/all",
+                "open_in_new_tab": false,
+                "style_class": "button",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_NHBb9V",
+            "button_yRN4A4"
+          ]
+        }
+      },
+      "block_order": [
+        "group_Q3JCUr",
+        "group_bJKmfz"
+      ],
+      "disabled": true,
+      "name": "t:names.split_showcase",
+      "settings": {
+        "content_direction": "row",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 0,
+        "section_width": "full-width",
+        "section_height": "large",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": [
+    "gumforce_hero_VXkr7T",
+    "gumforce_fond_degrade_section_MUPgXF",
+    "gumforce_creatine_benefits_TcT3rz",
+    "gumforce_guarantee_FRjGTc",
+    "gumforce_social_proof_8HtMRh",
+    "media_with_content_RVymQU",
+    "product_list_themegen",
+    "section_UpjyCL"
+  ]
+}
