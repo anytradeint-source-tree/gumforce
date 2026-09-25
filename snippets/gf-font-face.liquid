@@ -1,0 +1,21 @@
+{% comment %}
+  GF — déclare UN fichier de police du thème sous un nom de famille isolé
+  ("GF Manrope", "GF Oswald"…). Les apps (Klaviyo, etc.) injectent leurs
+  propres @font-face nommés "Oswald"/"Manrope" : avec un nom distinct elles
+  ne peuvent plus détourner le rendu du thème (cause du titre du hero qui
+  changeait de graisse au chargement).
+
+  Usage : {% render 'gf-font-face', font: settings.type_heading_font %}
+  Ne rend rien si la police est absente (font_modify → nil) ou système.
+{% endcomment %}
+{%- if font -%}
+  {%- unless font.system? -%}
+@font-face {
+  font-family: "GF {{ font.family }}";
+  font-style: {{ font.style }};
+  font-weight: {{ font.weight }};
+  font-display: swap;
+  src: url("{{ font | font_url }}") format("woff2"), url("{{ font | font_url: 'woff' }}") format("woff");
+}
+  {%- endunless -%}
+{%- endif -%}

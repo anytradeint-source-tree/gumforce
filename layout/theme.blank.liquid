@@ -2,12 +2,8 @@
   ============================================================================
   GUMFORCE — LAYOUT SANS HEADER NI FOOTER (landings pub)
   ----------------------------------------------------------------------------
-  Copie minimale de layout/theme.liquid : même <head>
-<!-- Start of Shoplift scripts -->
-{% render 'shoplift' %}
-<!-- End of Shoplift scripts -->
- (styles, polices,
-  scripts, Shoplift, pixels via content_for_header) mais AUCUN header,
+  Copie minimale de layout/theme.liquid : même <head> (styles, polices,
+  scripts, pixels via content_for_header) mais AUCUN header,
   footer, barre d'annonce ni modales. Les préchargements de polices 700
   (normalement portés par la barre d'annonce) sont inclus ici.
   À uploader dans le dossier « layout » sous le nom theme.blank.liquid.
@@ -21,7 +17,6 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
-    {% render 'shoplift' %}
     <meta name="theme-color" content="#ffffff">
 
     {%- if settings.favicon != blank -%}
@@ -41,8 +36,8 @@
 
     {%- comment -%} polices 700 (portées ailleurs par la barre d'annonce, absente ici) {%- endcomment -%}
     {%- liquid
-      assign gf_body7 = settings.type_body_font | font_modify: 'weight', 700
-      assign gf_head7 = settings.type_heading_font | font_modify: 'weight', 700
+      assign gf_body7 = settings.type_body_font | font_modify: 'weight', 'bold'
+      assign gf_head7 = settings.type_heading_font | font_modify: 'weight', 'bold'
     -%}
     {%- if gf_body7 -%}<link rel="preload" as="font" type="font/woff2" href="{{ gf_body7 | font_url }}" crossorigin>{%- endif -%}
     {%- if gf_head7 -%}<link rel="preload" as="font" type="font/woff2" href="{{ gf_head7 | font_url }}" crossorigin>{%- endif -%}

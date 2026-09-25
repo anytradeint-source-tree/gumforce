@@ -24,7 +24,7 @@
   assign heading_tag      = s.heading_tag | default: 'h1'
   assign heading_size_d   = s.heading_size_desktop | default: 52
   assign heading_size_m   = s.heading_size_mobile | default: 32
-  assign heading_weight   = s.heading_weight | default: 500
+  assign heading_weight   = s.heading_weight | default: 600
   assign heading_tracking = s.heading_tracking | default: -1
 
   assign subheading       = s.subheading
@@ -121,8 +121,6 @@
     object-position: center;
     display: block;
   }
-
-  .gfh-img--mobile { display: none; }
 
   /* ── Format desktop (réglage « Format de l'image (desktop) ») ── */
   #gfh-{{ sid }} .gfh-media {
@@ -346,9 +344,6 @@
       {%- endcase %}
     }
 
-    .gfh-img--desktop { display: none; }
-    .gfh-img--mobile  { display: block; }
-
     .gfh-heading  { font-size: var(--gfh-heading-m); }
     .gfh-subheading { font-size: var(--gfh-sub-m); }
 
@@ -415,43 +410,43 @@
 <div id="gfh-{{ sid }}">
   <div class="gfh-media{% if enable_parallax %} has-parallax{% endif %}">
 
-    {%- if image_desktop -%}
-      <img
-        class="gfh-img gfh-img--desktop"
-        src="{{ image_desktop | image_url: width: 3200 }}"
-        srcset="
-          {{ image_desktop | image_url: width: 1400 }} 1400w,
-          {{ image_desktop | image_url: width: 2000 }} 2000w,
-          {{ image_desktop | image_url: width: 2800 }} 2800w,
-          {{ image_desktop | image_url: width: 3200 }} 3200w"
-        sizes="100vw"
-        alt="{{ s.image_alt | default: heading | escape }}"
-        width="{{ image_desktop.width }}"
-        height="{{ image_desktop.height }}"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async">
+    {%- comment -%}
+      Une seule image téléchargée : <picture> laisse le navigateur choisir la source
+      mobile OU desktop (avant : les deux <img> étaient eager + fetchpriority=high,
+      la cachée était téléchargée quand même). Srcset plafonné à 2400 px.
+    {%- endcomment -%}
+    {%- if image_desktop or image_mobile -%}
+      {%- assign img_main = image_desktop | default: image_mobile -%}
+      <picture>
+        {%- if image_mobile and image_desktop -%}
+          <source
+            media="(max-width: 749px)"
+            srcset="
+              {{ image_mobile | image_url: width: 750 }} 750w,
+              {{ image_mobile | image_url: width: 900 }} 900w,
+              {{ image_mobile | image_url: width: 1200 }} 1200w"
+            sizes="100vw"
+            width="{{ image_mobile.width }}"
+            height="{{ image_mobile.height }}">
+        {%- endif -%}
+        <img
+          class="gfh-img"
+          src="{{ img_main | image_url: width: 2000 }}"
+          srcset="
+            {{ img_main | image_url: width: 1000 }} 1000w,
+            {{ img_main | image_url: width: 1400 }} 1400w,
+            {{ img_main | image_url: width: 2000 }} 2000w,
+            {{ img_main | image_url: width: 2400 }} 2400w"
+          sizes="100vw"
+          alt="{{ s.image_alt | default: heading | escape }}"
+          width="{{ img_main.width }}"
+          height="{{ img_main.height }}"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async">
+      </picture>
     {%- else -%}
-      <div class="gfh-img gfh-img--desktop" style="background: #1a1a1a;"></div>
-    {%- endif -%}
-
-    {%- if image_mobile -%}
-      <img
-        class="gfh-img gfh-img--mobile"
-        src="{{ image_mobile | image_url: width: 900 }}"
-        srcset="
-          {{ image_mobile | image_url: width: 750 }} 750w,
-          {{ image_mobile | image_url: width: 900 }} 900w,
-          {{ image_mobile | image_url: width: 1200 }} 1200w"
-        sizes="100vw"
-        alt="{{ s.image_alt | default: heading | escape }}"
-        width="{{ image_mobile.width }}"
-        height="{{ image_mobile.height }}"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async">
-    {%- else -%}
-      {%- comment -%}Fall back to desktop on mobile if no mobile image{%- endcomment -%}
+      <div class="gfh-img" style="background: #1a1a1a;"></div>
     {%- endif -%}
 
     <div class="gfh-overlay" aria-hidden="true"></div>
@@ -509,7 +504,7 @@
        correspondance que le moteur (ex. titre réglé 500 → face Oswald 600).
        document.fonts.ready ne suffit pas (résout parfois avant la découverte
        des faces) et un timeout court re-crée le swap sur chargement à froid. */
-    var fontTimeout = setTimeout(function () { fontsOk = true; tryReveal(); }, 3000);
+    var fontTimeout = setTimeout(function () { fontsOk = true; tryReveal(); }, 1500);
     function fontsSettled() { fontsOk = true; clearTimeout(fontTimeout); tryReveal(); }
     try {
       if (document.fonts && document.fonts.load) {
@@ -741,7 +736,7 @@
         { "value": "600", "label": "Semibold" },
         { "value": "700", "label": "Bold" }
       ],
-      "default": "500"
+      "default": "600"
     },
     {
       "type": "range",
@@ -912,7 +907,7 @@
         "scrim_intensity": 55,
         "heading_size_desktop": 52,
         "heading_size_mobile": 32,
-        "heading_weight": "500"
+        "heading_weight": "600"
       }
     }
   ]

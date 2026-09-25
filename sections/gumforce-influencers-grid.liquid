@@ -289,20 +289,8 @@
       }, { rootMargin: '2500px 0px' });
       imgs.forEach(function (im) { pre.observe(im); });
     }
-    /* 2) filet décisif : une fois la page chargée et le réseau libre, on récupère
-       TOUTES les images de la section même si elles sont loin (≈50 Ko chacune).
-       → quand l'utilisateur arrive dessus, elles sont déjà là. */
-    function fetchAll() {
-      /* plafond de sécurité : au-delà de 12 cartes, les suivantes restent
-         gérées par l'observateur d'approche (évite de tirer 2 Mo pour rien) */
-      for (var i = 0; i < imgs.length && i < 12; i++) fetchNow(imgs[i]);
-    }
-    function schedule() {
-      if (window.requestIdleCallback) window.requestIdleCallback(fetchAll, { timeout: 2500 });
-      else setTimeout(fetchAll, 1200);
-    }
-    if (document.readyState === 'complete') schedule();
-    else window.addEventListener('load', schedule);
+    /* 2) (supprimé) : le téléchargement forcé de 12 images après le load coûtait
+       ~600 Ko de données mobiles même sans scroll ; l'observateur à 2500 px suffit. */
   })();
 
   var moreBtn = root.querySelector('[data-gfg-more]');

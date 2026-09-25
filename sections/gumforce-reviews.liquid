@@ -676,6 +676,8 @@
             {{ r_image | image_url: width: 600 | image_tag:
                 class: 'gfrev-img',
                 loading: 'lazy',
+                widths: '300, 450, 600',
+                sizes: '(max-width: 749px) 50vw, (max-width: 999px) 33vw, 25vw',
                 alt: r_alt }}
           </div>
           {%- endif -%}
@@ -791,8 +793,6 @@
       }, { rootMargin: '2000px 0px' });
       io.observe(root);
     } else { warmAll(); }
-    function later() { if (window.requestIdleCallback) window.requestIdleCallback(warmAll, { timeout: 4000 }); else setTimeout(warmAll, 2500); }
-    if (document.readyState === 'complete') later(); else window.addEventListener('load', later);
   })();
 
   /* ── Handle #reviews hash on page load (from menu links on other pages) ── */
@@ -859,13 +859,16 @@
     for (var i = 0; i < n; i++) colH.push(0);
 
     var cards = grid.querySelectorAll('.gfrev-card');
-    cards.forEach(function(card){
-      card.style.width = cW + 'px';
+    /* 1) écritures (largeur) → 2) UNE lecture des hauteurs → 3) écritures (positions)
+       = un seul reflow au lieu d'un par carte (layout thrash) */
+    cards.forEach(function(card){ card.style.width = cW + 'px'; });
+    var heights = Array.prototype.map.call(cards, function(card){ return card.offsetHeight; });
+    cards.forEach(function(card, idx){
       var mi = 0;
       for (var j = 1; j < n; j++){ if (colH[j] < colH[mi]) mi = j; }
       card.style.left = (mi * (cW + g.col)) + 'px';
       card.style.top  = colH[mi] + 'px';
-      colH[mi] += card.offsetHeight + g.card;
+      colH[mi] += heights[idx] + g.card;
     });
     var max = Math.max.apply(null, colH);
     grid.style.height = Math.max(0, max - g.card) + 'px';
@@ -917,11 +920,14 @@
         card.style.width = cW + 'px';
         grid.appendChild(card);
         card.querySelectorAll('img[loading="lazy"]').forEach(function(im){ im.loading = 'eager'; });
+      });
+      var batchH = batch.map(function(card){ return card.offsetHeight; });
+      batch.forEach(function(card, idx){
         var mi = 0;
         for (var j = 1; j < n; j++){ if (colH[j] < colH[mi]) mi = j; }
         card.style.left = (mi * (cW + g.col)) + 'px';
         card.style.top  = colH[mi] + 'px';
-        colH[mi] += card.offsetHeight + g.card;
+        colH[mi] += batchH[idx] + g.card;
       });
 
       var newH = Math.max(0, Math.max.apply(null, colH) - g.card);

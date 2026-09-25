@@ -39,4 +39,29 @@
     fetchpriority="low"
   >
 {%- endunless -%}
+{%- comment -%} GF : les graisses 700 sont utilisées partout (titres, prix, CTA) → préchargées ici, une seule fois {%- endcomment -%}
+{%- liquid
+  assign gf_body_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+  assign gf_heading_bold = settings.type_heading_font | font_modify: 'weight', 'bold'
+-%}
+{%- if gf_body_bold -%}{%- unless settings.type_body_font.system? -%}
+  <link
+    rel="preload"
+    as="font"
+    href="{{ gf_body_bold | font_url }}"
+    type="font/woff2"
+    crossorigin
+    fetchpriority="low"
+  >
+{%- endunless -%}{%- endif -%}
+{%- if gf_heading_bold -%}{%- unless settings.type_heading_font.system? -%}
+  <link
+    rel="preload"
+    as="font"
+    href="{{ gf_heading_bold | font_url }}"
+    type="font/woff2"
+    crossorigin
+    fetchpriority="low"
+  >
+{%- endunless -%}{%- endif -%}
 {% # theme-check-enable %}

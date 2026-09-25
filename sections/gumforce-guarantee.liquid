@@ -347,8 +347,6 @@
       }, { rootMargin: '2000px 0px' });
       io.observe(root);
     } else { warmAll(); }
-    function later() { if (window.requestIdleCallback) window.requestIdleCallback(warmAll, { timeout: 4000 }); else setTimeout(warmAll, 2500); }
-    if (document.readyState === 'complete') later(); else window.addEventListener('load', later);
   })();
 })();
 </script>

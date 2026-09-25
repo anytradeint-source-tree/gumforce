@@ -28,36 +28,9 @@
   endif
 -%}
 {%- comment -%}
-  PERF (police qui "saute" après ~5s) : le thème ne précharge que les graisses
-  400/600. Presque tous les textes GF sont en 600-800 → ils résolvent vers les
-  fichiers _n7, découverts tard. On les précharge ici (section du groupe header
-  = toutes les pages, tout en haut du body). URLs via les objets police du
-  thème — jamais en dur. Rendu même si la barre est masquée sur la page.
+  Préchargement des polices : snippets/fonts.liquid (une seule fois, dans le head).
+  JSON-LD WebSite : snippets/meta-tags.liquid.
 {%- endcomment -%}
-{%- liquid
-  assign gf_body7 = settings.type_body_font | font_modify: 'weight', 700
-  assign gf_head7 = settings.type_heading_font | font_modify: 'weight', 700
--%}
-{%- if gf_body7 -%}<link rel="preload" as="font" type="font/woff2" href="{{ gf_body7 | font_url }}" crossorigin>{%- endif -%}
-{%- if gf_head7 -%}<link rel="preload" as="font" type="font/woff2" href="{{ gf_head7 | font_url }}" crossorigin>{%- endif -%}
-{%- comment -%}
-  SEO — « nom de site » Google : les données structurées WebSite sont la source
-  officielle du nom affiché dans les résultats. Sans elles, Google mobile
-  retombe sur le nom de domaine → « gumforce » en minuscules. Lues sur la home
-  (JSON-LD valide aussi dans le body). Nom 100% depuis Shopify, rien en dur.
-{%- endcomment -%}
-{%- if request.page_type == 'index' -%}
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": {{ shop.name | json }},
-      "alternateName": [{{ shop.name | downcase | json }}, {{ request.host | remove: 'www.' | json }}],
-      "url": {{ request.origin | append: '/' | json }}
-    }
-  </script>
-{%- endif -%}
-
 {%- if show_bar and msg_list.size > 0 -%}
 <style>
   {%- if s.sticky_bar -%}#shopify-section-{{ section.id }} { position: sticky; top: {{ s.header_offset | default: 82 }}px; z-index: 7; }{%- endif -%}
@@ -109,14 +82,14 @@
     #gfab-{{ uid }} .gfab-track { animation: none; transform: translateX(0); }
   }
 </style>
-<div id="gfab-{{ uid }}" role="marquee" aria-label="Annonces">
+<div id="gfab-{{ uid }}" role="region" aria-label="Annonces">
   <div class="gfab-track">
     {%- for pass in (1..6) -%}
       {%- for m in msg_list -%}
         <span class="gfab-item">
           <span class="gfab-msg">{{ m }}</span>
           {%- if s.icon_image != blank -%}
-            <img class="gfab-ic" src="{{ s.icon_image | image_url: width: 96 }}" alt="" aria-hidden="true" width="{{ s.icon_size | default: 18 }}" height="{{ s.icon_size | default: 18 }}" loading="lazy">
+            <img class="gfab-ic" src="{{ s.icon_image | image_url: width: 96 }}" alt="" aria-hidden="true" width="{{ s.icon_size | default: 18 }}" height="{{ s.icon_size | default: 18 }}">
           {%- else -%}
             <svg class="gfab-ic gfab-ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/></svg>
           {%- endif -%}

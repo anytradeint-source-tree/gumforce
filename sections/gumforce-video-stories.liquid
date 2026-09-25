@@ -527,7 +527,7 @@
           if (nx < N && nx !== cur) arm(nx, 'auto');
           var pvx = cur - 1;
           if (pvx < 0 && LOOP) pvx = N - 1;
-          if (pvx >= 0 && pvx !== cur && pvx !== nx) arm(pvx, 'auto');
+          if (pvx >= 0 && pvx !== cur && pvx !== nx) arm(pvx, 'metadata'); /* GF: la précédente n'est plus bufferisée en entier (données mobiles) */
         }
       }
     }

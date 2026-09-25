@@ -836,7 +836,15 @@
   }
   function setLabel(txt){ if (elLabel) elLabel.textContent = txt; if (elPrice) elPrice.textContent = ''; }
 
+  /* Anti double-ajout : le bouton reste verrouillé jusqu'à ce que le checkout
+     ait réellement pris le relais (un 2e tap pendant la redirection ajoutait un
+     2e pack). Retour depuis le checkout (bfcache) → pageshow remet tout à zéro. */
+  var busy = false;
+  function unlock(){ busy = false; btn.classList.remove('gfp-loading', 'gfp-success'); btn.removeAttribute('aria-busy'); }
+  window.addEventListener('pageshow', function(e){ if (e.persisted) { unlock(); applyTier(); } });
+
   btn.addEventListener('click', function(){
+    if (busy) return;
     var link = {{ s.cta_link | default: '' | json }};
     if (link && link.length > 0) { window.location.href = link; return; }
 
@@ -844,6 +852,8 @@
     var vid = cur ? parseInt(cur.getAttribute('data-gfp-vid'), 10) : 0;
     if (!vid) { showErr('Aucune variante disponible.'); return; }
 
+    busy = true;
+    btn.setAttribute('aria-busy', 'true');
     setLabel(txtAdding);
     btn.classList.add('gfp-loading');
     if (errEl) errEl.style.display = 'none';
@@ -855,7 +865,6 @@
     })
     .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
     .then(function(res){
-      btn.classList.remove('gfp-loading');
       if (!res.ok) { throw new Error(res.data.description || res.data.message || "Impossible d'ajouter au panier."); }
       setLabel(txtRedirecting);
       btn.classList.add('gfp-success');
@@ -870,14 +879,14 @@
         var drawer = document.querySelector('cart-drawer, cart-drawer-component, .cart-drawer');
         if (drawer && typeof drawer.open === 'function') {
           drawer.open();
-          setTimeout(function(){ btn.classList.remove('gfp-success'); applyTier(); }, 2000);
+          setTimeout(function(){ unlock(); applyTier(); }, 2000);
         } else {
           window.location.href = cartRoot + 'cart';
         }
       {%- endif -%}
     })
     .catch(function(err){
-      btn.classList.remove('gfp-loading', 'gfp-success');
+      unlock();
       applyTier();
       showErr(err.message || 'Une erreur est survenue.');
     });

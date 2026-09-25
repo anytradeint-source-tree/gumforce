@@ -134,3 +134,16 @@
     content="{{ page_description | escape }}"
   >
 {% endif %}
+
+{%- comment -%} GF : nom de site pour Google (déplacé ici depuis la barre d'annonce, rendu une seule fois) {%- endcomment -%}
+{%- if request.page_type == 'index' -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "alternateName": [{{ shop.name | downcase | json }}, {{ request.host | remove: 'www.' | json }}],
+      "url": {{ request.origin | append: '/' | json }}
+    }
+  </script>
+{%- endif -%}

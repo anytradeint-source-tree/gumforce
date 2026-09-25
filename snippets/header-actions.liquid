@@ -78,6 +78,9 @@
             assign font_obj = settings.type_accent_font
         endcase
         assign font_family = font_obj.family | append: ', ' | append: font_obj.fallback_families
+        unless font_obj.system?
+          assign font_family = 'GF ' | append: font_obj.family | prepend: '"' | append: '", ' | append: font_obj.fallback_families
+        endunless
         assign font_family_safe = font_family | replace: '"', "'"
         assign account_actions_style = '--header-actions-font-family: ' | append: font_family_safe | append: '; --header-actions-font-weight: ' | append: font_obj.weight | append: ';'
       endif
