@@ -1,0 +1,1435 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Trial Offer — v2 Minimal Pro
+  ----------------------------------------------------------------------------
+  App block for product page. Architecture aligned with
+  gumforce-bundle-cards / bundle-picker / offer-selector.
+
+  v2 changes:
+    • Hero layout: image + heading side-by-side (less scroll to CTA)
+    • Dynamic stock bar (/100, fluctuates between high/low over N hours)
+    • Selling plan auto-detect (Appstle subscription discount at checkout)
+    • Bigger text sizes throughout
+    • Urgency bar: solid color (no hardcoded gradient)
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign s  = block.settings
+  assign pr = s.product
+
+  if pr == blank
+    assign pr = product
+  endif
+
+  if pr == blank and request.visual_preview_mode
+    assign pr = collections.all.products.first
+  endif
+
+  assign gf_id = block.id | replace: '-', ''
+-%}
+
+{%- if pr == blank -%}
+
+  <style>
+    #gft-empty-{{ gf_id }} {
+      max-width: 440px;
+      margin: 24px auto;
+      padding: 32px 24px;
+      border: 2px dashed #e5e5e5;
+      border-radius: 14px;
+      text-align: center;
+      font-family: inherit;
+      color: #555;
+      background: #fafafa;
+    }
+    #gft-empty-{{ gf_id }} h3 { font-size: 16px; margin: 0 0 8px; color: #111; font-weight: 700; }
+    #gft-empty-{{ gf_id }} p  { margin: 0; font-size: 13px; line-height: 1.5; }
+  </style>
+  <div id="gft-empty-{{ gf_id }}" role="alert">
+    <h3>GF Trial Offer — setup required</h3>
+    <p>Sélectionnez un produit dans les réglages du bloc pour afficher l'offre d'essai.</p>
+  </div>
+
+{%- else -%}
+
+{%- liquid
+  if s.use_theme_font
+    assign gf_font = 'var(--font-body-family, var(--body-font-family, var(--font-stack-body, inherit)))'
+  else
+    assign gf_font = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  endif
+
+  assign accent = s.accent_color | default: '#2AB5B4'
+  assign ar = accent | color_extract: 'red'
+  assign ag = accent | color_extract: 'green'
+  assign ab = accent | color_extract: 'blue'
+
+  assign urg_bg = s.urgency_bg | default: '#111111'
+
+  assign bg       = s.bg_color       | default: '#ffffff'
+  assign txt      = s.text_color     | default: '#111111'
+  assign txt_head = s.heading_color  | default: '#111111'
+  assign txt_mute = s.text_muted     | default: '#777777'
+  assign card_bg  = s.card_bg        | default: '#ffffff'
+  assign cta_bg   = s.cta_bg         | default: '#111111'
+  assign cta_txt  = s.cta_text_color | default: '#ffffff'
+  assign t_bg     = s.timer_bg       | default: '#fafafa'
+  assign t_brd    = s.timer_border   | default: '#eeeeee'
+  assign t_blk    = s.timer_block_bg | default: '#f5f5f5'
+  assign t_txt    = s.timer_text_color | default: '#111111'
+
+  assign img_w  = s.image_width      | default: 110
+  assign img_h  = s.image_max_height | default: 140
+  assign h_size = s.heading_size     | default: 28
+  assign h_mob  = h_size | minus: 4
+
+  assign vid = pr.selected_or_first_available_variant.id | default: pr.variants.first.id
+
+  assign cta_adding      = s.cta_adding_text      | default: 'Ajout en cours…'
+  assign cta_redirecting = s.cta_redirecting_text  | default: 'Redirection…'
+  assign cta_success     = s.cta_success_text      | default: '✓ Ajouté !'
+
+  comment — selling plan: manual override → auto-detect from variant → auto-detect from product
+  endcomment
+  assign sp_id = s.selling_plan_id | plus: 0
+  if sp_id == 0
+    assign first_variant = pr.selected_or_first_available_variant | default: pr.variants.first
+    if first_variant.selling_plan_allocations.size > 0
+      assign sp_id = first_variant.selling_plan_allocations.first.selling_plan.id
+    elsif pr.selling_plan_groups.size > 0
+      assign spg = pr.selling_plan_groups.first
+      if spg.selling_plans.size > 0
+        assign sp_id = spg.selling_plans.first.id
+      endif
+    endif
+  endif
+
+  comment — stock bar
+  endcomment
+  assign stk_total = s.stock_total | default: 100
+  assign stk_high  = s.stock_high  | default: 42
+  assign stk_low   = s.stock_low   | default: 5
+  assign stk_cycle = s.stock_cycle_hours | default: 3
+-%}
+
+{%- unless s.use_theme_font -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+{%- endunless -%}
+
+<style>
+  /* ── Reset ── */
+  #gft-{{ gf_id }},
+  #gft-{{ gf_id }} *,
+  #gft-{{ gf_id }} *::before,
+  #gft-{{ gf_id }} *::after {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+
+  /* ── Root ── */
+  #gft-{{ gf_id }} {
+    --gft-font:      {{ gf_font }};
+    --gft-accent:    {{ accent }};
+    --gft-accent-r:  {{ ar }};
+    --gft-accent-g:  {{ ag }};
+    --gft-accent-b:  {{ ab }};
+    --gft-bg:        {{ bg }};
+    --gft-text:      {{ txt }};
+    --gft-text-head: {{ txt_head }};
+    --gft-text-mute: {{ txt_mute }};
+    --gft-card-bg:   {{ card_bg }};
+    --gft-cta-bg:    {{ cta_bg }};
+    --gft-cta-text:  {{ cta_txt }};
+    --gft-timer-bg:  {{ t_bg }};
+    --gft-timer-brd: {{ t_brd }};
+    --gft-timer-blk: {{ t_blk }};
+    --gft-timer-txt: {{ t_txt }};
+
+    font-family: var(--gft-font);
+    background: var(--gft-bg);
+    color: var(--gft-text);
+    display: flex;
+    justify-content: center;
+    padding: {{ s.padding_top | default: 40 }}px 16px {{ s.padding_bottom | default: 40 }}px;
+    width: 100%;
+  }
+  #gft-{{ gf_id }} .gft-w {
+    max-width: {{ s.max_width | default: 440 }}px;
+    width: 100%;
+  }
+
+  /* ── Urgency bar ── */
+  #gft-{{ gf_id }} .gft-urg {
+    background: {{ urg_bg }};
+    color: #fff;
+    text-align: center;
+    padding: 10px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-family: var(--gft-font);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  #gft-{{ gf_id }} .gft-dot {
+    width: 6px; height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: gftBlink{{ gf_id }} 1.4s ease-in-out infinite;
+  }
+  @keyframes gftBlink{{ gf_id }} { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+  /* ── Stock bar ── */
+  #gft-{{ gf_id }} .gft-stock {
+    margin-bottom: 24px;
+  }
+  #gft-{{ gf_id }} .gft-stock-info {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  #gft-{{ gf_id }} .gft-stock-left {
+    font-family: var(--gft-font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gft-text);
+  }
+  #gft-{{ gf_id }} .gft-stock-num {
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  #gft-{{ gf_id }} .gft-stock-total {
+    font-family: var(--gft-font);
+    font-size: 12px;
+    font-weight: 500;
+    color: #a1a1aa;
+  }
+  #gft-{{ gf_id }} .gft-stock-track {
+    width: 100%;
+    height: 3px;
+    background: #f0f0f0;
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  #gft-{{ gf_id }} .gft-stock-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: var(--gft-accent);
+    transition: width 0.8s ease;
+  }
+
+  /* ── Hero: image + heading side by side ── */
+  #gft-{{ gf_id }} .gft-hero {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  #gft-{{ gf_id }} .gft-hero-img { flex-shrink: 0; }
+  #gft-{{ gf_id }} .gft-hero-img img {
+    width: {{ img_w }}px;
+    height: auto;
+    max-height: {{ img_h }}px;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+  #gft-{{ gf_id }} .gft-hero-img-ph {
+    width: {{ img_w }}px;
+    height: {{ img_h }}px;
+    border-radius: 10px;
+    background: #fafafa;
+    border: 1.5px dashed #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: #bbb;
+    font-family: var(--gft-font);
+    font-size: 10px;
+    font-weight: 600;
+  }
+  #gft-{{ gf_id }} .gft-hero-img-ph svg { width: 22px; height: 22px; color: #ccc; display: block; }
+  #gft-{{ gf_id }} .gft-hero-text { flex: 1; min-width: 0; }
+
+  /* ── Eyebrow ── */
+  #gft-{{ gf_id }} .gft-eye {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(var(--gft-accent-r),var(--gft-accent-g),var(--gft-accent-b),0.06);
+    border: 1px solid rgba(var(--gft-accent-r),var(--gft-accent-g),var(--gft-accent-b),0.15);
+    color: var(--gft-accent);
+    font-family: var(--gft-font);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  #gft-{{ gf_id }} .gft-eye svg { width: 12px; height: 12px; flex-shrink: 0; display: block; }
+
+  /* ── Heading ── */
+  #gft-{{ gf_id }} .gft-hd h2 {
+    font-family: var(--gft-font);
+    font-size: {{ h_size }}px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    color: var(--gft-text-head);
+    text-transform: none;
+    text-decoration: none;
+  }
+  #gft-{{ gf_id }} .gft-hl { color: var(--gft-accent); }
+  #gft-{{ gf_id }} .gft-hd p {
+    font-family: var(--gft-font);
+    font-size: 15px;
+    color: var(--gft-text-mute);
+    line-height: 1.5;
+  }
+
+  /* ── Offer card ── */
+  #gft-{{ gf_id }} .gft-card {
+    background: linear-gradient(160deg, var(--gft-card-bg) 0%, #f9fafb 100%);
+    border: 1px solid #eaeaea;
+    border-radius: 16px;
+    padding: 28px 22px;
+    position: relative;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
+  }
+  #gft-{{ gf_id }} .gft-tag {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gft-accent);
+    color: #fff;
+    font-family: var(--gft-font);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 16px;
+    border-radius: 100px;
+    white-space: nowrap;
+    line-height: 1.4;
+  }
+
+  /* ── Steps ── */
+  #gft-{{ gf_id }} .gft-st {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  #gft-{{ gf_id }} .gft-sn {
+    width: 32px; height: 32px; min-width: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--gft-font);
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  #gft-{{ gf_id }} .gft-s1 .gft-sn { background: var(--gft-accent); color: #fff; }
+  #gft-{{ gf_id }} .gft-s2 .gft-sn { background: #f4f4f5; color: #a1a1aa; }
+
+  #gft-{{ gf_id }} .gft-sc { flex: 1; min-width: 0; }
+  #gft-{{ gf_id }} .gft-sl {
+    font-family: var(--gft-font);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #a1a1aa;
+    margin-bottom: 3px;
+    line-height: 1.2;
+  }
+  #gft-{{ gf_id }} .gft-s1 .gft-sl { color: var(--gft-accent); }
+  #gft-{{ gf_id }} .gft-stl {
+    font-family: var(--gft-font);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    color: var(--gft-text);
+    line-height: 1.3;
+  }
+  #gft-{{ gf_id }} .gft-sd {
+    font-family: var(--gft-font);
+    font-size: 13px;
+    color: #a1a1aa;
+    line-height: 1.4;
+  }
+  #gft-{{ gf_id }} .gft-sp { text-align: right; flex-shrink: 0; }
+  #gft-{{ gf_id }} .gft-pm {
+    font-family: var(--gft-font);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--gft-text);
+    line-height: 1.2;
+  }
+  #gft-{{ gf_id }} .gft-pm.gft-f { color: var(--gft-accent); }
+  #gft-{{ gf_id }} .gft-ps {
+    font-family: var(--gft-font);
+    font-size: 12px;
+    color: #a1a1aa;
+    line-height: 1.3;
+  }
+
+  /* ── Arrow ── */
+  #gft-{{ gf_id }} .gft-ar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 0 14px 16px;
+  }
+  #gft-{{ gf_id }} .gft-arl { display: flex; flex-direction: column; align-items: center; }
+  #gft-{{ gf_id }} .gft-ash {
+    width: 1.5px; height: 22px;
+    background: linear-gradient(to bottom, #d4d4d8, #e4e4e7);
+  }
+  #gft-{{ gf_id }} .gft-ahd {
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #d4d4d8;
+  }
+  #gft-{{ gf_id }} .gft-atx {
+    margin-left: 12px;
+    font-family: var(--gft-font);
+    font-size: 11px;
+    font-weight: 500;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  /* ── Perks ── */
+  #gft-{{ gf_id }} .gft-pks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  #gft-{{ gf_id }} .gft-pk {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--gft-font);
+    font-size: 14px;
+    color: #71717a;
+    line-height: 1.4;
+  }
+  #gft-{{ gf_id }} .gft-pk svg {
+    width: 16px; height: 16px; min-width: 16px;
+    color: var(--gft-accent);
+    flex-shrink: 0;
+    display: block;
+  }
+  #gft-{{ gf_id }} .gft-pk strong { color: var(--gft-text); font-weight: 600; }
+
+  /* ── Timer ── */
+  #gft-{{ gf_id }} .gft-tm {
+    background: var(--gft-timer-bg);
+    border: 1px solid var(--gft-timer-brd);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  #gft-{{ gf_id }} .gft-tl {
+    font-family: var(--gft-font);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gft-timer-txt);
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  #gft-{{ gf_id }} .gft-td {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  #gft-{{ gf_id }} .gft-tb {
+    background: var(--gft-timer-blk);
+    border-radius: 8px;
+    padding: 8px 14px;
+    min-width: 52px;
+    text-align: center;
+  }
+  #gft-{{ gf_id }} .gft-tn {
+    font-family: var(--gft-font);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--gft-timer-txt);
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+  #gft-{{ gf_id }} .gft-tu {
+    font-family: var(--gft-font);
+    font-size: 9px;
+    font-weight: 500;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+    line-height: 1;
+  }
+  #gft-{{ gf_id }} .gft-ts {
+    font-family: var(--gft-font);
+    font-size: 22px;
+    font-weight: 700;
+    color: #d4d4d8;
+    padding-top: 8px;
+    line-height: 1;
+  }
+
+  /* ── CTA ── */
+  #gft-{{ gf_id }} .gft-cta {
+    width: 100%;
+    padding: 17px;
+    border-radius: 12px;
+    border: none;
+    background: var(--gft-cta-bg);
+    color: var(--gft-cta-text);
+    font-family: var(--gft-font);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    margin-bottom: 10px;
+    line-height: 1.3;
+    text-align: center;
+    display: block;
+    -webkit-appearance: none;
+    appearance: none;
+    letter-spacing: 0.01em;
+  }
+  #gft-{{ gf_id }} .gft-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  #gft-{{ gf_id }} .gft-cta.loading {
+    opacity: 0.65;
+    pointer-events: none;
+  }
+  #gft-{{ gf_id }} .gft-cta.success {
+    background: #16a34a;
+    color: #fff;
+  }
+  #gft-{{ gf_id }} .gft-csub {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.6;
+    margin-top: 4px;
+    line-height: 1;
+  }
+
+  /* ── Error ── */
+  #gft-{{ gf_id }} .gft-err {
+    display: none;
+    text-align: center;
+    font-family: var(--gft-font);
+    font-size: 13px;
+    font-weight: 600;
+    color: #dc2626;
+    padding: 8px;
+    margin-bottom: 8px;
+    background: #fef2f2;
+    border-radius: 8px;
+  }
+
+  /* ── Trust ── */
+  #gft-{{ gf_id }} .gft-tr {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 14px 0;
+    flex-wrap: wrap;
+  }
+  #gft-{{ gf_id }} .gft-tr span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--gft-font);
+    font-size: 11px;
+    font-weight: 500;
+    color: #a1a1aa;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  #gft-{{ gf_id }} .gft-tr svg { width: 12px; height: 12px; flex-shrink: 0; display: block; }
+
+  /* ── Guarantee ── */
+  #gft-{{ gf_id }} .gft-gu {
+    text-align: center;
+    padding: 14px 16px;
+    background: #fafafa;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+  }
+  #gft-{{ gf_id }} .gft-gu p {
+    font-family: var(--gft-font);
+    font-size: 12px;
+    color: #71717a;
+    line-height: 1.5;
+  }
+  #gft-{{ gf_id }} .gft-gu strong { color: var(--gft-text); font-weight: 600; }
+
+  /* ── Mobile ── */
+  @media (max-width: 480px) {
+    #gft-{{ gf_id }} .gft-hero { gap: 14px; }
+    #gft-{{ gf_id }} .gft-hd h2 { font-size: {{ h_mob }}px; }
+    #gft-{{ gf_id }} .gft-pm { font-size: 18px; }
+    #gft-{{ gf_id }} .gft-stl { font-size: 15px; }
+    #gft-{{ gf_id }} .gft-tr { gap: 12px; }
+  }
+</style>
+
+<div id="gft-{{ gf_id }}"
+     data-pid="{{ pr.id }}"
+     {{ block.shopify_attributes }}
+     {%- if request.design_mode %} data-design-mode="true"{% endif -%}>
+  <div class="gft-w">
+
+    {%- if s.show_urgency -%}
+      <div class="gft-urg">
+        <span class="gft-dot"></span>
+        {{ s.urgency_text }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ── STOCK BAR ── {%- endcomment -%}
+    {%- if s.show_stock -%}
+      <div class="gft-stock">
+        <div class="gft-stock-info">
+          <span class="gft-stock-left">
+            <span class="gft-stock-num" data-gft-stk="{{ gf_id }}">{{ stk_high }}</span> {{ s.stock_label | default: 'sachets restants' }}
+          </span>
+          <span class="gft-stock-total">/ {{ stk_total }}</span>
+        </div>
+        <div class="gft-stock-track">
+          <div class="gft-stock-fill" data-gft-stkbar="{{ gf_id }}" style="width:{{ stk_high | times: 100 | divided_by: stk_total }}%"></div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ── HERO: image + heading side by side ── {%- endcomment -%}
+    <div class="gft-hero">
+      <div class="gft-hero-img">
+        {%- if s.product_image != blank -%}
+          <img src="{{ s.product_image | image_url: width: 300 }}"
+               alt="{{ pr.title | escape }}"
+               width="{{ img_w }}"
+               loading="lazy">
+        {%- elsif pr.featured_image -%}
+          <img src="{{ pr.featured_image | image_url: width: 300 }}"
+               alt="{{ pr.title | escape }}"
+               width="{{ img_w }}"
+               loading="lazy">
+        {%- else -%}
+          <div class="gft-hero-img-ph">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            Image
+          </div>
+        {%- endif -%}
+      </div>
+      <div class="gft-hero-text">
+        {%- if s.eyebrow_text != blank -%}
+          <div class="gft-eye">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 12V8H6a2 2 0 010-4h12v4"/><path d="M4 6v12a2 2 0 002 2h14v-4"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
+            {{ s.eyebrow_text }}
+          </div>
+        {%- endif -%}
+        <div class="gft-hd">
+          <h2>{{ s.heading_line1 }}<br><span class="gft-hl">{{ s.heading_line2 }}</span></h2>
+          {%- if s.subheading != blank -%}<p>{{ s.subheading }}</p>{%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    <div class="gft-card">
+      {%- if s.card_tag != blank -%}<div class="gft-tag">{{ s.card_tag }}</div>{%- endif -%}
+
+      <div class="gft-st gft-s1">
+        <div class="gft-sn">1</div>
+        <div class="gft-sc">
+          <div class="gft-sl">{{ s.step1_label }}</div>
+          <div class="gft-stl">{{ s.step1_title_before }} <span class="gft-hl">{{ s.step1_title_hl }}</span></div>
+          <div class="gft-sd">{{ s.step1_desc }}</div>
+        </div>
+        <div class="gft-sp">
+          <div class="gft-pm gft-f">{{ s.step1_price }}</div>
+          <div class="gft-ps">{{ s.step1_price_note }}</div>
+        </div>
+      </div>
+
+      <div class="gft-ar">
+        <div class="gft-arl"><div class="gft-ash"></div><div class="gft-ahd"></div></div>
+        <span class="gft-atx">{{ s.arrow_text }}</span>
+      </div>
+
+      <div class="gft-st gft-s2">
+        <div class="gft-sn">2</div>
+        <div class="gft-sc">
+          <div class="gft-sl">{{ s.step2_label }}</div>
+          <div class="gft-stl">{{ s.step2_title }}</div>
+          <div class="gft-sd">{{ s.step2_desc }}</div>
+        </div>
+        <div class="gft-sp">
+          <div class="gft-pm">{{ s.step2_price }}</div>
+          <div class="gft-ps">{{ s.step2_price_note }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gft-pks">
+      {%- if s.perk1 != blank -%}
+        <div class="gft-pk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <span>{{ s.perk1 }}</span>
+        </div>
+      {%- endif -%}
+      {%- if s.perk2 != blank -%}
+        <div class="gft-pk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <span>{{ s.perk2 }}</span>
+        </div>
+      {%- endif -%}
+      {%- if s.perk3 != blank -%}
+        <div class="gft-pk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <span>{{ s.perk3 }}</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if s.show_timer -%}
+      <div class="gft-tm">
+        <div class="gft-tl">{{ s.timer_label }}</div>
+        <div class="gft-td">
+          <div class="gft-tb">
+            <div class="gft-tn" data-gft-h="{{ gf_id }}">{{ s.timer_hours | default: 2 | prepend: '00' | slice: -2, 2 }}</div>
+            <div class="gft-tu">{{ s.timer_h_unit | default: 'Heures' }}</div>
+          </div>
+          <span class="gft-ts">:</span>
+          <div class="gft-tb">
+            <div class="gft-tn" data-gft-m="{{ gf_id }}">{{ s.timer_minutes | default: 47 | prepend: '00' | slice: -2, 2 }}</div>
+            <div class="gft-tu">{{ s.timer_m_unit | default: 'Min' }}</div>
+          </div>
+          <span class="gft-ts">:</span>
+          <div class="gft-tb">
+            <div class="gft-tn" data-gft-s="{{ gf_id }}">00</div>
+            <div class="gft-tu">{{ s.timer_s_unit | default: 'Sec' }}</div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div class="gft-err" id="gft-err-{{ gf_id }}"></div>
+
+    <button class="gft-cta" id="gft-cta-{{ gf_id }}">
+      <span>{{ s.cta_text }}</span>
+      {%- if s.cta_subtext != blank -%}<span class="gft-csub">{{ s.cta_subtext }}</span>{%- endif -%}
+    </button>
+
+    {%- if s.show_trust -%}
+      <div class="gft-tr">
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          {{ s.trust1 | default: 'Paiement sécurisé' }}
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          {{ s.trust2 | default: 'Satisfait ou remboursé' }}
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+          {{ s.trust3 | default: 'Annulation 1 clic' }}
+        </span>
+      </div>
+    {%- endif -%}
+
+    {%- if s.guarantee_text != blank -%}
+      <div class="gft-gu"><p>{{ s.guarantee_text }}</p></div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var ID   = {{ gf_id | json }};
+  var root = document.getElementById('gft-' + ID);
+  if (!root) return;
+
+  var isDesignMode = root.hasAttribute('data-design-mode');
+  var cartRoot = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+
+  /* ── STOCK BAR ── */
+  var stkNumEl = root.querySelector('[data-gft-stk="' + ID + '"]');
+  var stkBarEl = root.querySelector('[data-gft-stkbar="' + ID + '"]');
+
+  if (stkNumEl && stkBarEl && !isDesignMode) {
+    var STK_HIGH  = {{ stk_high }};
+    var STK_LOW   = {{ stk_low }};
+    var STK_TOTAL = {{ stk_total }};
+    var STK_RANGE = STK_HIGH - STK_LOW;
+    var CYCLE_MS  = {{ stk_cycle }} * 3600 * 1000;
+
+    function updateStock() {
+      var now = Date.now();
+      var pos = (now % CYCLE_MS) / CYCLE_MS;
+      var stock = STK_HIGH - Math.round(STK_RANGE * pos);
+      stkNumEl.textContent = stock;
+      stkBarEl.style.width = Math.round(stock / STK_TOTAL * 100) + '%';
+    }
+    updateStock();
+    setInterval(updateStock, 30000);
+  }
+
+  /* ── TIMER ── */
+  var hEl = root.querySelector('[data-gft-h="' + ID + '"]');
+  var mEl = root.querySelector('[data-gft-m="' + ID + '"]');
+  var sEl = root.querySelector('[data-gft-s="' + ID + '"]');
+
+  if (hEl && mEl && sEl && !isDesignMode) {
+    var KEY = 'gft_offer_end';
+    var iH  = parseInt({{ s.timer_hours | default: 2 | json }}, 10) || 2;
+    var iM  = parseInt({{ s.timer_minutes | default: 47 | json }}, 10) || 47;
+    var tot = (iH * 3600 + iM * 60) * 1000;
+
+    var stored = localStorage.getItem(KEY);
+    var end = (stored && Number(stored) > Date.now())
+      ? Number(stored)
+      : (function(){ var e = Date.now() + tot; localStorage.setItem(KEY, String(e)); return e; })();
+
+    function pad(n) { return n < 10 ? '0' + n : String(n); }
+    function tick() {
+      var left = end - Date.now();
+      if (left <= 0) {
+        end = Date.now() + tot;
+        localStorage.setItem(KEY, String(end));
+        left = tot;
+      }
+      var t = Math.floor(left / 1000);
+      hEl.textContent = pad(Math.floor(t / 3600));
+      mEl.textContent = pad(Math.floor((t % 3600) / 60));
+      sEl.textContent = pad(t % 60);
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  /* ── CTA + SELLING PLAN ── */
+  var btn   = document.getElementById('gft-cta-' + ID);
+  var errEl = document.getElementById('gft-err-' + ID);
+  if (!btn) return;
+
+  var origSpan = btn.querySelector('span');
+  var origText = origSpan ? origSpan.textContent : btn.textContent;
+
+  var txtAdding      = {{ cta_adding | json }};
+  var txtRedirecting = {{ cta_redirecting | json }};
+  var txtSuccess     = {{ cta_success | json }};
+
+  function showErr(msg) {
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+    setTimeout(function(){ errEl.style.display = 'none'; }, 5000);
+  }
+
+  btn.addEventListener('click', function() {
+    var link = {{ s.cta_link | default: '' | json }};
+    if (link && link.length > 0) {
+      window.location.href = link;
+      return;
+    }
+
+    var vid = {{ vid | default: 0 }};
+    if (!vid) {
+      showErr('Aucun variant disponible.');
+      return;
+    }
+
+    if (origSpan) origSpan.textContent = txtAdding; else btn.textContent = txtAdding;
+    btn.classList.add('loading');
+    if (errEl) errEl.style.display = 'none';
+
+    /* Build item with selling_plan for Appstle subscription discount */
+    var item = { id: vid, quantity: 1 };
+    var sellingPlan = {{ sp_id | default: 0 }};
+    if (sellingPlan) item.selling_plan = sellingPlan;
+
+    fetch(cartRoot + 'cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ items: [item] })
+    })
+    .then(function(r) {
+      return r.json().then(function(d) { return { ok: r.ok, data: d }; });
+    })
+    .then(function(res) {
+      btn.classList.remove('loading');
+
+      if (!res.ok) {
+        throw new Error(res.data.description || res.data.message || "Impossible d'ajouter au panier.");
+      }
+
+      if (origSpan) origSpan.textContent = txtRedirecting; else btn.textContent = txtRedirecting;
+      btn.classList.add('success');
+
+      var detail = {
+        resource: { item_count: res.data.item_count || 1 },
+        sourceId: 'gft-' + ID,
+        data: { sections: res.data.sections || {}, source: 'gft-' + ID }
+      };
+      document.dispatchEvent(new CustomEvent('cart:update', { bubbles: true, detail: detail }));
+
+      {%- if s.go_to_checkout -%}
+        window.location.href = cartRoot + 'checkout';
+      {%- else -%}
+        var drawer = document.querySelector('cart-drawer, cart-drawer-component, .cart-drawer');
+        if (drawer && typeof drawer.open === 'function') {
+          drawer.open();
+          setTimeout(function(){
+            btn.classList.remove('success');
+            if (origSpan) origSpan.textContent = origText; else btn.textContent = origText;
+          }, 2000);
+        } else {
+          window.location.href = cartRoot + 'cart';
+        }
+      {%- endif -%}
+    })
+    .catch(function(err) {
+      btn.classList.remove('loading', 'success');
+      if (origSpan) origSpan.textContent = origText; else btn.textContent = origText;
+      showErr(err.message || 'Une erreur est survenue.');
+    });
+  });
+})();
+</script>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "GF Trial Offer",
+  "settings": [
+    { "type": "header", "content": "Produit" },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Produit",
+      "info": "Laisser vide pour utiliser le produit de la page."
+    },
+
+    { "type": "header", "content": "── Mise en page ──" },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Couleur texte principal",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Largeur max (px)",
+      "min": 360,
+      "max": 600,
+      "step": 10,
+      "default": 440
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding haut",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bas",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_theme_font",
+      "label": "Utiliser la police du thème",
+      "default": true,
+      "info": "Décocher pour utiliser Inter (Google Fonts)."
+    },
+
+    { "type": "header", "content": "── Couleurs ──" },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Couleur accent",
+      "default": "#2AB5B4"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Couleur titre",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "text_muted",
+      "label": "Couleur texte secondaire",
+      "default": "#777777"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Fond carte (début dégradé)",
+      "default": "#ffffff",
+      "info": "Dégradé subtil du blanc vers gris très clair."
+    },
+
+    { "type": "header", "content": "── Urgency bar ──" },
+    {
+      "type": "checkbox",
+      "id": "show_urgency",
+      "label": "Afficher barre urgence",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "urgency_text",
+      "label": "Texte urgence",
+      "default": "Offre d'essai gratuite — places limitées"
+    },
+    {
+      "type": "color",
+      "id": "urgency_bg",
+      "label": "Couleur fond urgence",
+      "default": "#111111"
+    },
+
+    { "type": "header", "content": "── Stock bar ──" },
+    {
+      "type": "checkbox",
+      "id": "show_stock",
+      "label": "Afficher barre de stock",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "stock_label",
+      "label": "Label stock",
+      "default": "sachets restants"
+    },
+    {
+      "type": "range",
+      "id": "stock_total",
+      "label": "Total affiché",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "stock_high",
+      "label": "Stock haut (début cycle)",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "stock_low",
+      "label": "Stock bas (fin cycle)",
+      "min": 1,
+      "max": 50,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "stock_cycle_hours",
+      "label": "Durée du cycle (heures)",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 3
+    },
+
+    { "type": "header", "content": "── En-tête ──" },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow (badge haut)",
+      "default": "Offre d'essai"
+    },
+    {
+      "type": "text",
+      "id": "heading_line1",
+      "label": "Titre ligne 1",
+      "default": "Recevez 2 sachets"
+    },
+    {
+      "type": "text",
+      "id": "heading_line2",
+      "label": "Titre ligne 2 (couleur accent)",
+      "default": "GRATUITS"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Taille titre (px)",
+      "min": 20,
+      "max": 40,
+      "step": 1,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Sous-titre",
+      "default": "Testez GUMFORCE pendant 30 jours. Payez uniquement les frais de port."
+    },
+
+    { "type": "header", "content": "── Image produit ──" },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Image custom (override)",
+      "info": "Priorité sur l'image du produit sélectionné."
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Largeur image (px)",
+      "min": 60,
+      "max": 200,
+      "step": 10,
+      "default": 110,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_max_height",
+      "label": "Hauteur max image (px)",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "default": 140,
+      "unit": "px"
+    },
+
+    { "type": "header", "content": "── Carte offre ──" },
+    {
+      "type": "text",
+      "id": "card_tag",
+      "label": "Tag carte (badge)",
+      "default": "Offre limitée"
+    },
+    {
+      "type": "text",
+      "id": "step1_label",
+      "label": "Step 1 — label",
+      "default": "Aujourd'hui"
+    },
+    {
+      "type": "text",
+      "id": "step1_title_before",
+      "label": "Step 1 — titre (avant accent)",
+      "default": "2 sachets"
+    },
+    {
+      "type": "text",
+      "id": "step1_title_hl",
+      "label": "Step 1 — titre accent",
+      "default": "GRATUITS"
+    },
+    {
+      "type": "text",
+      "id": "step1_desc",
+      "label": "Step 1 — description",
+      "default": "Recevez 2 sachets GUMFORCE chez vous"
+    },
+    {
+      "type": "text",
+      "id": "step1_price",
+      "label": "Step 1 — prix",
+      "default": "0,00€"
+    },
+    {
+      "type": "text",
+      "id": "step1_price_note",
+      "label": "Step 1 — note prix",
+      "default": "+ 1,99€ livraison"
+    },
+    {
+      "type": "text",
+      "id": "arrow_text",
+      "label": "Texte flèche",
+      "default": "puis après 30 jours"
+    },
+    {
+      "type": "text",
+      "id": "step2_label",
+      "label": "Step 2 — label",
+      "default": "Dans 30 jours"
+    },
+    {
+      "type": "text",
+      "id": "step2_title",
+      "label": "Step 2 — titre",
+      "default": "Recharge mensuelle"
+    },
+    {
+      "type": "text",
+      "id": "step2_desc",
+      "label": "Step 2 — description",
+      "default": "2 sachets livrés chaque mois"
+    },
+    {
+      "type": "text",
+      "id": "step2_price",
+      "label": "Step 2 — prix",
+      "default": "29,99€"
+    },
+    {
+      "type": "text",
+      "id": "step2_price_note",
+      "label": "Step 2 — note prix",
+      "default": "/ mois"
+    },
+
+    { "type": "header", "content": "── Avantages ──" },
+    {
+      "type": "html",
+      "id": "perk1",
+      "label": "Avantage 1",
+      "default": "<strong>2 sachets offerts</strong> — vous ne payez que 1,99€"
+    },
+    {
+      "type": "html",
+      "id": "perk2",
+      "label": "Avantage 2",
+      "default": "<strong>Sans engagement</strong> — annulez en 1 clic avant 30 jours"
+    },
+    {
+      "type": "html",
+      "id": "perk3",
+      "label": "Avantage 3",
+      "default": "Expédié en 24h depuis l'Europe"
+    },
+
+    { "type": "header", "content": "── Timer ──" },
+    {
+      "type": "checkbox",
+      "id": "show_timer",
+      "label": "Afficher countdown",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "timer_label",
+      "label": "Label timer",
+      "default": "Cette offre expire dans"
+    },
+    {
+      "type": "range",
+      "id": "timer_hours",
+      "label": "Heures initiales",
+      "min": 0,
+      "max": 23,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "timer_minutes",
+      "label": "Minutes initiales",
+      "min": 0,
+      "max": 59,
+      "step": 1,
+      "default": 47
+    },
+    {
+      "type": "text",
+      "id": "timer_h_unit",
+      "label": "Label heures",
+      "default": "Heures"
+    },
+    {
+      "type": "text",
+      "id": "timer_m_unit",
+      "label": "Label minutes",
+      "default": "Min"
+    },
+    {
+      "type": "text",
+      "id": "timer_s_unit",
+      "label": "Label secondes",
+      "default": "Sec"
+    },
+    {
+      "type": "color",
+      "id": "timer_text_color",
+      "label": "Couleur texte timer",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "timer_bg",
+      "label": "Fond timer",
+      "default": "#fafafa"
+    },
+    {
+      "type": "color",
+      "id": "timer_border",
+      "label": "Bordure timer",
+      "default": "#eeeeee"
+    },
+    {
+      "type": "color",
+      "id": "timer_block_bg",
+      "label": "Fond blocs timer",
+      "default": "#f5f5f5"
+    },
+
+    { "type": "header", "content": "── Bouton CTA ──" },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Texte bouton",
+      "default": "Recevoir mes 2 sachets GRATUITS"
+    },
+    {
+      "type": "text",
+      "id": "cta_subtext",
+      "label": "Sous-texte bouton",
+      "default": "Seulement 1,99€ de frais de livraison"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Fond bouton",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Couleur texte bouton",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "cta_link",
+      "label": "Lien CTA (URL)",
+      "info": "Laisser vide pour ajouter au panier le variant du produit."
+    },
+    {
+      "type": "checkbox",
+      "id": "go_to_checkout",
+      "label": "Rediriger vers checkout",
+      "default": true,
+      "info": "Si décoché, ouvre le cart drawer après ajout au panier."
+    },
+    {
+      "type": "text",
+      "id": "cta_adding_text",
+      "label": "Texte loading",
+      "default": "Ajout en cours…"
+    },
+    {
+      "type": "text",
+      "id": "cta_redirecting_text",
+      "label": "Texte redirection",
+      "default": "Redirection…"
+    },
+    {
+      "type": "text",
+      "id": "cta_success_text",
+      "label": "Texte succès",
+      "default": "✓ Ajouté !"
+    },
+
+    { "type": "header", "content": "── Abonnement (Appstle) ──" },
+    {
+      "type": "number",
+      "id": "selling_plan_id",
+      "label": "Selling Plan ID (optionnel)",
+      "info": "Laisser vide pour auto-détecter depuis les selling plans du produit. Nécessaire pour que le discount Appstle s'applique au checkout."
+    },
+
+    { "type": "header", "content": "── Trust & garantie ──" },
+    {
+      "type": "checkbox",
+      "id": "show_trust",
+      "label": "Afficher badges trust",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust1",
+      "label": "Trust 1",
+      "default": "Paiement sécurisé"
+    },
+    {
+      "type": "text",
+      "id": "trust2",
+      "label": "Trust 2",
+      "default": "Satisfait ou remboursé"
+    },
+    {
+      "type": "text",
+      "id": "trust3",
+      "label": "Trust 3",
+      "default": "Annulation 1 clic"
+    },
+    {
+      "type": "html",
+      "id": "guarantee_text",
+      "label": "Texte garantie",
+      "default": "<strong>Garantie zéro risque.</strong> Annulez avant 30 jours et vous ne serez jamais débité."
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF Trial Offer",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

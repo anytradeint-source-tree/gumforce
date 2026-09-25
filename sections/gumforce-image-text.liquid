@@ -1,0 +1,924 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Image + Text Section  —  v3
+  ============================================================================
+  Two-column layout: image + text content.
+  Desktop: image left or right via CSS order.
+  Mobile: image or text first, configurable.
+  Use two sections back-to-back with opposite sides for zigzag.
+  CTA matches social-proof section (same colors, size, radius, scroll-to-bundle).
+  Color scheme via Shopify's native system.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign image         = s.image
+  assign image_ratio   = s.image_ratio | default: '1:1'
+  assign image_radius  = s.image_radius | default: 0
+  assign image_side    = s.image_side | default: 'left'
+  assign image_shadow  = s.image_shadow
+
+  assign heading       = s.heading
+  assign heading_tag   = s.heading_tag | default: 'h2'
+  assign heading_size  = s.heading_size | default: 32
+  assign body_text     = s.body_text
+  assign body_size     = s.body_size | default: 16
+
+  comment
+    ── CTA (matches social-proof) ──
+  endcomment
+  assign cta_text          = s.cta_text
+  assign cta_link          = s.cta_link
+  assign cta_scroll_bundle = s.cta_scroll_to_bundle
+  assign cta_bg_color      = s.cta_bg_color | default: '#2AB5B4'
+  assign cta_text_color    = s.cta_text_color | default: '#121212'
+  assign cta_radius        = s.cta_radius | default: 8
+  assign cta_style         = s.cta_style | default: 'filled'
+  assign cta_width         = s.cta_width | default: 'auto'
+  assign guarantee_text      = s.guarantee_text
+  assign guarantee_icon_size = s.guarantee_icon_size | default: 18
+  assign guarantee_font_size = s.guarantee_font_size | default: 13
+  assign text_align        = s.text_align | default: 'left'
+
+  assign column_split   = s.column_split | default: '50/50'
+  assign content_gap    = s.content_gap | default: 40
+  assign text_gap       = s.text_gap | default: 16
+  assign vertical_align = s.vertical_align | default: 'center'
+
+  assign pad_top        = s.padding_top | default: 40
+  assign pad_bottom     = s.padding_bottom | default: 40
+  assign pad_top_mobile = s.padding_top_mobile | default: 40
+  assign pad_bot_mobile = s.padding_bottom_mobile | default: 40
+
+  assign enable_animations = s.enable_animations
+
+  comment
+    aspect-ratio CSS value — "auto" means natural image ratio
+  endcomment
+  assign ar_css = '1 / 1'
+  if image_ratio == '1:1'
+    assign ar_css = '1 / 1'
+  elsif image_ratio == '4:5'
+    assign ar_css = '4 / 5'
+  elsif image_ratio == '3:4'
+    assign ar_css = '3 / 4'
+  elsif image_ratio == '16:9'
+    assign ar_css = '16 / 9'
+  elsif image_ratio == '3:2'
+    assign ar_css = '3 / 2'
+  elsif image_ratio == 'auto'
+    assign ar_css = 'auto'
+  endif
+
+  comment
+    Column split → fr values
+  endcomment
+  assign col_img = '1'
+  assign col_txt = '1'
+  if column_split == '55/45'
+    assign col_img = '55'
+    assign col_txt = '45'
+  elsif column_split == '60/40'
+    assign col_img = '60'
+    assign col_txt = '40'
+  elsif column_split == '40/60'
+    assign col_img = '40'
+    assign col_txt = '60'
+  elsif column_split == '45/55'
+    assign col_img = '45'
+    assign col_txt = '55'
+  else
+    assign col_img = '1'
+    assign col_txt = '1'
+  endif
+
+  assign valign_css = 'center'
+  if vertical_align == 'top'
+    assign valign_css = 'start'
+  elsif vertical_align == 'bottom'
+    assign valign_css = 'end'
+  endif
+-%}
+
+<style>
+  /* ── Section Root ── */
+  #gfit-{{ sid }} {
+    /* pas de content-visibility : mesuré sur WebKit, il retardait le chargement des images lazy jusqu'à l'écran */
+    --gfit-pad-top: {{ pad_top }}px;
+    --gfit-pad-bot: {{ pad_bottom }}px;
+    --gfit-pad-top-m: {{ pad_top_mobile }}px;
+    --gfit-pad-bot-m: {{ pad_bot_mobile }}px;
+    --gfit-gap: {{ content_gap }}px;
+    --gfit-text-gap: {{ text_gap }}px;
+    --gfit-img-radius: {{ image_radius }}px;
+    --gfit-heading-size: {{ heading_size }}px;
+    --gfit-body-size: {{ body_size }}px;
+    --gfit-cta-bg: {{ cta_bg_color }};
+    --gfit-cta-text: {{ cta_text_color }};
+    --gfit-cta-radius: {{ cta_radius }}px;
+    --gfit-heading-color: {{ s.heading_color | default: '#111111' }};
+    --gfit-body-color: {{ s.text_color | default: '#262626' }};
+    --gfit-muted-color: {{ s.text_muted | default: '#6b6b6b' }};
+    --gfit-guarantee-icon: {{ guarantee_icon_size }}px;
+    --gfit-guarantee-size: {{ guarantee_font_size }}px;
+
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* ── Container ── */
+  #gfit-{{ sid }} .gfit-inner {
+    box-sizing: border-box;
+    max-width: 1340px; padding-block: clamp(48px, 6vw, 88px);
+    margin: 0 auto;
+    padding: var(--gfit-pad-top-m) 20px var(--gfit-pad-bot-m);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: {{ valign_css }};
+  }
+
+  /* ── Image ── */
+  #gfit-{{ sid }} .gfit-image {
+    position: relative;
+    border-radius: var(--gfit-img-radius);
+    overflow: hidden;
+    width: 100%;
+    {%- if image_shadow %}
+    box-shadow:
+      0 4px 6px -1px rgb(0 0 0 / 0.07),
+      0 10px 20px -2px rgb(0 0 0 / 0.06);
+    {%- endif %}
+  }
+
+  #gfit-{{ sid }} .gfit-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--gfit-img-radius);
+    {%- if ar_css != 'auto' %}
+    aspect-ratio: {{ ar_css }};
+    {%- endif %}
+  }
+
+  #gfit-{{ sid }} .gfit-image-empty {
+    width: 100%;
+    background: rgb(var(--color-foreground-rgb) / 0.06);
+    border-radius: var(--gfit-img-radius);
+    {%- if ar_css != 'auto' %}
+    aspect-ratio: {{ ar_css }};
+    {%- else %}
+    aspect-ratio: 1 / 1;
+    {%- endif %}
+  }
+
+  /* ── Content wrapper (mobile: contents → children are grid items) ── */
+  #gfit-{{ sid }} .gfit-content {
+    display: contents;
+  }
+
+  /* ── Text Content ── */
+  #gfit-{{ sid }} .gfit-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gfit-text-gap);
+    text-align: {{ text_align }};
+    {% if text_align == 'center' %}align-items: center;{% elsif text_align == 'right' %}align-items: flex-end;{% else %}align-items: flex-start;{% endif %}
+  }
+
+  #gfit-{{ sid }} .gfit-heading {
+    font-size: var(--gfit-heading-size);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--gfit-heading-color);
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  #gfit-{{ sid }} .gfit-heading p {
+    margin: 0;
+  }
+
+  #gfit-{{ sid }} .gfit-body {
+    font-size: var(--gfit-body-size);
+    line-height: 1.65;
+    color: var(--gfit-body-color);
+  }
+
+  #gfit-{{ sid }} .gfit-body p {
+    margin: 0 0 0 0;
+  }
+
+  #gfit-{{ sid }} .gfit-body p + p {
+    margin-top: 0.75em;
+  }
+
+  #gfit-{{ sid }} .gfit-body p:empty {
+    margin-top: 0.5em;
+  }
+
+  #gfit-{{ sid }} .gfit-body ul,
+  #gfit-{{ sid }} .gfit-body ol {
+    margin: 0.5em 0;
+    padding-left: 1.4em;
+  }
+
+  /* ── CTA (same as social-proof) ── */
+  #gfit-{{ sid }} .gfit-cta-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    {% if text_align == 'center' %}align-items: center;{% elsif text_align == 'right' %}align-items: flex-end;{% else %}align-items: flex-start;{% endif %}
+  }
+
+  #gfit-{{ sid }} .gfit-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 48px;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    border-radius: var(--gfit-cta-radius);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: auto;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  #gfit-{{ sid }} .gfit-cta--filled {
+    background-color: var(--gfit-cta-bg);
+    color: var(--gfit-cta-text);
+    border: 2px solid var(--gfit-cta-bg);
+  }
+
+  #gfit-{{ sid }} .gfit-cta--outline {
+    background-color: transparent;
+    color: var(--gfit-cta-bg);
+    border: 2px solid var(--gfit-cta-bg);
+  }
+
+  #gfit-{{ sid }} .gfit-cta:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  #gfit-{{ sid }} .gfit-cta:active {
+    transform: scale(0.98);
+  }
+
+  #gfit-{{ sid }} button.gfit-cta {
+    font-family: inherit;
+  }
+
+  /* ── Guarantee text ── */
+  #gfit-{{ sid }} .gfit-guarantee {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--gfit-guarantee-size);
+    font-weight: 500;
+    color: var(--gfit-muted-color);
+    letter-spacing: 0.01em;
+  }
+
+  #gfit-{{ sid }} .gfit-guarantee svg,
+  #gfit-{{ sid }} .gfit-guarantee img {
+    width: var(--gfit-guarantee-icon);
+    height: var(--gfit-guarantee-icon);
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+
+  /* ── Mobile order ── */
+  {%- if s.mobile_layout == 'text_image_cta' -%}
+  #gfit-{{ sid }} .gfit-text     { order: 1; }
+  #gfit-{{ sid }} .gfit-image    { order: 2; }
+  #gfit-{{ sid }} .gfit-cta-wrap { order: 3; }
+  {%- elsif s.mobile_layout == 'text_cta_image' -%}
+  #gfit-{{ sid }} .gfit-text     { order: 1; }
+  #gfit-{{ sid }} .gfit-cta-wrap { order: 2; }
+  #gfit-{{ sid }} .gfit-image    { order: 3; }
+  {%- else -%}
+  #gfit-{{ sid }} .gfit-image    { order: 1; }
+  #gfit-{{ sid }} .gfit-text     { order: 2; }
+  #gfit-{{ sid }} .gfit-cta-wrap { order: 3; }
+  {%- endif -%}
+
+  /* ── Animations ── */
+  {%- if enable_animations -%}
+  #gfit-{{ sid }} .gfit-anim {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  #gfit-{{ sid }} .gfit-anim.gfit-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #gfit-{{ sid }} .gfit-anim-d1 { transition-delay: 0.08s; }
+  #gfit-{{ sid }} .gfit-anim-d2 { transition-delay: 0.18s; }
+  {%- endif -%}
+
+  /* ── Desktop (750px+, seuil commun aux sections GF) ── */
+  @media (min-width: 750px) {
+    #gfit-{{ sid }} .gfit-inner {
+      {%- if column_split == '50/50' %}
+      grid-template-columns: 1fr 1fr;
+      {%- else %}
+      grid-template-columns: {{ col_img }}fr {{ col_txt }}fr;
+      {%- endif %}
+      gap: var(--gfit-gap);
+      padding: var(--gfit-pad-top) 40px var(--gfit-pad-bot);
+    }
+
+    #gfit-{{ sid }} .gfit-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: {{ valign_css }};
+      text-align: {{ text_align }};
+      {% if text_align == 'center' %}align-items: center;{% elsif text_align == 'right' %}align-items: flex-end;{% else %}align-items: flex-start;{% endif %}
+    }
+
+    {%- if image_side == 'right' -%}
+    #gfit-{{ sid }} .gfit-image   { order: 2; }
+    #gfit-{{ sid }} .gfit-content { order: 1; }
+    {%- else -%}
+    #gfit-{{ sid }} .gfit-image   { order: 1; }
+    #gfit-{{ sid }} .gfit-content { order: 2; }
+    {%- endif -%}
+
+    #gfit-{{ sid }} .gfit-text,
+    #gfit-{{ sid }} .gfit-cta-wrap { order: unset; }
+
+    #gfit-{{ sid }} .gfit-text {
+      gap: 0;
+    }
+
+    /* ── Spacing hierarchy ── */
+    #gfit-{{ sid }} .gfit-body     { margin-top: 16px; }
+    #gfit-{{ sid }} .gfit-cta-wrap { margin-top: 48px; }
+  }
+
+  @media (min-width: 1200px) {
+    #gfit-{{ sid }} .gfit-inner {
+      padding: var(--gfit-pad-top) 48px var(--gfit-pad-bot);
+    }
+  }
+
+  /* ── Mobile tweaks ── */
+  @media (max-width: 749px) {
+    #gfit-{{ sid }} .gfit-heading {
+      font-size: clamp(22px, calc(var(--gfit-heading-size) * 0.78), var(--gfit-heading-size));
+    }
+
+    #gfit-{{ sid }} .gfit-text {
+      max-width: none;
+    }
+
+    #gfit-{{ sid }} .gfit-cta {
+      width: 100%;
+    }
+  }
+</style>
+
+<section
+  id="gfit-{{ sid }}"
+  class="gfit-section section color-{{ s.color_scheme }}"
+  aria-label="{{ heading | strip_html | default: 'Image with text' | escape }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="gfit-inner">
+
+    <!-- Image -->
+    <div class="gfit-image {% if enable_animations %}gfit-anim gfit-anim-d1{% endif %}">
+      {%- if image != blank -%}
+        <img
+          src="{{ image | image_url: width: 1200 }}"
+          srcset="
+            {{ image | image_url: width: 400 }} 400w,
+            {{ image | image_url: width: 700 }} 700w,
+            {{ image | image_url: width: 1000 }} 1000w,
+            {{ image | image_url: width: 1400 }} 1400w
+          "
+          sizes="(min-width: 768px) 50vw, calc(100vw - 40px)"
+          alt="{{ image.alt | escape }}"
+          loading="lazy"
+          width="{{ image.width }}"
+          height="{{ image.height }}"
+        >
+      {%- else -%}
+        <div class="gfit-image-empty"></div>
+      {%- endif -%}
+    </div>
+
+    <!-- Content -->
+    <div class="gfit-content">
+      <div class="gfit-text {% if enable_animations %}gfit-anim gfit-anim-d2{% endif %}">
+        {%- if heading != blank -%}
+          <{{ heading_tag }} class="gfit-heading">{{ heading }}</{{ heading_tag }}>
+        {%- endif -%}
+
+        {%- if body_text != blank -%}
+          <div class="gfit-body">{{ body_text }}</div>
+        {%- endif -%}
+      </div>
+
+      {%- if cta_text != blank -%}
+        <div class="gfit-cta-wrap {% if enable_animations %}gfit-anim gfit-anim-d2{% endif %}">
+          {%- if cta_scroll_bundle -%}
+            <button type="button" class="gfit-cta gfit-cta--{{ cta_style }}" data-scroll-bundle="true">
+              {{ cta_text }}
+            </button>
+          {%- else -%}
+            <a class="gfit-cta gfit-cta--{{ cta_style }}" href="{{ cta_link | default: '#' }}">
+              {{ cta_text }}
+            </a>
+          {%- endif -%}
+          {%- if guarantee_text != blank -%}
+            <span class="gfit-guarantee">
+              {%- if s.guarantee_icon != blank -%}
+                <img src="{{ s.guarantee_icon | image_url: width: 96 }}" alt="" loading="lazy">
+              {%- else -%}
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M12 2L4 6v5c0 5.25 3.4 10.15 8 11.25C16.6 21.15 20 16.25 20 11V6l-8-4z" fill="{{ cta_bg_color }}"/>
+                  <polyline points="9 12 11 14 15 10" stroke="{{ cta_text_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              {%- endif -%}
+              {{ guarantee_text }}
+            </span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById('gfit-{{ sid }}');
+  if (!root) return;
+  /* ── Images : chargement anticipé. Mesuré sur WebKit (Safari/iOS) : avec
+     content-visibility le lazy natif ne demandait l'image qu'à ~15px de l'écran
+     (placeholder noir visible), ~850px sans. Ici on observe la SECTION à 2000px
+     et on passe ses images en eager → prêtes avant d'arriver dessus ; filet
+     après le chargement de la page (réseau libre). Sans JS : lazy natif. ── */
+  (function () {
+    var imgs = root.querySelectorAll('img[loading="lazy"]');
+    if (!imgs.length) return;
+    function warm(im) {
+      if (im.loading === 'lazy') im.loading = 'eager';
+      if (im.decode) { try { im.decode().then(null, function () {}); } catch (e) {} }
+    }
+    function warmAll() { for (var i = 0; i < imgs.length && i < 6; i++) warm(imgs[i]); }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) {
+        for (var i = 0; i < es.length; i++) { if (es[i].isIntersecting) { io.disconnect(); warmAll(); return; } }
+      }, { rootMargin: '2000px 0px' });
+      io.observe(root);
+    } else { warmAll(); }
+    function later() { if (window.requestIdleCallback) window.requestIdleCallback(warmAll, { timeout: 4000 }); else setTimeout(warmAll, 2500); }
+    if (document.readyState === 'complete') later(); else window.addEventListener('load', later);
+  })();
+})();
+</script>
+
+{%- if enable_animations -%}
+<script>
+(function () {
+  var sec = document.getElementById('gfit-{{ sid }}');
+  if (!sec) return;
+  var els = sec.querySelectorAll('.gfit-anim');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function (e) { e.classList.add('gfit-in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('gfit-in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  els.forEach(function (e) { io.observe(e); });
+})();
+</script>
+{%- endif -%}
+
+{%- if cta_scroll_bundle -%}
+<script>
+(function () {
+  var btn = document.querySelector('#gfit-{{ sid }} [data-scroll-bundle="true"]');
+  if (!btn) return;
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var target = null;
+    var sels = [
+      '[data-gf-scroll-target]',
+      '.gf-options',
+      '.gfo-options',
+      '[id^="gf-"]',
+      '[id^="gfo-"]',
+      '[id^="gft-"]',
+      '.gft-w',
+      '.gfo-root'
+    ];
+    for (var i = 0; i < sels.length; i++) {
+      target = document.querySelector(sels[i]);
+      if (target) break;
+    }
+    if (target) {
+      var offset = 20;
+      var headerEl = document.querySelector('.shopify-section-header, header, .header');
+      if (headerEl) offset = headerEl.offsetHeight + 10;
+      var top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "GUMFORCE Image + Text",
+  "tag": "section",
+  "class": "gfit-section-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "auto", "label": "Auto (original)" },
+        { "value": "16:9", "label": "16:9 — Landscape" },
+        { "value": "3:2", "label": "3:2 — Wide" },
+        { "value": "1:1", "label": "1:1 — Square" },
+        { "value": "4:5", "label": "4:5 — Portrait" },
+        { "value": "3:4", "label": "3:4 — Tall" }
+      ],
+      "default": "1:1"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image corner radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_shadow",
+      "label": "Image shadow",
+      "default": false
+    },
+
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Built for your jaw. Backed by science.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Heading HTML tag",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading font size",
+      "min": 18,
+      "max": 56,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "<p>Every piece of GUMFORCE gum is engineered to deliver real resistance training for your masseter muscle — no gimmicks, no fillers, just results you can see and feel.</p>"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body font size",
+      "min": 13,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "START TRAINING NOW"
+    },
+    {
+      "type": "checkbox",
+      "id": "cta_scroll_to_bundle",
+      "label": "Scroll to bundle picker",
+      "info": "Overrides button link — smoothly scrolls to the bundle picker section.",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "CTA background color",
+      "default": "#2AB5B4"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "CTA text color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "cta_radius",
+      "label": "CTA border radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "cta_style",
+      "label": "CTA style",
+      "options": [
+        { "value": "filled", "label": "Filled" },
+        { "value": "outline", "label": "Outline" }
+      ],
+      "default": "filled"
+    },
+    {
+      "type": "select",
+      "id": "cta_width",
+      "label": "CTA width",
+      "options": [
+        { "value": "auto", "label": "Auto" },
+        { "value": "full", "label": "Full width" }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "text",
+      "id": "guarantee_text",
+      "label": "Guarantee text (under button)",
+      "default": "90-Day Moneyback Guarantee"
+    },
+    {
+      "type": "image_picker",
+      "id": "guarantee_icon",
+      "label": "Guarantee icon (optional)",
+      "info": "Replaces the default shield icon. Use a small PNG/SVG."
+    },
+    {
+      "type": "range",
+      "id": "guarantee_icon_size",
+      "label": "Guarantee icon size",
+      "min": 10,
+      "max": 48,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "guarantee_font_size",
+      "label": "Guarantee text size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "default": 13,
+      "unit": "px"
+    },
+
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Ordre mobile",
+      "options": [
+        { "value": "image_text", "label": "Image → Texte → Bouton" },
+        { "value": "text_image_cta", "label": "Texte → Image → Bouton" },
+        { "value": "text_cta_image", "label": "Texte → Bouton → Image" }
+      ],
+      "default": "image_text",
+      "info": "Choisir l'ordre des éléments sur mobile."
+    },
+    {
+      "type": "select",
+      "id": "image_side",
+      "label": "Image position (desktop)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "column_split",
+      "label": "Column split",
+      "options": [
+        { "value": "40/60", "label": "40 / 60" },
+        { "value": "45/55", "label": "45 / 55" },
+        { "value": "50/50", "label": "50 / 50" },
+        { "value": "55/45", "label": "55 / 45" },
+        { "value": "60/40", "label": "60 / 40" }
+      ],
+      "default": "50/50"
+    },
+    {
+      "type": "select",
+      "id": "vertical_align",
+      "label": "Vertical alignment",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "label": "Gap between columns",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_gap",
+      "label": "Gap between text elements",
+      "min": 4,
+      "max": 48,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Couleur titre",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Couleur texte",
+      "default": "#262626"
+    },
+    {
+      "type": "color",
+      "id": "text_muted",
+      "label": "Couleur texte secondaire (garantie)",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme (fond)",
+      "default": "scheme-1"
+    },
+
+    {
+      "type": "header",
+      "content": "── Espacement ──"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Espace haut (mobile)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Espace bas (mobile)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Espace haut (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Espace bas (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+
+    {
+      "type": "header",
+      "content": "Animations"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Enable scroll animations",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "GUMFORCE Image + Text",
+      "settings": {
+        "image_side": "left"
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1514 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Social Proof Hero Section — Premium Theme-Store Quality
+  ============================================================================
+  Full-width, dark-background section with two-column layout:
+    Left  = headline counter, subtitle, benefit grid, CTA, trust badges
+    Right = hero lifestyle/product image
+
+  Every visual property is customizable via Shopify section settings.
+  All CSS values driven by CSS custom properties scoped to section.id.
+  Scroll-triggered animations via IntersectionObserver (toggleable).
+  Semantic HTML with ARIA roles. Zero hardcoded opacity.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  comment
+    ── Section background ──
+  endcomment
+  assign bg_color = s.bg_color | default: '#121212'
+
+  comment
+    ── Headline settings ──
+  endcomment
+  assign headline_number     = s.headline_number
+  assign headline_text       = s.headline_text
+  assign headline_number_tag = s.headline_number_tag | default: 'p'
+  assign headline_text_tag   = s.headline_text_tag | default: 'h2'
+  assign headline_number_size = s.headline_number_size | default: 80
+  assign headline_text_size   = s.headline_text_size | default: 36
+  assign headline_number_color = s.headline_number_color | default: '#F4F4F4'
+  assign headline_text_color   = s.headline_text_color | default: '#F4F4F4'
+
+  comment
+    ── Badge settings ──
+  endcomment
+  assign show_badge  = s.show_badge
+  assign badge_image = s.badge_image
+
+  comment
+    ── Subtitle settings ──
+  endcomment
+  assign subtitle       = s.subtitle
+  assign subtitle_size  = s.subtitle_size | default: 18
+  assign subtitle_color = s.subtitle_color | default: '#C0C0C0'
+
+  comment
+    ── Text alignment ──
+  endcomment
+  assign text_alignment = s.text_alignment | default: 'left'
+
+  comment
+    ── CTA settings ──
+  endcomment
+  assign cta_text         = s.cta_text
+  assign cta_link         = s.cta_link
+  assign cta_scroll_bundle = s.cta_scroll_to_bundle
+  assign cta_bg_color     = s.cta_bg_color | default: '#2AB5B4'
+  assign cta_text_color   = s.cta_text_color | default: '#121212'
+  assign cta_radius       = s.cta_radius | default: 8
+  assign cta_style        = s.cta_style | default: 'filled'
+  assign cta_width        = s.cta_width | default: 'auto'
+
+  comment
+    ── Hero image settings ──
+  endcomment
+  assign hero_image        = s.hero_image
+  assign show_hero_mobile  = s.show_hero_mobile
+  assign hero_radius       = s.hero_radius | default: 0
+  assign hero_overlay_color = s.hero_overlay_color | default: 'rgba(0,0,0,0)'
+  assign hero_overlay_opacity = s.hero_overlay_opacity | default: 0
+  assign hero_position        = s.hero_position | default: 'center'
+  assign hero_aspect          = s.hero_aspect | default: 'auto'
+
+  comment
+    ── Layout settings ──
+  endcomment
+  assign column_split     = s.column_split | default: '55/45'
+  assign content_valign   = s.content_valign | default: 'center'
+  assign content_gap      = s.content_gap | default: 32
+
+  comment
+    ── Benefits settings ──
+  endcomment
+  assign benefit_title_tag   = s.benefit_title_tag | default: 'h3'
+  assign benefit_desc_tag    = s.benefit_desc_tag | default: 'p'
+  assign benefit_title_size  = s.benefit_title_size | default: 16
+  assign benefit_desc_size   = s.benefit_desc_size | default: 14
+  assign benefit_title_color = s.benefit_title_color | default: '#F4F4F4'
+  assign benefit_desc_color  = s.benefit_desc_color | default: '#A0A0A0'
+  assign benefit_icon_size   = s.benefit_icon_size | default: 40
+  assign benefits_gap        = s.benefits_gap | default: 24
+
+  comment
+    ── Trust badge settings ──
+  endcomment
+  assign trust_text_color  = s.trust_text_color | default: '#A0A0A0'
+  assign trust_icon_size   = s.trust_icon_size | default: 18
+  assign trust_full_image_height = s.trust_full_image_height | default: 24
+
+  comment
+    ── Accent color ──
+  endcomment
+  assign accent_color = s.accent_color | default: '#2AB5B4'
+
+  comment
+    ── Spacing ──
+  endcomment
+  assign pad_top        = s.padding_top | default: 80
+  assign pad_bottom     = s.padding_bottom | default: 80
+  assign pad_top_mobile = s.padding_top_mobile | default: 48
+  assign pad_bot_mobile = s.padding_bottom_mobile | default: 48
+
+  comment
+    ── Animations ──
+  endcomment
+  assign enable_animations = s.enable_animations
+
+  comment
+    ── Column split parsing ──
+  endcomment
+  assign col_left  = '55'
+  assign col_right = '45'
+  if column_split == '50/50'
+    assign col_left  = '50'
+    assign col_right = '50'
+  elsif column_split == '55/45'
+    assign col_left  = '55'
+    assign col_right = '45'
+  elsif column_split == '60/40'
+    assign col_left  = '60'
+    assign col_right = '40'
+  elsif column_split == '65/35'
+    assign col_left  = '65'
+    assign col_right = '35'
+  endif
+
+  comment
+    ── Vertical alignment mapping ──
+  endcomment
+  assign valign_css = 'center'
+  if content_valign == 'top'
+    assign valign_css = 'flex-start'
+  elsif content_valign == 'bottom'
+    assign valign_css = 'flex-end'
+  endif
+-%}
+
+<!-- ====================================================================== -->
+<!-- CSS — All values driven by CSS custom properties                       -->
+<!-- ====================================================================== -->
+<style>
+  /* ── Strip Shopify wrapper spacing ── */
+  #shopify-section-{{ sid }} {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* ── Reset & Custom Properties ── */
+  #gfsp-{{ sid }} {
+    --gfsp-bg: {{ bg_color }};
+    --gfsp-headline-number-color: {{ headline_number_color }};
+    --gfsp-headline-text-color: {{ headline_text_color }};
+    --gfsp-headline-number-size: {{ headline_number_size }}px;
+    --gfsp-headline-text-size: {{ headline_text_size }}px;
+    --gfsp-subtitle-color: {{ subtitle_color }};
+    --gfsp-subtitle-size: {{ subtitle_size }}px;
+    --gfsp-benefit-title-color: {{ benefit_title_color }};
+    --gfsp-benefit-desc-color: {{ benefit_desc_color }};
+    --gfsp-benefit-title-size: {{ benefit_title_size }}px;
+    --gfsp-benefit-desc-size: {{ benefit_desc_size }}px;
+    --gfsp-benefit-icon-size: {{ benefit_icon_size }}px;
+    --gfsp-benefits-gap: {{ benefits_gap }}px;
+    --gfsp-cta-bg: {{ cta_bg_color }};
+    --gfsp-cta-text: {{ cta_text_color }};
+    --gfsp-cta-radius: {{ cta_radius }}px;
+    --gfsp-trust-text: {{ trust_text_color }};
+    --gfsp-trust-icon-size: {{ trust_icon_size }}px;
+    --gfsp-trust-full-height: {{ trust_full_image_height }}px;
+    --gfsp-accent: {{ accent_color }};
+    --gfsp-hero-radius: {{ hero_radius }}px;
+    --gfsp-hero-overlay: {{ hero_overlay_color }};
+    --gfsp-hero-overlay-opacity: {{ hero_overlay_opacity | times: 0.01 }};
+    --gfsp-content-gap: {{ content_gap }}px;
+    --gfsp-pad-top: {{ pad_top }}px;
+    --gfsp-pad-bot: {{ pad_bottom }}px;
+    --gfsp-pad-top-mobile: {{ pad_top_mobile }}px;
+    --gfsp-pad-bot-mobile: {{ pad_bot_mobile }}px;
+    --gfsp-col-left: {{ col_left }}fr;
+    --gfsp-col-right: {{ col_right }}fr;
+    --gfsp-valign: {{ valign_css }};
+    --gfsp-text-align: {{ text_alignment }};
+
+    background-color: var(--gfsp-bg);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  #gfsp-{{ sid }} *,
+  #gfsp-{{ sid }} *::before,
+  #gfsp-{{ sid }} *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ── Inner Grid ── */
+  #gfsp-{{ sid }} .gfsp-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: var(--gfsp-pad-top-mobile) 24px var(--gfsp-pad-bot-mobile);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Content Column ── */
+  #gfsp-{{ sid }} .gfsp-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: var(--gfsp-valign);
+    gap: var(--gfsp-content-gap);
+    text-align: var(--gfsp-text-align);
+  }
+
+  /* ── Headline Number ── */
+  #gfsp-{{ sid }} .gfsp-headline-number {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: var(--gfsp-headline-number-size);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--gfsp-headline-number-color);
+    {% if text_alignment == 'center' %}justify-content: center;{% endif %}
+  }
+
+  /* ── Badge Icon ── */
+  #gfsp-{{ sid }} .gfsp-badge-icon {
+    width: clamp(28px, 4vw, 40px);
+    height: clamp(28px, 4vw, 40px);
+    flex-shrink: 0;
+  }
+
+  #gfsp-{{ sid }} .gfsp-badge-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  #gfsp-{{ sid }} .gfsp-badge-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* ── Headline Text ── */
+  #gfsp-{{ sid }} .gfsp-headline-text {
+    font-size: var(--gfsp-headline-text-size);
+    font-weight: 800;
+    line-height: 1.15;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--gfsp-headline-text-color);
+  }
+
+  #gfsp-{{ sid }} .gfsp-headline-text p {
+    margin: 0;
+  }
+
+  /* ── Subtitle ── */
+  #gfsp-{{ sid }} .gfsp-subtitle {
+    font-size: var(--gfsp-subtitle-size);
+    line-height: 1.5;
+    color: var(--gfsp-subtitle-color);
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 768px) {
+    #gfsp-{{ sid }} .gfsp-subtitle {
+      text-align: var(--gfsp-text-align);
+      max-width: 620px;
+      {% if text_alignment != 'center' %}margin-left: 0; margin-right: 0;{% endif %}
+    }
+  }
+
+  #gfsp-{{ sid }} .gfsp-subtitle p {
+    margin: 0;
+  }
+
+  /* ── Benefits Grid — 2 columns on all sizes ── */
+  #gfsp-{{ sid }} .gfsp-benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gfsp-benefits-gap);
+    width: 100%;
+    {% if text_alignment == 'center' %}margin-left: auto; margin-right: auto;{% endif %}
+  }
+
+  #gfsp-{{ sid }} .gfsp-benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    text-align: left;
+  }
+
+  #gfsp-{{ sid }} .gfsp-benefit-icon {
+    width: var(--gfsp-benefit-icon-size);
+    height: var(--gfsp-benefit-icon-size);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #gfsp-{{ sid }} .gfsp-benefit-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  #gfsp-{{ sid }} .gfsp-benefit-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  #gfsp-{{ sid }} .gfsp-benefit-title {
+    font-size: var(--gfsp-benefit-title-size);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--gfsp-benefit-title-color);
+    margin: 0 0 4px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  #gfsp-{{ sid }} .gfsp-benefit-desc {
+    font-size: var(--gfsp-benefit-desc-size);
+    line-height: 1.5;
+    color: var(--gfsp-benefit-desc-color);
+    margin: 0;
+  }
+
+  /* ── CTA Button ── */
+  #gfsp-{{ sid }} .gfsp-cta-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    {% if text_alignment == 'center' %}align-items: center; width: 100%;{% else %}align-items: flex-start;{% endif %}
+  }
+
+  #gfsp-{{ sid }} .gfsp-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 48px;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    border-radius: var(--gfsp-cta-radius);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    {% if cta_width == 'full' %}width: 100%;{% else %}width: auto;{% endif %}
+    text-align: center;
+  }
+
+  /* CTA Style: Filled */
+  #gfsp-{{ sid }} .gfsp-cta--filled {
+    background-color: var(--gfsp-cta-bg);
+    color: var(--gfsp-cta-text);
+    border: 2px solid var(--gfsp-cta-bg);
+  }
+
+  /* CTA Style: Outline */
+  #gfsp-{{ sid }} .gfsp-cta--outline {
+    background-color: transparent;
+    color: var(--gfsp-cta-bg);
+    border: 2px solid var(--gfsp-cta-bg);
+  }
+
+  #gfsp-{{ sid }} .gfsp-cta:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  #gfsp-{{ sid }} .gfsp-cta:active {
+    transform: scale(0.98);
+  }
+
+  /* ── Trust Badges ── */
+  #gfsp-{{ sid }} .gfsp-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    {% if text_alignment == 'center' %}justify-content: center;{% else %}justify-content: flex-start;{% endif %}
+  }
+
+  #gfsp-{{ sid }} .gfsp-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--gfsp-trust-text);
+  }
+
+  #gfsp-{{ sid }} .gfsp-trust-icon {
+    width: var(--gfsp-trust-icon-size);
+    height: var(--gfsp-trust-icon-size);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #gfsp-{{ sid }} .gfsp-trust-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  #gfsp-{{ sid }} .gfsp-trust-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* ── Full badge image (PNG with text baked in) ── */
+  #gfsp-{{ sid }} .gfsp-trust-full {
+    height: var(--gfsp-trust-full-height);
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* ── Hero Image Column ── */
+  #gfsp-{{ sid }} .gfsp-hero {
+    display: none;
+    position: relative;
+    border-radius: var(--gfsp-hero-radius);
+    overflow: hidden;
+    {%- if hero_aspect == 'auto' -%}
+      align-self: stretch;
+    {%- else -%}
+      align-self: center;
+      aspect-ratio: {{ hero_aspect | replace: ':', ' / ' }};
+      width: 100%;
+    {%- endif -%}
+  }
+
+  #gfsp-{{ sid }} .gfsp-hero img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center {{ hero_position }};
+    display: block;
+  }
+
+  #gfsp-{{ sid }} .gfsp-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--gfsp-hero-overlay);
+    opacity: var(--gfsp-hero-overlay-opacity);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Show hero on mobile if enabled */
+  {%- if show_hero_mobile -%}
+    #gfsp-{{ sid }} .gfsp-hero {
+      display: block;
+      margin-top: 40px;
+      {%- if hero_aspect == 'auto' -%}
+        min-height: 320px;
+      {%- else -%}
+        aspect-ratio: {{ hero_aspect | replace: ':', ' / ' }};
+        width: 100%;
+      {%- endif -%}
+    }
+  {%- endif -%}
+
+  /* ── Fade-in Animations ── */
+  {%- if enable_animations -%}
+    #gfsp-{{ sid }} .gfsp-fade {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    #gfsp-{{ sid }} .gfsp-fade.gfsp-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #gfsp-{{ sid }} .gfsp-fade-d1 { transition-delay: 0.1s; }
+    #gfsp-{{ sid }} .gfsp-fade-d2 { transition-delay: 0.2s; }
+    #gfsp-{{ sid }} .gfsp-fade-d3 { transition-delay: 0.3s; }
+    #gfsp-{{ sid }} .gfsp-fade-d4 { transition-delay: 0.4s; }
+    #gfsp-{{ sid }} .gfsp-fade-d5 { transition-delay: 0.5s; }
+    #gfsp-{{ sid }} .gfsp-fade-d6 { transition-delay: 0.6s; }
+  {%- endif -%}
+
+  /* ── Desktop Breakpoint (768px+) ── */
+  @media (min-width: 768px) {
+    #gfsp-{{ sid }} .gfsp-inner {
+      grid-template-columns: var(--gfsp-col-left) var(--gfsp-col-right);
+      max-width: 1340px; padding-block: clamp(48px, 6vw, 88px);
+      margin: 0 auto;
+      padding: var(--gfsp-pad-top) clamp(24px, 4vw, 64px) var(--gfsp-pad-bot);
+      gap: clamp(32px, 4vw, 64px);
+      align-items: center;
+    }
+
+    #gfsp-{{ sid }} .gfsp-content {
+      gap: 0;
+    }
+
+    /* ─ Spacing hierarchy ─ */
+    #gfsp-{{ sid }} .gfsp-headline-text   { margin-top: 12px; }
+    #gfsp-{{ sid }} .gfsp-subtitle        { margin-top: 20px; }
+    #gfsp-{{ sid }} .gfsp-benefits        { margin-top: 40px; }
+    #gfsp-{{ sid }} .gfsp-cta-wrap        { margin-top: 44px; }
+
+    #gfsp-{{ sid }} .gfsp-hero {
+      display: block;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    #gfsp-{{ sid }} .gfsp-cta--autowidth {
+      width: auto;
+    }
+  }
+
+  /* ── Large Desktop (1200px+) ── */
+  @media (min-width: 1200px) {
+    #gfsp-{{ sid }} .gfsp-inner {
+      padding: var(--gfsp-pad-top) clamp(32px, 5vw, 80px) var(--gfsp-pad-bot);
+      gap: clamp(48px, 5vw, 80px);
+    }
+  }
+
+  /* ── Mobile CTA always full width ── */
+  @media (max-width: 767px) {
+    #gfsp-{{ sid }} .gfsp-cta {
+      width: 100%;
+    }
+
+    #gfsp-{{ sid }} .gfsp-trust {
+      justify-content: center;
+    }
+  }
+</style>
+
+<!-- ====================================================================== -->
+<!-- HTML — Semantic structure with ARIA                                     -->
+<!-- ====================================================================== -->
+<section
+  id="gfsp-{{ sid }}"
+  class="gfsp-section"
+  aria-label="{{ headline_number }} {{ headline_text | strip_html }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="gfsp-inner">
+
+    <!-- ===== Content Column ===== -->
+    <div class="gfsp-content">
+
+      <!-- Headline Number + Verification Badge -->
+      {%- if headline_number != blank -%}
+        <div class="gfsp-headline-number {% if enable_animations %}gfsp-fade{% endif %}">
+          <{{ headline_number_tag }} class="gfsp-counter" data-target="{{ headline_number }}">{{ headline_number }}</{{ headline_number_tag }}>
+          {%- if show_badge -%}
+            <span class="gfsp-badge-icon" aria-hidden="true">
+              {%- if badge_image != blank -%}
+                <img
+                  src="{{ badge_image | image_url: width: 80 }}"
+                  alt=""
+                  width="40"
+                  height="40"
+                  loading="lazy"
+                >
+              {%- else -%}
+                {%- comment -%} Simple checkmark fallback {%- endcomment -%}
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <polyline points="20 6 9 17 4 12" stroke="{{ accent_color }}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {%- endif -%}
+            </span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <!-- Headline Text -->
+      {%- if headline_text != blank -%}
+        <{{ headline_text_tag }} class="gfsp-headline-text {% if enable_animations %}gfsp-fade gfsp-fade-d1{% endif %}">
+          {{ headline_text }}
+        </{{ headline_text_tag }}>
+      {%- endif -%}
+
+      <!-- Subtitle (richtext) -->
+      {%- if subtitle != blank -%}
+        <div class="gfsp-subtitle {% if enable_animations %}gfsp-fade gfsp-fade-d2{% endif %}">
+          {{ subtitle }}
+        </div>
+      {%- endif -%}
+
+      <!-- Benefits Grid -->
+      {%- assign benefit_blocks = section.blocks | where: 'type', 'benefit' -%}
+      {%- if benefit_blocks.size > 0 -%}
+        <div class="gfsp-benefits {% if enable_animations %}gfsp-fade gfsp-fade-d3{% endif %}" role="list">
+          {%- for block in benefit_blocks -%}
+            <div class="gfsp-benefit" role="listitem" {{ block.shopify_attributes }}>
+              <span class="gfsp-benefit-icon" aria-hidden="true">
+                {%- if block.settings.icon != blank -%}
+                  <img
+                    src="{{ block.settings.icon | image_url: width: 128 }}"
+                    alt=""
+                    width="{{ benefit_icon_size }}"
+                    height="{{ benefit_icon_size }}"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  {%- comment -%} Simple checkmark fallback {%- endcomment -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="20 6 9 17 4 12" stroke="{{ accent_color }}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                {%- endif -%}
+              </span>
+              <div class="gfsp-benefit-text">
+                {%- if block.settings.title != blank -%}
+                  <{{ benefit_title_tag }} class="gfsp-benefit-title">{{ block.settings.title }}</{{ benefit_title_tag }}>
+                {%- endif -%}
+                {%- if block.settings.description != blank -%}
+                  <{{ benefit_desc_tag }} class="gfsp-benefit-desc">{{ block.settings.description }}</{{ benefit_desc_tag }}>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <!-- CTA + Trust Badges -->
+      <div class="gfsp-cta-wrap {% if enable_animations %}gfsp-fade gfsp-fade-d4{% endif %}">
+        {%- if cta_text != blank -%}
+          <a
+            class="gfsp-cta gfsp-cta--{{ cta_style }} {% if cta_width == 'auto' %}gfsp-cta--autowidth{% endif %}"
+            href="{{ cta_link | default: '#' }}"
+            {% if cta_scroll_bundle %}data-scroll-bundle="true"{% endif %}
+          >
+            {{ cta_text }}
+          </a>
+        {%- endif -%}
+
+        <!-- Trust Badges -->
+        {%- assign trust_blocks = section.blocks | where: 'type', 'trust_badge' -%}
+        {%- if trust_blocks.size > 0 -%}
+          <div class="gfsp-trust" role="list">
+            {%- for block in trust_blocks -%}
+              {%- if block.settings.full_image != blank -%}
+                {%- comment -%} Full badge PNG — renders image only, no icon+text {%- endcomment -%}
+                <div class="gfsp-trust-item gfsp-trust-item--full" role="listitem" {{ block.shopify_attributes }}>
+                  <img
+                    class="gfsp-trust-full"
+                    src="{{ block.settings.full_image | image_url: width: 400 }}"
+                    alt="{{ block.settings.text | default: 'Trust badge' | escape }}"
+                    height="{{ trust_icon_size | times: 1.2 }}"
+                    loading="lazy"
+                  >
+                </div>
+              {%- else -%}
+                {%- comment -%} Icon + text badge {%- endcomment -%}
+                <div class="gfsp-trust-item" role="listitem" {{ block.shopify_attributes }}>
+                  <span class="gfsp-trust-icon" aria-hidden="true">
+                    {%- if block.settings.icon != blank -%}
+                      <img
+                        src="{{ block.settings.icon | image_url: width: 56 }}"
+                        alt=""
+                        width="{{ trust_icon_size }}"
+                        height="{{ trust_icon_size }}"
+                        loading="lazy"
+                      >
+                    {%- else -%}
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L4 6v5c0 5.25 3.4 10.15 8 11.25C16.6 21.15 20 16.25 20 11V6l-8-4z" fill="{{ accent_color }}"/>
+                        <path d="M9 12l2 2 4-4" stroke="{{ bg_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    {%- endif -%}
+                  </span>
+                  {%- if block.settings.text != blank -%}
+                    <span>{{ block.settings.text }}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+    </div>
+    <!-- /gfsp-content -->
+
+    <!-- ===== Hero Image Column ===== -->
+    {%- if hero_image != blank -%}
+      <div class="gfsp-hero {% if enable_animations %}gfsp-fade gfsp-fade-d2{% endif %}">
+        {%- if hero_overlay_opacity > 0 -%}
+          <div class="gfsp-hero-overlay"></div>
+        {%- endif -%}
+        <img
+          src="{{ hero_image | image_url: width: 1200 }}"
+          srcset="
+            {{ hero_image | image_url: width: 600 }} 600w,
+            {{ hero_image | image_url: width: 900 }} 900w,
+            {{ hero_image | image_url: width: 1200 }} 1200w
+          "
+          sizes="(min-width: 768px) {{ col_right }}vw, 100vw"
+          alt="{{ hero_image.alt | escape }}"
+          width="{{ hero_image.width }}"
+          height="{{ hero_image.height }}"
+          loading="lazy"
+        >
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- JS — Scroll-triggered fade-in (toggleable via setting)                 -->
+<!-- ====================================================================== -->
+<script>
+(function () {
+  var section = document.getElementById('gfsp-{{ sid }}');
+  if (!section) return;
+
+  if (!('IntersectionObserver' in window)) {
+    section.querySelectorAll('.gfsp-fade').forEach(function (el) { el.classList.add('gfsp-visible'); });
+    return;
+  }
+
+  {%- if enable_animations -%}
+  /* ── Fade-in observer ── */
+  var fadeObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('gfsp-visible');
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+  section.querySelectorAll('.gfsp-fade').forEach(function (el) { fadeObserver.observe(el); });
+  {%- endif -%}
+
+  /* ── Count-up animation ── */
+  var counter = section.querySelector('.gfsp-counter');
+  if (!counter) return;
+
+  var target = counter.getAttribute('data-target') || '';
+  /* Extract numeric part, prefix (e.g. "$"), and suffix (e.g. "+", "K") */
+  var match = target.match(/^([^0-9]*)([0-9][0-9,.]*)(.*)$/);
+  if (!match) return;
+
+  var prefix = match[1];
+  var rawNum = match[2];
+  var suffix = match[3];
+  var hasCommas = rawNum.indexOf(',') > -1;
+  var endValue = parseFloat(rawNum.replace(/,/g, ''));
+  if (isNaN(endValue)) return;
+
+  var duration = 2000;
+  var started = false;
+
+  function formatNumber(n) {
+    var rounded = Math.floor(n);
+    if (!hasCommas) return String(rounded);
+    return rounded.toLocaleString('en-US');
+  }
+
+  function animateCount(timestamp, startTime) {
+    var elapsed = timestamp - startTime;
+    var progress = Math.min(elapsed / duration, 1);
+    /* Ease-out cubic */
+    var eased = 1 - Math.pow(1 - progress, 3);
+    var current = eased * endValue;
+    counter.textContent = prefix + formatNumber(current) + suffix;
+    if (progress < 1) {
+      requestAnimationFrame(function (ts) { animateCount(ts, startTime); });
+    }
+  }
+
+  var countObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !started) {
+          started = true;
+          /* Lock width so badge icon doesn't shift */
+          counter.style.minWidth = counter.offsetWidth + 'px';
+          counter.style.display = 'inline-block';
+          counter.textContent = prefix + '0' + suffix;
+          requestAnimationFrame(function (ts) { animateCount(ts, ts); });
+          countObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+  countObserver.observe(counter);
+})();
+</script>
+
+{%- if cta_scroll_bundle -%}
+<script>
+(function () {
+  var btn = document.querySelector('[data-scroll-bundle="true"]');
+  if (!btn) return;
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var target = document.querySelector('.gf-options');
+    if (!target) {
+      target = document.querySelector('[id^="gf-"] .gf-header');
+    }
+    if (!target) {
+      target = document.querySelector('[id^="gf-"]');
+    }
+    if (target) {
+      var offset = 20;
+      var headerEl = document.querySelector('header, .header, .shopify-section-header');
+      if (headerEl) offset = headerEl.offsetHeight + 10;
+      var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+{%- endif -%}
+
+<!-- ====================================================================== -->
+<!-- SCHEMA                                                                  -->
+<!-- ====================================================================== -->
+{% schema %}
+{
+  "name": "GUMFORCE Social Proof",
+  "tag": "section",
+  "class": "gfsp-section-wrapper",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Background"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#121212"
+    },
+
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "column_split",
+      "label": "Desktop column split",
+      "options": [
+        { "value": "50/50", "label": "50 / 50" },
+        { "value": "55/45", "label": "55 / 45" },
+        { "value": "60/40", "label": "60 / 40" },
+        { "value": "65/35", "label": "65 / 35" }
+      ],
+      "default": "55/45"
+    },
+    {
+      "type": "select",
+      "id": "content_valign",
+      "label": "Content vertical alignment",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "label": "Content gap",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Content text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "headline_number",
+      "label": "Headline number",
+      "default": "35,000+"
+    },
+    {
+      "type": "select",
+      "id": "headline_number_tag",
+      "label": "Headline number HTML tag",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" },
+        { "value": "p", "label": "Paragraph" }
+      ],
+      "default": "p"
+    },
+    {
+      "type": "range",
+      "id": "headline_number_size",
+      "label": "Headline number font size",
+      "min": 32,
+      "max": 120,
+      "step": 2,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "headline_number_color",
+      "label": "Headline number color",
+      "default": "#F4F4F4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show verification badge next to number",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "badge_image",
+      "label": "Custom badge image (optional, uses checkmark fallback)"
+    },
+    {
+      "type": "richtext",
+      "id": "headline_text",
+      "label": "Headline text",
+      "default": "<p>have already chosen GUMFORCE.</p>"
+    },
+    {
+      "type": "select",
+      "id": "headline_text_tag",
+      "label": "Headline text HTML tag",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" },
+        { "value": "p", "label": "Paragraph" }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "range",
+      "id": "headline_text_size",
+      "label": "Headline text font size",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "headline_text_color",
+      "label": "Headline text color",
+      "default": "#F4F4F4"
+    },
+
+    {
+      "type": "header",
+      "content": "Subtitle"
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "<p>Because jaw training shouldn't come at the cost of your health.</p>"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#C0C0C0"
+    },
+
+    {
+      "type": "header",
+      "content": "Benefits"
+    },
+    {
+      "type": "select",
+      "id": "benefit_title_tag",
+      "label": "Benefit title HTML tag",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" },
+        { "value": "p", "label": "Paragraph" }
+      ],
+      "default": "h3"
+    },
+    {
+      "type": "select",
+      "id": "benefit_desc_tag",
+      "label": "Benefit description HTML tag",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" },
+        { "value": "p", "label": "Paragraph" }
+      ],
+      "default": "p"
+    },
+    {
+      "type": "range",
+      "id": "benefit_title_size",
+      "label": "Benefit title font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "benefit_title_color",
+      "label": "Benefit title color",
+      "default": "#F4F4F4"
+    },
+    {
+      "type": "range",
+      "id": "benefit_desc_size",
+      "label": "Benefit description font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "benefit_desc_color",
+      "label": "Benefit description color",
+      "default": "#A0A0A0"
+    },
+    {
+      "type": "range",
+      "id": "benefit_icon_size",
+      "label": "Benefit icon size",
+      "min": 24,
+      "max": 64,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "benefits_gap",
+      "label": "Benefits grid gap",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "START TRAINING NOW"
+    },
+    {
+      "type": "checkbox",
+      "id": "cta_scroll_to_bundle",
+      "label": "Scroll to bundle picker",
+      "info": "Overrides button link — smoothly scrolls to the bundle picker section.",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "CTA background color",
+      "default": "#2AB5B4"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "CTA text color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "cta_radius",
+      "label": "CTA border radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "cta_style",
+      "label": "CTA style",
+      "options": [
+        { "value": "filled", "label": "Filled" },
+        { "value": "outline", "label": "Outline" }
+      ],
+      "default": "filled"
+    },
+    {
+      "type": "select",
+      "id": "cta_width",
+      "label": "CTA width",
+      "options": [
+        { "value": "auto", "label": "Auto" },
+        { "value": "full", "label": "Full width" }
+      ],
+      "default": "auto"
+    },
+
+    {
+      "type": "header",
+      "content": "Trust Badges"
+    },
+    {
+      "type": "color",
+      "id": "trust_text_color",
+      "label": "Trust badge text color",
+      "default": "#A0A0A0"
+    },
+    {
+      "type": "range",
+      "id": "trust_icon_size",
+      "label": "Trust badge icon size",
+      "min": 14,
+      "max": 28,
+      "step": 2,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "trust_full_image_height",
+      "label": "Full badge image height",
+      "info": "Height for uploaded PNG badges (with text baked in)",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+
+    {
+      "type": "header",
+      "content": "Accent"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (fallback icons, badge tint)",
+      "default": "#2AB5B4"
+    },
+
+    {
+      "type": "header",
+      "content": "Hero Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image (right column)"
+    },
+    {
+      "type": "select",
+      "id": "hero_aspect",
+      "label": "Image aspect ratio",
+      "options": [
+        { "value": "auto", "label": "Auto (stretch to content)" },
+        { "value": "1:1", "label": "1:1 — Square" },
+        { "value": "4:5", "label": "4:5 — Portrait" },
+        { "value": "3:4", "label": "3:4 — Tall portrait" },
+        { "value": "4:3", "label": "4:3 — Landscape" },
+        { "value": "16:9", "label": "16:9 — Wide" },
+        { "value": "9:16", "label": "9:16 — Tall" }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "select",
+      "id": "hero_position",
+      "label": "Image focal point",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "hero_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "hero_overlay_color",
+      "label": "Image overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "hero_overlay_opacity",
+      "label": "Image overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0,
+      "unit": "%"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero_mobile",
+      "label": "Show hero image on mobile",
+      "default": false
+    },
+
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+
+    {
+      "type": "header",
+      "content": "Animations"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Enable scroll animations",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon (optional, falls back to checkmark)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description"
+        }
+      ]
+    },
+    {
+      "type": "trust_badge",
+      "name": "Trust Badge",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "full_image",
+          "label": "Full badge image (PNG with text)",
+          "info": "Upload a complete badge graphic. If set, icon + text below are ignored."
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon only (used with text below)",
+          "info": "Only used if no full badge image is uploaded"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Badge text",
+          "info": "Only used if no full badge image is uploaded"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "GUMFORCE Social Proof",
+      "settings": {
+        "bg_color": "#121212",
+        "column_split": "55/45",
+        "content_valign": "center",
+        "content_gap": 32,
+        "text_alignment": "left",
+        "headline_number": "35,000+",
+        "headline_number_tag": "p",
+        "headline_number_size": 80,
+        "headline_number_color": "#F4F4F4",
+        "show_badge": true,
+        "headline_text_tag": "h2",
+        "headline_text_size": 36,
+        "headline_text_color": "#F4F4F4",
+        "subtitle_size": 18,
+        "subtitle_color": "#C0C0C0",
+        "benefit_title_tag": "h3",
+        "benefit_title_size": 16,
+        "benefit_title_color": "#F4F4F4",
+        "benefit_desc_size": 14,
+        "benefit_desc_color": "#A0A0A0",
+        "benefit_icon_size": 40,
+        "benefits_gap": 24,
+        "cta_text": "START TRAINING NOW",
+        "cta_bg_color": "#2AB5B4",
+        "cta_text_color": "#121212",
+        "cta_radius": 8,
+        "cta_style": "filled",
+        "cta_width": "auto",
+        "trust_text_color": "#A0A0A0",
+        "trust_icon_size": 18,
+        "accent_color": "#2AB5B4",
+        "hero_radius": 0,
+        "hero_overlay_color": "#000000",
+        "hero_overlay_opacity": 0,
+        "show_hero_mobile": false,
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48,
+        "enable_animations": true
+      },
+      "blocks": [
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "8x Harder Than Regular Gum",
+            "description": "Real resistance. Real results."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "500mg Creatine Per Piece",
+            "description": "Science-backed muscle fuel."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "100% Sugar-Free",
+            "description": "No junk. Just gains."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Masseter Muscle Training",
+            "description": "Target the muscles that define your jawline."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Nothing To Hide",
+            "description": "Every ingredient listed. Every one explained."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Flavors That Last",
+            "description": "Actually enjoyable to chew."
+          }
+        },
+        {
+          "type": "trust_badge",
+          "settings": {
+            "text": "Fast 2-5 Day Delivery"
+          }
+        },
+        {
+          "type": "trust_badge",
+          "settings": {
+            "text": "90-Day Moneyback Guarantee"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

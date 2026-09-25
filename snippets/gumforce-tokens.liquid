@@ -1,0 +1,84 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE — DESIGN TOKENS  (source de vérité unique)
+  ----------------------------------------------------------------------------
+  À inclure UNE fois, globalement, dans theme.liquid juste avant </head> :
+      {% render 'gumforce-tokens' %}
+
+  Tous les blocks GUMFORCE consomment ces variables (var(--gf-*)).
+  Change une valeur ici → tout le site suit. C'est ça qui rend un site homogène.
+
+  POLICES (rôles) :
+    • Oswald         → titres / labels sport en majuscules        (--gf-font-heading)
+    • Manrope        → corps de texte, sous-titres, descriptions  (--gf-font-body)
+    • Anonymous Pro  → accents : eyebrows, petits tags, prix mono  (--gf-font-accent)
+  ============================================================================
+{% endcomment %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:wght@400;700&family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* ── Polices (rôles) ── */
+    --gf-font-heading: 'Oswald', system-ui, sans-serif;
+    --gf-font-body:    'Manrope', system-ui, -apple-system, sans-serif;
+    --gf-font-accent:  'Anonymous Pro', ui-monospace, monospace;
+
+    /* ── Échelle typographique (7 pas) ── */
+    --gf-fz-caption: 12px;   /* fine print, mentions          */
+    --gf-fz-sm:      13px;   /* texte secondaire, descriptions */
+    --gf-fz-base:    15px;   /* corps                          */
+    --gf-fz-lead:    18px;   /* accroche, texte mis en avant   */
+    --gf-fz-h3:      22px;   /* sous-titre de section          */
+    --gf-fz-h2:      28px;   /* titre de section               */
+    --gf-fz-display: 36px;   /* gros titre / hero              */
+
+    /* ── Graisses ── */
+    --gf-fw-body:    500;
+    --gf-fw-medium:  600;
+    --gf-fw-bold:    700;
+    --gf-fw-heading: 700;
+
+    /* ── Hauteurs de ligne ── */
+    --gf-lh-tight: 1.15;
+    --gf-lh-snug:  1.3;
+    --gf-lh-body:  1.5;
+
+    /* ── Espacements lettres ── */
+    --gf-ls-label: 0.08em;   /* labels majuscules Oswald/Anonymous */
+
+    /* ── Arrondis ── */
+    --gf-radius-sm:   8px;    /* inputs, petits éléments */
+    --gf-radius-md:   14px;   /* cartes standard         */
+    --gf-radius-lg:   18px;   /* grandes cartes          */
+    --gf-radius-pill: 100px;  /* boutons, badges, pills  */
+
+    /* ── Couleurs ── */
+    --gf-ink:      #18181b;   /* texte principal / near-black */
+    --gf-accent:   #2ab5b4;   /* teal de marque               */
+    --gf-muted:    #71717a;   /* texte secondaire             */
+    --gf-faint:    #a1a1aa;   /* texte tertiaire / notes      */
+    --gf-line:     #e7e7ea;   /* filets / bordures            */
+    --gf-bg:       #ffffff;   /* fond carte                   */
+    --gf-bg-soft:  #f4f4f5;   /* fond section doux            */
+    --gf-mint:     #e9fbf6;   /* fond section teinté          */
+
+    /* ── Rythme d'espacement ── */
+    --gf-sec-pad:  56px;      /* padding vertical de section  */
+    --gf-card-pad: 28px;      /* padding intérieur carte      */
+    --gf-gap:      16px;      /* gap standard                 */
+  }
+
+  /* Mobile : on resserre l'échelle haute + les sections */
+  @media screen and (max-width: 749px) {
+    :root {
+      --gf-fz-display: 30px;
+      --gf-fz-h2:      24px;
+      --gf-fz-h3:      20px;
+      --gf-sec-pad:    40px;
+      --gf-card-pad:   22px;
+    }
+  }
+</style>

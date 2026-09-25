@@ -1,0 +1,575 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Creatine Benefits — Four-Pillar Grid
+  ============================================================================
+  Editorial 4-column grid. Line icons, bold keywords, thin accent lines,
+  vertical dividers, staggered scroll reveal. Dark, minimal, refined.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign bg_color       = s.bg_color | default: '#0e0e0e'
+  assign heading_text   = s.heading
+  assign heading_color  = s.heading_color | default: '#f4f4f4'
+  assign heading_size   = s.heading_size | default: 34
+  assign subheading_text = s.subheading
+  assign subheading_color = s.subheading_color | default: '#666666'
+  assign keyword_color  = s.keyword_color | default: '#f4f4f4'
+  assign desc_color     = s.desc_color | default: '#999999'
+  assign accent_color   = s.accent_color | default: '#2AB5B4'
+  assign icon_size      = s.icon_size | default: 34
+  assign divider_color  = s.divider_color | default: 'rgba(255,255,255,0.08)'
+
+  assign pad_top        = s.padding_top | default: 80
+  assign pad_bottom     = s.padding_bottom | default: 80
+  assign pad_top_mobile = s.padding_top_mobile | default: 48
+  assign pad_bot_mobile = s.padding_bottom_mobile | default: 48
+  assign enable_animations = s.enable_animations
+  assign mobile_layout     = s.mobile_layout | default: 'grid'
+-%}
+
+<style>
+  #gfcb-{{ sid }} {
+    --gfcb-bg: {{ bg_color }};
+    --gfcb-heading-color: {{ heading_color }};
+    --gfcb-heading-size: {{ heading_size }}px;
+    --gfcb-subheading-color: {{ subheading_color }};
+    --gfcb-keyword-color: {{ keyword_color }};
+    --gfcb-desc-color: {{ desc_color }};
+    --gfcb-accent: {{ accent_color }};
+    --gfcb-icon-size: {{ icon_size }}px;
+    --gfcb-divider: {{ divider_color }};
+    background: var(--gfcb-bg);
+    padding: {{ pad_top }}px 0 {{ pad_bottom }}px;
+  }
+
+  /* ── Container ── */
+  #gfcb-{{ sid }} .gfcb-inner {
+    max-width: 1340px; padding-block: clamp(48px, 6vw, 88px);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Header ── */
+  #gfcb-{{ sid }} .gfcb-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  #gfcb-{{ sid }} .gfcb-heading {
+    font-size: var(--gfcb-heading-size);
+    font-weight: 700;
+    color: var(--gfcb-heading-color);
+    margin: 0;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+
+  #gfcb-{{ sid }} .gfcb-subheading {
+    font-size: 15px;
+    color: var(--gfcb-subheading-color);
+    margin: 12px 0 0;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+
+  /* ── Grid ── */
+  #gfcb-{{ sid }} .gfcb-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* ── Item ── */
+  #gfcb-{{ sid }} .gfcb-item {
+    text-align: center;
+    padding: 0 28px;
+    position: relative;
+  }
+
+  #gfcb-{{ sid }} .gfcb-item + .gfcb-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--gfcb-divider);
+  }
+
+  /* ── Icon ── */
+  #gfcb-{{ sid }} .gfcb-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--gfcb-icon-size);
+    height: var(--gfcb-icon-size);
+    color: var(--gfcb-accent);
+    margin-bottom: 22px;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #gfcb-{{ sid }} .gfcb-item:hover .gfcb-icon {
+    transform: scale(1.12) translateY(-2px);
+  }
+
+  #gfcb-{{ sid }} .gfcb-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── Keyword ── */
+  #gfcb-{{ sid }} .gfcb-keyword {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--gfcb-keyword-color);
+    margin-bottom: 14px;
+  }
+
+  /* ── Accent dash ── */
+  #gfcb-{{ sid }} .gfcb-dash {
+    width: 24px;
+    height: 2px;
+    background: var(--gfcb-accent);
+    margin: 0 auto 18px;
+    border-radius: 1px;
+    transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #gfcb-{{ sid }} .gfcb-item:hover .gfcb-dash {
+    width: 44px;
+  }
+
+  /* ── Description ── */
+  #gfcb-{{ sid }} .gfcb-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--gfcb-desc-color);
+    margin: 0 auto;
+    max-width: 260px;
+    font-weight: 400;
+  }
+
+  /* ── Scroll animations ── */
+  #gfcb-{{ sid }}.gfcb-animate .gfcb-item {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #gfcb-{{ sid }}.gfcb-animate .gfcb-item.gfcb-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── Tablet: 2 × 2 ── */
+  @media (max-width: 999px) {
+    #gfcb-{{ sid }} .gfcb-grid {
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: 44px;
+    }
+
+    #gfcb-{{ sid }} .gfcb-item:nth-child(3)::before {
+      display: none;
+    }
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 599px) {
+    #gfcb-{{ sid }} {
+      padding: {{ pad_top_mobile }}px 0 {{ pad_bot_mobile }}px;
+    }
+
+    #gfcb-{{ sid }} .gfcb-header {
+      margin-bottom: 44px;
+    }
+
+    #gfcb-{{ sid }} .gfcb-heading {
+      font-size: calc(var(--gfcb-heading-size) * 0.74);
+    }
+
+    {%- if mobile_layout == 'line' -%}
+    #gfcb-{{ sid }} .gfcb-grid {
+      grid-template-columns: repeat({{ section.blocks.size }}, minmax(180px, 1fr));
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    #gfcb-{{ sid }} .gfcb-grid::-webkit-scrollbar { display: none; }
+    #gfcb-{{ sid }} .gfcb-item {
+      scroll-snap-align: start;
+      padding: 0 20px;
+    }
+    {%- else -%}
+    #gfcb-{{ sid }} .gfcb-grid {
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: 32px;
+    }
+    #gfcb-{{ sid }} .gfcb-item {
+      padding: 0 16px;
+    }
+    #gfcb-{{ sid }} .gfcb-item:nth-child(2n+1)::before {
+      display: none;
+    }
+    {%- endif -%}
+  }
+</style>
+
+<section id="gfcb-{{ sid }}"{% if enable_animations %} class="gfcb-animate"{% endif %}>
+  <div class="gfcb-inner">
+
+    {%- if heading_text != blank or subheading_text != blank -%}
+      <div class="gfcb-header">
+        {%- if heading_text != blank -%}
+          <h2 class="gfcb-heading">{{ heading_text }}</h2>
+        {%- endif -%}
+        {%- if subheading_text != blank -%}
+          <p class="gfcb-subheading">{{ subheading_text }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="gfcb-grid">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        {%- assign icon = b.icon_type | default: 'strength' -%}
+
+        <div class="gfcb-item" {{ block.shopify_attributes }}>
+          <div class="gfcb-icon">
+            {%- case icon -%}
+
+              {%- when 'strength' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                  <line x1="4" y1="16" x2="28" y2="16"/>
+                  <rect x="7" y="10" width="4" height="12" rx="1.5"/>
+                  <rect x="21" y="10" width="4" height="12" rx="1.5"/>
+                </svg>
+
+              {%- when 'power' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 3L9 17h7l-3 12L23 15h-7l3-12z"/>
+                </svg>
+
+              {%- when 'recovery' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7 16a9 9 0 0115-6.7"/>
+                  <polyline points="19 4 23 9 18 12"/>
+                  <path d="M25 16a9 9 0 01-15 6.7"/>
+                  <polyline points="13 28 9 23 14 20"/>
+                </svg>
+
+              {%- when 'mind' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 24v-2.3c0-.5-.2-.9-.5-1.2C9.3 18.6 8 16.4 8 14a8 8 0 1116 0c0 2.4-1.3 4.6-3.5 6.5-.3.3-.5.7-.5 1.2V24"/>
+                  <line x1="12" y1="27" x2="20" y2="27"/>
+                  <line x1="13" y1="30" x2="19" y2="30"/>
+                </svg>
+
+              {%- when 'brain' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 27v-2.5c5-.5 9-4 9-9 0-2.5-1-4.5-2.5-6C23.5 7 21.5 5 19 4.5c-1.5-.3-3 0-3 0s-1.5-.3-3 0C10.5 5 8.5 7 8.5 9.5c-1.5 1.5-2.5 3.5-2.5 6 0 5 4 8.5 9 9V27"/>
+                  <path d="M9 18c1.5-1.5 3.5-2 5.5-.5"/>
+                  <path d="M23 18c-1.5-1.5-3.5-2-5.5-.5"/>
+                  <path d="M10 12.5c1.5.8 3.5 1 5-1"/>
+                  <path d="M22 12.5c-1.5.8-3.5 1-5-1"/>
+                </svg>
+
+              {%- when 'shield' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 3L5 8v7c0 7.7 4.7 14.3 11 17 6.3-2.7 11-9.3 11-17V8L16 3z"/>
+                  <polyline points="11 16 14.5 19.5 21 13"/>
+                </svg>
+
+              {%- when 'flame' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 28c-5.5 0-8-4.2-8-8 0-5 4-8.5 6-13 .5 4 3 5.5 4.5 8.5 1-2 1.5-4 1.5-6 3 3 4.5 6.5 4.5 10.5 0 4.5-3 8-8.5 8z"/>
+                </svg>
+
+              {%- when 'target' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                  <circle cx="16" cy="16" r="12"/>
+                  <circle cx="16" cy="16" r="7"/>
+                  <circle cx="16" cy="16" r="2.5"/>
+                </svg>
+
+              {%- when 'atom' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                  <ellipse cx="16" cy="16" rx="12" ry="5"/>
+                  <ellipse cx="16" cy="16" rx="12" ry="5" transform="rotate(60 16 16)"/>
+                  <ellipse cx="16" cy="16" rx="12" ry="5" transform="rotate(-60 16 16)"/>
+                  <circle cx="16" cy="16" r="2" fill="currentColor"/>
+                </svg>
+
+            {%- endcase -%}
+          </div>
+
+          <div class="gfcb-keyword">{{ b.keyword }}</div>
+          <div class="gfcb-dash"></div>
+          <p class="gfcb-desc">{{ b.description }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+
+  </div>
+</section>
+
+{%- if enable_animations -%}
+<script>
+  (function(){
+    var root = document.getElementById('gfcb-{{ sid }}');
+    if (!root) return;
+    var items = root.querySelectorAll('.gfcb-item');
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (!e.isIntersecting) return;
+        var idx = Array.from(items).indexOf(e.target);
+        setTimeout(function(){ e.target.classList.add('gfcb-in'); }, idx * 110);
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.15 });
+    items.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Creatine Benefits",
+  "tag": "section",
+  "class": "gfcb-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why Creatine"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#0e0e0e"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "keyword_color",
+      "label": "Keyword color",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (icon, dash)",
+      "default": "#2AB5B4"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#1e1e1e"
+    },
+
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size (px)",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (px)",
+      "min": 22,
+      "max": 52,
+      "step": 1,
+      "default": 34
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "options": [
+        { "value": "grid", "label": "Grid (2×2)" },
+        { "value": "line", "label": "Scroll row" }
+      ],
+      "default": "grid"
+    },
+
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 48
+    },
+
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Enable scroll animations",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon_type",
+          "label": "Icon",
+          "options": [
+            { "value": "strength", "label": "Dumbbell" },
+            { "value": "power", "label": "Lightning" },
+            { "value": "recovery", "label": "Refresh" },
+            { "value": "mind", "label": "Lightbulb" },
+            { "value": "brain", "label": "Brain" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "flame", "label": "Flame" },
+            { "value": "target", "label": "Target" },
+            { "value": "atom", "label": "Atom" }
+          ],
+          "default": "strength"
+        },
+        {
+          "type": "text",
+          "id": "keyword",
+          "label": "Keyword",
+          "default": "Benefit"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Creatine Benefits",
+      "settings": {
+        "heading": "Why Creatine",
+        "enable_animations": true
+      },
+      "blocks": [
+        {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "strength",
+            "keyword": "Strength",
+            "description": "More reps, heavier lifts, measurable gains within weeks."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "power",
+            "keyword": "Power",
+            "description": "Explosive output when it counts — sprints, jumps, the last set."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "recovery",
+            "keyword": "Recovery",
+            "description": "Less soreness between sessions, so you show up again tomorrow."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "mind",
+            "keyword": "Mind",
+            "description": "Sharper focus and mental stamina, backed by a growing body of research on cognition."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

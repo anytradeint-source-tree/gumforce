@@ -1,0 +1,113 @@
+{% comment %}
+  ============================================================
+  GF — FOND DÉGRADÉ  (SECTION — pour la home page)
+  ------------------------------------------------------------
+  Version SECTION du block "GF Fond dégradé".
+  À FAIRE : uploader dans sections/, puis sur la home page
+  → "Ajouter une section" → "GF Fond dégradé" (UNE seule fois).
+  La section est invisible ; elle peint juste le fond derrière
+  tout le contenu. Mets les MÊMES 3 couleurs que le block du
+  PDP pour un dégradé identique sur tout le site.
+  Marche desktop + mobile. Le dégradé reste fixe au scroll.
+  ============================================================
+{% endcomment %}
+{%- assign s = section.settings -%}
+<style>
+  /* la section elle-même n'occupe aucune place (fond uniquement) */
+  #shopify-section-{{ section.id }} { display: none !important; }
+
+  #MainContent { position: relative; }
+  #MainContent::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    transform: translateZ(0);
+    background: linear-gradient(180deg,
+      {{ s.color_safe   | default: '#121212' }} 0%,
+      {{ s.color_top    | default: '#ffffff' }} {{ s.safe_end | default: 12 }}%,
+      {{ s.color_mid    | default: '#f0faf7' }} {{ s.mid_position | default: 55 }}%,
+      {{ s.color_bottom | default: '#d4f0ea' }} 100%);
+  }
+  /* body transparent : sinon son fond masque le dégradé.
+     html (racine/canvas) = couleur du BAS du dégradé : remplit la zone derrière la
+     barre Safari iPhone (sinon barre blanche) et matche le bas du dégradé fixe. */
+  body { background: transparent !important; }
+  html { background: {{ s.color_safe | default: '#121212' }} !important; }
+  #MainContent .shopify-section,
+  #MainContent section,
+  #MainContent .color-scheme-1,
+  #MainContent .color-scheme-3,
+  #MainContent .color-scheme-4,
+  #MainContent .section-background {
+    background-color: transparent !important;
+  }
+</style>
+<script>
+  /* iOS Safari : teinte la barre du navigateur avec la couleur du bas du dégradé */
+  (function () {
+    var c = '{{ s.color_safe | default: '#121212' }}';
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
+    m.setAttribute('content', c);
+  })();
+</script>
+{% schema %}
+{
+  "name": "GF Fond dégradé",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Fond dégradé global de la page (idéal home page). Choisis 3 couleurs (haut → milieu → bas). À ajouter UNE seule fois. Mets les mêmes couleurs que le block du PDP pour un site cohérent."
+    },
+    {
+      "type": "color",
+      "id": "color_safe",
+      "label": "Couleur tout en haut (header/status bar)",
+      "info": "Zone derrière la barre de statut iPhone et le header. Doit matcher le fond du header.",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "safe_end",
+      "label": "Fin de la zone header (%)",
+      "info": "Où la couleur header se termine et le dégradé commence.",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "default": 12,
+      "unit": "%"
+    },
+    {
+      "type": "color",
+      "id": "color_top",
+      "label": "Couleur du haut (début dégradé)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_mid",
+      "label": "Couleur du milieu",
+      "default": "#f0faf7"
+    },
+    {
+      "type": "color",
+      "id": "color_bottom",
+      "label": "Couleur du bas",
+      "default": "#d4f0ea"
+    },
+    {
+      "type": "range",
+      "id": "mid_position",
+      "label": "Position de la couleur du milieu",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "default": 55,
+      "unit": "%"
+    }
+  ],
+  "presets": [{ "name": "GF Fond dégradé" }]
+}
+{% endschema %}

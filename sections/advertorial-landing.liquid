@@ -1,0 +1,598 @@
+<style>
+  .shopify-section-group-header-group,
+  #shopify-section-header,
+  #header,
+  header.header,
+  .header-wrapper,
+  .section-header {
+    display: none !important;
+  }
+</style>
+
+<div class="al" id="advertorial-landing">
+
+  <section class="al-hero">
+    <div class="al-wrap">
+      <h1 class="al-hero__h">{{ section.settings.hero_headline }}</h1>
+      <p class="al-hero__sub"><em>{{ section.settings.hero_subhead }}</em></p>
+    </div>
+    {%- if section.settings.hero_image != blank -%}
+      {%- assign hero_img = section.settings.hero_image -%}
+      <div class="al-wrap">
+        <div class="al-hero__img">
+          <img
+            src="{{ hero_img | image_url: width: 1200 }}"
+            srcset="
+              {{ hero_img | image_url: width: 375 }} 375w,
+              {{ hero_img | image_url: width: 720 }} 720w,
+              {{ hero_img | image_url: width: 960 }} 960w,
+              {{ hero_img | image_url: width: 1200 }} 1200w
+            "
+            sizes="(max-width: 768px) calc(100vw - 48px), 640px"
+            alt="{{ section.settings.hero_image_alt | escape }}"
+            width="{{ hero_img.width }}"
+            height="{{ hero_img.height }}"
+          >
+        </div>
+      </div>
+    {%- endif -%}
+  </section>
+
+  {%- if section.settings.intro_paragraph != blank -%}
+  <section class="al-prose">
+    <div class="al-wrap">
+      <div class="al-prose__text">
+        {{ section.settings.intro_paragraph }}
+      </div>
+    </div>
+  </section>
+  {%- endif -%}
+
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'scene' -%}
+    <section class="al-prose" {{ block.shopify_attributes }}>
+      <div class="al-wrap">
+        <div class="al-prose__text">
+          {%- if block.settings.subheading != blank -%}
+            <h2>{{ block.settings.subheading }}</h2>
+          {%- endif -%}
+          {%- if block.settings.image != blank -%}
+            {%- assign scene_img = block.settings.image -%}
+            <div class="al-scene__img">
+              <img
+                src="{{ scene_img | image_url: width: 1200 }}"
+                srcset="
+                  {{ scene_img | image_url: width: 375 }} 375w,
+                  {{ scene_img | image_url: width: 720 }} 720w,
+                  {{ scene_img | image_url: width: 960 }} 960w,
+                  {{ scene_img | image_url: width: 1200 }} 1200w
+                "
+                sizes="(max-width: 768px) calc(100vw - 48px), 640px"
+                alt="{{ block.settings.image_alt | escape }}"
+                width="{{ scene_img.width }}"
+                height="{{ scene_img.height }}"
+                loading="lazy"
+              >
+            </div>
+          {%- endif -%}
+          {{ block.settings.body }}
+        </div>
+      </div>
+    </section>
+    {%- endif -%}
+  {%- endfor -%}
+
+  <section class="al-cta" id="al-cta-primary">
+    <div class="al-wrap">
+      <a class="al-btn" href="{{ section.settings.cta_url }}">
+        {{ section.settings.cta_text }}
+      </a>
+    </div>
+  </section>
+
+  <section class="al-testimonials">
+    <div class="al-wrap">
+      {%- if section.settings.testimonials_heading != blank -%}
+        <h2 class="al-testimonials__h">{{ section.settings.testimonials_heading }}</h2>
+      {%- endif -%}
+      <div class="al-testimonials__grid">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'testimonial' -%}
+            <blockquote class="al-quote" {{ block.shopify_attributes }}>
+              <div class="al-quote__text">{{ block.settings.quote }}</div>
+              {%- if block.settings.avatar != blank -%}
+                <div class="al-quote__img">
+                  <img
+                    src="{{ block.settings.avatar | image_url: width: 720 }}"
+                    srcset="
+                      {{ block.settings.avatar | image_url: width: 375 }} 375w,
+                      {{ block.settings.avatar | image_url: width: 720 }} 720w
+                    "
+                    sizes="(max-width: 768px) calc(100vw - 48px), 320px"
+                    alt="{{ block.settings.name | escape }}"
+                    width="{{ block.settings.avatar.width }}"
+                    height="{{ block.settings.avatar.height }}"
+                    loading="lazy"
+                  >
+                </div>
+              {%- endif -%}
+              <footer class="al-quote__attr">
+                <cite class="al-quote__name">{{ block.settings.name }}</cite>
+                {%- if block.settings.age != blank -%}
+                  <span class="al-quote__age">, {{ block.settings.age }}</span>
+                {%- endif -%}
+                {%- if block.settings.verified -%}
+                  <span class="al-quote__badge" aria-label="Verified buyer">&#10003; Verified</span>
+                {%- endif -%}
+              </footer>
+            </blockquote>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+
+  <section class="al-cta" id="al-cta-secondary">
+    <div class="al-wrap">
+      <a class="al-btn" href="{{ section.settings.cta_url }}">
+        {{ section.settings.cta_text }}
+      </a>
+    </div>
+  </section>
+
+  {%- if section.settings.closer_paragraph != blank -%}
+    <section class="al-closer">
+      <div class="al-wrap">
+        <div class="al-closer__text">
+          {{ section.settings.closer_paragraph }}
+        </div>
+        <a class="al-btn" href="{{ section.settings.cta_url }}">
+          {{ section.settings.cta_text }}
+        </a>
+      </div>
+    </section>
+  {%- endif -%}
+
+</div>
+
+{% stylesheet %}
+.al *,
+.al *::before,
+.al *::after {
+  box-sizing: border-box;
+}
+
+.al {
+  background: #0A0A0A;
+  color: #F5F5F5;
+  font-weight: 400;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.al-wrap {
+  max-width: 688px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.al-hero {
+  padding: clamp(72px, 14vw, 152px) 0 0;
+}
+
+.al-hero__h {
+  font-family: var(--font-heading-family, inherit);
+  font-size: clamp(26px, 5vw, 46px);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  margin: 0 0 20px;
+}
+
+.al-hero__sub {
+  font-size: clamp(16px, 2.2vw, 20px);
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 0.6;
+  margin: 0;
+}
+
+.al-hero__img {
+  margin-top: clamp(32px, 5vw, 48px);
+}
+
+.al-hero__img img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.al-prose {
+  background: #0A0A0A;
+  padding: clamp(36px, 6vw, 56px) 0;
+}
+
+.al-prose__text {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.al-prose__text p {
+  font-size: clamp(15px, 2vw, 17px);
+  line-height: 1.78;
+  margin: 0 0 1.5em;
+}
+
+.al-prose__text p:last-child {
+  margin-bottom: 0;
+}
+
+.al-prose__text h2 {
+  font-family: var(--font-heading-family, inherit);
+  font-size: clamp(20px, 3.5vw, 28px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: clamp(48px, 8vw, 72px) 0 clamp(20px, 3vw, 28px);
+}
+
+.al-prose__text h2:first-child {
+  margin-top: 0;
+}
+
+.al-prose__text h3 {
+  font-family: var(--font-heading-family, inherit);
+  font-size: clamp(17px, 2.5vw, 22px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: clamp(36px, 6vw, 56px) 0 clamp(16px, 2vw, 24px);
+}
+
+.al-prose__text blockquote {
+  border-left: 3px solid #00BFC9;
+  padding-left: clamp(16px, 3vw, 24px);
+  margin: 1.5em 0;
+  font-style: italic;
+}
+
+.al-prose__text blockquote p {
+  opacity: 0.9;
+}
+
+.al-prose__text ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5em;
+}
+
+.al-prose__text li {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.al-prose__text li:last-child {
+  margin-bottom: 0;
+}
+
+.al-prose__text li::before {
+  content: '\2014';
+  position: absolute;
+  left: 0;
+  color: #00BFC9;
+}
+
+.al-prose__text em {
+  font-style: italic;
+}
+
+.al-prose__text strong {
+  font-weight: 700;
+}
+
+.al-scene__img {
+  margin: clamp(20px, 3vw, 28px) 0;
+}
+
+.al-scene__img img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.al-cta {
+  background: #0A0A0A;
+  padding: clamp(48px, 9vw, 88px) 0;
+  text-align: center;
+}
+
+.al-btn {
+  display: inline-block;
+  background: #00BFC9;
+  color: #0A0A0A;
+  font-family: var(--font-heading-family, inherit);
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 20px clamp(36px, 6vw, 56px);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.al-btn:hover {
+  background: #2dd1d9;
+  transform: translateY(-2px);
+}
+
+.al-btn:active {
+  transform: translateY(0);
+}
+
+.al-testimonials {
+  background: #141414;
+  padding: clamp(48px, 9vw, 88px) 0;
+}
+
+.al-testimonials__h {
+  font-family: var(--font-heading-family, inherit);
+  font-size: clamp(20px, 3.5vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 clamp(36px, 6vw, 56px);
+}
+
+.al-testimonials__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(32px, 5vw, 48px);
+}
+
+.al-quote {
+  margin: 0;
+  padding: 0 0 0 20px;
+  border-left: 2px solid rgba(0, 191, 201, 0.25);
+}
+
+.al-quote__text {
+  font-size: clamp(14px, 1.9vw, 16px);
+  line-height: 1.72;
+}
+
+.al-quote__text p {
+  margin: 0;
+  opacity: 0.85;
+}
+
+.al-quote__img {
+  margin-bottom: 20px;
+}
+
+.al-quote__img img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.al-quote__attr {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.al-quote__name {
+  font-weight: 700;
+  font-style: normal;
+}
+
+.al-quote__age {
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+.al-quote__badge {
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #00BFC9;
+}
+
+.al-closer {
+  background: #0A0A0A;
+  padding: clamp(48px, 9vw, 88px) 0;
+  text-align: center;
+}
+
+.al-closer__text {
+  max-width: 640px;
+  margin: 0 auto clamp(36px, 5vw, 52px);
+  text-align: left;
+}
+
+.al-closer__text p {
+  font-size: clamp(15px, 2vw, 17px);
+  line-height: 1.78;
+  margin: 0 0 1.5em;
+}
+
+.al-closer__text p:last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 769px) {
+  .al-testimonials__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+{% endstylesheet %}
+
+{% javascript %}
+(function () {
+  document.querySelectorAll('#advertorial-landing a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+})();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Advertorial Landing",
+  "tag": "section",
+  "class": "advertorial-landing-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "hero_headline",
+      "label": "Headline",
+      "default": "I spent €500 on Tinder, 8 years in the gym, and 40 bio rewrites. Nothing moved. Then I figured out the problem wasn’t anything I’d been trying to fix."
+    },
+    {
+      "type": "text",
+      "id": "hero_subhead",
+      "label": "Subhead",
+      "default": "I’m 30. I went 5 months on Tinder without a single match. This is the long version."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "text",
+      "id": "hero_image_alt",
+      "label": "Hero image alt text"
+    },
+    {
+      "type": "header",
+      "content": "Intro"
+    },
+    {
+      "type": "richtext",
+      "id": "intro_paragraph",
+      "label": "Intro paragraph",
+      "info": "The lede that appears right after the hero image, before the first scene block."
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "GET GUMFORCE →"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Testimonials"
+    },
+    {
+      "type": "text",
+      "id": "testimonials_heading",
+      "label": "Section heading",
+      "default": "What other guys figured out"
+    },
+    {
+      "type": "header",
+      "content": "Closer"
+    },
+    {
+      "type": "richtext",
+      "id": "closer_paragraph",
+      "label": "Closing text"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "scene",
+      "name": "Scene",
+      "settings": [
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "Body"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text",
+          "info": "Describe the image for accessibility and SEO."
+        }
+      ]
+    },
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "quote",
+          "label": "Quote",
+          "default": "<p>Customer quote.</p>"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Name"
+        },
+        {
+          "type": "text",
+          "id": "age",
+          "label": "Age"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Photo"
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Show verified badge",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "max_blocks": 25,
+  "presets": [
+    {
+      "name": "Advertorial Landing"
+    }
+  ]
+}
+{% endschema %}

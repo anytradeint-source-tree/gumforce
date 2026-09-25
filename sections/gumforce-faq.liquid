@@ -1,0 +1,654 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE FAQ — Full-Width Section
+  ============================================================================
+  Dark full-width FAQ section with heading, subheading, and accordion items.
+  Grid trick for smooth height transitions, plus/chevron icons,
+  one-at-a-time behavior, scroll animations.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign bg_color        = s.bg_color | default: '#0e0e0e'
+  assign heading_text    = s.heading
+  assign heading_color   = s.heading_color | default: '#f4f4f4'
+  assign heading_size    = s.heading_size | default: 34
+  assign subheading_text = s.subheading
+  assign subheading_color = s.subheading_color | default: '#666666'
+  assign title_color     = s.title_color | default: '#f4f4f4'
+  assign body_color      = s.body_color | default: '#999999'
+  assign border_color    = s.border_color | default: 'rgba(255,255,255,0.08)'
+  assign icon_color      = s.icon_color | default: '#2AB5B4'
+  assign icon_style      = s.icon_style | default: 'plus'
+  assign open_first      = s.open_first
+  assign one_at_a_time   = s.one_at_a_time
+  assign max_width       = s.max_width | default: 720
+
+  assign pad_top         = s.padding_top | default: 40
+  assign pad_bottom      = s.padding_bottom | default: 40
+  assign pad_top_mobile  = s.padding_top_mobile | default: 40
+  assign pad_bot_mobile  = s.padding_bottom_mobile | default: 40
+  assign enable_animations = s.enable_animations
+-%}
+
+<style>
+  #gffaq-{{ sid }} {
+    /* pas de content-visibility : mesuré sur WebKit, il retardait le chargement des images lazy jusqu'à l'écran */
+    --gffaq-bg: {{ bg_color }};
+    --gffaq-heading-color: {{ heading_color }};
+    --gffaq-heading-size: {{ heading_size }}px;
+    --gffaq-subheading-color: {{ subheading_color }};
+    --gffaq-title-color: {{ title_color }};
+    --gffaq-body-color: {{ body_color }};
+    --gffaq-border: {{ border_color }};
+    --gffaq-icon: {{ icon_color }};
+    background: var(--gffaq-bg);
+    padding: {{ pad_top }}px 0 {{ pad_bottom }}px;
+  }
+
+  /* ── Container ── */
+  #gffaq-{{ sid }} .gffaq-inner {
+    max-width: 1340px; padding-block: clamp(48px, 6vw, 88px);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Two-column layout ── */
+  #gffaq-{{ sid }} .gffaq-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px; /* en-tête → liste : recette GF (30 mobile) */
+  }
+
+  /* ── Header ── */
+  #gffaq-{{ sid }} .gffaq-header {
+    text-align: left;
+  }
+
+  #gffaq-{{ sid }} .gffaq-heading {
+    font-size: var(--gffaq-heading-size);
+    font-weight: 700;
+    color: var(--gffaq-heading-color);
+    margin: 0;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+
+  #gffaq-{{ sid }} .gffaq-subheading {
+    font-size: 15px;
+    color: var(--gffaq-subheading-color);
+    margin: 14px 0 0;
+    font-weight: 400;
+    line-height: 1.6;
+    max-width: 340px;
+  }
+
+  /* ── Accordion list ── */
+  #gffaq-{{ sid }} .gffaq-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ── Item ── */
+  #gffaq-{{ sid }} .gffaq-item {
+    border-bottom: 1px solid var(--gffaq-border);
+  }
+
+  #gffaq-{{ sid }} .gffaq-item:first-child {
+    border-top: 1px solid var(--gffaq-border);
+  }
+
+  /* ── Trigger ── */
+  #gffaq-{{ sid }} .gffaq-trigger {
+    all: unset;
+    box-sizing: border-box;
+    font: inherit;
+    color: var(--gffaq-title-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    padding: 24px 0;
+    cursor: pointer;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    transition: color 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #gffaq-{{ sid }} .gffaq-trigger:hover {
+    color: var(--gffaq-icon);
+  }
+
+  #gffaq-{{ sid }} .gffaq-trigger:focus-visible {
+    outline: 2px solid var(--gffaq-icon);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* ── Icon ── */
+  #gffaq-{{ sid }} .gffaq-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Chevron */
+  #gffaq-{{ sid }} .gffaq-icon--chevron {
+    color: var(--gffaq-icon);
+  }
+
+  #gffaq-{{ sid }} .gffaq-trigger[aria-expanded="true"] .gffaq-icon--chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Plus/minus bars */
+  #gffaq-{{ sid }} .gffaq-icon--plus span {
+    display: block;
+    position: absolute;
+    background: var(--gffaq-icon);
+    border-radius: 1px;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.3s ease;
+  }
+
+  #gffaq-{{ sid }} .gffaq-icon--plus .gffaq-h {
+    width: 100%;
+    height: 2px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+  }
+
+  #gffaq-{{ sid }} .gffaq-icon--plus .gffaq-v {
+    width: 2px;
+    height: 100%;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+  }
+
+  #gffaq-{{ sid }} .gffaq-trigger[aria-expanded="true"] .gffaq-icon--plus .gffaq-v {
+    transform: translateX(-50%) rotate(90deg);
+    opacity: 0;
+  }
+
+  /* ── Panel — grid trick for smooth height ── */
+  #gffaq-{{ sid }} .gffaq-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #gffaq-{{ sid }} .gffaq-item.gffaq-open .gffaq-panel {
+    grid-template-rows: 1fr;
+  }
+
+  #gffaq-{{ sid }} .gffaq-overflow {
+    overflow: hidden;
+  }
+
+  /* ── Answer body ── */
+  #gffaq-{{ sid }} .gffaq-body {
+    color: var(--gffaq-body-color);
+    font-size: 15px;
+    line-height: 1.75;
+    padding: 0 0 24px;
+    max-width: 680px;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  #gffaq-{{ sid }} .gffaq-item.gffaq-open .gffaq-body {
+    opacity: 1;
+    transform: none;
+  }
+
+  #gffaq-{{ sid }} .gffaq-body p { margin: 0 0 12px; }
+  #gffaq-{{ sid }} .gffaq-body p:last-child { margin-bottom: 0; }
+
+  /* ── Scroll animations ── */
+  {%- if enable_animations %}
+  #gffaq-{{ sid }} .gffaq-anim {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #gffaq-{{ sid }} .gffaq-anim.gffaq-in {
+    opacity: 1;
+    transform: none;
+  }
+  {%- endif %}
+
+  /* ── Desktop: heading left, accordions right ── */
+  @media (min-width: 768px) {
+    #gffaq-{{ sid }} .gffaq-inner {
+      padding: 0 40px;
+    }
+
+    #gffaq-{{ sid }} .gffaq-layout {
+      grid-template-columns: 0.35fr 0.65fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    #gffaq-{{ sid }} .gffaq-header {
+      position: sticky;
+      top: 100px;
+    }
+
+    #gffaq-{{ sid }} .gffaq-trigger {
+      padding: 26px 0;
+      font-size: 16px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    #gffaq-{{ sid }} .gffaq-inner {
+      padding: 0 48px;
+    }
+
+    #gffaq-{{ sid }} .gffaq-layout {
+      gap: 80px;
+    }
+  }
+
+  /* ── Espacement mobile : même seuil (749px) que toutes les sections GF ── */
+  @media (max-width: 749px) {
+    #gffaq-{{ sid }} {
+      padding: {{ pad_top_mobile }}px 0 {{ pad_bot_mobile }}px;
+    }
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 767px) {
+    #gffaq-{{ sid }} .gffaq-header {
+      text-align: center;
+      margin-bottom: 0;
+    }
+
+    #gffaq-{{ sid }} .gffaq-subheading {
+      max-width: none;
+    }
+
+    #gffaq-{{ sid }} .gffaq-heading {
+      font-size: calc(var(--gffaq-heading-size) * 0.76);
+    }
+
+    #gffaq-{{ sid }} .gffaq-trigger {
+      padding: 20px 0;
+      font-size: 14px;
+    }
+
+    #gffaq-{{ sid }} .gffaq-body {
+      padding: 0 0 20px;
+      font-size: 13px;
+    }
+  }
+</style>
+
+<section id="gffaq-{{ sid }}">
+  <div class="gffaq-inner">
+    <div class="gffaq-layout">
+
+    {%- if heading_text != blank or subheading_text != blank -%}
+      <div class="gffaq-header{% if enable_animations %} gffaq-anim{% endif %}">
+        {%- if heading_text != blank -%}
+          <h2 class="gffaq-heading">{{ heading_text }}</h2>
+        {%- endif -%}
+        {%- if subheading_text != blank -%}
+          <p class="gffaq-subheading">{{ subheading_text }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <ul class="gffaq-list">
+      {%- for block in section.blocks -%}
+        {%- assign q = block.settings.question -%}
+        {%- assign a = block.settings.answer -%}
+        {%- if q != blank and a != blank -%}
+          {%- assign answer_html = a | newline_to_br | replace: '<br /><br />', '</p><p>' | prepend: '<p>' | append: '</p>' -%}
+          {%- assign is_open = false -%}
+          {%- if open_first and forloop.first -%}
+            {%- assign is_open = true -%}
+          {%- endif -%}
+
+          <li class="gffaq-item{% if is_open %} gffaq-open{% endif %}{% if enable_animations %} gffaq-anim{% endif %}" {{ block.shopify_attributes }}>
+            <h3 class="gffaq-q">
+              <button
+                class="gffaq-trigger"
+                type="button"
+                aria-expanded="{% if is_open %}true{% else %}false{% endif %}"
+                aria-controls="gffaq-p-{{ sid }}-{{ forloop.index }}"
+              >
+                {{ q }}
+                {%- if icon_style == 'plus' -%}
+                  <span class="gffaq-icon gffaq-icon--plus" aria-hidden="true">
+                    <span class="gffaq-h"></span>
+                    <span class="gffaq-v"></span>
+                  </span>
+                {%- else -%}
+                  <svg class="gffaq-icon gffaq-icon--chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                {%- endif -%}
+              </button>
+            </h3>
+
+            <div class="gffaq-panel" id="gffaq-p-{{ sid }}-{{ forloop.index }}" role="region" aria-label="{{ q | escape }}">
+              <div class="gffaq-overflow">
+                <div class="gffaq-body">{{ answer_html }}</div>
+              </div>
+            </div>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var root = document.getElementById('gffaq-{{ sid }}');
+  if (!root) return;
+  var oneAtATime = {{ one_at_a_time }};
+
+  /* Touch-scroll guard — prevent accordion toggle during scroll */
+  var tY = 0, scrolling = false;
+  root.addEventListener('touchstart', function(e){ tY = e.touches[0].clientY; scrolling = false; }, { passive: true });
+  root.addEventListener('touchmove', function(e){ if (Math.abs(e.touches[0].clientY - tY) > 10) scrolling = true; }, { passive: true });
+
+  root.querySelectorAll('.gffaq-trigger').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if (scrolling) return;
+      var isOpen = btn.getAttribute('aria-expanded') === 'true';
+      var item = btn.closest('.gffaq-item');
+
+      if (oneAtATime && !isOpen) {
+        root.querySelectorAll('.gffaq-trigger[aria-expanded="true"]').forEach(function(other){
+          other.setAttribute('aria-expanded', 'false');
+          other.closest('.gffaq-item').classList.remove('gffaq-open');
+        });
+      }
+
+      btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      item.classList.toggle('gffaq-open', !isOpen);
+    });
+  });
+
+  {%- if enable_animations %}
+  /* Scroll animations */
+  var els = root.querySelectorAll('.gffaq-anim');
+  if (els.length) {
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) {
+          var idx = Array.from(els).indexOf(e.target);
+          setTimeout(function(){ e.target.classList.add('gffaq-in'); }, idx * 60);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    els.forEach(function(el){ obs.observe(el); });
+  }
+  {%- endif %}
+})();
+</script>
+
+{% schema %}
+{
+  "name": "GF FAQ",
+  "tag": "section",
+  "class": "gffaq-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+
+    {
+      "type": "header",
+      "content": "Behaviour"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open first item by default",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "one_at_a_time",
+      "label": "Only one open at a time",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "icon_style",
+      "label": "Icon style",
+      "options": [
+        { "value": "plus", "label": "Plus / Minus" },
+        { "value": "chevron", "label": "Chevron" }
+      ],
+      "default": "plus"
+    },
+
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#0e0e0e"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Question color",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Answer color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#1e1e1e"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#2AB5B4"
+    },
+
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (px)",
+      "min": 22,
+      "max": 52,
+      "step": 1,
+      "default": 34
+    },
+
+    {
+      "type": "header",
+      "content": "── Espacement ──"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Espace haut (mobile)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Espace bas (mobile)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Espace haut (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Espace bas (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Enable scroll animations",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Question goes here"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Answer goes here.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF FAQ",
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "one_at_a_time": true,
+        "enable_animations": true
+      },
+      "blocks": [
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How do I use it?",
+            "answer": "<p>Chew one piece at a time using your back teeth (molars). Alternate sides every few minutes to train both sides evenly. Each session should last 10–15 minutes max. We recommend 3–4 pieces spread throughout the day.</p><p>Don't overdo it. Your jaw is a muscle. If you feel pain or discomfort, stop and rest. Build up gradually, especially in week one.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Does it actually work?",
+            "answer": "<p>GUMFORCE is 10× harder than regular gum. That means real resistance on your masseter muscles — the primary muscles that define your jawline. Like any muscle, they respond to consistent training with progressive resistance.</p><p>Each piece also contains 500mg of creatine monohydrate — the most researched sports supplement in existence. Results come from consistency, combined with overall fitness and low body fat for visible definition.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "What's in it?",
+            "answer": "<p>Every piece contains 500mg creatine monohydrate. No fillers, no underdosing, no guessing. Sugar-free. Dense, chunky white pieces. You'll feel the difference the second you start chewing.</p><p>100g resealable pouch. Vegan friendly.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How long until I see results?",
+            "answer": "<p>Most customers report feeling the jaw workout immediately on first use. Visible jawline definition typically appears within 4–8 weeks of daily use, depending on your starting point, body fat percentage, and consistency.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Is the creatine effective through chewing?",
+            "answer": "<p>Yes. Creatine monohydrate is absorbed through the mucous membranes in your mouth (buccal absorption) as well as through normal digestion when swallowed with saliva. Each piece delivers a full 500mg dose.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Shipping & returns",
+            "answer": "<p>We ship worldwide. Orders are processed within 1–2 business days. Standard delivery takes 5–8 business days depending on your location. Tracking included with every order.</p><p>90-day money-back guarantee. Not satisfied? Reach out and we'll make it right.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

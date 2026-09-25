@@ -1,0 +1,92 @@
+{% comment %}
+  ============================================================
+  GF — FOND DÉGRADÉ  (block utilitaire, couleurs réglables)
+  ------------------------------------------------------------
+  À FAIRE : uploader dans blocks/, puis ajouter le block
+  "GF Fond dégradé" UNE fois sur la page (invisible).
+  Les 3 couleurs + la position se règlent dans l'éditeur.
+  Marche desktop + mobile.
+  ============================================================
+{% endcomment %}
+<style>
+  #MainContent { position: relative; }
+  #MainContent::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    transform: translateZ(0);
+    background: linear-gradient(180deg,
+      {{ block.settings.color_top    | default: '#ffffff' }} 0%,
+      {{ block.settings.color_mid    | default: '#f0faf7' }} {{ block.settings.mid_position | default: 55 }}%,
+      {{ block.settings.color_bottom | default: '#d4f0ea' }} 100%);
+  }
+  /* body transparent : sinon son fond masque le dégradé.
+     html (racine/canvas) = couleur du BAS du dégradé : remplit la zone derrière la
+     barre Safari iPhone (sinon barre blanche) et matche le bas du dégradé fixe. */
+  body { background: transparent !important; }
+  html { background: {{ block.settings.color_bottom | default: '#d4f0ea' }} !important; }
+  #MainContent .shopify-section,
+  #MainContent section,
+  #MainContent .color-scheme-1,
+  #MainContent .color-scheme-3,
+  #MainContent .color-scheme-4,
+  #MainContent .section-background {
+    background-color: transparent !important;
+  }
+</style>
+<div {{ block.shopify_attributes }} style="display:none"></div>
+<script>
+  /* iOS Safari : teinte la barre du navigateur avec la couleur du bas du dégradé */
+  (function () {
+    var sc = document.currentScript;
+    var c = '{{ block.settings.color_bottom | default: '#d4f0ea' }}';
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
+    m.setAttribute('content', c);
+    var w = sc && sc.closest('[id^="shopify-block-"]');
+    /* position:absolute = hors du flux flex → ne génère plus de gap */
+    if (w) { w.style.cssText += ';position:absolute!important;width:0!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;'; }
+  })();
+</script>
+{% schema %}
+{
+  "name": "GF Fond dégradé",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Fond dégradé global du site. Choisis 3 couleurs (haut → milieu → bas)."
+    },
+    {
+      "type": "color",
+      "id": "color_top",
+      "label": "Couleur du haut",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_mid",
+      "label": "Couleur du milieu",
+      "default": "#f0faf7"
+    },
+    {
+      "type": "color",
+      "id": "color_bottom",
+      "label": "Couleur du bas",
+      "default": "#d4f0ea"
+    },
+    {
+      "type": "range",
+      "id": "mid_position",
+      "label": "Position de la couleur du milieu",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "default": 55,
+      "unit": "%"
+    }
+  ],
+  "presets": [{ "name": "GF Fond dégradé" }]
+}
+{% endschema %}

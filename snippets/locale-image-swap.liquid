@@ -1,0 +1,109 @@
+{%- comment -%}
+  Locale-based product media swap (images + video) — Balance theme.
+
+  How it works:
+  Upload ALL product media to the product gallery — English media first,
+  then French media in the same order. Create a number metafield
+  custom.french_media_start and set it to the position where French media
+  begins (1-indexed). E.g. 7 English items → set to 8.
+
+  For English visitors: French items are removed from the gallery.
+  For French visitors: English items are removed from the gallery.
+
+  Works for images, video, 3D models — anything in the product gallery.
+
+  Usage (at the end of product-media-gallery-content snippet):
+    {% render 'locale-image-swap', product: selected_product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign fr_start = product.metafields.custom.french_media_start.value | plus: 0
+-%}
+
+{%- if fr_start > 0 -%}
+{%- liquid
+  assign locale = request.locale.iso_code
+  assign total_media = product.media.size
+  assign en_count = fr_start | minus: 1
+  assign fr_count = total_media | minus: en_count
+-%}
+
+<script data-gf-locale="{{ locale }}" data-gf-fr-start="{{ fr_start }}" data-gf-en-count="{{ en_count }}">
+(function() {
+  var locale   = '{{ locale }}';
+  var frStart  = {{ fr_start }};
+  var enCount  = {{ en_count }};
+  var isFrench = (locale === 'fr');
+
+  /* Helper: remove items by 1-indexed position */
+  function strip(nodeList) {
+    var items = Array.prototype.slice.call(nodeList);
+    var removed = 0;
+    for (var i = 0; i < items.length; i++) {
+      var pos = i + 1;
+      if (isFrench && pos < frStart) { items[i].remove(); removed++; }
+      else if (!isFrench && pos >= frStart) { items[i].remove(); removed++; }
+    }
+    return removed;
+  }
+
+  function cleanGallery() {
+    /* ── Balance theme: <media-gallery> is the root ── */
+    var gallery = document.querySelector('media-gallery');
+    if (!gallery) return false;
+
+    var removed = 0;
+
+    /* ── 1. Carousel slides (slideshow-slide custom elements) ── */
+    var slides = gallery.querySelectorAll('slideshow-component slideshow-slide');
+    if (slides.length >= frStart) removed += strip(slides);
+
+    /* ── 2. Grid items (desktop two-column / one-column view) ── */
+    var gridItems = gallery.querySelectorAll('.media-gallery__grid > li');
+    if (gridItems.length >= frStart) removed += strip(gridItems);
+
+    /* ── 3. Slideshow thumbnail controls (desktop + mobile sets) ── */
+    var thumbButtons = gallery.querySelectorAll(
+      'slideshow-controls .slideshow-controls__thumbnail'
+    );
+    if (thumbButtons.length >= frStart) strip(thumbButtons);
+
+    /* ── 4. Slideshow dots ── */
+    var dots = gallery.querySelectorAll(
+      '.slideshow-controls__dots > *'
+    );
+    if (dots.length >= frStart) strip(dots);
+
+    /* ── 5. Zoom dialog media list ── */
+    var zoomItems = gallery.querySelectorAll(
+      '.dialog-zoomed-gallery > li'
+    );
+    if (zoomItems.length >= frStart) strip(zoomItems);
+
+    /* ── 6. Zoom dialog thumbnail strip ── */
+    var zoomThumbs = gallery.querySelectorAll(
+      '.dialog-thumbnails-list > button'
+    );
+    if (zoomThumbs.length >= frStart) strip(zoomThumbs);
+
+    /* ── Nudge the carousel to recalculate ── */
+    if (removed > 0) window.dispatchEvent(new Event('resize'));
+
+    return removed > 0;
+  }
+
+  /* Run as soon as gallery exists, retry if not ready */
+  if (!cleanGallery()) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        if (!cleanGallery()) setTimeout(cleanGallery, 500);
+      });
+    } else {
+      setTimeout(function() {
+        if (!cleanGallery()) setTimeout(cleanGallery, 800);
+      }, 200);
+    }
+  }
+})();
+</script>
+{%- endif -%}

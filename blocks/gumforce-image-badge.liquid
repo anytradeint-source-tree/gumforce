@@ -1,0 +1,219 @@
+{% comment %}
+  ============================================================
+  GF — BADGE IMAGE  (seal rond festonne, facon Lemme)
+  ------------------------------------------------------------
+  Forme = SVG (polygone festonne). Texte = HTML pur en overlay
+  avec white-space:nowrap => ne se coupe JAMAIS (le texte SVG
+  buguait sur iOS Safari). Texte auto-reduit s'il deborde.
+  Overlay sur l'image, ne bloque pas le swipe, disparait quand
+  on quitte l'image 1. S'ancre a la galerie en JS.
+  A ajouter UNE fois sur la page produit.
+  ============================================================
+{% endcomment %}
+{%- liquid
+  assign s = block.settings
+  assign uid = block.id
+  assign rot = s.rotation | default: -8
+  assign ox = s.offset_x | default: 12
+  assign oy = s.offset_y | default: 14
+  assign pos = s.position | default: 'top-left'
+  assign l1 = s.txt1
+  assign l2 = s.txt2
+  assign l3 = s.txt3
+  assign bw = s.badge_w | default: 140
+  assign bwm = s.badge_w_mobile | default: 108
+  assign anim = s.anim | default: 'pulse'
+  assign fsA = bw | times: 14 | divided_by: 100
+  assign fsB = bw | times: 115 | divided_by: 1000
+  assign fsAm = bwm | times: 14 | divided_by: 100
+  assign fsBm = bwm | times: 115 | divided_by: 1000
+-%}
+{%- if s.show_badge and l1 != blank -%}
+{%- capture poscss -%}
+{%- case pos -%}
+{%- when 'top-left' -%}top:{{ oy }}px;left:{{ ox }}px;transform:rotate({{ rot }}deg);
+{%- when 'top-center' -%}top:{{ oy }}px;left:50%;transform:translateX(calc(-50% + ({{ ox }}px))) rotate({{ rot }}deg);
+{%- when 'top-right' -%}top:{{ oy }}px;right:{{ ox }}px;transform:rotate({{ rot }}deg);
+{%- when 'middle-center' -%}top:50%;left:50%;transform:translate(calc(-50% + ({{ ox }}px)),-50%) rotate({{ rot }}deg);
+{%- when 'bottom-left' -%}bottom:{{ oy }}px;left:{{ ox }}px;transform:rotate({{ rot }}deg);
+{%- when 'bottom-center' -%}bottom:{{ oy }}px;left:50%;transform:translateX(calc(-50% + ({{ ox }}px))) rotate({{ rot }}deg);
+{%- when 'bottom-right' -%}bottom:{{ oy }}px;right:{{ ox }}px;transform:rotate({{ rot }}deg);
+{%- endcase -%}
+{%- endcapture -%}
+<style>
+  #gfib-{{ uid }} {
+    position: absolute;
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0;
+    {{ poscss }}
+    width: {{ bw }}px;
+    max-width: 48%;
+    {% if s.shadow %}filter: drop-shadow(0 4px 9px rgba(0, 0, 0, 0.22));{% endif %}
+    transition: opacity 0.2s ease;
+  }
+  #gfib-{{ uid }} .gfib-inner { position: relative; width: 100%; transform-origin: center;{% if anim != 'none' %} will-change: transform;{% endif %} }
+  {%- if anim == 'pulse' -%}
+  #gfib-{{ uid }} .gfib-inner { animation: gfibp-{{ uid }} 1.8s ease-in-out infinite; }
+  @keyframes gfibp-{{ uid }} { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+  {%- elsif anim == 'pop' -%}
+  #gfib-{{ uid }} .gfib-inner { animation: gfibpop-{{ uid }} 0.55s cubic-bezier(0.2, 1.35, 0.4, 1) both; }
+  @keyframes gfibpop-{{ uid }} { 0% { transform: scale(0.3); } 70% { transform: scale(1.12); } 100% { transform: scale(1); } }
+  {%- endif -%}
+  @media (prefers-reduced-motion: reduce) { #gfib-{{ uid }} .gfib-inner { animation: none !important; } }
+  #gfib-{{ uid }} .gfib-shape { display: block; width: 100%; height: auto; }
+  #gfib-{{ uid }} .gfib-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.04;
+    font-family: var(--font-heading--family, 'Oswald', sans-serif);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: {{ s.text_color | default: '#0A0A0A' }};
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  #gfib-{{ uid }} .gfib-line { white-space: nowrap; display: block; transform-origin: center; }
+  #gfib-{{ uid }} .gfib-l1, #gfib-{{ uid }} .gfib-l2 { font-size: {{ fsA }}px; }
+  #gfib-{{ uid }} .gfib-l3 { font-size: {{ fsB }}px; }
+  @media (max-width: 749px) {
+    #gfib-{{ uid }} { width: {{ bwm }}px; }
+    #gfib-{{ uid }} .gfib-l1, #gfib-{{ uid }} .gfib-l2 { font-size: {{ fsAm }}px; }
+    #gfib-{{ uid }} .gfib-l3 { font-size: {{ fsBm }}px; }
+  }
+</style>
+<div id="gfib-{{ uid }}" {{ block.shopify_attributes }} aria-hidden="true">
+  <div class="gfib-inner">
+  <svg class="gfib-shape" viewBox="0 0 200 200" aria-hidden="true"><polygon fill="{{ s.bg_color | default: '#C5FE89' }}" points="192.0,100.0 191.3,104.1 189.4,108.0 186.5,111.7 183.3,115.1 180.2,118.3 177.7,121.4 176.1,124.7 175.4,128.3 175.6,132.3 176.3,136.7 176.9,141.4 177.0,146.0 176.3,150.4 174.4,154.1 171.5,157.0 167.6,159.1 163.1,160.4 158.5,161.2 154.1,161.9 150.2,163.0 147.0,164.7 144.4,167.2 142.2,170.6 140.1,174.6 137.9,178.7 135.3,182.5 132.1,185.6 128.4,187.5 124.3,188.1 120.0,187.5 115.6,185.9 111.4,183.9 107.4,181.9 103.6,180.5 100.0,180.0 96.4,180.5 92.6,181.9 88.6,183.9 84.4,185.9 80.0,187.5 75.7,188.1 71.6,187.5 67.9,185.6 64.7,182.5 62.1,178.7 59.9,174.6 57.8,170.6 55.6,167.2 53.0,164.7 49.8,163.0 45.9,161.9 41.5,161.2 36.9,160.4 32.4,159.1 28.5,157.0 25.6,154.1 23.7,150.4 23.0,146.0 23.1,141.4 23.7,136.7 24.4,132.3 24.6,128.3 23.9,124.7 22.3,121.4 19.8,118.3 16.7,115.1 13.5,111.7 10.6,108.0 8.7,104.1 8.0,100.0 8.7,95.9 10.6,92.0 13.5,88.3 16.7,84.9 19.8,81.7 22.3,78.6 23.9,75.3 24.6,71.7 24.4,67.7 23.7,63.3 23.1,58.6 23.0,54.0 23.7,49.6 25.6,45.9 28.5,43.0 32.4,40.9 36.9,39.6 41.5,38.8 45.9,38.1 49.8,37.0 53.0,35.3 55.6,32.8 57.8,29.4 59.9,25.4 62.1,21.3 64.7,17.5 67.9,14.4 71.6,12.5 75.7,11.9 80.0,12.5 84.4,14.1 88.6,16.1 92.6,18.1 96.4,19.5 100.0,20.0 103.6,19.5 107.4,18.1 111.4,16.1 115.6,14.1 120.0,12.5 124.3,11.9 128.4,12.5 132.1,14.4 135.3,17.5 137.9,21.3 140.1,25.4 142.2,29.4 144.4,32.8 147.0,35.3 150.2,37.0 154.1,38.1 158.5,38.8 163.1,39.6 167.6,40.9 171.5,43.0 174.4,45.9 176.3,49.6 177.0,54.0 176.9,58.6 176.3,63.3 175.6,67.7 175.4,71.7 176.1,75.3 177.7,78.6 180.2,81.7 183.3,84.9 186.5,88.3 189.4,92.0 191.3,95.9"/></svg>
+  <div class="gfib-text" translate="no">
+    <span class="gfib-line gfib-l1">{{ l1 }}</span>
+    {%- if l2 != blank -%}<span class="gfib-line gfib-l2">{{ l2 }}</span>{%- endif -%}
+    {%- if l3 != blank -%}<span class="gfib-line gfib-l3">{{ l3 }}</span>{%- endif -%}
+  </div>
+  </div>
+</div>
+<script>
+  (function () {
+    var badge = document.getElementById('gfib-{{ uid }}');
+    if (!badge) return;
+    var placed = false;
+    var myWrap = badge.closest('[id^="shopify-block-"]');
+    function collapseWrap() {
+      if (myWrap && !myWrap.contains(badge)) {
+        /* position:absolute = hors du flux flex → ne génère plus de gap (le badge a déjà été déplacé dans la galerie) */
+        myWrap.style.cssText += ';position:absolute!important;width:0!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;';
+      }
+    }
+    function gallery() { return document.querySelector('media-gallery'); }
+    function host() {
+      var g = gallery();
+      if (!g) return null;
+      return g.querySelector('slideshow-container') || g.querySelector('.product-media-container') || g;
+    }
+    function onFirstSlide() {
+      /* première slide VISIBLE (pas la première du DOM : elle peut être une
+         image masquée #checkout dont l'aria-hidden ne passe jamais à false) */
+      var g = gallery();
+      if (!g) return true;
+      var slides = g.querySelectorAll('slideshow-slide');
+      for (var i = 0; i < slides.length; i++) {
+        if (slides[i].offsetWidth > 0) return slides[i].getAttribute('aria-hidden') !== 'true';
+      }
+      return true;
+    }
+    function updateVis() {
+      badge.style.opacity = (placed && onFirstSlide()) ? '1' : '0';
+    }
+    function fitText() {
+      var lines = badge.querySelectorAll('.gfib-line');
+      var box = badge.offsetWidth;
+      if (!box) return;
+      var maxW = box * 0.78, i, el, widths = [];
+      for (i = 0; i < lines.length; i++) { lines[i].style.fontSize = ''; }
+      for (i = 0; i < lines.length; i++) { widths[i] = lines[i].offsetWidth; }
+      for (i = 0; i < lines.length; i++) {
+        el = lines[i];
+        if (widths[i] > maxW && widths[i] > 0) {
+          var base = parseFloat(getComputedStyle(el).fontSize);
+          el.style.fontSize = (base * maxW / widths[i]).toFixed(2) + 'px';
+        }
+      }
+    }
+    function place() {
+      var h = host();
+      if (!h) return;
+      if (getComputedStyle(h).position === 'static') h.style.position = 'relative';
+      if (badge.parentNode !== h) h.appendChild(badge);
+      collapseWrap();
+      placed = true;
+      fitText();
+      updateVis();
+    }
+    function init() {
+      place();
+      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fitText); }
+      window.addEventListener('resize', fitText);
+      var g = gallery();
+      if (!g || !window.MutationObserver) return;
+      var mo = new MutationObserver(function () {
+        if (!document.contains(badge)) place();
+        updateVis();
+      });
+      mo.observe(g, { subtree: true, attributes: true, attributeFilter: ['aria-hidden'] });
+    }
+    if (document.readyState !== 'loading') init(); else document.addEventListener('DOMContentLoaded', init);
+    window.addEventListener('load', function () { place(); fitText(); });
+  })();
+</script>
+{%- endif -%}
+{% schema %}
+{
+  "name": "GF Badge image",
+  "settings": [
+    { "type": "paragraph", "content": "Seal rond festonne pose en overlay sur la photo produit. Disparait au swipe. Texte HTML (ne se coupe jamais). A ajouter une fois sur la page produit." },
+    { "type": "checkbox", "id": "show_badge", "label": "Afficher le badge", "default": true },
+    { "type": "header", "content": "Texte (3 lignes courtes)" },
+    { "type": "text", "id": "txt1", "label": "Ligne 1", "default": "2 SACHETS" },
+    { "type": "text", "id": "txt2", "label": "Ligne 2", "default": "OFFERTS" },
+    { "type": "text", "id": "txt3", "label": "Ligne 3", "default": "AUJOURD'HUI" },
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color", "label": "Fond", "default": "#C5FE89" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#0A0A0A" },
+    { "type": "header", "content": "Position & taille" },
+    {
+      "type": "select", "id": "position", "label": "Position", "default": "top-left",
+      "options": [
+        { "value": "top-left", "label": "Haut gauche" },
+        { "value": "top-center", "label": "Haut centre" },
+        { "value": "top-right", "label": "Haut droite" },
+        { "value": "middle-center", "label": "Centre" },
+        { "value": "bottom-left", "label": "Bas gauche" },
+        { "value": "bottom-center", "label": "Bas centre" },
+        { "value": "bottom-right", "label": "Bas droite" }
+      ]
+    },
+    { "type": "range", "id": "badge_w", "label": "Largeur (ordinateur)", "min": 100, "max": 300, "step": 5, "default": 140, "unit": "px" },
+    { "type": "range", "id": "badge_w_mobile", "label": "Largeur (mobile)", "min": 80, "max": 220, "step": 4, "default": 108, "unit": "px" },
+    { "type": "range", "id": "rotation", "label": "Inclinaison", "min": -20, "max": 20, "step": 1, "default": -8, "unit": "deg" },
+    { "type": "range", "id": "offset_x", "label": "Decalage horizontal", "min": -200, "max": 200, "step": 4, "default": 12, "unit": "px" },
+    { "type": "range", "id": "offset_y", "label": "Decalage vertical (depuis le bord)", "min": 0, "max": 200, "step": 2, "default": 14, "unit": "px" },
+    { "type": "checkbox", "id": "shadow", "label": "Ombre portee", "default": true },
+    { "type": "header", "content": "Animation" },
+    {
+      "type": "select", "id": "anim", "label": "Animation au depart", "default": "pulse",
+      "options": [
+        { "value": "none", "label": "Aucune" },
+        { "value": "pulse", "label": "Pulse (en continu)" },
+        { "value": "pop", "label": "Pop (a l'apparition)" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "GF Badge image" }]
+}
+{% endschema %}

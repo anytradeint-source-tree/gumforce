@@ -1,0 +1,1118 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════════
+  GUMFORCE ADVERTORIAL — PAGE TEMPLATE
+  Ethan Walker — How I went from fat face to sharp jawline
+  ═══════════════════════════════════════════════════════════════════
+
+  INSTALLATION (5 steps):
+
+  1. Shopify admin → Online Store → Themes → Edit code
+  2. In the Templates folder, click "Add a new template"
+  3. Select: page  →  type: liquid  →  name it: advertorial-gumforce
+     (Final filename will be: page.advertorial-gumforce.liquid)
+  4. Replace the default content with this entire file. Save.
+  5. Online Store → Pages → Add page
+     - Title: anything (used for SEO/URL only, not displayed)
+     - Right sidebar → Theme template → select "advertorial-gumforce"
+     - Save & publish
+
+  The page will be live at: yourstore.com/pages/[handle]
+
+  All images, captions, and content are hardcoded. No setup required.
+
+  ═══════════════════════════════════════════════════════════════════
+{% endcomment %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Hubot+Sans:wght@200..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  .gf-advertorial {
+    --gf-bg: #0A0A0A;
+    --gf-surface: #131313;
+    --gf-surface-elev: #1A1A1A;
+    --gf-text-primary: #F5F5F5;
+    --gf-text-secondary: #A8A8A8;
+    --gf-text-quiet: #6B6B6B;
+    --gf-text-faint: #444;
+    --gf-accent: #2AB5B4;
+    --gf-accent-bright: #3DDDDC;
+    --gf-accent-deep: #1A8B8A;
+    --gf-highlight: #C5FFF7;
+    --gf-border: #262626;
+    --gf-border-bright: #333;
+    --gf-glow: rgba(42, 181, 180, 0.15);
+    background: var(--gf-bg);
+    color: var(--gf-text-primary);
+    font-family: "Hubot Sans", -apple-system, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gf-advertorial * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .gf-advertorial::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(42, 181, 180, 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 30% at 100% 100%, rgba(42, 181, 180, 0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .gf-progress-bar {
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: linear-gradient(90deg, var(--gf-accent) 0%, var(--gf-accent-bright) 100%);
+    z-index: 100; width: 0%;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 0 12px var(--gf-accent);
+  }
+
+  .gf-advertorial .gf-site-header {
+    position: sticky; top: 0;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--gf-border);
+    z-index: 50;
+  }
+
+  .gf-advertorial .gf-header-inner {
+    max-width: 1200px; margin: 0 auto; padding: 16px 32px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .gf-advertorial .gf-author-mini { display: flex; align-items: center; gap: 12px; }
+
+  .gf-advertorial .gf-author-mini-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gf-accent) 0%, var(--gf-accent-deep) 100%);
+    color: var(--gf-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 700; font-size: 14px;
+    letter-spacing: -0.02em;
+    overflow: hidden;
+  }
+
+  .gf-advertorial .gf-author-mini-avatar img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  .gf-advertorial .gf-author-mini-name {
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 600; font-size: 14px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--gf-text-primary);
+  }
+
+  .gf-advertorial .gf-header-nav {
+    display: flex; gap: 32px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gf-text-secondary);
+  }
+  .gf-advertorial .gf-header-nav span { cursor: pointer; transition: color 0.2s; }
+  .gf-advertorial .gf-header-nav span:hover { color: var(--gf-accent); }
+
+  .gf-advertorial .gf-subscribe-btn {
+    background: var(--gf-accent);
+    color: var(--gf-bg);
+    padding: 10px 18px;
+    font-family: "Funnel Display", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .gf-advertorial .gf-subscribe-btn:hover {
+    background: var(--gf-accent-bright);
+    box-shadow: 0 0 24px var(--gf-glow);
+  }
+
+  .gf-advertorial .gf-hero {
+    max-width: 880px; margin: 0 auto; padding: 80px 32px 40px;
+    position: relative; z-index: 1;
+  }
+
+  .gf-advertorial .gf-tag-row {
+    display: flex; gap: 6px; margin-bottom: 36px; flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .gf-advertorial .gf-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.16em;
+    padding: 7px 12px;
+    background: transparent;
+    border: 1px solid var(--gf-border-bright);
+    border-radius: 4px;
+    color: var(--gf-text-secondary);
+  }
+
+  .gf-advertorial .gf-tag.gf-accent {
+    background: var(--gf-glow);
+    border-color: var(--gf-accent);
+    color: var(--gf-accent-bright);
+  }
+
+  .gf-advertorial h1.gf-headline {
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 800;
+    font-size: clamp(44px, 7.2vw, 92px);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    color: var(--gf-text-primary);
+    margin-bottom: 28px;
+    text-transform: none;
+  }
+
+  .gf-advertorial h1.gf-headline .gf-headline-accent {
+    background: linear-gradient(90deg, var(--gf-accent) 0%, var(--gf-highlight) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .gf-advertorial .gf-lede {
+    font-family: "Hubot Sans", sans-serif;
+    font-size: clamp(17px, 1.8vw, 21px);
+    line-height: 1.45;
+    color: var(--gf-text-secondary);
+    font-weight: 400;
+    margin-bottom: 48px;
+    letter-spacing: -0.005em;
+    max-width: 660px;
+  }
+
+  .gf-advertorial .gf-byline-bar {
+    display: flex; align-items: center; gap: 20px;
+    padding: 24px 0;
+    border-top: 1px solid var(--gf-border);
+    border-bottom: 1px solid var(--gf-border);
+    margin-bottom: 56px;
+  }
+
+  .gf-advertorial .gf-byline-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gf-surface-elev) 0%, var(--gf-surface) 100%);
+    border: 1px solid var(--gf-border-bright);
+    color: var(--gf-text-primary);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 700; font-size: 20px;
+    letter-spacing: -0.02em;
+    overflow: hidden;
+  }
+
+  .gf-advertorial .gf-byline-avatar img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  .gf-advertorial .gf-byline-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+
+  .gf-advertorial .gf-byline-name {
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 700; font-size: 16px;
+    color: var(--gf-text-primary);
+    display: flex; align-items: center; gap: 10px;
+    letter-spacing: 0.005em;
+  }
+
+  .gf-advertorial .gf-verified-dot {
+    width: 16px; height: 16px;
+    background: var(--gf-accent);
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--gf-bg); font-size: 9px; font-weight: 900;
+    box-shadow: 0 0 10px var(--gf-glow);
+  }
+  .gf-advertorial .gf-verified-dot::after { content: "✓"; }
+
+  .gf-advertorial .gf-byline-meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; color: var(--gf-text-quiet);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .gf-advertorial .gf-meta-dot { width: 3px; height: 3px; background: var(--gf-text-faint); border-radius: 50%; }
+
+  .gf-advertorial .gf-byline-actions { display: flex; gap: 8px; }
+
+  .gf-advertorial .gf-icon-btn {
+    width: 38px; height: 38px; border-radius: 8px;
+    background: var(--gf-surface);
+    border: 1px solid var(--gf-border-bright);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s;
+    font-size: 14px; color: var(--gf-text-secondary);
+  }
+  .gf-advertorial .gf-icon-btn:hover {
+    background: var(--gf-surface-elev);
+    border-color: var(--gf-accent);
+    color: var(--gf-accent);
+  }
+
+  .gf-advertorial .gf-hero-image {
+    max-width: 1200px; margin: 0 auto 56px; padding: 0 32px;
+    position: relative; z-index: 1;
+  }
+
+  .gf-advertorial .gf-hero-image img,
+  .gf-advertorial .gf-inline-image img {
+    width: 100%; height: auto; display: block;
+    border-radius: 6px;
+  }
+
+  .gf-advertorial .gf-img-placeholder {
+    background: linear-gradient(145deg, var(--gf-surface-elev) 0%, var(--gf-surface) 100%);
+    border: 1px dashed var(--gf-accent);
+    border-radius: 6px;
+    aspect-ratio: 16 / 9;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 32px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+
+  .gf-advertorial .gf-img-placeholder::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(42, 181, 180, 0.04) 100%);
+    pointer-events: none;
+  }
+
+  .gf-advertorial .gf-img-placeholder.gf-wide { aspect-ratio: 21 / 9; }
+  .gf-advertorial .gf-img-placeholder.gf-tall { aspect-ratio: 4 / 5; }
+
+  .gf-advertorial .gf-img-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gf-accent-bright);
+    background: var(--gf-bg);
+    padding: 7px 14px;
+    border: 1px solid var(--gf-accent);
+    border-radius: 4px;
+    position: absolute; top: 16px; left: 16px;
+    z-index: 2;
+  }
+
+  .gf-advertorial .gf-img-desc {
+    font-family: "Hubot Sans", sans-serif;
+    font-size: 14px;
+    color: var(--gf-text-secondary);
+    max-width: 480px;
+    line-height: 1.5;
+    z-index: 1;
+  }
+
+  .gf-advertorial .gf-img-caption {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--gf-text-quiet);
+    text-align: left;
+    margin-top: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .gf-advertorial article.gf-content {
+    max-width: 720px; margin: 0 auto;
+    padding: 0 32px 80px;
+    position: relative; z-index: 1;
+  }
+
+  .gf-advertorial article.gf-content p {
+    font-size: 17px; line-height: 1.7;
+    margin-bottom: 24px;
+    color: var(--gf-text-secondary);
+    font-weight: 400;
+  }
+
+  .gf-advertorial article.gf-content p strong {
+    color: var(--gf-text-primary);
+    font-weight: 700;
+  }
+
+  .gf-advertorial .gf-lead-para {
+    font-family: "Funnel Display", sans-serif !important;
+    font-size: clamp(22px, 2.4vw, 28px) !important;
+    line-height: 1.3 !important;
+    color: var(--gf-text-primary) !important;
+    font-weight: 500;
+    margin-bottom: 32px !important;
+    letter-spacing: -0.015em;
+  }
+
+  .gf-advertorial h2 {
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 700;
+    font-size: clamp(28px, 3.6vw, 40px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--gf-text-primary);
+    margin: 80px 0 24px;
+    position: relative;
+    text-transform: none;
+  }
+
+  .gf-advertorial h2 .gf-section-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gf-accent);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .gf-advertorial h2 .gf-section-num::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gf-accent) 0%, transparent 100%);
+    opacity: 0.5;
+  }
+
+  .gf-advertorial .gf-highlight-text {
+    color: var(--gf-text-primary);
+    font-weight: 500;
+    box-shadow: inset 0 -8px 0 var(--gf-glow);
+    padding: 0 2px;
+  }
+
+  .gf-advertorial .gf-pull-quote {
+    margin: 64px -16px;
+    padding: 32px 0 32px 32px;
+    border-left: 3px solid var(--gf-accent);
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 500;
+    font-size: clamp(24px, 3vw, 34px);
+    line-height: 1.2;
+    color: var(--gf-text-primary);
+    letter-spacing: -0.015em;
+    position: relative;
+  }
+
+  .gf-advertorial .gf-pull-quote::before {
+    content: "";
+    position: absolute;
+    left: -3px; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(180deg, var(--gf-accent) 0%, transparent 100%);
+  }
+
+  .gf-advertorial .gf-pull-quote-attr {
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--gf-text-quiet);
+    margin-top: 20px;
+  }
+
+  .gf-advertorial .gf-text-quote {
+    background: var(--gf-surface);
+    border: 1px solid var(--gf-border);
+    border-left: 2px solid var(--gf-accent);
+    padding: 22px 26px;
+    margin: 28px 0;
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.3;
+    color: var(--gf-text-primary);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .gf-advertorial .gf-text-quote-meta {
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--gf-text-quiet);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 12px;
+  }
+
+  .gf-advertorial .gf-inline-image { margin: 64px -32px; }
+
+  .gf-advertorial .gf-stat-callout {
+    display: flex; gap: 28px;
+    margin: 48px 0;
+    padding: 32px;
+    background: var(--gf-surface);
+    border: 1px solid var(--gf-border);
+    border-radius: 8px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gf-advertorial .gf-stat-callout::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--gf-accent) 0%, var(--gf-accent-deep) 100%);
+  }
+
+  .gf-advertorial .gf-stat-num {
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 800;
+    font-size: clamp(56px, 7vw, 88px);
+    color: var(--gf-accent);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    flex-shrink: 0;
+  }
+
+  .gf-advertorial .gf-stat-text {
+    font-family: "Hubot Sans", sans-serif;
+    font-size: 16px;
+    color: var(--gf-text-secondary);
+    line-height: 1.45;
+  }
+
+  .gf-advertorial .gf-stat-text strong {
+    color: var(--gf-text-primary);
+    font-weight: 700;
+  }
+
+  .gf-advertorial a.gf-inline-link {
+    color: var(--gf-accent-bright);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 2px solid var(--gf-accent);
+    padding-bottom: 1px;
+    transition: all 0.2s;
+  }
+
+  .gf-advertorial a.gf-inline-link:hover {
+    color: var(--gf-highlight);
+    border-bottom-color: var(--gf-highlight);
+  }
+
+  .gf-advertorial .gf-article-end {
+    margin-top: 88px;
+    padding: 56px 48px 48px;
+    background: linear-gradient(180deg, var(--gf-surface) 0%, var(--gf-bg) 100%);
+    border: 1px solid var(--gf-border);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gf-advertorial .gf-article-end::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gf-accent) 0%, var(--gf-highlight) 100%);
+  }
+
+  .gf-advertorial .gf-end-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gf-accent-bright);
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 16px;
+  }
+
+  .gf-advertorial .gf-end-label::after {
+    content: ""; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--gf-border-bright) 0%, transparent 100%);
+  }
+
+  .gf-advertorial .gf-article-end h3 {
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 4.4vw, 52px);
+    line-height: 1;
+    margin-bottom: 12px;
+    letter-spacing: -0.025em;
+    color: var(--gf-text-primary);
+  }
+
+  .gf-advertorial .gf-end-subhead {
+    font-family: "Hubot Sans", sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--gf-text-secondary) !important;
+    margin-bottom: 36px !important;
+  }
+
+  .gf-advertorial .gf-end-divider {
+    width: 56px; height: 1px;
+    background: var(--gf-accent);
+    margin-bottom: 32px;
+    opacity: 0.6;
+  }
+
+  .gf-advertorial .gf-end-body p {
+    color: var(--gf-text-secondary);
+    font-size: 16px; line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  .gf-advertorial .gf-end-body p:last-child { margin-bottom: 0; }
+  .gf-advertorial .gf-end-body strong { color: var(--gf-text-primary); }
+
+  .gf-advertorial .gf-end-body a {
+    color: var(--gf-accent-bright);
+    text-decoration: none;
+    border-bottom: 2px solid var(--gf-accent);
+    font-weight: 500;
+    padding-bottom: 1px;
+  }
+
+  .gf-advertorial .gf-scarcity-note {
+    background: rgba(42, 181, 180, 0.06);
+    border-left: 2px solid var(--gf-accent);
+    padding: 18px 22px;
+    margin: 28px 0;
+    border-radius: 0 6px 6px 0;
+    font-family: "Hubot Sans", sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--gf-text-primary);
+  }
+
+  .gf-advertorial .gf-scarcity-note strong {
+    color: var(--gf-accent-bright);
+    font-weight: 700;
+  }
+
+  .gf-advertorial .gf-stat-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    margin: 40px 0;
+    padding: 28px 0;
+    border-top: 1px solid var(--gf-border-bright);
+    border-bottom: 1px solid var(--gf-border-bright);
+  }
+
+  .gf-advertorial .gf-stat-strip-item {
+    text-align: left;
+    padding-left: 24px;
+    position: relative;
+  }
+
+  .gf-advertorial .gf-stat-strip-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 14px; bottom: 14px;
+    width: 1px;
+    background: var(--gf-border-bright);
+  }
+
+  .gf-advertorial .gf-stat-strip-item:first-child { padding-left: 0; }
+  .gf-advertorial .gf-stat-strip-item:first-child::before { display: none; }
+
+  .gf-advertorial .gf-stat-value {
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--gf-accent);
+    margin-bottom: 8px;
+    letter-spacing: -0.025em;
+  }
+
+  .gf-advertorial .gf-stat-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gf-text-quiet);
+    font-weight: 500;
+  }
+
+  .gf-advertorial .gf-stock-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 9px 14px;
+    background: rgba(42, 181, 180, 0.08);
+    border: 1px solid var(--gf-accent);
+    border-radius: 100px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gf-accent-bright);
+    font-weight: 500;
+  }
+
+  .gf-advertorial .gf-status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--gf-accent);
+    border-radius: 50%;
+    animation: gf-pulse-dot 2s ease-in-out infinite;
+    box-shadow: 0 0 8px var(--gf-accent);
+  }
+
+  @keyframes gf-pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px var(--gf-accent); }
+    50% { opacity: 0.5; transform: scale(0.7); box-shadow: 0 0 4px var(--gf-accent); }
+  }
+
+  .gf-advertorial .gf-end-cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--gf-accent);
+    color: var(--gf-bg);
+    padding: 20px 36px;
+    border-radius: 100px;
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    margin-top: 12px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 0 0 var(--gf-glow);
+  }
+
+  .gf-advertorial .gf-end-cta-button:hover {
+    background: var(--gf-accent-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px var(--gf-glow);
+  }
+
+  .gf-advertorial .gf-end-cta-button .gf-arrow {
+    transition: transform 0.25s;
+    display: inline-block;
+  }
+
+  .gf-advertorial .gf-end-cta-button:hover .gf-arrow {
+    transform: translateX(4px);
+  }
+
+  .gf-advertorial .gf-end-disclaimer {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--gf-border);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gf-text-quiet);
+  }
+
+  .gf-advertorial .gf-author-bio {
+    max-width: 720px; margin: 64px auto 0;
+    padding: 40px 32px;
+    border-top: 1px solid var(--gf-border);
+    display: flex; gap: 24px;
+    align-items: flex-start;
+    position: relative; z-index: 1;
+  }
+
+  .gf-advertorial .gf-bio-avatar {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gf-accent) 0%, var(--gf-accent-deep) 100%);
+    color: var(--gf-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 700; font-size: 28px;
+    flex-shrink: 0;
+    box-shadow: 0 0 24px var(--gf-glow);
+    overflow: hidden;
+  }
+
+  .gf-advertorial .gf-bio-avatar img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  .gf-advertorial .gf-bio-text { flex: 1; }
+
+  .gf-advertorial .gf-bio-text h4 {
+    font-family: "Funnel Display", sans-serif;
+    font-weight: 700; font-size: 17px;
+    color: var(--gf-text-primary);
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 10px;
+    letter-spacing: 0.005em;
+  }
+
+  .gf-advertorial .gf-bio-text p {
+    font-family: "Hubot Sans", sans-serif;
+    font-size: 14px;
+    color: var(--gf-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .gf-advertorial .gf-bio-links { display: flex; gap: 8px; }
+
+  .gf-advertorial .gf-bio-link {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--gf-text-secondary);
+    background: var(--gf-surface);
+    border: 1px solid var(--gf-border-bright);
+    padding: 8px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .gf-advertorial .gf-bio-link:hover {
+    color: var(--gf-accent);
+    border-color: var(--gf-accent);
+  }
+
+  @media (max-width: 760px) {
+    .gf-advertorial .gf-hero { padding: 48px 22px 24px; }
+    .gf-advertorial .gf-hero-image { padding: 0 22px; margin-bottom: 32px; }
+    .gf-advertorial article.gf-content { padding: 0 22px 56px; }
+    .gf-advertorial .gf-inline-image { margin: 48px -22px; }
+    .gf-advertorial h1.gf-headline { font-size: clamp(36px, 9vw, 56px); }
+    .gf-advertorial .gf-lead-para { font-size: clamp(20px, 5vw, 26px) !important; }
+    .gf-advertorial .gf-article-end { padding: 36px 22px 28px; border-radius: 8px; }
+    .gf-advertorial .gf-article-end h3 { font-size: clamp(28px, 7vw, 40px); }
+    .gf-advertorial .gf-end-subhead { font-size: 16px !important; margin-bottom: 28px !important; }
+    .gf-advertorial .gf-stat-strip { padding: 20px 0; margin: 32px 0; }
+    .gf-advertorial .gf-stat-strip-item { padding-left: 16px; }
+    .gf-advertorial .gf-stat-value { font-size: 32px; }
+    .gf-advertorial .gf-stat-label { font-size: 9px; }
+    .gf-advertorial .gf-end-cta-button { padding: 18px 28px; font-size: 14px; width: 100%; justify-content: center; }
+    .gf-advertorial .gf-pull-quote { margin: 48px 0; padding-left: 24px; }
+    .gf-advertorial .gf-header-nav { display: none; }
+    .gf-advertorial .gf-byline-actions { display: none; }
+    .gf-advertorial .gf-author-bio { flex-direction: column; padding: 32px 22px; gap: 16px; }
+    .gf-advertorial .gf-stat-callout { flex-direction: column; align-items: flex-start; padding: 24px; }
+    .gf-advertorial .gf-header-inner { padding: 12px 22px; }
+    .gf-advertorial .gf-subscribe-btn { padding: 8px 14px; font-size: 11px; }
+  }
+</style>
+
+<div class="gf-advertorial">
+
+  <div class="gf-progress-bar" id="gf-progressBar"></div>
+
+  <header class="gf-site-header">
+    <div class="gf-header-inner">
+      <div class="gf-author-mini">
+        <div class="gf-author-mini-avatar">
+          <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/image_1.png?v=1779268771&width=100" alt="Ethan Walker" loading="eager" />
+        </div>
+        <div class="gf-author-mini-name">Ethan Walker</div>
+      </div>
+      <nav class="gf-header-nav">
+        <span>Field Notes</span>
+        <span>Training Log</span>
+        <span>About</span>
+      </nav>
+      <div class="gf-subscribe-btn">Subscribe</div>
+    </div>
+  </header>
+
+  <section class="gf-hero">
+    <div class="gf-tag-row">
+      <span class="gf-tag gf-accent">Field Notes</span>
+      <span class="gf-tag">Looksmaxxing</span>
+      <span class="gf-tag">Performance</span>
+      <span class="gf-tag">8 min read</span>
+    </div>
+
+    <h1 class="gf-headline">How I went from fat face to <span class="gf-headline-accent">sharp jawline</span> in a few weeks</h1>
+
+    <p class="gf-lede">Notes from a 24-year-old who tried losing weight, then mewing for ten months, then everything else, before finding the thing that actually moved the needle.</p>
+
+    <div class="gf-byline-bar">
+      <div class="gf-byline-avatar">
+        <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/image_1.png?v=1779268771&width=200" alt="Ethan Walker" loading="lazy" />
+      </div>
+      <div class="gf-byline-info">
+        <div class="gf-byline-name">
+          Ethan Walker
+          <span class="gf-verified-dot"></span>
+        </div>
+        <div class="gf-byline-meta">
+          <span>May 14, 2026</span>
+          <span class="gf-meta-dot"></span>
+          <span>Chicago, IL</span>
+          <span class="gf-meta-dot"></span>
+          <span>2,150 words</span>
+        </div>
+      </div>
+      <div class="gf-byline-actions">
+        <div class="gf-icon-btn" title="Bookmark">☆</div>
+        <div class="gf-icon-btn" title="Share">↗</div>
+      </div>
+    </div>
+  </section>
+
+  {% comment %} IMAGE 01 — Hero (persona only, no product) {% endcomment %}
+  <div class="gf-hero-image">
+    <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/image_1.png?v=1779268771&width=2400" alt="Ethan Walker portrait" loading="eager" />
+  </div>
+
+  <article class="gf-content">
+
+    <p class="gf-lead-para">I am going to tell this in the order it happened because the order matters.</p>
+
+    <p>If you currently have a fat face, read this carefully.</p>
+
+    <h2><span class="gf-section-num">01 — The wedding photos</span>I looked like someone's softer younger brother</h2>
+
+    <p>I am 24. Last summer I was in a friend's wedding photos. I was one of the groomsmen. The other groomsmen were all roughly the same age, the same general shape, the same general look. The wedding photographer was very good. She sent us the gallery about six weeks after the ceremony.</p>
+
+    <p>I opened it on a Wednesday evening and scrolled through the group shots expecting to feel the way you feel when you see good photos of yourself. The photos were good. The light was beautiful. The composition was unimpeachable. The photographer had done her job.</p>
+
+    <p>But something was off and it took me three or four photos to figure out what.</p>
+
+    <p><span class="gf-highlight-text">Everyone else looked like an adult. I looked like someone's softer younger brother.</span></p>
+
+    <p>The bone structure was supposed to be there. I had seen it in high school photos when I was running cross country at seventeen and weighing twenty pounds less. By 24, three years into a desk job and drinking enough beer on Fridays to count, the jaw I used to have was buried under a layer of soft tissue I could not lose by losing weight.</p>
+
+    <p>I want to be careful here, because I know how easy it is to write off what I am about to say. I was not unhealthy. I was not even particularly heavy. I had a normal BMI, a normal social life, a normal-looking face. But there is a specific look that men have at 24 when they have lost the angle in their face. They look not-yet-adult. They look like someone you would still card at a bar. They look like men whose moms still bring up high school stories at family dinners as if those stories happened recently.</p>
+
+    <p>That look is its own kind of social problem and I will not pretend it isn't.</p>
+
+    <h2><span class="gf-section-num">02 — The weight loss</span>My waist changed. My face did not.</h2>
+
+    <p>I tried to lose the weight anyway. It was the obvious first move. Dropped fifteen pounds over the spring. The cleanest cut I had ever done. Calorie tracking. Steady-state cardio four times a week. Protein at 180g a day. My waist went from a 34 to a 32. The shirts I had been keeping in the back of my closet started fitting again.</p>
+
+    <div class="gf-stat-callout">
+      <div class="gf-stat-num">15</div>
+      <div class="gf-stat-text"><strong>Pounds lost over the spring.</strong> The cleanest cut I had ever done. Waist went 34 to 32. My face stayed exactly as soft as it had been at my starting weight.</div>
+    </div>
+
+    <p>My face did not change.</p>
+
+    <p>The fat sat exactly where it had been. The angle between my jaw and my neck was still gone. I lined up side profile photos before and after the fifteen pounds came off and could not tell which was which.</p>
+
+    <p>The thing nobody tells you about a soft face at 24 is that cutting weight does not always fix it. <span class="gf-highlight-text">Localised facial fat sits on top of underdeveloped masseter and submental musculature. Cardio cannot reach those muscles. You have to train them the way you would train any other muscle.</span></p>
+
+    <p>The masseter is the only facial muscle that can be hypertrophied through resistance training the same way a bicep can. The mechanism is the same as any other striated skeletal muscle in the body. Progressive overload. Recovery. Adequate nutritional substrate. There is published research from Japanese dental universities going back to the early 2000s showing chewing load over eight to twelve weeks produces measurable masseter hypertrophy on MRI. There is parallel data on bruxism patients showing the inverse effect, where chronic clenchers develop visibly wider mandibular angles you can see across a room.</p>
+
+    <p>None of this is part of the standard conversation about adult male appearance in this country. But the looksmax community had it right in 2019.</p>
+
+    <h2><span class="gf-section-num">03 — What I tried first</span>$1,500 across two years of nothing</h2>
+
+    <p>I went down the looksmax rabbit hole at about that point, the way every young man with this problem eventually does. I am not going to pretend I am proud of the corner of the internet I spent two months reading. But the people in there had the science right. The problem was the products.</p>
+
+    <p>I tried the obvious stuff first. I am going to list it because I think everyone reading this has either tried it or is about to.</p>
+
+    <p><strong>Mewing for ten months</strong>, which is supposed to take eighteen. Conscious tongue posture against the palate, twelve hours a day. At the ten month mark I took a comparison photo from the same angle as my starting photo and could not see a single measurable difference. I think mewing helps a teenager whose facial bones are still developing. I do not think it does very much for an adult man with closed growth plates.</p>
+
+    <p><strong>Mastic gum from a Greek importer.</strong> The amber resin every looksmax forum recommends. I chewed it ninety minutes a day for almost a month. The masseter pump was real and disappeared within two hours of stopping. It was like doing 5lb dumbbell curls for an hour every day and being confused that your bicep was not bigger. The resistance was not high enough to actually overload the muscle, and there was nothing inside it to support adaptation.</p>
+
+    <p><strong>Turkish jaw gum every forum recommends.</strong> The kind that comes in five flavours. Three weeks in, my jaw cracked when I yawned. I stopped immediately. A clicking jaw is the kind of injury that does not get better on its own.</p>
+
+    <p><strong>A silicone bite device I bought after a Reddit thread</strong>, for $84. I used it twice. It was uncomfortable from day one in a way that felt like it was doing damage rather than building muscle, and there was no way to scale the difficulty progressively. It lives in the back of a drawer.</p>
+
+    <p>The pattern was identical across all of them. <strong>Every one of these products required a level of daily commitment I could not maintain past the first month.</strong> The chew time was unrealistic. The discomfort was too high. The resistance was not engineered to actually challenge the masseter. And none of them included anything that would support muscle adaptation.</p>
+
+    {% comment %} IMAGE 02 — The graveyard (failed products, no GUMFORCE visible) {% endcomment %}
+    <div class="gf-inline-image">
+      <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/image_2.png?v=1779268806&width=1600" alt="Failed jaw training products" loading="lazy" />
+      <p class="gf-img-caption">// Inventory of the drawer · February 2026</p>
+    </div>
+
+    <h2><span class="gf-section-num">04 — The missing piece</span>Train the muscle, feed the muscle</h2>
+
+    <p>In February I started reading more carefully. I wanted a product that did the actual thing the research said worked. Chewing resistance high enough to actually overload the masseter, and a nutritional substrate inside the substrate itself.</p>
+
+    <p>The substrate part is the part the consumer market has been completely ignoring.</p>
+
+    <p>You cannot train a muscle without giving it the substrate to grow. This is the part of the equation everyone forgets when they talk about "bigger jaw through chewing." If you chew hard things every day for ten weeks but you are not consuming the building blocks the muscle needs to adapt, you are doing squats on a thousand calorie deficit and wondering why your legs are not getting bigger. <strong>The chewing is necessary. The chewing alone is not sufficient.</strong></p>
+
+    <p>Creatine monohydrate is the most boring, most replicated, most universally accepted ergogenic aid in sports science. It has been in every serious gym since 1995. It is studied more times than any other muscle adaptation compound in the world. And in the entire jaw fitness market in February of this year, it was not inside a single chewable product I could find. People were eating it from a tub on the side and hoping the timing worked out. <span class="gf-highlight-text">Nobody had thought to just put it inside the thing you were already chewing.</span></p>
+
+    <h2><span class="gf-section-num">05 — The thing that worked</span>The first product built like a fitness product</h2>
+
+    <p>I found <a href="https://gum-force.com/products/jawline-creatine-gum-b2g2f" class="gf-inline-link">GUMFORCE</a> on a Saturday night in late February. 10x harder than regular gum. <strong>500 milligrams of Creapure creatine monohydrate inside every piece.</strong> Matte black resealable pouch with a wordmark dialed in like a sports nutrition brand. The kind of design that signaled this was built like a fitness product, not marketed like candy.</p>
+
+    <p><strong>Ten minutes a day. That is the entire commitment.</strong></p>
+
+    <p>I had been ready for it to be hard. I had spent a year demanding hard things of myself and getting nowhere. I had been ready for another six months of grinding. It was not hard. You chew while you answer emails. You chew on the drive home. <span class="gf-highlight-text">No protocol to memorise, no posture to hold, no schedule to manage.</span></p>
+
+    <p>The kit was $39. My monthly gym membership cost more than that.</p>
+
+    <p>I ordered one. I did not tell anyone.</p>
+
+    {% comment %} IMAGE 03 — The discovery (persona + product) {% endcomment %}
+    <div class="gf-inline-image">
+      <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/image_3.png?v=1779268830&width=1600" alt="Ethan examining the GUMFORCE pouch" loading="lazy" />
+      <p class="gf-img-caption">// Saturday night. February 24.</p>
+    </div>
+
+    <div class="gf-pull-quote">
+      I had been ready for it to be hard. It was not.
+      <span class="gf-pull-quote-attr">— Note to self, the morning the kit arrived</span>
+    </div>
+
+    <h2><span class="gf-section-num">06 — Week one to week four</span>I had been preparing for six months. It took less than one.</h2>
+
+    <p>The first week was easy and unremarkable. Ten minutes a day, every day, while I answered emails or watched television. By the end of week one my masseter was sore in the specific way the first week of a new lifting program is sore. I know what that soreness means. <strong>It means a muscle is adapting.</strong></p>
+
+    {% comment %} IMAGE 04 — The protocol (persona using product) {% endcomment %}
+    <div class="gf-inline-image">
+      <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/Image_4.png?v=1779268852&width=1600" alt="Ethan using GUMFORCE at his desk" loading="lazy" />
+      <p class="gf-img-caption">// Ten minutes a day. Anywhere. Anytime.</p>
+    </div>
+
+    <p>I started seeing it in the mirror at week three. I almost did not believe it.</p>
+
+    <p>I took side profile photos in the same kitchen light at week one and at week four. I had picked the kitchen because the overhead light is harsh and shows the face the way other people see it across a room. I lined up the two photos side by side on my laptop on a Tuesday night.</p>
+
+    <div class="gf-stat-callout">
+      <div class="gf-stat-num">4</div>
+      <div class="gf-stat-text"><strong>Weeks.</strong> The angle was visible by week four. Not subtle. Visible. I had been preparing myself emotionally for six months of grinding.</div>
+    </div>
+
+    <p>I sat with that for about ten minutes and then went for a walk.</p>
+
+    <h2><span class="gf-section-num">07 — What this means</span>The jaw I had at 17 is back</h2>
+
+    <p><span class="gf-highlight-text">The jaw I had at 17 is back. I am 24. It took less than a month.</span></p>
+
+    <p>I want to be honest about what this means because I am still processing it. The thing I had spent four years and roughly $1,500 trying to fix turned out to be fixable in a few weeks with the right tool. Not the right willpower. Not the right diet. Not the right amount of mewing. The right tool, used for ten minutes a day. The looksmax community had the mechanism right in 2019 and the consumer market finally caught up in 2026.</p>
+
+    <p>I do not know how to feel about this. There is a part of me, the part that was raised on books about how appearance is shallow and character matters, that finds it absurd that fifteen degrees of jaw definition can move you from younger-brother category to adult category in the same room. There is another part of me, the part that has now lived through both states, that thinks this is just the way the world is and you can either know about it or not.</p>
+
+    <h2><span class="gf-section-num">08 — The friend test</span>The four-word text</h2>
+
+    <p>My best friend got back from a work trip in Austin in late April. He had not seen me in two months. He looked at me in the locker room at our gym and said:</p>
+
+    <div class="gf-text-quote">
+      "Bro, you have been doing something. What is it."
+      <span class="gf-text-quote-meta">Locker room · April 28</span>
+    </div>
+
+    <p>I told him. He had tried all the same things I had. He ordered the kit that night, on the bench, between sets. Two weeks later he sent me a picture of his jaw from the side and the entire text was four words:</p>
+
+    <div class="gf-text-quote">
+      "What the fuck."
+      <span class="gf-text-quote-meta">Text message · two weeks later</span>
+    </div>
+
+    <p>I have sent kits to four other friends since. Two college friends. One younger brother who is 21 and was starting to look the way I had at 24. The most recent was a coworker who had been talking at a team dinner about getting chin filler in the summer. He texted me three days after his kit arrived:</p>
+
+    <div class="gf-text-quote">
+      "I cancelled the appointment."
+      <span class="gf-text-quote-meta">Text message · three days after kit arrival</span>
+    </div>
+
+    <h2><span class="gf-section-num">09 — Why I am writing this</span>If you have given up on your face</h2>
+
+    <p>I am writing this because I think there are a lot of guys in the position I was in last summer who are not going to read a research paper or join a Discord server. They are going to keep buying mastic gum and silicone devices and quietly assuming the problem is something they cannot solve. I think a few of them might read a long blog post if they happened across one.</p>
+
+    <p><span class="gf-highlight-text">If you have given up on your face, I understand. I had too. I am only telling you what actually moved the needle without consuming my life.</span></p>
+
+    {% comment %} IMAGE 05 — Final portrait (persona + product) {% endcomment %}
+    <div class="gf-inline-image">
+      <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/image_5.png?v=1779268871&width=1400" alt="Ethan with GUMFORCE pouch" loading="lazy" />
+      <p class="gf-img-caption">// Thirteen weeks in. Still chewing.</p>
+    </div>
+
+    <div class="gf-article-end">
+      <div class="gf-end-label">Where I got mine</div>
+      <h3>If you have made it this far</h3>
+      <p class="gf-end-subhead">Here is the kit I keep coming back to.</p>
+      <div class="gf-end-divider"></div>
+
+      <div class="gf-end-body">
+        <p>The kit is called <strong>GUMFORCE</strong>. The site is <a href="https://gum-force.com/products/jawline-creatine-gum-b2g2f">gum-force.com</a>. They are running a 2+2 deal for new customers right now. Four kits for the price of two, which works out to about fifteen dollars a kit if I am doing the math right.</p>
+      </div>
+
+      <div class="gf-scarcity-note">
+        <strong>One thing I should mention.</strong> I tried to reorder for my younger brother three weeks ago and the site was sold out for ten days. The 2+2 promo also disappeared from the site for two weeks in March and came back without warning. Every batch they make sells through. If you are going to do this, I would not wait on it.
+      </div>
+
+      <div class="gf-stat-strip">
+        <div class="gf-stat-strip-item">
+          <div class="gf-stat-value">$15</div>
+          <div class="gf-stat-label">Per kit · 2+2</div>
+        </div>
+        <div class="gf-stat-strip-item">
+          <div class="gf-stat-value">90d</div>
+          <div class="gf-stat-label">Money back</div>
+        </div>
+        <div class="gf-stat-strip-item">
+          <div class="gf-stat-value">~1wk</div>
+          <div class="gf-stat-label">Shipping</div>
+        </div>
+      </div>
+
+      <div class="gf-end-body">
+        <p>I have no relationship with this company. I bought my own kit. I have bought five more for friends. I am writing this because there is no version of me at 23 who would have read a research paper on masseter hypertrophy. There is, maybe, a version of me at 23 who would have read a blog post by someone three years ahead of where he was.</p>
+        <p>If that is you, the rest is up to you.</p>
+      </div>
+
+      <div class="gf-stock-status">
+        <span class="gf-status-dot"></span>
+        <span>In Stock · 2+2 Promo Active · Checked May 14</span>
+      </div>
+
+      <a href="https://gum-force.com/products/jawline-creatine-gum-b2g2f" class="gf-end-cta-button">
+        Visit gum-force.com
+        <span class="gf-arrow">→</span>
+      </a>
+
+      <div class="gf-end-disclaimer">No affiliate code · No discount applied · Just where I got mine</div>
+    </div>
+
+  </article>
+
+  <div class="gf-author-bio">
+    <div class="gf-bio-avatar">
+      <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/image_1.png?v=1779268771&width=200" alt="Ethan Walker" loading="lazy" />
+    </div>
+    <div class="gf-bio-text">
+      <h4>Ethan Walker <span class="gf-verified-dot"></span></h4>
+      <p>24. Works a desk job in Chicago. Writes occasionally about things he is working through. No schedule. No newsletter. Just field notes when there is something worth saying.</p>
+      <div class="gf-bio-links">
+        <span class="gf-bio-link">Follow</span>
+        <span class="gf-bio-link">Archive</span>
+        <span class="gf-bio-link">Email</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    var progressBar = document.getElementById('gf-progressBar');
+    if (!progressBar) return;
+    window.addEventListener('scroll', function() {
+      var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      progressBar.style.width = scrolled + '%';
+    });
+  })();
+</script>
+

@@ -1,0 +1,985 @@
+{% layout none %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Start of Shoplift scripts -->
+{% render 'shoplift' %}
+<!-- End of Shoplift scripts -->
+
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUMFORCE Advertorial / Jaw Health Insider</title>
+<style>
+  :root {
+    --black: #121212;
+    --grey: #F4F4F4;
+    --teal: #2AB5B4;
+    --mint: #C5FFF7;
+    --red: #D32F2F;
+    --orange: #E67E22;
+  }
+  * { box-sizing: border-box; }
+  img { max-width: 100%; height: auto; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--black);
+    background: #fff;
+    margin: 0;
+    line-height: 1.55;
+    font-size: 18px;
+  }
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+  @media (max-width: 600px) {
+    .page {
+      padding: 20px 22px 60px;
+    }
+  }
+  .insider-logo {
+    font-weight: 800;
+    font-size: 26px;
+    color: #B0B0B0;
+    letter-spacing: -0.5px;
+    margin-bottom: 18px;
+  }
+  .update-banner {
+    border: 1px solid #E5E5E5;
+    border-radius: 6px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+    font-size: 17px;
+  }
+  .update-banner strong { font-weight: 700; }
+  .update-banner a { color: var(--black); font-weight: 700; text-decoration: underline; }
+  .breadcrumb {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+  .hed {
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.3;
+    margin: 0 0 16px;
+  }
+  .hed b { font-weight: 800; }
+  .red-callout {
+    color: var(--red);
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .red-callout span.normal { color: var(--black); font-weight: 400; }
+  .reviews-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1F6FB2;
+    color: #fff;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .img-block {
+    background: #FAFCFC;
+    border: 2px dashed var(--teal);
+    border-radius: 10px;
+    padding: 18px;
+    margin: 24px 0;
+  }
+  .img-block-header {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .img-block-num {
+    background: var(--teal);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .img-block-cat {
+    background: #fff;
+    color: var(--teal);
+    border: 1px solid var(--teal);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .img-block-preview {
+    background: #fff;
+    border: 1px solid #E5E5E5;
+    border-radius: 6px;
+    padding: 60px 20px;
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .img-block-preview.short { padding: 30px 20px; }
+  .img-block-preview.tall { padding: 100px 20px; }
+  .img-block-preview .icon {
+    font-size: 36px;
+    display: block;
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+  .img-block-title {
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--black);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .img-block-specs {
+    background: #fff;
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.55;
+  }
+  .img-block-specs > div {
+    margin-bottom: 6px;
+  }
+  .img-block-specs > div:last-child { margin-bottom: 0; }
+  .img-block-specs strong {
+    color: var(--black);
+    font-weight: 700;
+  }
+  .author-avatar-img {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .author {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin: 14px 0 24px;
+    border-top: 1px solid #EEE;
+    border-bottom: 1px solid #EEE;
+    padding: 12px 0;
+  }
+  .author-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--grey);
+    flex-shrink: 0;
+    border: 2px dashed var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: var(--teal);
+    font-weight: 700;
+  }
+  .author-name { font-weight: 700; font-size: 15px; }
+  .author-name .credential { color: var(--teal); font-weight: 600; }
+  .author-meta { font-style: italic; color: #777; font-size: 13px; margin-left: auto; }
+  .author-info { flex: 1; min-width: 0; }
+  .author-line { font-size: 15px; font-weight: 500; line-height: 1.4; color: var(--black); }
+  .author-line strong { font-weight: 800; }
+  .author-date { color: #777; font-size: 13px; margin-top: 4px; }
+  p { margin: 0 0 18px; }
+  .checklist { list-style: none; padding: 0; margin: 18px 0; }
+  .checklist li {
+    font-weight: 700;
+    font-size: 18px;
+    padding-left: 30px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .checklist li::before {
+    content: "✅";
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  h2.section {
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 1.2;
+    margin: 36px 0 20px;
+  }
+  .bad-news {
+    font-weight: 800;
+    font-size: 18px;
+    margin: 28px 0 14px;
+  }
+  .cta-btn {
+    display: block;
+    width: 100%;
+    background: var(--teal);
+    color: #fff;
+    text-align: center;
+    padding: 18px 14px;
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    border-radius: 6px;
+    margin: 24px 0;
+    box-shadow: 0 3px 0 #1F8C8B;
+    cursor: pointer;
+    border: none;
+  }
+  .spec-card {
+    background: linear-gradient(180deg, #E8F8F8 0%, #F4F4F4 100%);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+  .spec-card h3 {
+    color: var(--teal);
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0 0 18px;
+    text-transform: uppercase;
+  }
+  .spec-row {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .spec-icon {
+    width: 32px; height: 32px;
+    border: 2px solid var(--teal);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .spec-text strong { display: block; font-weight: 800; }
+  .review-block {
+    border-top: 1px solid #EEE;
+    padding-top: 20px;
+    margin-top: 24px;
+  }
+  .reviewer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .reviewer-avatar-img {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .reviewer-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--grey);
+    border: 2px dashed var(--teal);
+  }
+  .reviewer-name { font-weight: 700; }
+  .stars { color: #F5B400; letter-spacing: 1px; }
+  .review-title { font-weight: 800; font-size: 18px; margin: 8px 0; }
+  .review-date { color: #666; font-size: 14px; }
+  .verified { color: var(--orange); font-weight: 700; font-size: 14px; }
+  .helpful { color: #666; font-size: 14px; margin-top: 12px; }
+  .as-seen-on { margin: 0; text-align: center; }
+  .as-seen-on .label {
+    display: inline-block;
+    background: #fff;
+    border: 2px solid var(--black);
+    padding: 6px 16px;
+    font-weight: 800;
+    font-style: italic;
+    margin-bottom: 16px;
+  }
+  .logos-row {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .logo-circle {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: var(--grey);
+    border: 1px solid #DDD;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #999;
+    text-align: center;
+    padding: 6px;
+  }
+  .price-strike { text-decoration: line-through; color: #888; }
+  .price-now { color: var(--teal); font-weight: 800; }
+  .offer-block {
+    background: #F0FAFA;
+    border: 1px solid #D5EEEE;
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    margin: 24px 0;
+  }
+  .offer-block h3 {
+    font-size: 32px;
+    font-weight: 900;
+    margin: 0 0 6px;
+  }
+  .badges-row {
+    display: flex;
+    justify-content: space-around;
+    background: #E8F0F8;
+    border-radius: 8px;
+    padding: 14px;
+    margin: 24px 0;
+  }
+  .badge {
+    width: 60px; height: 60px;
+    background: radial-gradient(circle, #C9A24A 0%, #8B6914 100%);
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 4px;
+    line-height: 1.1;
+  }
+  .comments-section {
+    border: 1px solid #DDD;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 30px 0;
+  }
+  .comments-section h3 {
+    font-weight: 800;
+    font-size: 20px;
+    margin: 0 0 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #EEE;
+  }
+  .comment-input {
+    width: 100%;
+    border: 1px solid #DDD;
+    border-radius: 24px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    color: #999;
+    font-size: 14px;
+  }
+  .comment { margin-bottom: 22px; }
+  .comment.reply { margin-left: 36px; }
+  .comment-name { font-weight: 700; margin-bottom: 4px; }
+  .comment-body { font-size: 15px; margin-bottom: 6px; }
+  .comment-meta { color: #888; font-size: 13px; }
+  .comment-meta span { margin-right: 8px; }
+  .lock-cta {
+    display: block;
+    background: linear-gradient(180deg, #22C55E 0%, #16A34A 100%);
+    color: #FFFFFF;
+    text-align: center;
+    padding: 22px 24px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    font-size: 20px;
+    margin: 28px 0;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(34, 197, 94, 0.35), 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    text-transform: uppercase;
+    border: 2px solid #15803D;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .lock-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.45), 0 4px 6px rgba(0, 0, 0, 0.12);
+  }
+  .lock-cta:active {
+    transform: translateY(0);
+  }
+  .red-text { color: var(--red); font-weight: 700; }
+  .pointing { color: #F5B400; }
+
+/* Sticky Add to Cart */
+.sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, #22C55E 0%, #16A34A 100%);
+  color: #FFFFFF;
+  text-align: center;
+  padding: 18px 16px;
+  font-weight: 900;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  z-index: 9999;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  border-top: 2px solid #15803D;
+  display: block;
+  animation: pulse-sticky 2s ease-in-out infinite;
+}
+
+.sticky-cta:hover {
+  background: linear-gradient(180deg, #16A34A 0%, #15803D 100%);
+  animation: none;
+}
+
+.sticky-cta .arrow {
+  display: inline-block;
+  margin: 0 8px;
+}
+
+@keyframes pulse-sticky {
+  0%, 100% { box-shadow: 0 -4px 20px rgba(34, 197, 94, 0.3); }
+  50% { box-shadow: 0 -4px 30px rgba(34, 197, 94, 0.6); }
+}
+
+@media (max-width: 600px) {
+  .sticky-cta {
+    font-size: 14px;
+    padding: 16px 12px;
+  }
+}
+
+body {
+  padding-bottom: 80px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="insider-logo">Jaw Health Insider ©</div>
+
+  <div class="update-banner">
+    🔔 <strong>UPDATE:</strong> GUMFORCE™ is SELLING OUT faster than expected! Lock in your order NOW to get <a href="#offer">BUY 2, GET 2 FREE + FREE SHIPPING</a>
+  </div>
+
+  <div class="breadcrumb">Home &gt; Men's Health &gt; Jawline Development</div>
+
+  <p class="hed"><b>Former Strength Coach &amp; Masseter Hypertrophy Researcher:</b> This Is The New Way To Build A Defined Jawline Without Mewing, Fillers, Or Surgery.</p>
+
+  <p class="red-callout">
+    If you're frustrated with a soft, undefined jawline despite being lean, tired of avoiding side-profile photos, or considering thousands in chin filler or surgery,
+    <span class="normal">read this short article before you try anything else.</span>
+  </p>
+
+  <div class="reviews-pill">⭐ 8,145 Verified Reviews</div>
+
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img1.png?v=1779013840" alt="Soft undefined jawline before transformation" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <div class="author">
+    <img class="author-avatar-img" src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img2.png?v=1779013875" alt="Marcus Reid">
+    <div class="author-info">
+      <div class="author-line">By <strong>Marcus Reid</strong>, CSCS Certified Strength Coach &amp; Masseter Hypertrophy Researcher</div>
+      <div class="author-date">Last Updated: May 14, 2026</div>
+    </div>
+  </div>
+
+  <p>Hi, my name is Marcus Reid, and I'm a certified strength coach based in Austin, Texas who specializes in masseter hypertrophy research.</p>
+
+  <p>I have over 8 years of coaching experience and have spent thousands of hours helping men navigate the challenges of building a defined jawline without resorting to surgery or filler.</p>
+
+  <p>Throughout my career, I've worked with countless men who came to me struggling with:</p>
+
+  <ul class="checklist">
+    <li>A soft, undefined jawline despite being lean and in shape</li>
+    <li>Months or years of mewing with zero visible results</li>
+    <li>Embarrassment using silicone jaw exercisers in public</li>
+    <li>Anxiety around side-profile photos and tagged pictures</li>
+    <li>Considering $1,500+ annual filler or $25,000 jaw surgery</li>
+    <li>A weak bite and chronic jaw tension from atrophied muscles</li>
+  </ul>
+
+  <p>From mild masseter atrophy to severe under-development that required cosmetic consultations, I know how devastating these issues can be</p>
+
+  <p>not just for a man's confidence in photos, but for his dating life, career, and peace of mind too.</p>
+
+  <h2 class="section">"Your Jawline Isn't Bad Genetics... It's An Atrophied Muscle You've Never Trained"</h2>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img3.png?v=1779013876" alt="Young man examining jawline in mirror" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p>But it wasn't until earlier this year that I finally discovered a solution to help my readers <strong>avoid expensive cosmetic procedures altogether.</strong></p>
+
+  <p>It all started with a <strong>personal breakthrough</strong> I made while researching new approaches to masseter development and jaw hypertrophy.</p>
+
+  <p>One night, I was reviewing peer-reviewed studies on facial muscle training, and I stumbled across something that <strong>shocked me.</strong></p>
+
+  <h2 class="section">The Real Reason Mewing &amp; Jaw Exercisers Fail Most Men</h2>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img4.png?v=1779013866" alt="Why silicone jaw trainers do not work" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p>Most men believe a weak jawline is simply about bad genetics or that they're "just born with it."</p>
+
+  <p>However, the real issue is that conventional training methods were never designed to load the masseter muscle correctly, leading to constant atrophy and zero visible progress.</p>
+
+  <p>A weak jawline isn't a "bad genes" problem. It's the result of using 21st-century soft-food diets on one of the strongest muscles in your body.</p>
+
+  <p>Think of trying to build biceps by holding a soup can for twelve hours instead of doing curls with proper resistance.</p>
+
+  <p>When you have a masseter muscle made of dozens of micro-fibers that need progressive load to hypertrophy, mewing can only activate a small fraction at a time. Similarly, when men try silicone jaw trainers, they apply inconsistent pressure and give up in frustration after a few weeks.</p>
+
+  <p>This inadequate training is why common remedies like mewing, chin tucks, or jaw exercisers never solve the issue.</p>
+
+  <p>They only address surface activation while the root cause, sustained progressive resistance on the masseter, continues unchecked.</p>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img5.png?v=1779013819" alt="Atrophied versus developed masseter muscle comparison" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p class="bad-news">Here's the Bad News...</p>
+
+  <p>As your masseter stays under-loaded and supporting muscles continue to shrink, <strong>structural atrophy accelerates.</strong></p>
+
+  <p>When this happens, you don't just deal with a soft-looking face. You begin to see permanent <strong>recessed jaw lines, weakened bite force, and disproportionate chin projection.</strong></p>
+
+  <p>Left unchecked, this often leads to expensive cosmetic consultations, irreversible surgical decisions, and is one of the main reasons so many men end up in front of a plastic surgeon despite spending years on "natural" methods.</p>
+
+  <p>What you truly need is a solution that doesn't just temporarily activate the muscle... but one that <strong>delivers real progressive resistance for the full 10 to 15 minute session, every single day, to build the masseter from the ground up.</strong></p>
+  <video playsinline loop autoplay muted preload="metadata" style="max-width:400px; width:100%; height:auto; display:block; margin:20px auto; border-radius:6px;">
+    <source src="https://cdn.shopify.com/videos/c/o/v/6bea4fade6894dc38a08b5cf79d8a1d5.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <p>So what's the solution?</p>
+
+  <p>You need to load your masseter with consistent resistance for the full session, fuel the muscle with proven recovery compounds, and make the process so simple you actually do it every day.</p>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img7.png?v=1779013855" alt="Daniel before and after GUMFORCE transformation" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p>It's all possible thanks to an innovative new product called <strong>GUMFORCE</strong>.</p>
+
+  <p>This breakthrough technology is the first jawline training gum engineered at <strong>10x the density of standard commercial gum</strong>, with 500mg of pharmaceutical-grade creatine monohydrate in every piece.</p>
+
+  <p>By using GUMFORCE, your jaw can:</p>
+
+  <div class="spec-card">
+    <h3>BUILD &amp; FUEL<br>AT THE SAME TIME!</h3>
+    <div class="spec-row">
+      <div class="spec-icon"></div>
+      <div class="spec-text"><strong>10x harder</strong>than regular gum</div>
+    </div>
+    <div class="spec-row">
+      <div class="spec-icon"></div>
+      <div class="spec-text"><strong>500mg Creatine</strong>per piece, Creapure grade</div>
+    </div>
+    <div class="spec-row">
+      <div class="spec-icon"></div>
+      <div class="spec-text"><strong>35 pieces</strong>a full month of daily training</div>
+    </div>
+    <div class="spec-row">
+      <div class="spec-icon"></div>
+      <div class="spec-text"><strong>Sugar-free &amp; vegan</strong>no fillers, no junk</div>
+    </div>
+  </div>
+
+  <p>GUMFORCE is the first chewing gum engineered specifically to tackle masseter atrophy, right from your daily routine.</p>
+
+  <p>When you chew GUMFORCE for just 10 to 15 minutes, you deliver progressive resistance directly to your masseter muscle, plus 500mg of creatine absorbed through the buccal membrane in your mouth.</p>
+
+  <p>This revolutionary approach tackles the root cause of an undefined jawline at the source: chronic under-loading of one of the strongest muscles in your body.</p>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img8.png?v=1779013877" alt="GUMFORCE customer lifestyle grid" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p style="font-weight:800; font-size:20px; text-decoration:underline; margin-top:30px;">Here's what real customers had to say:</p>
+
+  <div class="review-block">
+    <div class="reviewer">
+      <img class="reviewer-avatar-img" src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img9.png?v=1779013858" alt="Daniel S.">
+      <div class="reviewer-name">Daniel S.</div>
+    </div>
+    <div class="stars">⭐⭐⭐⭐⭐</div>
+    <div class="review-title">I Went From Considering $25,000 Surgery To Spending $60. It Actually Worked.</div>
+    <div class="review-date">Reviewed in the United States on April 28, 2026</div>
+    <div class="verified">Verified Purchase</div>
+    <p>I'd tried mewing for over a year with zero results. I had silicone jaw trainers in my drawer that I'd stopped using because they looked ridiculous. I'd already booked a consultation for chin filler ($1,800 a year, forever) and was researching sliding genioplasty.</p>
+    <p>Then I read about GUMFORCE on the Jaw Health Insider newsletter.</p>
+    <p>The first piece I chewed, my masseters were burning by ninety seconds in. By week two, the soreness was real. By week six, my sister asked if I'd been doing facial exercises.</p>
+    <p>Three months in, my hygienist stopped halfway through my cleaning and asked what changed. She compared my panoramic X-ray from a year earlier to the one she'd just taken. The masseter density was visibly different on both sides.</p>
+    <p>I'd been about to take out a loan for $25,000. I spent $60.</p>
+    <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img10.png?v=1779013852" alt="Daniel S. before and after using GUMFORCE" style="max-width:500px; width:100%; height:auto; display:block; margin: 12px auto; border-radius: 6px;">
+
+    <div class="helpful">👍 89 people found this helpful</div>
+  </div>
+
+  <div class="review-block">
+    <div class="reviewer">
+      <img class="reviewer-avatar-img" src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img11.png?v=1779013771" alt="Tyler M.">
+      <div class="reviewer-name">Tyler M.</div>
+    </div>
+    <div class="stars">⭐⭐⭐⭐⭐</div>
+    <div class="review-title">This Is The Only Thing That Worked After Two Years Of Mewing</div>
+    <div class="review-date">Reviewed in the United States on March 15, 2026</div>
+    <div class="verified">Verified Purchase</div>
+    <p>I'm 26, lean, lift five days a week, and had a baby face. Two years of mewing did nothing. I bought every silicone jaw trainer on Amazon, none of them lasted more than a week before I quit.</p>
+    <p>I ordered GUMFORCE after seeing the before-and-afters online. By week three, friends started asking what I'd changed.</p>
+    <p>I chew it during my commute and at my desk. Nobody knows I'm training. It just looks like regular gum.</p>
+    <p>Two months in and the difference is what I'd hoped jaw exercisers would give me in two years. Already on my third pouch.</p>
+    <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img12.png?v=1779013774" alt="Tyler M. before and after using GUMFORCE" style="max-width:400px; width:100%; height:auto; display:block; margin: 12px auto; border-radius: 6px;">
+
+    <div class="helpful">👍 67 people found this helpful</div>
+  </div>
+
+  <div class="review-block">
+    <div class="reviewer">
+      <img class="reviewer-avatar-img" src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img13.png?v=1779013775" alt="Jake R.">
+      <div class="reviewer-name">Jake R.</div>
+    </div>
+    <div class="stars">⭐⭐⭐⭐⭐</div>
+    <div class="review-title">I Train MMA And My Coaches Noticed Before I Did</div>
+    <div class="review-date">Reviewed in the United States on February 10, 2026</div>
+    <div class="verified">Verified Purchase</div>
+    <p>I started GUMFORCE because of the creatine, honestly. Skeptical of the jaw training claims at first.</p>
+    <p>Six weeks in, my striking coach pulled me aside and asked if I'd been training my masseter. He could see it in how my face was setting up against pad work.</p>
+    <p>The creatine absorption through the mouth is real. I'm getting my daily 500mg dose without remembering to mix powder. The jaw training was a bonus that turned out to be the main event.</p>
+    <p>Sharper face, stronger bite, full creatine dose. Every man should have this on rotation.</p>
+    <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img14.png?v=1779013778" alt="Jake R. before and after using GUMFORCE" style="max-width:500px; width:100%; height:auto; display:block; margin: 12px auto; border-radius: 6px;">
+
+    <div class="helpful">👍 54 people found this helpful</div>
+  </div>
+
+    <p>Now, I know you probably have two main questions...</p>
+
+  <h2 class="section">How Can You Get Your Hands On GUMFORCE™?</h2>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img16.png?v=1779013813" alt="GUMFORCE pouch product hero" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p>...And what's the price?</p>
+
+  <p>Well, that's a tricky question...</p>
+
+  <p>Because it takes significant time and resources to create each batch of GUMFORCE...</p>
+
+  <p>From the precision-engineered density that holds up for the full session...</p>
+
+  <p>To the 500mg of pharmaceutical-grade creatine monohydrate inside every single piece...</p>
+
+  <p>To the partnership with a manufacturer that supplies dental research labs in Switzerland...</p>
+
+  <h2 class="section">We Could Sell Out Tomorrow... Or Maybe Even Today</h2>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img17.png?v=1779013877" alt="Warehouse running low on GUMFORCE inventory" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p>And once that happens...</p>
+  <p>Once we do run out of stock...</p>
+  <p>It could take us anywhere from a couple of weeks to a couple of months to get back in stock because each pouch of <strong>GUMFORCE</strong> requires precision manufacturing and creatine batch testing that can't be rushed.</p>
+
+  <p>So if you're serious about building your jawline, eliminating your concern about side-profile photos, and finally seeing the structural results you've been chasing for years...</p>
+
+  <p><strong>I recommend you DO NOT leave this page.</strong></p>
+
+  <p>Because <strong>this may be your only chance</strong> to get GUMFORCE and finally experience the jawline development you've been hoping for.</p>
+
+  <p>So, without further ado, <strong>let me show you how to get your GUMFORCE today.</strong></p>
+
+  <h2 class="section">GUMFORCE Is NOT Available Anywhere Else Except On Our Official Website</h2>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/hf_20260517_124647_a30ec12b-db50-49c1-b3fa-c63124cc9b0c.png?v=1779022132" alt="GUMFORCE only on official website" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img18.png?v=1779013819" alt="Authentic GUMFORCE versus generic jaw training gum" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p>We've found dozens of Amazon listings selling "jaw training gum" that are actually repackaged commercial chewing gum from one of three Chinese factories. The hardness is identical to Trident. Only the marketing is different.</p>
+
+  <p>That's why we sell exclusively on our official website. No Amazon, no eBay, no third-party retailers. Just the real product, every time.</p>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/hf_20260517_124938_81a4a378-e087-43bd-bed8-db6f3f163463.png?v=1779022294" alt="Real GUMFORCE vs imitations" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p><strong>Just $39.99</strong></p>
+
+  <p>Even if you only used GUMFORCE during one full 90-day training cycle, that's less than fifty cents a day to develop a muscle that, when trained, restructures the visible part of your face.</p>
+
+  <p>And truthfully, you'll be using it long after you see results because once your masseter is firing properly, GUMFORCE becomes your go-to creatine source and daily maintenance routine.</p>
+
+  <p>Each GUMFORCE pouch contains 35 individually-engineered pieces, with each piece delivering 10x the density of commercial gum plus 500mg of Creapure creatine. One pouch provides a full month of daily training.</p>
+
+  <p>When you look at it this way, it's clear just how incredible of a deal this is:</p>
+
+  <ul class="checklist">
+    <li>One investment of <strong>$39.99</strong> versus $1,500+ per year in chin filler</li>
+    <li>One investment of <strong>$39.99</strong> versus $15,000 to $30,000 in irreversible jaw surgery</li>
+    <li>One investment of <strong>$39.99</strong> for the masseter development other men chase for years</li>
+  </ul>
+
+  <p>You'll never be able to buy GUMFORCE cheaper than today.</p>
+  <p>This is the best deal you will ever get.</p>
+  <p>And this may be the only time you see it.</p>
+  <p>So without further ado, click below to place your order.</p>
+
+  <h2 class="section" id="offer">So, I Decided To Offer A <span class="red-text">Special Limited-Time Discount</span> And Let You Have Your Own GUMFORCE With A <em>Buy 2, Get 2 FREE</em> Offer</h2>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/hf_20260517_130340_d984b5b9-9c00-4ad8-a010-09a87eefdffb.png?v=1779023086" alt="GUMFORCE special discount offer" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <div class="offer-block">
+    <h3>Buy 2, Get 2 Free</h3>
+    <div style="font-size:16px; margin-bottom:14px;">Limited Time. While Supplies Last.</div>
+      <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img20.png?v=1779013826" alt="GUMFORCE Buy 2 Get 2 Free bundle with free shipping" style="max-width:500px; width:100%; height:auto; display:block; margin: 12px auto; border-radius: 6px;">
+
+    <div style="font-size:22px; margin-top:14px;">
+      <span class="price-strike">$79.99</span> <span class="price-now">→ Only $39.99</span>
+    </div>
+  </div>
+
+  <p><span class="pointing">👉</span> This is the lowest price we'll ever offer.</p>
+  <p>And it's only guaranteed for today.</p>
+  <p>So, if you're tired of soft jaw definition, worried about your side profile, and stressed about whether surgery is your only option...</p>
+  <p>And you actually want to make jaw training simple, prevent further atrophy, and ensure real structural results without complicated routines...</p>
+  <p>Then make sure to click the big button below and grab it while you still can!</p>
+
+  <p>As I mentioned earlier, GUMFORCE is manufactured in small batches with precision technology, and demand is higher than ever.</p>
+  <p>That means it's only a matter of time before we run out completely.</p>
+  <p>And when that happens, not only will you have to wait weeks for the next batch... you'll also see the price go back up.</p>
+
+  <p style="font-weight:800; font-size:17px; margin-top:24px;">NOTE: This deal is NOT available on Amazon or eBay.</p>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/hf_20260517_130755_b1757fd5-6510-4e81-bf7c-1083a63b97db_copie.png?v=1779024149" alt="GUMFORCE not available on Amazon or eBay" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p><span style="color:#F5B400;">⚠️</span> You will never be able to get GUMFORCE cheaper than today.</p>
+  <p>This is the best deal we will ever give, and it might be the only time you see it.</p>
+
+  <a href="https://gum-force.com/products/jawline-creatine-gum-b2g2f" class="cta-btn">BUY 2, GET 2 FREE ONLY TODAY!</a>
+
+  <h2 class="section">You Have <span class="red-text">90 Days</span> To Try GUMFORCE With <span class="red-text">Zero Risk!</span></h2>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img21.png?v=1779013832" alt="90-day risk-free guarantee" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p>Yes, you read that right.</p>
+  <p>I'm giving you a full 90-day trial period.</p>
+  <p>That means you have three full months to put GUMFORCE to the test and see exactly how well it works for your masseter development.</p>
+  <p>If you love the results, simply keep using it to maintain your jawline development long after the visible changes appear.</p>
+  <p>But if for any reason at all you're not satisfied...</p>
+  <p>Just let us know within 90 days, and you'll get every penny back, no questions asked.</p>
+  <p>It doesn't matter if it's been 59 minutes or 89 days after your purchase, the guarantee still applies.</p>
+  <p>You only pay if you're 100% happy. Otherwise, it's on us.</p>
+  <p>That's how confident we are in GUMFORCE.</p>
+  <p>Fair enough?</p>
+
+  <a href="https://gum-force.com/products/jawline-creatine-gum-b2g2f" class="lock-cta">APPLY DISCOUNT &amp; CHECK AVAILABILITY</a>
+
+  <h2 class="section">Here's What To Do Next</h2>
+
+  <p>If there's stock available, you'll see a big green button below that says:</p>
+  <p><strong>"APPLY DISCOUNT &amp; CHECK AVAILABILITY."</strong></p>
+  <p><span class="pointing">👉</span> Click that button to go straight to GUMFORCE's official, secure website.</p>
+  <p>If units are still in stock, your special one-time discount will be automatically applied at checkout.</p>
+  <p>If we're temporarily sold out, you'll be able to leave your email so you're the first to know when more are available.</p>
+  <p>Once you click through, just:</p>
+  <p>Select your preferred package</p>
+  <p>Enter your name, address, and payment details on our encrypted checkout page</p>
+  <p>And your order will be on its way within 5 to 8 business days!</p>
+  <p>It's that simple.</p>
+
+  <a href="https://gum-force.com/products/jawline-creatine-gum-b2g2f" class="lock-cta">APPLY DISCOUNT &amp; CHECK AVAILABILITY</a>
+
+  <h2 class="section">Remember, There's ZERO Risk</h2>
+
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img22.png?v=1779013775" alt="90-day guarantee, fast shipping, secure checkout, easy returns" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p>The only risk you run is missing out on the chance to finally solve your jawline development with GUMFORCE™ at today's special offer.</p>
+
+  <p>I've seen what happens when men let this opportunity pass them by, and it's not good.</p>
+
+  <p>You'll keep dodging side-profile photos, worrying about whether surgery is your only option, and watching your face age into deeper atrophy... while the real solution sits right here waiting for you.</p>
+
+  <p>Sure, you might see some temporary motivation with mewing or jaw exercisers...</p>
+
+  <p>But eventually, the missed progress, embarrassment, and frustration will only get worse as time continues.</p>
+
+  <p>I'm not saying this to scare you. I just want to be real with you.</p>
+
+  <p>Because when left unaddressed, masseter atrophy doesn't just affect your photos... it can lead to thousands spent on filler, irreversible cosmetic decisions, and disappointing results despite spending tens of thousands.</p>
+
+  <p>That's why the choice you make today could be one of the most important for your face and your confidence.</p>
+
+  <p><span class="pointing">👉</span> So, what's it going to be?</p>
+
+  <p>Will you keep fighting genetics you can't change and hoping for the best?</p>
+
+  <p>Or will you take action right now, grab your GUMFORCE today, and start enjoying the structural jawline development with guaranteed results?</p>
+
+  <h2 class="section">Remember... This Isn't Just About Looks</h2>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/hf_20260517_132858_739c495f-6c8a-4636-9f55-edd0230e6ea4.png?v=1779024736" alt="GUMFORCE benefits beyond aesthetics" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img23.png?v=1779013872" alt="Option 1 do-nothing versus Option 2 take action" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <p>This isn't just about you.</p>
+
+  <p>It's about your <strong>confidence</strong>, the kind that comes from not avoiding mirrors or tagged photos.</p>
+
+  <p>It's about your <strong>dating life</strong>, walking into rooms knowing your face holds up from every angle.</p>
+
+  <p>It's about your <strong>career</strong>, where studies consistently show jawline definition affects perceived authority and trustworthiness.</p>
+
+  <p>And yes, it's also about your <strong>peace of mind</strong>, knowing your face is developing the way it was meant to, every single day.</p>
+
+  <p>You owe it to yourself to make jaw training as easy and effective as possible.</p>
+
+  <ul class="checklist">
+    <li>You can finally stop worrying about your side profile</li>
+    <li>You can enjoy stress-free jawline development with guaranteed results</li>
+    <li>You can feel confident your face is at its structural best every day</li>
+  </ul>
+
+  <p>Thousands of men have already made the switch, and you can too.</p>
+
+  <p>So if you're ready to take the next step, now's the time.</p>
+
+  <p><span style="color:#F5B400;">⚠️</span> Click the button below to secure your GUMFORCE offer while it's still available.</p>
+
+  <a href="https://gum-force.com/products/jawline-creatine-gum-b2g2f" class="lock-cta">APPLY DISCOUNT &amp; CHECK AVAILABILITY</a>
+
+  <p><span class="red-text">UPDATE:</span> As of May 14th, 2026, the demand for GUMFORCE has increased dramatically and inventory has been flying off the shelves. Order your own for <strong>Buy 2, Get 2 FREE + FAST SHIPPING</strong> before it's too late.</p>
+
+  <p>Lock in your order while you can to get <strong>B2G2F + FAST SHIPPING</strong></p>
+
+  <p><span class="red-text">NOTE:</span> This deal is NOT available on Amazon or eBay.</p>
+  <img src="https://cdn.shopify.com/s/files/1/0961/8505/7585/files/img24.png?v=1779013873" alt="GUMFORCE selling out, last chance" style="width:100%; height:auto; display:block; margin: 20px 0; border-radius: 6px;">
+
+  <a href="https://gum-force.com/products/jawline-creatine-gum-b2g2f" class="lock-cta">APPLY DISCOUNT &amp; CHECK AVAILABILITY</a>
+
+  <div class="comments-section">
+    <h3>Comments</h3>
+    <div class="comment-input">Add a comment...</div>
+
+    <div class="comment">
+      <div class="comment-name">Marcus Webb</div>
+      <div class="comment-body">Can anyone vouch for this GUMFORCE thing? Tired of getting scammed by jaw products.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 12</span><span>47 min</span></div>
+    </div>
+
+    <div class="comment reply">
+      <div class="comment-name">Jessica Martinez</div>
+      <div class="comment-body">Got it for my boyfriend about 3 weeks ago. He was super skeptical at first but his jawline is noticeably more defined now. He's already asking for another pouch.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 18</span><span>23 min</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Ryan Thompson</div>
+      <div class="comment-body">I bought mine for the full price two months ago and now it's B2G2F?? Not fair lol but honestly worth it either way.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 6</span><span>52 min</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">David Kim</div>
+      <div class="comment-body">How long does shipping take??</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 2</span><span>1 h</span></div>
+    </div>
+
+    <div class="comment reply">
+      <div class="comment-name">Jordan Park</div>
+      <div class="comment-body">Hey David, got mine after 5 business days. Fast shipping.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 4</span><span>31 min</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Mark Rodriguez</div>
+      <div class="comment-body">Just got my GUMFORCE today, chewed my first piece and my masseter is BURNING. So much harder than any gum I've ever had.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 9</span><span>1 h</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Tyler Chen</div>
+      <div class="comment-body">@MarcusReid bro I've been mewing for 2 years and got nothing. Just ordered, hoping this is the answer 🙏</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 7</span><span>2 h</span></div>
+    </div>
+
+    <div class="comment reply">
+      <div class="comment-name">Aaron Johnson</div>
+      <div class="comment-body">Same boat. Mewing did absolutely nothing for me either. Just ordered the B2G2F. Will report back.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 5</span><span>1 h</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Michael Davis</div>
+      <div class="comment-body">Did you guys actually see results? How long?</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 3</span><span>2 h</span></div>
+    </div>
+
+    <div class="comment reply">
+      <div class="comment-name">Karen Wilson</div>
+      <div class="comment-body">My son started using it 6 weeks ago for his college applications. Already noticing a difference in his confidence.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 8</span><span>2 h</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Patrick Moore</div>
+      <div class="comment-body">Two weeks in, jaw definition is real. No more silicone trainers for me, this is way more discrete.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 11</span><span>3 h</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Robert Taylor</div>
+      <div class="comment-body">Wow this looks legit. Does anyone here actually use it? And does it really work without surgery?</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 4</span><span>3 h</span></div>
+    </div>
+
+    <div class="comment reply">
+      <div class="comment-name">Jordan Park</div>
+      <div class="comment-body">@Robert Yes! 8 weeks in for me. Was considering filler at $1,800/year. Now I just chew GUMFORCE. Total game changer, my masseter is visibly bigger.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 13</span><span>41 min</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Sean Anderson</div>
+      <div class="comment-body">Just ordered mine! Cannot wait for it.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 7</span><span>3 h</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Michael Brown</div>
+      <div class="comment-body">I want one so bad, gonna buy it this weekend when my paycheck hits lol!!</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 15</span><span>3 h</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">James Lewis</div>
+      <div class="comment-body">Got one for my brother, he's been chewing it for 3 weeks. Says his jaw feels stronger and he's noticed his face looking sharper. Totally worth it.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 8</span><span>4 h</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Brett Hall</div>
+      <div class="comment-body">Didn't expect much, but wow... after just a few uses my masseter is sore in a good way. Finally something that actually works for the jaw.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 6</span><span>4 h</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">William Young</div>
+      <div class="comment-body">I was skeptical at first... but honestly blown away. Been dealing with a soft jawline for years, GUMFORCE is showing results in weeks. Already ordered a backup 🙏</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 9</span><span>5 h</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Helen Garcia</div>
+      <div class="comment-body">Just bought one for my nephew. He's been asking about chin filler at 19 years old. Hopefully this saves him from a bad decision 😅</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 12</span><span>5 h</span></div>
+    </div>
+
+    <div class="comment reply">
+      <div class="comment-name">Sandra King</div>
+      <div class="comment-body">OMG same! My nephew was considering surgery. Just grabbed another pouch before it sells out again like last month.</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 8</span><span>2 h</span></div>
+    </div>
+
+    <div class="comment">
+      <div class="comment-name">Daniel Wright</div>
+      <div class="comment-body">Thank you, mine arrived today! Trying my first piece tonight, my friends already say I look leaner after losing weight, excited to see what happens with the jaw 😊</div>
+      <div class="comment-meta"><span>Like</span><span>Reply</span><span>👍 7</span><span>5 h</span></div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<a href="https://gum-force.com/products/jawline-creatine-gum-b2g2f" class="sticky-cta">
+  <span class="arrow">👉</span>BUY 2, GET 2 FREE + FREE SHIPPING<span class="arrow">👈</span>
+</a>
+
+</body>
+</html>

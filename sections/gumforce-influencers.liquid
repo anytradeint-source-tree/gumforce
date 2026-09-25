@@ -1,0 +1,575 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Influencer Carousel — v4 (light / gradient theme)
+  ----------------------------------------------------------------------------
+  - Pensé pour fond clair/transparent (le dégradé du site passe derrière).
+  - Profondeur par scale + voile sombre subtil (cartes latérales assombries,
+    jamais délavées) → plus de "blanc" sur les côtés.
+  - Polices du thème : Oswald (titres) + Manrope (texte).
+  - Moteur : scroll natif + scroll-snap, boucle infinie par clones,
+    détection du centre en temps réel, boot via IntersectionObserver.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign accent = s.accent_color | default: '#2AB5B4'
+  assign ar = accent | color_extract: 'red'
+  assign ag = accent | color_extract: 'green'
+  assign ab = accent | color_extract: 'blue'
+
+  assign txt_hd  = s.color_heading | default: '#0e0e0e'
+  assign txt     = s.color_text    | default: '#0e0e0e'
+  assign txt_mut = s.color_muted   | default: '#6b6b6b'
+  assign card_bg = s.color_card    | default: '#e9e9ec'
+
+  if s.transparent_bg == false
+    assign root_bg = s.color_bg | default: '#ffffff'
+  else
+    assign root_bg = 'transparent'
+  endif
+
+  assign card_w   = s.card_width  | default: 280
+  assign card_gap = s.card_gap    | default: 16
+  assign card_rad = s.card_radius | default: 18
+  assign h_tag    = s.heading_tag | default: 'h2'
+  assign card_w_mob = card_w | minus: 60
+  assign card_h   = card_w | times: 4 | divided_by: 3
+-%}
+
+<style>
+  /* ── Reset ── */
+  #gfinf-{{ sid }},
+  #gfinf-{{ sid }} *,
+  #gfinf-{{ sid }} *::before,
+  #gfinf-{{ sid }} *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ── Root ── */
+  #gfinf-{{ sid }} {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 640px;
+    --gfinf-font:      var(--font-body--family, 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif);
+    --gfinf-font-head: var(--font-heading--family, 'Oswald', sans-serif);
+    --gfinf-text:      {{ txt }};
+    --gfinf-text-hd:   {{ txt_hd }};
+    --gfinf-text-mut:  {{ txt_mut }};
+    --gfinf-accent:    {{ accent }};
+    --gfinf-ar:        {{ ar }};
+    --gfinf-ag:        {{ ag }};
+    --gfinf-ab:        {{ ab }};
+    --gfinf-card-bg:   {{ card_bg }};
+    --gfinf-card-w:    {{ card_w_mob }}px;
+    --gfinf-gap:       {{ card_gap }}px;
+    --gfinf-rad:       {{ card_rad }}px;
+
+    font-family: var(--gfinf-font);
+    background: {{ root_bg }};
+    color: var(--gfinf-text);
+    padding: {{ s.padding_top | default: 60 }}px 0 {{ s.padding_bottom | default: 60 }}px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Header ── */
+  #gfinf-{{ sid }} .gfinf-hd { text-align: center; padding: 0 20px; margin-bottom: 30px; }
+
+  #gfinf-{{ sid }} .gfinf-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(var(--gfinf-ar), var(--gfinf-ag), var(--gfinf-ab), 0.09);
+    border: 1px solid rgba(var(--gfinf-ar), var(--gfinf-ag), var(--gfinf-ab), 0.22);
+    color: var(--gfinf-accent);
+    font-family: var(--gfinf-font);
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+    padding: 6px 14px; border-radius: 100px; margin-bottom: 16px; line-height: 1;
+  }
+
+  #gfinf-{{ sid }} .gfinf-title {
+    font-family: var(--gfinf-font-head);
+    color: var(--gfinf-text-hd);
+    font-size: clamp(28px, 5.5vw, 44px);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: 0.005em;
+    margin: 0 auto 12px;
+    max-width: 620px;
+    text-wrap: balance;
+    text-decoration: none;
+  }
+
+  #gfinf-{{ sid }} .gfinf-hd p {
+    font-family: var(--gfinf-font);
+    font-size: 14px; color: var(--gfinf-text-mut);
+    line-height: 1.5; max-width: 480px; margin: 0 auto;
+  }
+
+  /* ── Carousel ── */
+  #gfinf-{{ sid }} .gfinf-carousel { position: relative; }
+
+  #gfinf-{{ sid }} .gfinf-stage {
+    display: flex;
+    gap: var(--gfinf-gap);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-block: 18px 44px;
+    padding-inline: calc(50% - var(--gfinf-card-w) / 2);
+  }
+  #gfinf-{{ sid }} .gfinf-stage::-webkit-scrollbar { display: none; }
+
+  /* ── Card ── */
+  #gfinf-{{ sid }} .gfinf-card {
+    flex-shrink: 0;
+    width: var(--gfinf-card-w);
+    aspect-ratio: 3 / 4;
+    border-radius: var(--gfinf-rad);
+    overflow: hidden;
+    position: relative;
+    background: var(--gfinf-card-bg);
+    scroll-snap-align: center;
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: scale3d(0.9, 0.9, 1);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.09);
+    transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #gfinf-{{ sid }} .gfinf-card--active { box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16); }
+
+  /* voile d'assombrissement (cartes latérales) — jamais de délavé */
+  #gfinf-{{ sid }} .gfinf-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: #0b0b0c;
+    opacity: var(--gfinf-veil, 0.18);
+    transition: opacity 0.2s linear;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  #gfinf-{{ sid }} .gfinf-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    #gfinf-{{ sid }} .gfinf-card--active:hover img { transform: scale(1.05); }
+  }
+
+  /* ── Overlay nom/rôle ── */
+  #gfinf-{{ sid }} .gfinf-card-ov {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 26px 16px 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.36) 52%, transparent 100%);
+    display: flex; flex-direction: column; gap: 3px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  #gfinf-{{ sid }} .gfinf-card-name {
+    font-family: var(--gfinf-font);
+    font-size: 14px; font-weight: 700; color: #fff;
+    line-height: 1.3; letter-spacing: -0.01em;
+  }
+  #gfinf-{{ sid }} .gfinf-card-role {
+    font-family: var(--gfinf-font);
+    font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.66); line-height: 1.3;
+  }
+
+  /* ── Placeholder ── */
+  #gfinf-{{ sid }} .gfinf-card-ph {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    background: linear-gradient(150deg, #f1f1f4, #e4e4e9);
+    color: #b3b3bd;
+    font-family: var(--gfinf-font); font-size: 11px; font-weight: 600;
+  }
+  #gfinf-{{ sid }} .gfinf-card-ph svg { width: 28px; height: 28px; color: #c2c2cc; display: block; }
+
+  /* ── Arrows (glass clair) ── */
+  #gfinf-{{ sid }} .gfinf-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    z-index: 20;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: #15171a;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+    transition: background 0.25s ease, transform 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    -webkit-backdrop-filter: blur(10px) saturate(1.3);
+    backdrop-filter: blur(10px) saturate(1.3);
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #gfinf-{{ sid }} .gfinf-arrow:hover {
+    background: var(--gfinf-accent);
+    border-color: transparent;
+    color: #fff;
+    transform: translateY(-50%) scale(1.08);
+  }
+  #gfinf-{{ sid }} .gfinf-arrow:active { transform: translateY(-50%) scale(0.92); }
+  #gfinf-{{ sid }} .gfinf-arrow svg { width: 16px; height: 16px; display: block; flex-shrink: 0; }
+  #gfinf-{{ sid }} .gfinf-arrow--prev { left: 10px; }
+  #gfinf-{{ sid }} .gfinf-arrow--next { right: 10px; }
+
+  /* ── Empty ── */
+  #gfinf-{{ sid }} .gfinf-empty {
+    text-align: center; padding: 40px 24px; color: var(--gfinf-text-mut);
+    font-family: var(--gfinf-font); font-size: 14px; line-height: 1.5;
+  }
+
+  /* ── Desktop ── */
+  @media (min-width: 750px) {
+    #gfinf-{{ sid }} { --gfinf-card-w: {{ card_w }}px; }
+    #gfinf-{{ sid }} .gfinf-hd { padding: 0 24px; margin-bottom: 44px; }
+    #gfinf-{{ sid }} .gfinf-hd p { font-size: 15px; }
+    #gfinf-{{ sid }} .gfinf-card-ov { padding: 30px 20px 20px; }
+    #gfinf-{{ sid }} .gfinf-card-name { font-size: 15px; }
+    #gfinf-{{ sid }} .gfinf-card-role { font-size: 12px; }
+    #gfinf-{{ sid }} .gfinf-arrow { width: 46px; height: 46px; }
+    #gfinf-{{ sid }} .gfinf-arrow svg { width: 19px; height: 19px; }
+    #gfinf-{{ sid }} .gfinf-arrow--prev { left: 18px; }
+    #gfinf-{{ sid }} .gfinf-arrow--next { right: 18px; }
+  }
+
+  /* ── Reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    #gfinf-{{ sid }} .gfinf-card { transform: none !important; }
+    #gfinf-{{ sid }} .gfinf-card::after { opacity: 0 !important; }
+    #gfinf-{{ sid }} .gfinf-card img { transition: none !important; }
+  }
+</style>
+
+<section id="gfinf-{{ sid }}">
+
+  {%- comment -%} ── Header ── {%- endcomment -%}
+  <div class="gfinf-hd">
+    {%- if s.badge_text != blank -%}
+      <span class="gfinf-badge">{{ s.badge_text }}</span>
+    {%- endif -%}
+    <{{ h_tag }} class="gfinf-title">{{ s.heading }}</{{ h_tag }}>
+    {%- if s.subheading != blank -%}
+      <p>{{ s.subheading }}</p>
+    {%- endif -%}
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+
+    <div class="gfinf-carousel">
+      <div class="gfinf-stage" data-gfinf-stage="{{ sid }}">
+
+        {%- comment -%} 3 sets : [clones gauche] [originaux] [clones droite] — boucle infinie {%- endcomment -%}
+        {%- for set in (0..2) -%}
+          {%- for block in section.blocks -%}
+            <div class="gfinf-card{% if set != 1 %} gfinf-card--clone{% endif %}"
+                 {%- if set == 1 %} data-gfinf-card="{{ forloop.index0 }}" {{ block.shopify_attributes }}{% endif -%}
+                 {%- if set != 1 %} aria-hidden="true"{% endif -%}>
+              {%- if block.settings.image != blank -%}
+                <img src="{{ block.settings.image | image_url: width: 1000 }}"
+                     srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
+                            {{ block.settings.image | image_url: width: 700 }} 700w,
+                            {{ block.settings.image | image_url: width: 1000 }} 1000w,
+                            {{ block.settings.image | image_url: width: 1400 }} 1400w"
+                     sizes="(max-width: 749px) {{ card_w_mob }}px, {{ card_w }}px"
+                     alt="{{ block.settings.name | default: '' | escape }}"
+                     loading="lazy"
+                     width="{{ card_w }}"
+                     height="{{ card_h }}"
+                     draggable="false">
+              {%- else -%}
+                <div class="gfinf-card-ph">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                  Photo
+                </div>
+              {%- endif -%}
+              <div class="gfinf-card-ov">
+                {%- if block.settings.name != blank -%}
+                  <span class="gfinf-card-name">{{ block.settings.name }}</span>
+                {%- endif -%}
+                {%- if block.settings.role != blank -%}
+                  <span class="gfinf-card-role">{{ block.settings.role }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endfor -%}
+
+      </div>
+
+      {%- if section.blocks.size > 1 -%}
+        <button class="gfinf-arrow gfinf-arrow--prev" data-gfinf-prev="{{ sid }}" aria-label="Précédent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="gfinf-arrow gfinf-arrow--next" data-gfinf-next="{{ sid }}" aria-label="Suivant">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      {%- endif -%}
+    </div>
+
+  {%- else -%}
+
+    <div class="gfinf-empty">
+      Ajoutez des cartes influenceur dans les blocs de cette section.
+    </div>
+
+  {%- endif -%}
+
+</section>
+
+{%- if section.blocks.size > 1 -%}
+<script>
+(function(){
+  var sid   = {{ sid | json }};
+  var N     = {{ section.blocks.size }};
+  var root  = document.getElementById('gfinf-' + sid);
+  if (!root || N < 2) return;
+  function _boot(){
+  var stage   = root.querySelector('[data-gfinf-stage]');
+  var allCards = stage.querySelectorAll('.gfinf-card');
+  var origCards = stage.querySelectorAll('.gfinf-card:not(.gfinf-card--clone)');
+  var prevBtn = root.querySelector('[data-gfinf-prev]');
+  var nextBtn = root.querySelector('[data-gfinf-next]');
+  if (!stage || allCards.length === 0) return;
+
+  /* preload des images uniques dès l'approche (300px) → zéro flash de chargement au scroll/boucle */
+  for (var pi = 0; pi < origCards.length; pi++) {
+    var pim = origCards[pi].querySelector('img');
+    if (pim) {
+      var pic = new Image();
+      if (pim.srcset) pic.srcset = pim.srcset;
+      if (pim.sizes)  pic.sizes  = pim.sizes;
+      pic.src = pim.getAttribute('src');
+    }
+  }
+
+  var cardW, gap, step;
+  var curCenter = N; /* index in allCards of the visually centered card */
+
+  function measure() {
+    cardW = allCards[0].offsetWidth;
+    gap   = parseFloat(getComputedStyle(stage).columnGap)
+         || parseFloat(getComputedStyle(root).getPropertyValue('--gfinf-gap'))
+         || 16;
+    step  = cardW + gap;
+  }
+
+  function scrollToIdx(idx, smooth) {
+    if (idx < 0 || idx >= allCards.length) return;
+    var card = allCards[idx];
+    var target = card.offsetLeft - (stage.offsetWidth - cardW) / 2;
+    if (smooth) { stage.scrollTo({ left: target, behavior: 'smooth' }); }
+    else { stage.scrollLeft = target; }
+  }
+
+  function initScroll() {
+    measure();
+    stage.style.scrollSnapType = 'none';
+    scrollToIdx(N, false); /* premier original = index N dans allCards */
+    updateCards();
+    requestAnimationFrame(function() { stage.style.scrollSnapType = 'x mandatory'; });
+  }
+
+  /* ── Scale + voile selon la distance au centre (interpolation continue) ── */
+  function updateCards() {
+    var center = stage.scrollLeft + stage.offsetWidth / 2;
+    var closestDist = Infinity;
+    for (var i = 0; i < allCards.length; i++) {
+      var c = allCards[i];
+      var cCenter = c.offsetLeft + cardW / 2;
+      var dist = Math.abs(cCenter - center);
+      var t = Math.min(dist / step, 2.5);
+
+      var sc   = t < 0.06 ? 1 : Math.max(1 - t * 0.06, 0.9);  /* snap focal à 1.0 = arête nette */
+      var veil = Math.min(t * 0.16, 0.24);                    /* centre 0 → côtés assombris 0.24 */
+      sc   = Math.round(sc * 1000) / 1000;
+      veil = Math.round(veil * 100) / 100;
+
+      /* écriture seulement si la valeur change → plus de ré-échantillonnage par frame */
+      if (c.__gfSc !== sc) { c.style.transform = 'scale3d(' + sc + ',' + sc + ',1)'; c.__gfSc = sc; }
+      if (c.__gfV !== veil) { c.style.setProperty('--gfinf-veil', veil); c.__gfV = veil; }
+
+      if (dist < closestDist) { closestDist = dist; curCenter = i; }
+      if (dist < step * 0.35) { c.classList.add('gfinf-card--active'); }
+      else                    { c.classList.remove('gfinf-card--active'); }
+    }
+  }
+
+  /* ── Boucle infinie : saut silencieux en zone de clones ── */
+  function checkLoop() {
+    var center = stage.scrollLeft + stage.offsetWidth / 2;
+    var origFirst = origCards[0].offsetLeft + cardW / 2;
+    var origLast  = origCards[N - 1].offsetLeft + cardW / 2;
+    var jump      = N * step;
+    var needJump = false;
+    var newLeft   = stage.scrollLeft;
+
+    if (center > origLast + step * 0.6) { newLeft -= jump; needJump = true; }
+    else if (center < origFirst - step * 0.6) { newLeft += jump; needJump = true; }
+
+    if (needJump) {
+      stage.style.scrollSnapType = 'none';
+      stage.style.scrollBehavior = 'auto';
+      stage.scrollLeft = newLeft;
+      updateCards();
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          stage.style.scrollSnapType = 'x mandatory';
+          stage.style.scrollBehavior = '';
+        });
+      });
+    }
+  }
+
+  var raf, loopT;
+  stage.addEventListener('scroll', function() {
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(updateCards);
+    clearTimeout(loopT);
+    loopT = setTimeout(checkLoop, 120);
+  }, { passive: true });
+
+  if (prevBtn) prevBtn.addEventListener('click', function() {
+    var t = curCenter - 1; if (t >= 0) scrollToIdx(t, true);
+  });
+  if (nextBtn) nextBtn.addEventListener('click', function() {
+    var t = curCenter + 1; if (t < allCards.length) scrollToIdx(t, true);
+  });
+
+  root.setAttribute('tabindex', '0');
+  root.setAttribute('role', 'region');
+  root.setAttribute('aria-roledescription', 'carousel');
+  root.setAttribute('aria-label', 'Carousel influenceurs');
+  root.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft')  { prevBtn && prevBtn.click(); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { nextBtn && nextBtn.click(); e.preventDefault(); }
+  });
+
+  var rsT;
+  window.addEventListener('resize', function() {
+    clearTimeout(rsT);
+    rsT = setTimeout(function() { measure(); updateCards(); }, 200);
+  });
+
+  if (typeof Shopify !== 'undefined' && Shopify.designMode) {
+    document.addEventListener('shopify:block:select', function(e) {
+      if (e.detail.sectionId !== sid) return;
+      var idx = e.target.getAttribute('data-gfinf-card');
+      if (idx !== null) { scrollToIdx(N + parseInt(idx, 10), true); }
+    });
+  }
+
+  initScroll();
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function(e,o){if(e[0].isIntersecting){o.disconnect();_boot();}},{rootMargin:'300px'}).observe(root);
+  } else _boot();
+})();
+</script>
+{%- endif -%}
+
+{%- if s.enable_animation and section.blocks.size > 0 -%}
+<script>
+(function(){
+  var root = document.getElementById('gfinf-' + {{ sid | json }});
+  if (!root) return;
+  var hd   = root.querySelector('.gfinf-hd');
+  var caro = root.querySelector('.gfinf-carousel');
+  if (!hd || !caro) return;
+  var ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
+  hd.style.cssText   = 'opacity:0;transform:translateY(24px);transition:opacity .7s ' + ease + ',transform .7s ' + ease;
+  caro.style.cssText += ';opacity:0;transform:translateY(24px);transition:opacity .7s ' + ease + ' .15s,transform .7s ' + ease + ' .15s';
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        hd.style.opacity = '1'; hd.style.transform = 'translateY(0)';
+        caro.style.opacity = '1'; caro.style.transform = 'translateY(0)';
+        io.disconnect();
+      }
+    });
+  }, { threshold: 0.12 });
+  io.observe(root);
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "GF Influencer Carousel",
+  "tag": "section",
+  "class": "gf-influencers",
+  "max_blocks": 16,
+  "settings": [
+    { "type": "header", "content": "── En-tête ──" },
+    { "type": "text", "id": "badge_text", "label": "Badge (eyebrow)", "default": "Social proof" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Adopté par les meilleurs" },
+    { "type": "text", "id": "subheading", "label": "Sous-titre", "default": "Rejoins la communauté GUMFORCE" },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Type de titre",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" }
+      ],
+      "default": "h2"
+    },
+
+    { "type": "header", "content": "── Apparence ──" },
+    { "type": "checkbox", "id": "transparent_bg", "label": "Fond transparent (laisse voir le dégradé)", "default": true, "info": "Recommandé. Décoche pour un fond plein (ex. bande sombre)." },
+    { "type": "color", "id": "color_bg", "label": "Couleur de fond (si non transparent)", "default": "#ffffff" },
+    { "type": "color", "id": "color_heading", "label": "Couleur titre", "default": "#0e0e0e" },
+    { "type": "color", "id": "color_text", "label": "Couleur texte", "default": "#0e0e0e" },
+    { "type": "color", "id": "color_muted", "label": "Couleur texte secondaire", "default": "#6b6b6b" },
+    { "type": "color", "id": "accent_color", "label": "Couleur accent", "default": "#2AB5B4" },
+    { "type": "color", "id": "color_card", "label": "Fond carte (chargement)", "default": "#e9e9ec" },
+
+    { "type": "header", "content": "── Cartes ──" },
+    { "type": "range", "id": "card_width", "label": "Largeur carte (px)", "min": 180, "max": 400, "step": 10, "default": 280, "unit": "px" },
+    { "type": "range", "id": "card_gap", "label": "Espacement (px)", "min": 8, "max": 32, "step": 4, "default": 16, "unit": "px" },
+    { "type": "range", "id": "card_radius", "label": "Coins arrondis (px)", "min": 0, "max": 28, "step": 2, "default": 18, "unit": "px" },
+
+    { "type": "header", "content": "── Animation ──" },
+    { "type": "checkbox", "id": "enable_animation", "label": "Animation d'entrée au scroll", "default": true },
+
+    { "type": "header", "content": "── Mise en page ──" },
+    { "type": "range", "id": "padding_top", "label": "Padding haut", "min": 0, "max": 120, "step": 4, "default": 60, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bas", "min": 0, "max": 120, "step": 4, "default": 60, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Influenceur",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "name", "label": "Nom", "default": "Nom" },
+        { "type": "text", "id": "role", "label": "Rôle / description", "default": "Créateur fitness" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF Influencer Carousel",
+      "category": "Social proof",
+      "blocks": [
+        { "type": "card", "settings": { "name": "Lucas Martin", "role": "Coach musculation · 245K" } },
+        { "type": "card", "settings": { "name": "Emma Dubois", "role": "Créatrice fitness · 180K" } },
+        { "type": "card", "settings": { "name": "Thomas Petit", "role": "Athlète IFBB · 320K" } },
+        { "type": "card", "settings": { "name": "Léa Bernard", "role": "Nutritionniste · 95K" } },
+        { "type": "card", "settings": { "name": "Hugo Moreau", "role": "Boxeur pro · 150K" } },
+        { "type": "card", "settings": { "name": "Chloé Laurent", "role": "Yoga & bien-être · 210K" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

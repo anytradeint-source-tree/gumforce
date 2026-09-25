@@ -1,0 +1,652 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Guarantee — Trust Closer Section
+  ============================================================================
+  Dark, centered trust section. Shield icon (or uploadable badge),
+  bold heading, body copy, CTA, and supporting detail bullets.
+  Sits above footer as the final conversion nudge.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign bg_color         = s.bg_color | default: '#0e0e0e'
+  assign heading_text     = s.heading
+  assign heading_color    = s.heading_color | default: '#f4f4f4'
+  assign heading_size     = s.heading_size | default: 34
+  assign body_text        = s.body
+  assign body_color       = s.body_color | default: '#999999'
+  assign accent_color     = s.accent_color | default: '#2AB5B4'
+
+  assign badge_image      = s.badge_image
+  assign badge_url        = s.badge_url
+  assign badge_size       = s.badge_size | default: 100
+
+  assign cta_text         = s.cta_text
+  assign cta_link         = s.cta_link
+  assign cta_bg_color     = s.cta_bg_color | default: '#ffffff'
+  assign cta_text_color   = s.cta_text_color | default: '#0e0e0e'
+  assign cta_scroll_bundle = s.cta_scroll_bundle
+  assign cta_radius       = s.cta_radius | default: 0
+
+  assign pad_top          = s.padding_top | default: 40
+  assign pad_bottom       = s.padding_bottom | default: 40
+  assign pad_top_mobile   = s.padding_top_mobile | default: 40
+  assign pad_bot_mobile   = s.padding_bottom_mobile | default: 40
+  assign enable_animations = s.enable_animations
+  assign layout_centered   = s.layout_centered
+-%}
+
+<style>
+  #gfg-{{ sid }} {
+    /* pas de content-visibility : mesuré sur WebKit, il retardait le chargement des images lazy jusqu'à l'écran */
+    --gfg-bg: {{ bg_color }};
+    --gfg-heading-color: {{ heading_color }};
+    --gfg-heading-size: {{ heading_size }}px;
+    --gfg-body-color: {{ body_color }};
+    --gfg-accent: {{ accent_color }};
+    --gfg-cta-bg: {{ cta_bg_color }};
+    --gfg-cta-text: {{ cta_text_color }};
+    --gfg-badge-size: {{ badge_size }}px;
+    background: var(--gfg-bg);
+    padding: {{ pad_top }}px 0 {{ pad_bottom }}px;
+  }
+
+  /* ── Container ── */
+  #gfg-{{ sid }} .gfg-outer {
+    max-width: 1340px; padding-block: clamp(48px, 6vw, 88px);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Card ── */
+  #gfg-{{ sid }} .gfg-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    display: flex;
+    {% if layout_centered %}
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 64px 48px;
+    gap: 0;
+    {% else %}
+    align-items: center;
+    padding: 48px;
+    gap: 48px;
+    {% endif %}
+  }
+
+  /* ── Badge / Icon ── */
+  #gfg-{{ sid }} .gfg-badge {
+    width: var(--gfg-badge-size);
+    height: var(--gfg-badge-size);
+    flex-shrink: 0;
+    {% if layout_centered %}margin-bottom: 28px;{% endif %}
+  }
+
+  #gfg-{{ sid }} .gfg-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  #gfg-{{ sid }} .gfg-badge svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── Content ── */
+  #gfg-{{ sid }} .gfg-content {
+    flex: 1;
+    min-width: 0;
+    {% if layout_centered %}display: flex; flex-direction: column; align-items: center;{% endif %}
+  }
+
+  /* ── Heading ── */
+  #gfg-{{ sid }} .gfg-heading {
+    font-size: var(--gfg-heading-size);
+    font-weight: 700;
+    color: var(--gfg-heading-color);
+    margin: 0 0 16px;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+
+  /* ── Body ── */
+  #gfg-{{ sid }} .gfg-body {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--gfg-body-color);
+    margin: 0 0 28px;
+    max-width: {% if layout_centered %}520px{% else %}560px{% endif %};
+  }
+
+  #gfg-{{ sid }} .gfg-body p { margin: 0 0 12px; }
+  #gfg-{{ sid }} .gfg-body p:last-child { margin-bottom: 0; }
+
+  /* ── Detail bullets ── */
+  #gfg-{{ sid }} .gfg-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 24px;
+    margin-bottom: 28px;
+    list-style: none;
+    padding: 0;
+    {% if layout_centered %}justify-content: center;{% endif %}
+  }
+
+  #gfg-{{ sid }} .gfg-detail {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gfg-body-color);
+    letter-spacing: 0.01em;
+  }
+
+  #gfg-{{ sid }} .gfg-detail-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: var(--gfg-accent);
+  }
+
+  /* ── CTA ── */
+  #gfg-{{ sid }} .gfg-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 48px;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    color: var(--gfg-cta-text);
+    background: var(--gfg-cta-bg);
+    border: none;
+    border-radius: {{ cta_radius }}px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    -webkit-appearance: none;
+  }
+
+  #gfg-{{ sid }} .gfg-cta:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  }
+
+  #gfg-{{ sid }} .gfg-cta:active {
+    transform: scale(0.98);
+  }
+
+  #gfg-{{ sid }} button.gfg-cta {
+    font-family: inherit;
+  }
+
+  /* ── Scroll animations ── */
+  {%- if enable_animations %}
+  #gfg-{{ sid }} .gfg-anim {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #gfg-{{ sid }} .gfg-anim.gfg-in {
+    opacity: 1;
+    transform: none;
+  }
+  {%- endif %}
+
+  /* ── Desktop ── */
+  @media (min-width: 768px) {
+    #gfg-{{ sid }} .gfg-outer {
+      padding: 0 40px;
+    }
+
+    #gfg-{{ sid }} .gfg-card {
+      {% if layout_centered %}
+      padding: 72px 64px;
+      {% else %}
+      padding: 56px 64px;
+      gap: 56px;
+      {% endif %}
+    }
+  }
+
+  @media (min-width: 1200px) {
+    #gfg-{{ sid }} .gfg-outer {
+      padding: 0 48px;
+    }
+  }
+
+  /* ── Espacement mobile : même seuil (749px) que toutes les sections GF ── */
+  @media (max-width: 749px) {
+    #gfg-{{ sid }} {
+      padding: {{ pad_top_mobile }}px 0 {{ pad_bot_mobile }}px;
+    }
+  }
+
+  /* ── Mobile: stack vertically ── */
+  @media (max-width: 767px) {
+    #gfg-{{ sid }} .gfg-card {
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+      padding: 36px 24px;
+      gap: 24px;
+    }
+
+    #gfg-{{ sid }} .gfg-heading {
+      font-size: calc(var(--gfg-heading-size) * 0.76);
+    }
+
+    #gfg-{{ sid }} .gfg-body {
+      font-size: 14px;
+    }
+
+    #gfg-{{ sid }} .gfg-details {
+      justify-content: center;
+    }
+
+    #gfg-{{ sid }} .gfg-cta {
+      width: 100%;
+    }
+  }
+</style>
+
+<section id="gfg-{{ sid }}">
+  <div class="gfg-outer">
+    <div class="gfg-card{% if enable_animations %} gfg-anim{% endif %}">
+
+      <!-- Badge -->
+      <div class="gfg-badge">
+        {%- if badge_image != blank -%}
+          {%- assign b_height = badge_size | times: 3 -%}
+          {{ badge_image | image_url: height: b_height | image_tag:
+              loading: 'lazy',
+              alt: 'Guarantee badge' }}
+        {%- elsif badge_url != blank -%}
+          <img src="{{ badge_url }}" alt="Guarantee badge" loading="lazy">
+        {%- else -%}
+          <svg viewBox="0 0 64 64" fill="none" stroke="{{ accent_color }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 4L8 16v14c0 16 10.2 30.4 24 36 13.8-5.6 24-20 24-36V16L32 4z"/>
+            <polyline points="22 32 29 39 42 26"/>
+          </svg>
+        {%- endif -%}
+      </div>
+
+      <!-- Content -->
+      <div class="gfg-content">
+        {%- if heading_text != blank -%}
+          <h2 class="gfg-heading">{{ heading_text }}</h2>
+        {%- endif -%}
+
+        {%- assign detail_blocks = section.blocks | where: 'type', 'detail' -%}
+        {%- if detail_blocks.size > 0 -%}
+          <ul class="gfg-details">
+            {%- for block in detail_blocks -%}
+              {%- if block.settings.text != blank -%}
+                <li class="gfg-detail" {{ block.shopify_attributes }}>
+                  <svg class="gfg-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  {{ block.settings.text }}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if body_text != blank -%}
+          <div class="gfg-body">{{ body_text }}</div>
+        {%- endif -%}
+
+        {%- if cta_text != blank -%}
+          {%- if cta_scroll_bundle -%}
+            <button type="button" class="gfg-cta" data-scroll-bundle="true">
+              {{ cta_text }}
+            </button>
+          {%- else -%}
+            <a class="gfg-cta" href="{{ cta_link | default: '#' }}">
+              {{ cta_text }}
+            </a>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById('gfg-{{ sid }}');
+  if (!root) return;
+  /* ── Images : chargement anticipé. Mesuré sur WebKit (Safari/iOS) : avec
+     content-visibility le lazy natif ne demandait l'image qu'à ~15px de l'écran
+     (placeholder noir visible), ~850px sans. Ici on observe la SECTION à 2000px
+     et on passe ses images en eager → prêtes avant d'arriver dessus ; filet
+     après le chargement de la page (réseau libre). Sans JS : lazy natif. ── */
+  (function () {
+    var imgs = root.querySelectorAll('img[loading="lazy"]');
+    if (!imgs.length) return;
+    function warm(im) {
+      if (im.loading === 'lazy') im.loading = 'eager';
+      if (im.decode) { try { im.decode().then(null, function () {}); } catch (e) {} }
+    }
+    function warmAll() { for (var i = 0; i < imgs.length && i < 6; i++) warm(imgs[i]); }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) {
+        for (var i = 0; i < es.length; i++) { if (es[i].isIntersecting) { io.disconnect(); warmAll(); return; } }
+      }, { rootMargin: '2000px 0px' });
+      io.observe(root);
+    } else { warmAll(); }
+    function later() { if (window.requestIdleCallback) window.requestIdleCallback(warmAll, { timeout: 4000 }); else setTimeout(warmAll, 2500); }
+    if (document.readyState === 'complete') later(); else window.addEventListener('load', later);
+  })();
+})();
+</script>
+
+{%- if enable_animations -%}
+<script>
+(function(){
+  var root = document.getElementById('gfg-{{ sid }}');
+  if (!root) return;
+  var els = root.querySelectorAll('.gfg-anim');
+  if (!els.length) return;
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) {
+        var idx = Array.from(els).indexOf(e.target);
+        setTimeout(function(){ e.target.classList.add('gfg-in'); }, idx * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  els.forEach(function(el){ obs.observe(el); });
+})();
+</script>
+{%- endif -%}
+
+{%- if cta_scroll_bundle -%}
+<script>
+(function () {
+  var btn = document.querySelector('#gfg-{{ sid }} [data-scroll-bundle="true"]');
+  if (!btn) return;
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var target = null;
+    var sels = [
+      '[data-gf-scroll-target]',
+      '.gf-options',
+      '.gfo-options',
+      '[id^="gf-"]',
+      '[id^="gfo-"]',
+      '[id^="gft-"]',
+      '.gft-w',
+      '.gfo-root'
+    ];
+    for (var i = 0; i < sels.length; i++) {
+      target = document.querySelector(sels[i]);
+      if (target) break;
+    }
+    if (target) {
+      var offset = 20;
+      var headerEl = document.querySelector('.shopify-section-header, header, .header');
+      if (headerEl) offset = headerEl.offsetHeight + 10;
+      var top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "GF Guarantee",
+  "tag": "section",
+  "class": "gfg-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "layout_centered",
+      "label": "Centered layout",
+      "info": "Center everything inside the card. Off = badge left, content right.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Badge"
+    },
+    {
+      "type": "image_picker",
+      "id": "badge_image",
+      "label": "Badge image"
+    },
+    {
+      "type": "url",
+      "id": "badge_url",
+      "label": "Badge image URL (fallback)"
+    },
+    {
+      "type": "range",
+      "id": "badge_size",
+      "label": "Badge size (px)",
+      "min": 32,
+      "max": 120,
+      "step": 4,
+      "default": 100
+    },
+
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "90-Day Money-Back Guarantee"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text",
+      "default": "<p>We stand behind GUMFORCE because we use it ourselves. If you're not satisfied with your results within 90 days, contact us and we'll refund your order. No questions, no hassle.</p>"
+    },
+
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "cta_scroll_bundle",
+      "label": "Scroll to bundle picker",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "cta_radius",
+      "label": "Button corner radius (px)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 0
+    },
+
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#0e0e0e"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#2AB5B4"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "CTA background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "CTA text color",
+      "default": "#0e0e0e"
+    },
+
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (px)",
+      "min": 22,
+      "max": 52,
+      "step": 1,
+      "default": 34
+    },
+
+    {
+      "type": "header",
+      "content": "── Espacement ──"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Espace haut (mobile)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Espace bas (mobile)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Espace haut (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Espace bas (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Enable scroll animations",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "detail",
+      "name": "Detail",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Detail point"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF Guarantee",
+      "settings": {
+        "heading": "90-Day Money-Back Guarantee",
+        "body": "<p>We stand behind GUMFORCE because we use it ourselves. If you're not satisfied with your results within 90 days, contact us and we'll refund your order. No questions, no hassle.</p>",
+        "cta_text": "Shop Now",
+        "cta_scroll_bundle": true,
+        "enable_animations": true
+      },
+      "blocks": [
+        {
+          "type": "detail",
+          "settings": { "text": "Free worldwide shipping" }
+        },
+        {
+          "type": "detail",
+          "settings": { "text": "90-day full refund" }
+        },
+        {
+          "type": "detail",
+          "settings": { "text": "No questions asked" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

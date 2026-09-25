@@ -1,0 +1,243 @@
+{%- liquid
+  assign gf_id          = block.id
+  assign s              = block.settings
+  assign rating_str     = s.rating | default: '4.8'
+  assign img_h          = s.stars_image_height | default: 20
+  assign img_h_retina   = img_h | times: 3
+
+  assign full_stars     = rating_str | plus: 0 | floor
+  assign decimal_str    = rating_str | split: '.' | last | plus: 0
+  assign has_half       = false
+  if decimal_str >= 5
+    assign has_half = true
+  endif
+  assign empty_stars    = 5 | minus: full_stars
+  if has_half
+    assign empty_stars  = empty_stars | minus: 1
+  endif
+-%}
+<style>
+  #gfsr-{{ gf_id }} {
+    --gfsr-star:  {{ s.color_star    | default: '#F5A623' }};
+    --gfsr-empty: #d1d5db;
+    --gfsr-text:  {{ s.color_text    | default: '#111111' }};
+    --gfsr-sub:   {{ s.color_subtext | default: '#6b7280' }};
+    --gfsr-size:  {{ s.star_size     | default: 18 }}px;
+    --gfsr-imgh:  {{ img_h }}px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    line-height: 1;
+  }
+  #gfsr-{{ gf_id }} .gfsr-stars {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+  }
+  /* custom image */
+  #gfsr-{{ gf_id }} .gfsr-img {
+    display: block;
+    height: var(--gfsr-imgh);
+    max-height: var(--gfsr-imgh);
+    width: auto;
+    object-fit: contain;
+  }
+  /* svg fallback */
+  #gfsr-{{ gf_id }} .gfsr-stars svg {
+    width: var(--gfsr-size);
+    height: var(--gfsr-size);
+    display: block;
+    flex-shrink: 0;
+  }
+  #gfsr-{{ gf_id }} .gfsr-number {
+    font-size: calc(var(--gfsr-size) * 0.83);
+    font-weight: 700;
+    color: var(--gfsr-text);
+  }
+  #gfsr-{{ gf_id }} .gfsr-count {
+    font-size: calc(var(--gfsr-size) * 0.72);
+    color: var(--gfsr-sub);
+  }
+  #gfsr-{{ gf_id }} .gfsr-count a {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
+
+<div id="gfsr-{{ gf_id }}" {{ block.shopify_attributes }}>
+
+  <div class="gfsr-stars" role="img" aria-label="Rating: {{ rating_str }} out of 5">
+
+    {%- if s.stars_image != blank -%}
+
+      {{- s.stars_image | image_url: height: img_h_retina | image_tag:
+          class: 'gfsr-img',
+          loading: 'lazy',
+          alt: 'Star rating' -}}
+
+    {%- elsif s.stars_image_url != blank -%}
+
+      <img src="{{ s.stars_image_url }}" class="gfsr-img" alt="Star rating" loading="lazy">
+
+    {%- else -%}
+
+      <svg style="display:none" aria-hidden="true">
+        <defs>
+          <linearGradient id="gfsr-half-{{ gf_id }}" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="50%" stop-color="var(--gfsr-star)"/>
+            <stop offset="50%" stop-color="var(--gfsr-empty)"/>
+          </linearGradient>
+        </defs>
+      </svg>
+
+      {%- for i in (1..full_stars) -%}
+        <svg viewBox="0 0 24 24" fill="var(--gfsr-star)" aria-hidden="true">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+      {%- endfor -%}
+      {%- if has_half -%}
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="url(#gfsr-half-{{ gf_id }})" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+      {%- endif -%}
+      {%- for i in (1..empty_stars) -%}
+        <svg viewBox="0 0 24 24" fill="var(--gfsr-empty)" aria-hidden="true">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+      {%- endfor -%}
+
+    {%- endif -%}
+
+  </div>
+
+  {%- if s.show_number -%}
+    <span class="gfsr-number">{{ rating_str }}</span>
+  {%- endif -%}
+
+  {%- if s.review_count != blank -%}
+    <span class="gfsr-count">
+      {%- if s.review_link != blank -%}
+        <a href="{{ s.review_link }}" onclick="if(this.hash){var t=document.querySelector(this.hash);if(t){event.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}}">{{ s.review_count }}</a>
+      {%- else -%}
+        {{ s.review_count }}
+      {%- endif -%}
+    </span>
+  {%- endif -%}
+
+</div>
+
+{% schema %}
+{
+  "name": "GF Star Rating",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Stars image"
+    },
+    {
+      "type": "image_picker",
+      "id": "stars_image",
+      "label": "Upload stars image"
+    },
+    {
+      "type": "text",
+      "id": "stars_image_url",
+      "label": "Or paste image URL",
+      "info": "Use if your image is in Shopify Files. Leave blank if using the picker above."
+    },
+    {
+      "type": "range",
+      "id": "stars_image_height",
+      "label": "Image height (px)",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Rating & text"
+    },
+    {
+      "type": "select",
+      "id": "rating",
+      "label": "Rating value",
+      "info": "Shown as number and used for SVG fallback stars",
+      "options": [
+        { "value": "5.0", "label": "5.0" },
+        { "value": "4.9", "label": "4.9" },
+        { "value": "4.8", "label": "4.8" },
+        { "value": "4.7", "label": "4.7" },
+        { "value": "4.6", "label": "4.6" },
+        { "value": "4.5", "label": "4.5" },
+        { "value": "4.4", "label": "4.4" },
+        { "value": "4.3", "label": "4.3" },
+        { "value": "4.2", "label": "4.2" },
+        { "value": "4.1", "label": "4.1" },
+        { "value": "4.0", "label": "4.0" },
+        { "value": "3.9", "label": "3.9" },
+        { "value": "3.8", "label": "3.8" },
+        { "value": "3.5", "label": "3.5" }
+      ],
+      "default": "4.8"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_number",
+      "label": "Show rating number",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "review_count",
+      "label": "Review count text",
+      "placeholder": "e.g. 1,247 reviews",
+      "default": "1,247 reviews"
+    },
+    {
+      "type": "url",
+      "id": "review_link",
+      "label": "Review section link (optional)"
+    },
+    {
+      "type": "header",
+      "content": "SVG fallback style",
+      "info": "Only applies when no image is uploaded"
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "label": "Star size (px)",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "color_star",
+      "label": "Star color",
+      "default": "#F5A623"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Rating number color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "color_subtext",
+      "label": "Review count color",
+      "default": "#6b7280"
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF Star Rating"
+    }
+  ]
+}
+{% endschema %}

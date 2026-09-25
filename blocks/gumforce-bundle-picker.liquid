@@ -1,0 +1,2636 @@
+{% liquid
+  assign s  = block.settings
+  assign pr = s.product
+
+  if pr == blank and request.visual_preview_mode
+    assign pr = collections.all.products.first
+  endif
+%}
+
+{% unless pr == blank %}
+{%- liquid
+  assign gf_id = block.id | remove: '-'
+
+  comment — resolve which bundles are active
+  endcomment
+  assign active_bundles = '' | split: ','
+  for i in (1..5)
+    assign key = 'bundle' | append: i | append: '_enabled'
+    if s[key]
+      assign active_bundles = active_bundles | concat: i
+    endif
+  endfor
+
+  comment — default selected index (0-based within active list)
+  endcomment
+  assign default_sel = s.default_bundle | default: 2 | plus: 0
+
+  comment — selected bg color with opacity
+  endcomment
+  assign sel_bg_color   = s.color_selected_bg   | default: '#c5fff7'
+  assign sel_bg_opacity = s.color_selected_opacity | default: 30 | times: 0.01
+  assign sel_bg_rgba    = sel_bg_color | color_modify: 'alpha', sel_bg_opacity
+
+  comment — font stack
+  endcomment
+  if s.use_theme_font
+    assign gf_font = 'var(--font-body-family, var(--body-font-family, var(--font-stack-body, inherit)))'
+  else
+    assign gf_font = 'inherit'
+  endif
+
+  comment — Subscribe & Save
+  endcomment
+  assign sub_enabled        = s.sub_enabled
+  assign sub_preselected    = s.sub_preselected
+  assign sub_discount       = s.sub_discount | default: '20%'
+  assign sub_default_freq   = s.sub_default_freq | default: 2 | plus: 0
+  assign sub_cancel_text    = s.sub_cancel_text | default: 'Cancel or change anytime'
+  assign sub_subscribe_text = s.sub_subscribe_text | default: 'Subscribe & Save'
+  assign sub_freq_label     = s.sub_freq_label | default: 'Deliver'
+  if request.locale.iso_code == 'fr'
+    assign sub_freq_every     = 'tous les'
+    assign sub_pouch_singular = 'sachet'
+    assign sub_pouch_plural   = 'sachets'
+  else
+    assign sub_freq_every     = s.sub_freq_every | default: 'every'
+    assign sub_pouch_singular = s.sub_pouch_singular | default: 'pouch'
+    assign sub_pouch_plural   = s.sub_pouch_plural | default: 'pouches'
+  endif
+  assign sub_info_text      = s.sub_info_text | default: 'No commitment whatsoever. Skip, pause, or cancel your subscription at any time with one click.'
+  assign sub_freq_1         = s.sub_freq_1 | default: '1 month'
+  assign sub_freq_2         = s.sub_freq_2 | default: '2 months'
+  assign sub_freq_3         = s.sub_freq_3 | default: '3 months'
+
+  assign has_selling_plans = false
+  if pr.selling_plan_groups.size > 0
+    assign has_selling_plans = true
+    assign spg = pr.selling_plan_groups.first
+  endif
+
+  assign show_sub = sub_enabled
+  assign variant_cards = s.variant_cards
+-%}
+
+<style>
+#gf-{{ gf_id }} {
+  --gf-font:         {{ gf_font }};
+  --gf-accent:       {{ s.color_accent       | default: '#544643' }};
+  --gf-accent-faint: {{ s.color_accent | default: '#544643' | color_modify: 'alpha', 0.35 }};
+  --gf-sel-bg:       {{ sel_bg_rgba }};
+  --gf-hover-bg:     {{ sel_bg_color | color_modify: 'alpha', 0.15 }};
+  --gf-btn-bg:       {{ s.color_btn_bg       | default: '#0e0e0e' }};
+  --gf-btn-text:     {{ s.color_btn_text     | default: '#ffffff' }};
+  --gf-badge-bg:     {{ s.color_badge_bg     | default: '#0e0e0e' }};
+  --gf-badge-text:   {{ s.color_badge_text   | default: '#ffffff' }};
+  --gf-compare:      {{ s.color_compare      | default: '#fd9898' }};
+  --gf-ribbon-bg:    {{ s.color_ribbon_bg    | default: '#0e0e0e' }};
+  --gf-ribbon-text:  {{ s.color_ribbon_text  | default: '#ffffff' }};
+  --gf-check-color:  {{ s.color_trust_check  | default: '#16a34a' }};
+  --gf-swatch-ring: {{ s.swatch_ring_color | default: '#222222' }};
+  --gf-radius:       {{ s.border_radius | default: 10 }}px;
+  --gf-btn-weight:   {{ s.button_font_weight | default: 700 }};
+  padding-block-start:  {{ s.padding_top    | default: 0 }}px;
+  padding-block-end:    {{ s.padding_bottom | default: 8 }}px;
+  padding-inline-start: {{ s.padding_left   | default: 0 }}px;
+  padding-inline-end:   {{ s.padding_right  | default: 0 }}px;
+  font-family: var(--gf-font);
+  width: 100%;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.gf-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.gf-header::before,
+.gf-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gf-accent-faint);
+}
+.gf-header__text {
+  font-family: var(--gf-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gf-accent);
+  white-space: nowrap;
+}
+
+/* ── Options list ────────────────────────────────────────── */
+.gf-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+/* ── Hidden radio ────────────────────────────────────────── */
+.gf-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ── Option wrap ─────────────────────────────────────────── */
+.gf-opt-wrap { position: relative; }
+
+/* ── Card ────────────────────────────────────────────────── */
+.gf-card {
+  display: block;
+  border: 1.5px solid var(--gf-accent-faint);
+  border-radius: var(--gf-radius);
+  padding: 13px 15px;
+  cursor: pointer;
+  background: #fff;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.gf-card:hover {
+  background: var(--gf-hover-bg);
+  border-color: var(--gf-accent);
+}
+.gf-radio:checked + .gf-card {
+  background: var(--gf-sel-bg);
+  border: 2px solid var(--gf-accent);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+}
+.gf-ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--gf-ribbon-bg);
+  color: var(--gf-ribbon-text);
+  font-family: var(--gf-font);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 6px 14px;
+  border-radius: 0 calc(var(--gf-radius) - 2px) 0 6px;
+  white-space: nowrap;
+  z-index: 3;
+  pointer-events: none;
+  line-height: 1.4;
+}
+
+/* Push the whole card content below the ribbon */
+.gf-card--popular .gf-top-row {
+  margin-top: 26px;
+}
+
+/* ── Top row ─────────────────────────────────────────────── */
+.gf-top-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* ── Radio dot ───────────────────────────────────────────── */
+.gf-dot {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--gf-accent-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+.gf-dot::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.15s;
+}
+.gf-radio:checked + .gf-card .gf-dot {
+  border-color: var(--gf-accent);
+}
+.gf-radio:checked + .gf-card .gf-dot::after {
+  background: var(--gf-accent);
+}
+
+/* ── Info col ────────────────────────────────────────────── */
+.gf-info { flex: 1; min-width: 0; }
+.gf-title-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.gf-title {
+  font-family: var(--gf-font);
+  font-weight: 700;
+  color: #0e0e0e;
+  line-height: 1.2;
+  word-break: break-word;
+  margin: 0;
+}
+.gf-badge {
+  display: inline-block;
+  background: var(--gf-badge-bg);
+  color: var(--gf-badge-text);
+  font-family: var(--gf-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 3px 9px;
+  border-radius: 4px;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.gf-subtitle {
+  font-family: var(--gf-font);
+  color: #666;
+  margin: 3px 0 0;
+  line-height: 1.3;
+}
+
+/* ── Price col ───────────────────────────────────────────── */
+.gf-price-col { text-align: right; flex-shrink: 0; }
+.gf-price {
+  display: block;
+  font-family: var(--gf-font);
+  font-weight: 800;
+  color: #0e0e0e;
+  line-height: 1.2;
+  margin: 0;
+}
+.gf-compare {
+  display: block;
+  font-family: var(--gf-font);
+  font-size: 11.5px;
+  color: var(--gf-compare);
+  text-decoration: line-through;
+  line-height: 1.3;
+}
+
+/* ── Divider (only when selected) ───────────────────────── */
+.gf-divider {
+  display: none;
+  width: 100%;
+  height: 1px;
+  background: var(--gf-accent-faint);
+  margin: 11px 0 13px;
+}
+.gf-radio:checked + .gf-card .gf-divider { display: block; }
+
+/* ── Variant rows (only when selected) ──────────────────── */
+.gf-rows {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+.gf-radio:checked + .gf-card .gf-rows { display: flex; }
+
+/* ── Single row ──────────────────────────────────────────── */
+.gf-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.gf-row:has(.gf-flavor-cards) {
+  align-items: center;
+  gap: 14px;
+}
+.gf-row:has(.gf-flavor-cards) .gf-row-img {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(0,0,0,0.08);
+}
+.gf-row-img {
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(0,0,0,0.07);
+  background: #f5f5f5;
+  transition: opacity 0.2s;
+}
+.gf-row-img.loading { opacity: 0.45; }
+.gf-row-img--hidden { display: none; }
+
+.gf-select-wrap { flex: 1; min-width: 0; }
+.gf-select {
+  width: 100%;
+  padding: 9px 30px 9px 11px;
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 6px;
+  font-family: var(--gf-font);
+  font-size: 11.5px;
+  color: #0e0e0e;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 16 16' fill='none'%3E%3Cpath stroke='%230e0e0e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 10px center;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.gf-select:hover  { border-color: #0e0e0e; }
+.gf-select:focus  { outline: 2px solid var(--gf-accent); outline-offset: 2px; }
+
+/* ── Error ───────────────────────────────────────────────── */
+.gf-error {
+  display: none;
+  color: #b91c1c;
+  font-family: var(--gf-font);
+  font-size: 12px;
+  text-align: center;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #fef2f2;
+  border-radius: 6px;
+  border: 1px solid #fecaca;
+}
+
+/* ── CTA button ──────────────────────────────────────────── */
+.gf-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
+  font-family: var(--gf-font);
+  font-size: 13.5px;
+  font-weight: var(--gf-btn-weight, 700);
+  letter-spacing: 0.08em;
+  text-transform: var(--add-to-cart-font-case, uppercase);
+  border-radius: var(--gf-radius);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: filter 0.18s, transform 0.15s ease, box-shadow 0.2s ease, background 0.18s;
+  margin-bottom: 13px;
+  line-height: 1;
+  text-decoration: none;
+  -webkit-appearance: none;
+}
+/* Filled — uses custom color settings (default) */
+.gf-cta.gf-btn-filled {
+  background: var(--gf-btn-bg);
+  color: var(--gf-btn-text);
+  border-color: var(--gf-btn-bg);
+}
+/* Outline */
+.gf-cta.gf-btn-outline {
+  background: transparent;
+  color: var(--gf-btn-bg);
+  border-color: var(--gf-btn-bg);
+}
+/* Ghost / subtle */
+.gf-cta.gf-btn-ghost {
+  background: transparent;
+  color: var(--gf-btn-bg);
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.gf-cta:hover  { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+.gf-cta:active { transform: scale(0.993) translateY(0); box-shadow: none; }
+.gf-cta.loading { opacity: 0.6; pointer-events: none; cursor: not-allowed; }
+.gf-cta.success { background: #16a34a !important; border-color: #16a34a !important; color: #fff !important; }
+.gf-cta svg { flex-shrink: 0; }
+
+/* ── Trust badges ────────────────────────────────────────── */
+.gf-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 3px 8px;
+  font-family: var(--gf-font);
+  font-size: 11px;
+  color: #555;
+  margin-bottom: 11px;
+  text-align: center;
+}
+.gf-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.gf-trust-item::before {
+  content: '✓';
+  color: var(--gf-check-color);
+  font-weight: 700;
+  font-size: 12px;
+}
+.gf-trust-sep { color: #ddd; }
+.gf-trust-img {
+  height: {{ s.trust_badge_height | default: 18 }}px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* ── Payment icons — single line ─────────────────────────── */
+.gf-payments {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  gap: 4px;
+  margin-bottom: 11px;
+}
+.gf-payments svg,
+.gf-payments img {
+  height: 20px;
+  width: auto;
+  opacity: 0.8;
+  display: block;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+/* ── Low stock ───────────────────────────────────────────── */
+.gf-stock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--gf-font);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0e0e0e;
+}
+.gf-stock-dot {
+  width: 9px;
+  height: 9px;
+  min-width: 9px;
+  border-radius: 50%;
+  background: #f97316;
+  animation: gfpulse 2s ease-in-out infinite;
+}
+@keyframes gfpulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%     { opacity:0.45; transform:scale(0.8); }
+}
+
+/* ── Subscription card ─────────────────────────────────── */
+.gf-sub { margin-bottom: 16px; }
+.gf-sub-card {
+  border: 2px dashed var(--gf-accent-faint);
+  border-radius: var(--gf-radius);
+  padding: 18px 20px;
+  cursor: pointer;
+  background: var(--gf-hover-bg);
+  transition: border-color 0.2s, border-style 0.2s, background 0.2s, box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.gf-sub-card:hover {
+  border-color: var(--gf-accent);
+}
+.gf-sub-card.active {
+  border-color: var(--gf-accent);
+}
+.gf-sub-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.gf-sub-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: 2px solid var(--gf-accent-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  transition: background 0.15s, border-color 0.15s;
+}
+.gf-sub-card.active .gf-sub-check {
+  background: var(--gf-accent);
+  border-color: var(--gf-accent);
+}
+.gf-sub-check svg {
+  width: 13px;
+  height: 13px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.gf-sub-card.active .gf-sub-check svg {
+  opacity: 1;
+}
+.gf-sub-title {
+  font-family: var(--gf-font);
+  font-weight: 700;
+  font-size: 14px;
+  color: #0e0e0e;
+  line-height: 1.3;
+}
+.gf-sub-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 34px;
+  margin-top: 10px;
+}
+.gf-sub-benefit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--gf-font);
+  font-size: 12.5px;
+  color: #555;
+  line-height: 1.3;
+}
+.gf-sub-benefit-check {
+  color: var(--gf-check-color);
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.gf-sub-freq-sel {
+  padding: 5px 24px 5px 8px;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 5px;
+  font-family: var(--gf-font);
+  font-size: 12px;
+  color: #0e0e0e;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 16 16' fill='none'%3E%3Cpath stroke='%230e0e0e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 7px center;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.gf-sub-freq-sel:hover { border-color: #0e0e0e; }
+.gf-sub-freq-sel:focus { outline: 2px solid var(--gf-accent); outline-offset: 2px; }
+.gf-sub-qty-text {
+  font-weight: 600;
+  color: #222;
+}
+.gf-sub-info {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 2px;
+}
+.gf-sub-info-icon {
+  width: 14px;
+  height: 14px;
+  color: #999;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.gf-sub-info:hover .gf-sub-info-icon { color: var(--gf-accent); }
+.gf-sub-info-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a1a;
+  color: #e5e5e5;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  width: 230px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  pointer-events: none;
+  z-index: 10;
+}
+.gf-sub-info-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #1a1a1a;
+}
+.gf-sub-info:hover .gf-sub-info-tooltip,
+.gf-sub-info.active .gf-sub-info-tooltip {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* ── Flavor cards (variant picker) ──────────────────────── */
+.gf-select--hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+/* ── Swatch-style flavor picker ── */
+.gf-flavor-cards {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+}
+.gf-flavor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  flex: 1 1 0;
+  min-width: 0;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: var(--gf-font);
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+.gf-flavor:hover:not(.gf-flavor--oos) {
+  background: rgba(0,0,0,0.03);
+}
+.gf-flavor:focus-visible {
+  outline: 2px solid var(--gf-accent);
+  outline-offset: 2px;
+}
+.gf-flavor-swatch {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f3f3f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+  transition: outline-color 0.2s, transform 0.15s;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.gf-flavor.active .gf-flavor-swatch {
+  outline-color: var(--gf-swatch-ring);
+  transform: scale(1.05);
+}
+.gf-flavor:hover:not(.gf-flavor--oos):not(.active) .gf-flavor-swatch {
+  outline-color: rgba(0,0,0,0.2);
+}
+.gf-flavor-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.gf-flavor-letter {
+  font-size: 14px;
+  font-weight: 700;
+  color: #bbb;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.gf-flavor.active .gf-flavor-letter {
+  color: var(--gf-accent);
+}
+.gf-flavor-name {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+  line-height: 1;
+  transition: color 0.2s, font-weight 0.2s;
+}
+.gf-flavor.active .gf-flavor-name {
+  color: #222;
+  font-weight: 700;
+}
+.gf-flavor--oos {
+  cursor: pointer;
+}
+.gf-flavor--oos .gf-flavor-swatch {
+  opacity: 0.35;
+  position: relative;
+}
+.gf-flavor--oos .gf-flavor-swatch::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background: #888;
+  transform: rotate(-45deg);
+  border-radius: 1px;
+}
+.gf-flavor--oos .gf-flavor-name {
+  color: #ccc;
+}
+.gf-oos-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1a1a1a;
+  color: #eee;
+  font-family: var(--gf-font);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+.gf-oos-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+/* Row separation */
+.gf-row:has(.gf-flavor-cards) + .gf-row {
+  border-top: 1px solid rgba(0,0,0,0.05);
+  padding-top: 8px;
+}
+
+@media (max-width: 480px) {
+  .gf-card    { padding: 11px 12px; }
+  .gf-cta     { font-size: 13px; padding: 15px; }
+  .gf-row-img { width: 50px; height: 50px; min-width: 50px; }
+  .gf-ribbon  { font-size: 10px; }
+  .gf-flavor        { padding: 4px 6px; gap: 6px; }
+  .gf-flavor-swatch  { width: 32px; height: 32px; }
+  .gf-flavor-icon    { width: 18px; height: 18px; }
+  .gf-flavor-letter  { font-size: 12px; }
+  .gf-flavor-name    { font-size: 8.5px; }
+  .gf-row:has(.gf-flavor-cards) .gf-row-img { width: 52px; height: 52px; min-width: 52px; border-radius: 8px; }
+  .gf-sub-card  { padding: 14px 16px; }
+  .gf-sub-title { font-size: 13px; }
+}
+</style>
+
+<!-- Variant JSON -->
+<script type="application/json" id="gfdata-{{ gf_id }}">
+{
+  "variants": [
+    {%- for v in pr.variants -%}
+    {
+      "id": {{ v.id }},
+      "title": {{ v.title | json }},
+      "available": {{ v.available }},
+      "img": {%- if v.featured_image -%}{{ v.featured_image | image_url: width: 80, height: 80, crop: 'center' | json }}{%- else -%}null{%- endif -%}
+    }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+<div id="gf-{{ gf_id }}" {{ block.shopify_attributes }}{% if request.design_mode %} data-design-mode="true"{% endif %}{% if s.go_to_checkout %} data-go-checkout="true"{% endif %}>
+
+  {%- if s.show_header -%}
+  <div class="gf-header">
+    <span class="gf-header__text">{{ s.title | default: 'Bundle &amp; Save' }}</span>
+  </div>
+  {%- endif -%}
+
+  <div class="gf-options" role="radiogroup" aria-label="Choose your bundle">
+
+    {%- assign rendered_count = 0 -%}
+    {%- for i in (1..5) -%}
+      {%- assign en_key  = 'bundle' | append: i | append: '_enabled' -%}
+      {%- unless s[en_key] -%}{%- continue -%}{%- endunless -%}
+
+      {%- liquid
+        assign qty_key  = 'bundle' | append: i | append: '_qty'
+        assign ttl_key  = 'bundle' | append: i | append: '_title'
+        assign bdg_key  = 'bundle' | append: i | append: '_badge'
+        assign sub_key  = 'bundle' | append: i | append: '_subtitle'
+        assign prc_key  = 'bundle' | append: i | append: '_price'
+        assign cmp_key  = 'bundle' | append: i | append: '_compare'
+        assign pop_key  = 'bundle' | append: i | append: '_popular'
+
+        assign b_qty    = s[qty_key] | plus: 0
+        if b_qty == 0
+          assign b_qty = i
+        endif
+
+        # ── Display pouch count (independent of cart qty) ──
+        # Used for the "Deliver X pouches every…" text.
+        # Bundles like B2G1F use cart qty=1 (one variant = 3-pack), but should show "3 pouches".
+        assign disp_key = 'bundle' | append: i | append: '_display_qty'
+        assign b_display_qty = s[disp_key] | plus: 0
+        if b_display_qty == 0
+          assign b_display_qty = b_qty
+        endif
+        assign b_title  = s[ttl_key]
+        assign b_badge  = s[bdg_key]
+        assign b_sub    = s[sub_key]
+        assign b_price  = s[prc_key]
+        assign b_compare = s[cmp_key]
+        assign b_popular = s[pop_key]
+
+        assign flt_key  = 'bundle' | append: i | append: '_option_filter'
+        assign b_filter = s[flt_key]
+        comment — build lookup string for multi-value filter (split on ||)
+        endcomment
+        assign b_filter_pipe = ''
+        if b_filter != blank
+          assign _fparts = b_filter | split: '||'
+          for _fp in _fparts
+            assign _fpc = _fp | strip
+            if _fpc != ''
+              assign b_filter_pipe = b_filter_pipe | append: '%%' | append: _fpc
+            endif
+          endfor
+          assign b_filter_pipe = b_filter_pipe | append: '%%'
+        endif
+
+        assign sub_prc_key = 'bundle' | append: i | append: '_sub_price'
+        assign sub_cmp_key = 'bundle' | append: i | append: '_sub_compare'
+        assign b_sub_price   = s[sub_prc_key]
+        assign b_sub_compare = s[sub_cmp_key]
+
+        # ── AUTO PRICING FROM SHOPIFY VARIANTS (respects Markets/currency) ──
+        # Find the first variant matching the bundle's pack-size filter (option2).
+        # Fall back to the first variant. Then multiply by bundle qty.
+        if s.use_shopify_prices
+          assign matched_variant = nil
+          for v in pr.variants
+            if b_filter_pipe != ''
+              assign _vc = '%%' | append: v.option2 | append: '%%'
+              if b_filter_pipe contains _vc
+                assign matched_variant = v
+                break
+              endif
+            else
+              assign matched_variant = v
+              break
+            endif
+          endfor
+          if matched_variant == nil
+            assign matched_variant = pr.variants.first
+          endif
+          if matched_variant
+            # For bundle-variants (B2G1F), qty is usually 1 because 1 variant = pre-bundled pack.
+            # For per-unit bundles (1-Pack), qty multiplies the unit price.
+            assign b_price_cents = matched_variant.price | times: b_qty
+            assign b_price = b_price_cents | money
+            if matched_variant.compare_at_price and matched_variant.compare_at_price > matched_variant.price
+              assign b_compare_cents = matched_variant.compare_at_price | times: b_qty
+              assign b_compare = b_compare_cents | money
+            elsif s[cmp_key] != blank
+              assign b_compare = s[cmp_key]
+            endif
+          endif
+        endif
+
+        # ── Currency-aware placeholders: {shipping} {threshold} ──
+        # Start with section-level base values
+        assign ship_cents = s.shipping_cost
+        assign thresh_cents = s.shipping_threshold
+
+        # Override per customer currency if a matching line exists in the textarea.
+        # Format: "USD|499|4000" (one per line — cents in THAT currency)
+        assign current_currency = cart.currency.iso_code | default: shop.currency.iso_code
+        if s.shipping_rates != blank
+          assign rate_lines = s.shipping_rates | newline_to_br | split: '<br />'
+          for line in rate_lines
+            assign parts = line | strip | split: '|'
+            if parts.size >= 3
+              assign code = parts[0] | strip | upcase
+              if code == current_currency
+                assign ship_cents = parts[1] | strip | times: 1
+                assign thresh_cents = parts[2] | strip | times: 1
+                break
+              endif
+            endif
+          endfor
+        endif
+
+        assign shipping_fmt = ship_cents | money
+        assign threshold_fmt = thresh_cents | money
+        assign b_sub = b_sub | replace: '{shipping}', shipping_fmt | replace: '{threshold}', threshold_fmt
+
+        assign rendered_count = rendered_count | plus: 1
+        assign is_default = false
+        if rendered_count == default_sel
+          assign is_default = true
+        endif
+      -%}
+
+      <div class="gf-opt-wrap">
+        <input
+          type="radio"
+          class="gf-radio"
+          name="gfbundle-{{ gf_id }}"
+          id="gfopt-{{ gf_id }}-{{ i }}"
+          value="{{ i }}"
+          data-qty="{{ b_display_qty }}"
+          {% if is_default %}checked{% endif %}
+        >
+        <label
+          for="gfopt-{{ gf_id }}-{{ i }}"
+          class="gf-card{% if b_popular %} gf-card--popular{% endif %}"
+        >
+          {%- if b_popular -%}
+            <span class="gf-ribbon" aria-hidden="true">{{ s.ribbon_text | default: 'Most Popular' }}</span>
+          {%- endif -%}
+
+          <div class="gf-top-row">
+            <span class="gf-dot" aria-hidden="true"></span>
+            <div class="gf-info">
+              <div class="gf-title-row">
+                {%- if b_title != blank -%}<span class="gf-title {{ s.title_style | default: 'h5' }}">{{ b_title }}</span>{%- endif -%}
+                {%- if b_badge != blank -%}<span class="gf-badge">{{ b_badge }}</span>{%- endif -%}
+              </div>
+              {%- if b_sub != blank -%}<p class="gf-subtitle {{ s.subtitle_style | default: 'body' }}">{{ b_sub }}</p>{%- endif -%}
+            </div>
+            <div class="gf-price-col"
+              data-price-onetime="{{ b_price | escape }}"
+              data-compare-onetime="{{ b_compare | escape }}"
+              data-price-sub="{{ b_sub_price | default: b_price | escape }}"
+              data-compare-sub="{{ b_sub_compare | default: b_compare | escape }}"
+            >
+              {%- if b_price != blank -%}<span class="gf-price {{ s.price_style | default: 'h5' }}">{{ b_price }}</span>{%- endif -%}
+              {%- if b_compare != blank -%}<span class="gf-compare">{{ b_compare }}</span>{%- endif -%}
+            </div>
+          </div>
+
+          <div class="gf-divider"></div>
+          <div class="gf-rows" data-qty="{{ b_qty }}">
+            {%- for j in (1..b_qty) -%}
+              <div class="gf-row">
+                {%- if s.show_images -%}
+                <img
+                  src="{%- if pr.featured_image -%}{{ pr.featured_image | image_url: width: 80, height: 80, crop: 'center' }}{%- endif -%}"
+                  alt="{{ pr.title | escape }}"
+                  width="58" height="58"
+                  class="gf-row-img"
+                  loading="lazy"
+                >
+                {%- endif -%}
+                <div class="gf-select-wrap">
+                  {%- assign gf_first_avail = false -%}
+                  <select class="gf-select{% if variant_cards %} gf-select--hidden{% endif %}" aria-label="Flavor {{ j }}">
+                    {%- for v in pr.variants -%}
+                      {%- if b_filter_pipe != '' -%}
+                        {%- assign _vc = '%%' | append: v.option2 | append: '%%' -%}
+                        {%- unless b_filter_pipe contains _vc -%}{%- continue -%}{%- endunless -%}
+                      {%- endif -%}
+                      {%- assign v_label = v.option1 | default: v.title -%}
+                      {%- if v.available -%}
+                        <option
+                          value="{{ v.id }}"
+                          data-img="{%- if v.featured_image -%}{{ v.featured_image | image_url: width: 80, height: 80, crop: 'center' }}{%- endif -%}"
+                          {%- unless gf_first_avail %} selected{%- assign gf_first_avail = true -%}{%- endunless -%}
+                        >{{ v_label }}</option>
+                      {%- else -%}
+                        <option value="{{ v.id }}" disabled>{{ v_label }} (Sold out)</option>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </select>
+                  {%- if variant_cards -%}
+                  <div class="gf-flavor-cards">
+                    {%- assign gf_fc_first = false -%}
+                    {%- for v in pr.variants -%}
+                      {%- if b_filter_pipe != '' -%}
+                        {%- assign _vc = '%%' | append: v.option2 | append: '%%' -%}
+                        {%- unless b_filter_pipe contains _vc -%}{%- continue -%}{%- endunless -%}
+                      {%- endif -%}
+                      {%- assign v_label = v.option1 | default: v.title -%}
+                      {%- assign v_icon = nil -%}
+                      {%- for k in (1..6) -%}
+                        {%- assign _vtk = 'variant_icon_' | append: k | append: '_title' -%}
+                        {%- assign _vik = 'variant_icon_' | append: k -%}
+                        {%- if s[_vtk] == v_label and s[_vik] != blank -%}
+                          {%- assign v_icon = s[_vik] -%}
+                          {%- break -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                      <button type="button"
+                        class="gf-flavor{% if v.available and gf_fc_first == false %} active{%- assign gf_fc_first = true -%}{% endif %}{% unless v.available %} gf-flavor--oos{% endunless %}"
+                        data-vid="{{ v.id }}"
+                        {% unless v.available %}data-oos="true"{% endunless %}>
+                        <span class="gf-flavor-swatch">
+                          {%- if v_icon -%}
+                            {{ v_icon | image_url: width: 48 | image_tag: class: 'gf-flavor-icon', loading: 'lazy', alt: '' }}
+                          {%- else -%}
+                            <span class="gf-flavor-letter">{{ v_label | slice: 0 }}</span>
+                          {%- endif -%}
+                        </span>
+                        <span class="gf-flavor-name">{{ v_label }}</span>
+                      </button>
+                    {%- endfor -%}
+                  </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+
+        </label>
+      </div>
+    {%- endfor -%}
+
+  </div>
+
+  {%- if show_sub -%}
+  <div class="gf-sub" id="gf-sub-{{ gf_id }}">
+    <div class="gf-sub-card{% if sub_preselected %} active{% endif %}" role="checkbox" aria-checked="{% if sub_preselected %}true{% else %}false{% endif %}" tabindex="0" aria-label="{{ sub_subscribe_text }}">
+      <div class="gf-sub-header">
+        <span class="gf-sub-check" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <span class="gf-sub-title">{{ sub_subscribe_text }} {{ sub_discount }}</span>
+      </div>
+      <div class="gf-sub-benefits">
+        <span class="gf-sub-benefit">
+          <span class="gf-sub-benefit-check" aria-hidden="true">✓</span>
+          {{ sub_freq_label }} <span class="gf-sub-qty-text" data-singular="{{ sub_pouch_singular }}" data-plural="{{ sub_pouch_plural }}"></span> {{ sub_freq_every }}
+          <select class="gf-sub-freq-sel" id="gf-sub-freq-{{ gf_id }}" aria-label="Delivery frequency" onclick="event.stopPropagation()">
+            {%- if has_selling_plans -%}
+              {%- for plan in spg.selling_plans -%}
+              {%- liquid
+                case forloop.index
+                  when 1
+                    assign plan_label = sub_freq_1
+                  when 2
+                    assign plan_label = sub_freq_2
+                  when 3
+                    assign plan_label = sub_freq_3
+                  else
+                    assign plan_label = forloop.index | append: ' months'
+                endcase
+              -%}
+              <option value="{{ plan.id }}"{% if forloop.index == sub_default_freq %} selected{% endif %}>{{ plan_label }}</option>
+              {%- endfor -%}
+            {%- else -%}
+              <option value="sub-1"{% if sub_default_freq == 1 %} selected{% endif %}>{{ sub_freq_1 }}</option>
+              <option value="sub-2"{% if sub_default_freq == 2 %} selected{% endif %}>{{ sub_freq_2 }}</option>
+              <option value="sub-3"{% if sub_default_freq == 3 %} selected{% endif %}>{{ sub_freq_3 }}</option>
+            {%- endif -%}
+          </select>
+        </span>
+        <span class="gf-sub-benefit">
+          <span class="gf-sub-benefit-check" aria-hidden="true">✓</span>
+          {{ sub_cancel_text }}
+          <span class="gf-sub-info" tabindex="0" aria-label="More information">
+            <svg class="gf-sub-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span class="gf-sub-info-tooltip">{{ sub_info_text }}</span>
+          </span>
+        </span>
+        {%- unless has_selling_plans -%}
+          {%- if request.design_mode -%}
+          <span class="gf-sub-benefit" style="color: #b91c1c; font-size: 11px;">
+            <span class="gf-sub-benefit-check" style="color: #b91c1c;">!</span>
+            Install Appstle & create selling plans to activate
+          </span>
+          {%- endif -%}
+        {%- endunless -%}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+
+  <p class="gf-error" id="gferr-{{ gf_id }}" role="alert" aria-live="polite"></p>
+
+  {%- liquid
+    assign btn_style_class = s.button_style | default: 'gf-btn-filled'
+    assign btn_class = 'gf-cta ' | append: btn_style_class
+    case s.button_icon
+      when 'cart'
+        assign btn_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>'
+      when 'bag'
+        assign btn_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>'
+      when 'arrow'
+        assign btn_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'
+      when 'lock'
+        assign btn_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
+      else
+        assign btn_icon = ''
+    endcase
+  -%}
+  <button
+    class="{{ btn_class }}"
+    id="gfcta-{{ gf_id }}"
+    type="button"
+    style="--add-to-cart-font-case: {{ settings.button_text_case }};"
+  >
+    {%- if s.button_icon != 'none' and s.icon_position == 'left' -%}{{ btn_icon }}{%- endif -%}
+    <span>{{ s.cta_text | default: 'ADD TO CART' }}</span>
+    {%- if s.button_icon != 'none' and s.icon_position != 'left' -%}{{ btn_icon }}{%- endif -%}
+  </button>
+
+  {%- if s.show_trust -%}
+  <div class="gf-trust">
+    {%- if s.trust1_image != blank -%}
+      <img class="gf-trust-img" src="{{ s.trust1_image | image_url: width: 400 }}" alt="{{ s.trust1 | default: 'Trust badge' | escape }}" loading="lazy">
+    {%- elsif s.trust1 != blank -%}
+      <span class="gf-trust-item">{{ s.trust1 }}</span>
+    {%- endif -%}
+    {%- if s.trust2_image != blank -%}
+      <img class="gf-trust-img" src="{{ s.trust2_image | image_url: width: 400 }}" alt="{{ s.trust2 | default: 'Trust badge' | escape }}" loading="lazy">
+    {%- elsif s.trust2 != blank -%}
+      {%- if s.trust1 != blank or s.trust1_image != blank -%}<span class="gf-trust-sep" aria-hidden="true">·</span>{%- endif -%}
+      <span class="gf-trust-item">{{ s.trust2 }}</span>
+    {%- endif -%}
+    {%- if s.trust3_image != blank -%}
+      <img class="gf-trust-img" src="{{ s.trust3_image | image_url: width: 400 }}" alt="{{ s.trust3 | default: 'Trust badge' | escape }}" loading="lazy">
+    {%- elsif s.trust3 != blank -%}
+      {%- if s.trust2 != blank or s.trust2_image != blank or s.trust1 != blank or s.trust1_image != blank -%}<span class="gf-trust-sep" aria-hidden="true">·</span>{%- endif -%}
+      <span class="gf-trust-item">{{ s.trust3 }}</span>
+    {%- endif -%}
+  </div>
+  {%- endif -%}
+
+  {%- if s.show_payments -%}
+  <div class="gf-payments" aria-label="Accepted payment methods">
+    {%- for type in shop.enabled_payment_types -%}
+      {{ type | payment_type_svg_tag }}
+    {%- endfor -%}
+  </div>
+  {%- endif -%}
+
+  {%- if s.show_low_stock -%}
+  <div class="gf-stock">
+    <span class="gf-stock-dot" aria-hidden="true"></span>
+    <span>{{ s.low_stock_text | default: 'Low stock' }}</span>
+  </div>
+  {%- endif -%}
+
+</div>
+
+<script>
+(function(){
+  var ID     = 'gf-{{ gf_id }}';
+  var root   = document.getElementById(ID);
+  var btn    = document.getElementById('gfcta-{{ gf_id }}');
+  var errEl  = document.getElementById('gferr-{{ gf_id }}');
+  if (!root || !btn) return;
+  var goToCheckout = root.hasAttribute('data-go-checkout');
+
+  /* ── Theme editor: disable cart add, show preview notice ── */
+  if (root.dataset.designMode === 'true') {
+    btn.addEventListener('click', function(){
+      var errEl = document.getElementById('gferr-{{ gf_id }}');
+      if (errEl) { errEl.textContent = 'Add to cart is disabled in the theme editor preview.'; errEl.hidden = false; }
+    });
+    return;
+  }
+
+  var variants = [];
+  try { variants = JSON.parse(document.getElementById('gfdata-{{ gf_id }}').textContent).variants || []; } catch(e){}
+
+  /* image swap */
+  function imgForVariant(id) {
+    var v = variants.find(function(v){ return String(v.id) === String(id); });
+    return (v && v.img) ? v.img : null;
+  }
+  function swapImg(row, id) {
+    var img = row.querySelector('.gf-row-img');
+    var src = imgForVariant(id);
+    if (!img || !src || img.src.includes(src)) return;
+    img.classList.add('loading');
+    var t = new Image();
+    t.onload  = function(){ img.src = src; img.classList.remove('loading'); };
+    t.onerror = function(){ img.classList.remove('loading'); };
+    t.src = src;
+  }
+
+  root.addEventListener('change', function(e){
+    if (e.target.classList.contains('gf-select')) {
+      var row = e.target.closest('.gf-row');
+      if (row) swapImg(row, e.target.value);
+      clearErr();
+    }
+  });
+
+  /* ── Sold-out toast ── */
+  var oosToast = document.createElement('div');
+  oosToast.className = 'gf-oos-toast';
+  oosToast.textContent = 'This flavor is currently sold out';
+  document.body.appendChild(oosToast);
+  var oosTimer = null;
+  function showOosToast() {
+    clearTimeout(oosTimer);
+    oosToast.classList.add('visible');
+    oosTimer = setTimeout(function(){ oosToast.classList.remove('visible'); }, 2000);
+  }
+
+  /* ── Flavor card clicks ── */
+  root.querySelectorAll('.gf-flavor-cards').forEach(function(wrap) {
+    var row = wrap.closest('.gf-row');
+    var sel = row ? row.querySelector('.gf-select') : null;
+    wrap.querySelectorAll('.gf-flavor').forEach(function(card) {
+      card.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        /* sold out → toast */
+        if (card.dataset.oos) { showOosToast(); return; }
+        /* select this bundle if not already */
+        var radio = wrap.closest('.gf-opt-wrap');
+        if (radio) {
+          var inp = radio.querySelector('.gf-radio');
+          if (inp && !inp.checked) { inp.checked = true; inp.dispatchEvent(new Event('change', { bubbles: true })); }
+        }
+        /* toggle active */
+        wrap.querySelectorAll('.gf-flavor').forEach(function(c) { c.classList.remove('active'); });
+        card.classList.add('active');
+        /* sync hidden select & trigger image swap */
+        if (sel) {
+          sel.value = card.dataset.vid;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+    });
+  });
+
+  function showErr(m){ errEl.textContent = m; errEl.style.display = 'block'; }
+  function clearErr(){ errEl.textContent = ''; errEl.style.display = 'none'; }
+
+  /* ── Dynamic price swap ── */
+  var subDiscountPct = parseFloat('{{ sub_discount }}'.replace(/[^0-9.]/g, '')) || 0;
+  var currencySymbol = '$';
+
+  function calcSubPrice(onetimeStr) {
+    if (!onetimeStr || subDiscountPct <= 0) return onetimeStr;
+    /* Accept formats like: "$59.90", "€59,90", "59.90 USD", "CHF 59.90", "¥5990" */
+    var match = onetimeStr.match(/^(\D*)([\d.,]+)(\D*)$/);
+    if (!match) return onetimeStr;
+    var prefix = match[1] || '';
+    var numStr = match[2];
+    var suffix = match[3] || '';
+    /* Detect decimal separator: last . or , */
+    var lastDot = numStr.lastIndexOf('.');
+    var lastComma = numStr.lastIndexOf(',');
+    var decimalSep = lastDot > lastComma ? '.' : (lastComma > -1 ? ',' : '');
+    var cleanNum = decimalSep === ','
+      ? numStr.replace(/\./g, '').replace(',', '.')
+      : numStr.replace(/,/g, '');
+    var val = parseFloat(cleanNum);
+    if (isNaN(val)) return onetimeStr;
+    var hasDecimals = decimalSep !== '';
+    var discounted = hasDecimals ? (val * (1 - subDiscountPct / 100)).toFixed(2)
+                                 : Math.round(val * (1 - subDiscountPct / 100)).toString();
+    if (decimalSep === ',') discounted = discounted.replace('.', ',');
+    return prefix + discounted + suffix;
+  }
+
+  function updatePrices(isSub) {
+    root.querySelectorAll('.gf-price-col').forEach(function(col) {
+      var priceEl   = col.querySelector('.gf-price');
+      var compareEl = col.querySelector('.gf-compare');
+      var onetimePrice   = col.dataset.priceOnetime || '';
+      var onetimeCompare = col.dataset.compareOnetime || '';
+
+      if (isSub) {
+        var subPrice   = col.dataset.priceSub || '';
+        var subCompare = col.dataset.compareSub || '';
+        /* Auto-calculate if no manual sub price was set (sub == onetime means default fallback) */
+        var hasManualSubPrice = subPrice && subPrice !== onetimePrice;
+        if (!hasManualSubPrice && onetimePrice) {
+          subPrice   = calcSubPrice(onetimePrice);
+          subCompare = onetimePrice;
+        }
+        if (priceEl) priceEl.textContent = subPrice;
+        if (compareEl) {
+          compareEl.textContent = subCompare;
+          compareEl.style.display = subCompare ? '' : 'none';
+        }
+      } else {
+        if (priceEl) priceEl.textContent = onetimePrice;
+        if (compareEl) {
+          compareEl.textContent = onetimeCompare;
+          compareEl.style.display = onetimeCompare ? '' : 'none';
+        }
+      }
+    });
+  }
+
+  /* ── Subscription toggle ── */
+  var subCard = root.querySelector('.gf-sub-card');
+  if (subCard) {
+    subCard.addEventListener('click', function(e) {
+      if (e.target.closest('.gf-sub-freq-sel') || e.target.closest('.gf-sub-info')) return;
+      subCard.classList.toggle('active');
+      subCard.setAttribute('aria-checked', subCard.classList.contains('active'));
+      updatePrices(subCard.classList.contains('active'));
+    });
+    /* Set initial prices based on preselected state */
+    updatePrices(subCard.classList.contains('active'));
+    subCard.addEventListener('keydown', function(e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        subCard.click();
+      }
+    });
+
+    /* ── Dynamic pouch qty text ── */
+    var qtySpan = root.querySelector('.gf-sub-qty-text');
+    if (qtySpan) {
+      var singular = qtySpan.dataset.singular || 'pouch';
+      var plural   = qtySpan.dataset.plural   || 'pouches';
+      function updateQtyText() {
+        var checked = root.querySelector('.gf-radio:checked');
+        if (!checked) return;
+        var q = parseInt(checked.dataset.qty, 10) || 1;
+        qtySpan.textContent = q + ' ' + (q === 1 ? singular : plural);
+      }
+      updateQtyText();
+      root.querySelectorAll('.gf-radio').forEach(function(r) {
+        r.addEventListener('change', updateQtyText);
+      });
+    }
+
+    /* ── Info tooltip toggle (mobile tap) ── */
+    var infoBtn = root.querySelector('.gf-sub-info');
+    if (infoBtn) {
+      infoBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        infoBtn.classList.toggle('active');
+      });
+      document.addEventListener('click', function(e) {
+        if (!infoBtn.contains(e.target)) infoBtn.classList.remove('active');
+      });
+    }
+  }
+
+  var cartRoot = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+
+  /* ── Balance theme helpers ── */
+  function getBalanceCartDrawer() {
+    return document.querySelector('cart-drawer-component');
+  }
+
+  /* ── Collect section IDs the way Balance theme does it internally ──
+     cart-items-component.dataset.sectionId is the authoritative source.
+     Mirrors the logic in CartItemsComponent.updateQuantity().           ── */
+  function getCartSectionIds() {
+    var ids = [];
+
+    /* 1. Balance theme: read sectionId directly from every cart-items-component */
+    document.querySelectorAll('cart-items-component[data-section-id]').forEach(function(el){
+      var id = el.dataset.sectionId;
+      if (id && ids.indexOf(id) === -1) ids.push(id);
+    });
+
+    /* 2. Any shopify-section-* wrapper whose ID contains "cart" (generic fallback) */
+    document.querySelectorAll('[id^="shopify-section-"]').forEach(function(el){
+      var id = el.id.replace('shopify-section-', '');
+      if (/cart/i.test(id) && ids.indexOf(id) === -1) ids.push(id);
+    });
+
+    /* 3. Walk up from cart custom elements to their section wrapper */
+    ['cart-drawer-component','cart-drawer','cart-notification'].forEach(function(tag){
+      var el = document.querySelector(tag);
+      var wrap = el && el.closest('[id^="shopify-section-"]');
+      if (wrap) {
+        var id = wrap.id.replace('shopify-section-', '');
+        if (ids.indexOf(id) === -1) ids.push(id);
+      }
+    });
+
+    return ids;
+  }
+
+  /* ── Inject section HTML back into DOM wrappers ── */
+  function injectSections(sections) {
+    if (!sections) return;
+    Object.keys(sections).forEach(function(id){
+      var wrapper = document.getElementById('shopify-section-' + id);
+      if (!wrapper) return;
+      var tmp = document.createElement('div');
+      tmp.innerHTML = sections[id];
+      var inner = tmp.firstElementChild;
+      wrapper.innerHTML = inner ? inner.innerHTML : sections[id];
+    });
+  }
+
+  /* ── Re-fetch sections from page to get freshest cart HTML ── */
+  function fetchAndInjectSections(ids, cb) {
+    var url = window.location.pathname + '?sections=' + ids.join(',');
+    fetch(url, { headers: { 'Accept': 'application/json' } })
+      .then(function(r){ return r.json(); })
+      .then(function(data){ injectSections(data); if (cb) cb(); })
+      .catch(function(){ if (cb) cb(); });
+  }
+
+  /* ── Update every cart-count badge in the page ── */
+  function updateCount(n) {
+    var countSelectors = [
+      '[data-cart-count]','[data-cart-item-count]','[data-cart-items-count]',
+      '.cart-count','.cart-item-count','.cart-items-count',
+      '#cart-count','#CartCount',
+      '.cart-count-bubble span','.cart-link__bubble span',
+      '.header__cart-toggle .count',
+      '[data-header-cart-quantity]'
+    ];
+    countSelectors.forEach(function(sel){
+      document.querySelectorAll(sel).forEach(function(el){
+        el.textContent = n;
+        el.setAttribute('data-count', n);
+        if (n > 0) { el.removeAttribute('hidden'); el.classList.remove('hidden'); }
+      });
+    });
+    /* Show cart bubble if hidden */
+    document.querySelectorAll('.cart-count-bubble, [data-cart-bubble]').forEach(function(el){
+      if (n > 0) el.removeAttribute('hidden');
+    });
+  }
+
+  /* ── THE CART OPENER — exhaustive ── */
+  function openCartUI() {
+
+    /* 1. Balance theme: cart-drawer-component */
+    var balanceEl = document.querySelector('cart-drawer-component');
+    if (balanceEl) {
+      if (typeof balanceEl.open === 'function')       { balanceEl.open(); return; }
+      if (typeof balanceEl.showDialog === 'function') { balanceEl.showDialog(); return; }
+    }
+
+    /* 2. Generic cart-drawer / cart-notification custom elements (Dawn, OS2) */
+    var cartDrawerEl = document.querySelector('cart-drawer');
+    if (cartDrawerEl) {
+      if (typeof cartDrawerEl.open === 'function')    { cartDrawerEl.open(btn); return; }
+      if (typeof cartDrawerEl.show === 'function')    { cartDrawerEl.show(btn); return; }
+      var toggled = false;
+      ['CartDrawer','cart-drawer','CartDrawerWrapper'].forEach(function(id){
+        if (toggled) return;
+        var toggle = document.querySelector('[aria-controls="' + id + '"]');
+        if (toggle && toggle.getAttribute('aria-expanded') !== 'true') { toggle.click(); toggled = true; }
+      });
+      if (toggled) return;
+    }
+
+    var cartNotifEl = document.querySelector('cart-notification');
+    if (cartNotifEl && typeof cartNotifEl.open === 'function') {
+      cartNotifEl.open(); return;
+    }
+
+    /* 2. <details> element drawers (Craft, some OS2 themes) */
+    var detailsSelectors = [
+      'details[id*="cart"]','details[data-cart]',
+      'details[data-drawer="cart"]','details.cart-drawer'
+    ];
+    for (var d = 0; d < detailsSelectors.length; d++) {
+      var det = document.querySelector(detailsSelectors[d]);
+      if (det && !det.open) { det.open = true; return; }
+    }
+
+    /* 3. Common toggle/open button selectors */
+    var btnSelectors = [
+      '[data-cart-toggle]','[data-drawer-toggle="cart"]',
+      '[data-cart-open]','[data-open-cart]',
+      '#cart-icon-bubble',
+      '.js-cart-drawer-toggle','.cart-drawer__toggle',
+      '.js-drawer-open-cart','.sidebar-cart__toggle',
+      '[data-js-cart-drawer-open]','[data-action="open-cart"]',
+      '[data-cart-trigger]','[data-trigger="cart-drawer"]',
+      '.header__cart','.header-cart-btn',
+      'button[aria-label*="cart" i]','button[aria-label*="Cart"]',
+      'a[href="/cart"][class*="icon"]'
+    ];
+    for (var b = 0; b < btnSelectors.length; b++) {
+      var trigger = document.querySelector(btnSelectors[b]);
+      if (trigger && typeof trigger.click === 'function' && !trigger.closest('form')) {
+        trigger.click(); return;
+      }
+    }
+
+    /* 4. Dispatch every known cart-open custom event */
+    var events = [
+      'cart:open','cart:toggle','cart:show','cart:opening',
+      'theme:cart:open','CartDrawer:open','slide-cart:open',
+      'drawer:open','sidebar:open','flyout:open',
+      { name: 'dispatch', detail: { type: 'cart' } }
+    ];
+    events.forEach(function(ev){
+      if (typeof ev === 'string') {
+        document.dispatchEvent(new CustomEvent(ev, { bubbles: true }));
+        window.dispatchEvent(new CustomEvent(ev, { bubbles: true }));
+      }
+    });
+
+    /* 5. Global theme objects */
+    var tries = [
+      function(){ return window.theme && window.theme.Cart && window.theme.Cart.open(); },
+      function(){ return window.theme && window.theme.cartDrawer && window.theme.cartDrawer.open(); },
+      function(){ return window.CartDrawer && window.CartDrawer.open && window.CartDrawer.open(); },
+      function(){ return window.Drawer && window.Drawer.open && window.Drawer.open('cart'); },
+      function(){ return window.cartDrawer && window.cartDrawer.open && window.cartDrawer.open(); },
+      function(){ return window.SideCart && window.SideCart.open && window.SideCart.open(); }
+    ];
+    tries.forEach(function(fn){ try { fn(); } catch(e){} });
+
+    /* 6. setAttribute open on any cart container */
+    ['#CartDrawer','#cart-drawer','#CartSidebar','#cart-sidebar',
+     '[data-cart-drawer]','[data-cart-overlay]'].forEach(function(sel){
+      var el = document.querySelector(sel);
+      if (el) {
+        el.setAttribute('open','');
+        el.classList.add('is-open','open','active','visible');
+        el.removeAttribute('hidden');
+      }
+    });
+  }
+
+  /* ── Add to cart ── */
+  btn.addEventListener('click', function(){
+    clearErr();
+    var radio = root.querySelector('.gf-radio:checked');
+    if (!radio) { showErr('Please select a bundle.'); return; }
+
+    var card    = radio.nextElementSibling;
+    var selects = card.querySelectorAll('.gf-rows .gf-select');
+    var map = {};
+    selects.forEach(function(sel){
+      var id = parseInt(sel.value, 10);
+      if (id) map[id] = (map[id] || 0) + 1;
+    });
+    if (!Object.keys(map).length) { showErr('No variants found.'); return; }
+
+    /* Check subscription state */
+    var sellingPlanId = null;
+    if (subCard && subCard.classList.contains('active')) {
+      var freqSel = root.querySelector('.gf-sub-freq-sel');
+      if (freqSel && freqSel.value && !freqSel.value.startsWith('sub-')) {
+        sellingPlanId = parseInt(freqSel.value, 10) || null;
+      }
+    }
+
+    var items = Object.keys(map).map(function(id){
+      var item = { id: parseInt(id,10), quantity: map[id] };
+      if (sellingPlanId) item.selling_plan = sellingPlanId;
+      return item;
+    });
+    if (!items.length) { showErr('No variants found.'); return; }
+
+    var _isFr = document.documentElement.lang === 'fr';
+    var _txtAdding = _isFr ? 'Ajout…' : 'Adding…';
+    var _txtRedirecting = _isFr ? '✓ Redirection…' : '✓ Redirecting…';
+    var _txtAdded = _isFr ? '✓ Ajouté !' : '✓ Added!';
+
+    var origSpan = btn.querySelector('span');
+    var origText = origSpan ? origSpan.textContent : btn.textContent;
+    if (origSpan) origSpan.textContent = _txtAdding; else btn.textContent = _txtAdding;
+    btn.classList.add('loading');
+
+    /* ── Fast path: skip sections, redirect on 200 ── */
+    if (goToCheckout) {
+      fetch(cartRoot + 'cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ items: items })
+      })
+      .then(function(r){
+        if (!r.ok) return r.json().then(function(d){ throw new Error(d.description || d.message || 'Could not add to cart.'); });
+        if (origSpan) origSpan.textContent = _txtRedirecting; else btn.textContent = _txtRedirecting;
+        btn.classList.remove('loading');
+        btn.classList.add('success');
+        window.location.href = cartRoot + 'checkout';
+      })
+      .catch(function(err){
+        if (origSpan) origSpan.textContent = origText; else btn.textContent = origText;
+        btn.classList.remove('loading','success');
+        showErr(err.message || 'Something went wrong. Please try again.');
+      });
+      return;
+    }
+
+    var sectionIds = getCartSectionIds();
+
+    fetch(cartRoot + 'cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ items: items, sections: sectionIds, sections_url: window.location.pathname })
+    })
+    .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
+    .then(function(res){
+      btn.classList.remove('loading');
+      if (!res.ok) throw new Error(res.data.description || res.data.message || 'Could not add to cart.');
+
+      var addResponse = res.data;
+
+      /* ── Compute item count from the add response (avoid extra fetch) ── */
+      var addedCount = 0;
+      if (addResponse.items) {
+        addResponse.items.forEach(function(i){ addedCount += i.quantity; });
+      }
+      /* resource.item_count = total cart count if Shopify returns it */
+      var totalCount = addResponse.item_count || addedCount;
+
+      /* ── BALANCE THEME: dispatch 'cart:update' immediately ── */
+      var cartDetail = {
+        resource: { item_count: totalCount },
+        sourceId: btn.id || 'gf-bundle-picker',
+        data: {
+          sections: addResponse.sections || {},
+          source: 'gf-bundle-picker',
+        }
+      };
+      document.dispatchEvent(new CustomEvent('cart:update', { bubbles: true, detail: cartDetail }));
+
+      /* Open cart drawer immediately */
+      var balanceDrawer = getBalanceCartDrawer();
+      if (balanceDrawer) {
+        if (typeof balanceDrawer.open === 'function') balanceDrawer.open();
+        else if (typeof balanceDrawer.showDialog === 'function') balanceDrawer.showDialog();
+      } else {
+        openCartUI();
+      }
+
+      /* Update count badge from response (no extra fetch) */
+      if (totalCount) updateCount(totalCount);
+
+      /* Background: get exact count if response didn't include it */
+      if (!addResponse.item_count) {
+        fetch(cartRoot + 'cart.js').then(function(r){ return r.json(); }).then(function(cart){
+          updateCount(cart.item_count);
+        }).catch(function(){});
+      }
+
+      if (origSpan) origSpan.textContent = _txtAdded; else btn.textContent = _txtAdded;
+      btn.classList.add('success');
+      setTimeout(function(){
+        if (origSpan) origSpan.textContent = origText; else btn.textContent = origText;
+        btn.classList.remove('success');
+      }, 1800);
+    })
+    .catch(function(err){
+      if (origSpan) origSpan.textContent = origText; else btn.textContent = origText;
+      btn.classList.remove('loading','success');
+      showErr(err.message || 'Something went wrong. Please try again.');
+    });
+  });
+
+})();
+</script>
+
+{% endunless %}
+
+{% schema %}
+{
+  "name": "GumForce Bundle Picker",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_shopify_prices",
+      "label": "Use live Shopify prices",
+      "info": "Pulls prices from product variants and converts to customer's currency automatically (Shopify Markets). Overrides manual price fields below. Sub price is auto-calculated from the discount %.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Shipping placeholders"
+    },
+    {
+      "type": "paragraph",
+      "content": "Type {shipping} or {threshold} in any bundle Subtitle. Example: 'Free shipping over {threshold}'."
+    },
+    {
+      "type": "number",
+      "id": "shipping_cost",
+      "label": "Default shipping cost (cents)",
+      "info": "Base-currency fallback. 499 = $4.99",
+      "default": 499
+    },
+    {
+      "type": "number",
+      "id": "shipping_threshold",
+      "label": "Default free-shipping threshold (cents)",
+      "info": "Base-currency fallback. 4000 = $40",
+      "default": 4000
+    },
+    {
+      "type": "textarea",
+      "id": "shipping_rates",
+      "label": "Per-currency override",
+      "info": "One line per currency: ISO|shipping-cents|threshold-cents. Example: USD|499|4000 on line 1, EUR|459|3680 on line 2, etc.",
+      "default": "USD|499|4000"
+    },
+    {
+      "type": "select",
+      "id": "default_bundle",
+      "label": "Pre-selected bundle",
+      "options": [
+        { "value": "1", "label": "1st active bundle" },
+        { "value": "2", "label": "2nd active bundle" },
+        { "value": "3", "label": "3rd active bundle" },
+        { "value": "4", "label": "4th active bundle" },
+        { "value": "5", "label": "5th active bundle" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Bundle & Save"
+    },
+    {
+      "type": "header",
+      "content": "── Bundle 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "bundle1_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "bundle1_qty",
+      "label": "Items in bundle",
+      "min": 1, "max": 10, "step": 1, "default": 1
+    },
+    {
+      "type": "range",
+      "id": "bundle1_display_qty",
+      "label": "Pouches displayed (subscription)",
+      "info": "How many pouches this bundle physically delivers. Leave 0 to use 'Items in bundle' above. For B2G1F variants, set to 3.",
+      "min": 0, "max": 12, "step": 1, "default": 0
+    },
+    {
+      "type": "text",
+      "id": "bundle1_option_filter",
+      "label": "Pack size filter",
+      "info": "Only show variants where Option 2 matches. Use || to add translations (e.g. '1 pouch only || 1 seule pochette'). Leave empty to show all."
+    },
+    {
+      "type": "text",
+      "id": "bundle1_title",
+      "label": "Title",
+      "default": "2-Week Supply"
+    },
+    {
+      "type": "text",
+      "id": "bundle1_badge",
+      "label": "Badge",
+      "default": "Starter"
+    },
+    {
+      "type": "text",
+      "id": "bundle1_subtitle",
+      "label": "Subtitle",
+      "default": "Perfect to test it"
+    },
+    {
+      "type": "text",
+      "id": "bundle1_price",
+      "label": "Price",
+      "default": "$29.90"
+    },
+    {
+      "type": "text",
+      "id": "bundle1_compare",
+      "label": "Compare-at price",
+      "default": "$35.00"
+    },
+    {
+      "type": "text",
+      "id": "bundle1_sub_price",
+      "label": "Subscription price",
+      "info": "Price shown when Subscribe is toggled on. Leave empty to keep the same."
+    },
+    {
+      "type": "text",
+      "id": "bundle1_sub_compare",
+      "label": "Subscription compare-at",
+      "info": "Compare-at shown when Subscribe is toggled on. Leave empty to keep the same."
+    },
+    {
+      "type": "checkbox",
+      "id": "bundle1_popular",
+      "label": "Show 'Most Popular' ribbon",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "── Bundle 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "bundle2_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "bundle2_qty",
+      "label": "Items in bundle",
+      "min": 1, "max": 10, "step": 1, "default": 3
+    },
+    {
+      "type": "range",
+      "id": "bundle2_display_qty",
+      "label": "Pouches displayed (subscription)",
+      "info": "How many pouches this bundle physically delivers. Leave 0 to use 'Items in bundle' above. For B2G1F variants, set to 3.",
+      "min": 0, "max": 12, "step": 1, "default": 3
+    },
+    {
+      "type": "text",
+      "id": "bundle2_option_filter",
+      "label": "Pack size filter",
+      "info": "Only show variants where Option 2 matches this value (e.g. 'Buy 2 Get 1 FREE'). Leave empty to show all."
+    },
+    {
+      "type": "text",
+      "id": "bundle2_title",
+      "label": "Title",
+      "default": "Buy 2 Get 1 Free"
+    },
+    {
+      "type": "text",
+      "id": "bundle2_badge",
+      "label": "Badge",
+      "default": "Bestseller"
+    },
+    {
+      "type": "text",
+      "id": "bundle2_subtitle",
+      "label": "Subtitle",
+      "default": "Best for visible results"
+    },
+    {
+      "type": "text",
+      "id": "bundle2_price",
+      "label": "Price",
+      "default": "$59.80"
+    },
+    {
+      "type": "text",
+      "id": "bundle2_compare",
+      "label": "Compare-at price",
+      "default": "$89.70"
+    },
+    {
+      "type": "text",
+      "id": "bundle2_sub_price",
+      "label": "Subscription price",
+      "info": "Price shown when Subscribe is toggled on. Leave empty to keep the same."
+    },
+    {
+      "type": "text",
+      "id": "bundle2_sub_compare",
+      "label": "Subscription compare-at",
+      "info": "Compare-at shown when Subscribe is toggled on. Leave empty to keep the same."
+    },
+    {
+      "type": "checkbox",
+      "id": "bundle2_popular",
+      "label": "Show 'Most Popular' ribbon",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "── Bundle 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "bundle3_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "bundle3_qty",
+      "label": "Items in bundle",
+      "min": 1, "max": 10, "step": 1, "default": 5
+    },
+    {
+      "type": "range",
+      "id": "bundle3_display_qty",
+      "label": "Pouches displayed (subscription)",
+      "info": "How many pouches this bundle physically delivers. Leave 0 to use 'Items in bundle' above.",
+      "min": 0, "max": 12, "step": 1, "default": 0
+    },
+    {
+      "type": "text",
+      "id": "bundle3_option_filter",
+      "label": "Pack size filter",
+      "info": "Only show variants where Option 2 matches this value. Leave empty to show all."
+    },
+    {
+      "type": "text",
+      "id": "bundle3_title",
+      "label": "Title",
+      "default": "Buy 3 Get 2 Free"
+    },
+    {
+      "type": "text",
+      "id": "bundle3_badge",
+      "label": "Badge",
+      "default": "Best Value"
+    },
+    {
+      "type": "text",
+      "id": "bundle3_subtitle",
+      "label": "Subtitle",
+      "default": "Long-term routine"
+    },
+    {
+      "type": "text",
+      "id": "bundle3_price",
+      "label": "Price",
+      "default": "$89.70"
+    },
+    {
+      "type": "text",
+      "id": "bundle3_compare",
+      "label": "Compare-at price",
+      "default": "$149.50"
+    },
+    {
+      "type": "text",
+      "id": "bundle3_sub_price",
+      "label": "Subscription price",
+      "info": "Price shown when Subscribe is toggled on. Leave empty to keep the same."
+    },
+    {
+      "type": "text",
+      "id": "bundle3_sub_compare",
+      "label": "Subscription compare-at",
+      "info": "Compare-at shown when Subscribe is toggled on. Leave empty to keep the same."
+    },
+    {
+      "type": "checkbox",
+      "id": "bundle3_popular",
+      "label": "Show 'Most Popular' ribbon",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "── Bundle 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "bundle4_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "bundle4_qty",
+      "label": "Items in bundle",
+      "min": 1, "max": 10, "step": 1, "default": 2
+    },
+    {
+      "type": "range",
+      "id": "bundle4_display_qty",
+      "label": "Pouches displayed (subscription)",
+      "info": "How many pouches this bundle physically delivers. Leave 0 to use 'Items in bundle' above.",
+      "min": 0, "max": 12, "step": 1, "default": 0
+    },
+    {
+      "type": "text",
+      "id": "bundle4_option_filter",
+      "label": "Pack size filter"
+    },
+    {
+      "type": "text",
+      "id": "bundle4_title",
+      "label": "Title",
+      "default": "Custom Bundle"
+    },
+    {
+      "type": "text",
+      "id": "bundle4_badge",
+      "label": "Badge"
+    },
+    {
+      "type": "text",
+      "id": "bundle4_subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "bundle4_price",
+      "label": "Price",
+      "default": "$39.90"
+    },
+    {
+      "type": "text",
+      "id": "bundle4_compare",
+      "label": "Compare-at price"
+    },
+    {
+      "type": "text",
+      "id": "bundle4_sub_price",
+      "label": "Subscription price"
+    },
+    {
+      "type": "text",
+      "id": "bundle4_sub_compare",
+      "label": "Subscription compare-at"
+    },
+    {
+      "type": "checkbox",
+      "id": "bundle4_popular",
+      "label": "Show 'Most Popular' ribbon",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "── Bundle 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "bundle5_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "bundle5_qty",
+      "label": "Items in bundle",
+      "min": 1, "max": 10, "step": 1, "default": 4
+    },
+    {
+      "type": "range",
+      "id": "bundle5_display_qty",
+      "label": "Pouches displayed (subscription)",
+      "info": "How many pouches this bundle physically delivers. Leave 0 to use 'Items in bundle' above.",
+      "min": 0, "max": 12, "step": 1, "default": 0
+    },
+    {
+      "type": "text",
+      "id": "bundle5_option_filter",
+      "label": "Pack size filter"
+    },
+    {
+      "type": "text",
+      "id": "bundle5_title",
+      "label": "Title",
+      "default": "Custom Bundle"
+    },
+    {
+      "type": "text",
+      "id": "bundle5_badge",
+      "label": "Badge"
+    },
+    {
+      "type": "text",
+      "id": "bundle5_subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "bundle5_price",
+      "label": "Price",
+      "default": "$49.90"
+    },
+    {
+      "type": "text",
+      "id": "bundle5_compare",
+      "label": "Compare-at price"
+    },
+    {
+      "type": "text",
+      "id": "bundle5_sub_price",
+      "label": "Subscription price"
+    },
+    {
+      "type": "text",
+      "id": "bundle5_sub_compare",
+      "label": "Subscription compare-at"
+    },
+    {
+      "type": "checkbox",
+      "id": "bundle5_popular",
+      "label": "Show 'Most Popular' ribbon",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Ribbon & Button"
+    },
+    {
+      "type": "text",
+      "id": "ribbon_text",
+      "label": "Ribbon label",
+      "default": "Most Popular"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button label",
+      "default": "ADD TO CART"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        { "value": "gf-btn-filled",  "label": "Filled"   },
+        { "value": "gf-btn-outline", "label": "Outline"  },
+        { "value": "gf-btn-ghost",   "label": "Ghost"    }
+      ],
+      "default": "gf-btn-filled"
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button text weight",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)"  },
+        { "value": "600", "label": "Semi-bold (600)" },
+        { "value": "700", "label": "Bold (700)"    },
+        { "value": "800", "label": "Extra-bold (800)" },
+        { "value": "900", "label": "Black (900)"   }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "select",
+      "id": "button_icon",
+      "label": "Button icon",
+      "options": [
+        { "value": "none",  "label": "None"  },
+        { "value": "cart",  "label": "Cart"  },
+        { "value": "bag",   "label": "Bag"   },
+        { "value": "arrow", "label": "Arrow" },
+        { "value": "lock",  "label": "Lock"  }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "icon_position",
+      "label": "Icon position",
+      "options": [
+        { "value": "left",  "label": "Left"  },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "go_to_checkout",
+      "label": "Go directly to checkout",
+      "info": "Skips the cart drawer and sends the customer straight to checkout after clicking the button.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Subscribe & Save"
+    },
+    {
+      "type": "checkbox",
+      "id": "sub_enabled",
+      "label": "Enable Subscribe & Save",
+      "info": "Shows the subscribe toggle. When Appstle (or another subscription app) is installed with selling plans, cart adds include the selling plan automatically.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sub_preselected",
+      "label": "Preselect Subscribe",
+      "info": "Subscribe is selected by default instead of One-time.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sub_subscribe_text",
+      "label": "Subscribe label",
+      "default": "Subscribe & Save"
+    },
+    {
+      "type": "text",
+      "id": "sub_discount",
+      "label": "Discount text",
+      "default": "20%"
+    },
+    {
+      "type": "text",
+      "id": "sub_freq_label",
+      "label": "Frequency label",
+      "default": "Deliver"
+    },
+    {
+      "type": "text",
+      "id": "sub_freq_every",
+      "label": "Frequency 'every' word",
+      "default": "every"
+    },
+    {
+      "type": "text",
+      "id": "sub_pouch_singular",
+      "label": "Pouch word (singular)",
+      "default": "pouch"
+    },
+    {
+      "type": "text",
+      "id": "sub_pouch_plural",
+      "label": "Pouch word (plural)",
+      "default": "pouches"
+    },
+    {
+      "type": "text",
+      "id": "sub_freq_1",
+      "label": "Frequency option 1",
+      "info": "Label shown in the frequency dropdown (1st selling plan).",
+      "default": "1 month"
+    },
+    {
+      "type": "text",
+      "id": "sub_freq_2",
+      "label": "Frequency option 2",
+      "default": "2 months"
+    },
+    {
+      "type": "text",
+      "id": "sub_freq_3",
+      "label": "Frequency option 3",
+      "default": "3 months"
+    },
+    {
+      "type": "select",
+      "id": "sub_default_freq",
+      "label": "Default frequency",
+      "info": "Which frequency option is pre-selected.",
+      "options": [
+        { "value": "1", "label": "1st option" },
+        { "value": "2", "label": "2nd option" },
+        { "value": "3", "label": "3rd option" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "text",
+      "id": "sub_cancel_text",
+      "label": "Reassurance text",
+      "default": "Cancel or change anytime"
+    },
+    {
+      "type": "textarea",
+      "id": "sub_info_text",
+      "label": "Info tooltip text",
+      "info": "Shown when hovering or tapping the (i) icon next to the reassurance text.",
+      "default": "No commitment whatsoever. Skip, pause, or cancel your subscription at any time with one click. You are always in control."
+    },
+    {
+      "type": "header",
+      "content": "Trust & Social Proof"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust",
+      "label": "Show trust badges",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "trust_badge_height",
+      "label": "Badge image height",
+      "info": "Height for uploaded PNG badge images",
+      "min": 14,
+      "max": 48,
+      "step": 2,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "image_picker",
+      "id": "trust1_image",
+      "label": "Badge 1 — full image (PNG)",
+      "info": "Upload a complete badge graphic. If set, text below is used as alt text only."
+    },
+    {
+      "type": "text",
+      "id": "trust1",
+      "label": "Badge 1 — text",
+      "default": "Express Shipping"
+    },
+    {
+      "type": "image_picker",
+      "id": "trust2_image",
+      "label": "Badge 2 — full image (PNG)",
+      "info": "Upload a complete badge graphic. If set, text below is used as alt text only."
+    },
+    {
+      "type": "text",
+      "id": "trust2",
+      "label": "Badge 2 — text",
+      "default": "30-Day Guarantee"
+    },
+    {
+      "type": "image_picker",
+      "id": "trust3_image",
+      "label": "Badge 3 — full image (PNG)",
+      "info": "Upload a complete badge graphic. If set, text below is used as alt text only."
+    },
+    {
+      "type": "text",
+      "id": "trust3",
+      "label": "Badge 3 — text",
+      "default": "Secure Checkout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payments",
+      "label": "Show payment icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_low_stock",
+      "label": "Show low stock indicator",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "low_stock_text",
+      "label": "Low stock label",
+      "default": "Low stock"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "color_accent",
+      "label": "Accent / border",
+      "default": "#544643"
+    },
+    {
+      "type": "color",
+      "id": "color_selected_bg",
+      "label": "Selected card background",
+      "default": "#c5fff7"
+    },
+    {
+      "type": "range",
+      "id": "color_selected_opacity",
+      "label": "Selected card bg opacity",
+      "min": 5, "max": 100, "step": 5, "unit": "%", "default": 30
+    },
+    {
+      "type": "color",
+      "id": "color_btn_bg",
+      "label": "Button background",
+      "default": "#0e0e0e"
+    },
+    {
+      "type": "color",
+      "id": "color_btn_text",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_badge_bg",
+      "label": "Badge background",
+      "default": "#0e0e0e"
+    },
+    {
+      "type": "color",
+      "id": "color_badge_text",
+      "label": "Badge text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_ribbon_bg",
+      "label": "Ribbon background",
+      "default": "#0e0e0e"
+    },
+    {
+      "type": "color",
+      "id": "color_ribbon_text",
+      "label": "Ribbon text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_compare",
+      "label": "Compare-at price",
+      "default": "#fd9898"
+    },
+    {
+      "type": "color",
+      "id": "color_trust_check",
+      "label": "Trust checkmark",
+      "default": "#16a34a"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_theme_font",
+      "label": "Use theme body font",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "title_style",
+      "label": "Bundle title style",
+      "options": [
+        { "value": "h1", "label": "Heading 1" },
+        { "value": "h2", "label": "Heading 2" },
+        { "value": "h3", "label": "Heading 3" },
+        { "value": "h4", "label": "Heading 4" },
+        { "value": "h5", "label": "Heading 5" },
+        { "value": "h6", "label": "Heading 6" },
+        { "value": "p",  "label": "Paragraph" }
+      ],
+      "default": "h5"
+    },
+    {
+      "type": "select",
+      "id": "price_style",
+      "label": "Price style",
+      "options": [
+        { "value": "h2", "label": "Heading 2" },
+        { "value": "h3", "label": "Heading 3" },
+        { "value": "h4", "label": "Heading 4" },
+        { "value": "h5", "label": "Heading 5" },
+        { "value": "h6", "label": "Heading 6" },
+        { "value": "p",  "label": "Paragraph" }
+      ],
+      "default": "h5"
+    },
+    {
+      "type": "select",
+      "id": "subtitle_style",
+      "label": "Subtitle style",
+      "options": [
+        { "value": "h5", "label": "Heading 5" },
+        { "value": "h6", "label": "Heading 6" },
+        { "value": "p",  "label": "Paragraph" },
+        { "value": "body", "label": "Body" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_images",
+      "label": "Show product images",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "variant_cards",
+      "label": "Use flavor cards (instead of dropdown)",
+      "info": "Shows visual cards with icons for each variant. Upload icons below and match variant titles exactly.",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "variant_icon_1",
+      "label": "Variant icon 1"
+    },
+    {
+      "type": "text",
+      "id": "variant_icon_1_title",
+      "label": "Variant 1 title",
+      "info": "Must match the flavor name exactly (Option 1, e.g. 'Fresh Mint')."
+    },
+    {
+      "type": "image_picker",
+      "id": "variant_icon_2",
+      "label": "Variant icon 2"
+    },
+    {
+      "type": "text",
+      "id": "variant_icon_2_title",
+      "label": "Variant 2 title"
+    },
+    {
+      "type": "image_picker",
+      "id": "variant_icon_3",
+      "label": "Variant icon 3"
+    },
+    {
+      "type": "text",
+      "id": "variant_icon_3_title",
+      "label": "Variant 3 title"
+    },
+    {
+      "type": "image_picker",
+      "id": "variant_icon_4",
+      "label": "Variant icon 4"
+    },
+    {
+      "type": "text",
+      "id": "variant_icon_4_title",
+      "label": "Variant 4 title"
+    },
+    {
+      "type": "image_picker",
+      "id": "variant_icon_5",
+      "label": "Variant icon 5"
+    },
+    {
+      "type": "text",
+      "id": "variant_icon_5_title",
+      "label": "Variant 5 title"
+    },
+    {
+      "type": "image_picker",
+      "id": "variant_icon_6",
+      "label": "Variant icon 6"
+    },
+    {
+      "type": "text",
+      "id": "variant_icon_6_title",
+      "label": "Variant 6 title"
+    },
+    {
+      "type": "color",
+      "id": "swatch_ring_color",
+      "label": "Swatch ring color",
+      "default": "#222222"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Card corner radius",
+      "min": 0, "max": 24, "step": 1, "unit": "px", "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top",
+      "min": 0, "max": 80, "step": 2, "unit": "px", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom",
+      "min": 0, "max": 80, "step": 2, "unit": "px", "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Left",
+      "min": 0, "max": 60, "step": 2, "unit": "px", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Right",
+      "min": 0, "max": 60, "step": 2, "unit": "px", "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "GumForce Bundle Picker",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

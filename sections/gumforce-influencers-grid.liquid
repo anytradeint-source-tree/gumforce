@@ -1,0 +1,423 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Influenceurs — GRILLE (V2)
+  ----------------------------------------------------------------------------
+  Grille responsive (mobile 2 col / desktop réglable), cartes portrait avec
+  nom + rôle en overlay. Fond transparent (le dégradé passe derrière),
+  polices du thème (Oswald / Manrope). Bouton « Voir plus » sur mobile.
+  Hover réservé aux appareils à vrai survol. Anim d'entrée pilotée par JS
+  (donc jamais de cartes invisibles si le JS échoue).
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign accent = s.accent_color | default: '#2AB5B4'
+  assign ar = accent | color_extract: 'red'
+  assign ag = accent | color_extract: 'green'
+  assign ab = accent | color_extract: 'blue'
+
+  assign txt_hd  = s.color_heading | default: '#0e0e0e'
+  assign txt     = s.color_text    | default: '#0e0e0e'
+  assign txt_mut = s.color_muted   | default: '#6b6b6b'
+  assign card_bg = s.color_card    | default: '#e9e9ec'
+
+  if s.transparent_bg == false
+    assign root_bg = s.color_bg | default: '#ffffff'
+  else
+    assign root_bg = 'transparent'
+  endif
+
+  assign heading_size = s.heading_size | default: 32
+
+  assign cols   = s.cols_desktop | default: 4
+  assign cols_m = s.cols_mobile  | default: 2
+  assign gap    = s.grid_gap     | default: 12
+  assign rad    = s.card_radius  | default: 16
+  assign h_tag  = s.heading_tag  | default: 'h2'
+
+  assign lim  = s.limit_mobile | default: 6
+  assign lim1 = lim | plus: 1
+
+  case s.card_ratio
+    when 'square'
+      assign ratio = '1 / 1'
+    when 'tall'
+      assign ratio = '4 / 5'
+    when 'landscape'
+      assign ratio = '4 / 3'
+    else
+      assign ratio = '3 / 4'
+  endcase
+
+  assign nblocks = section.blocks.size
+  assign show_more = false
+  if s.show_limit and nblocks > lim
+    assign show_more = true
+  endif
+-%}
+
+<style>
+  #gfg-{{ sid }},
+  #gfg-{{ sid }} *,
+  #gfg-{{ sid }} *::before,
+  #gfg-{{ sid }} *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  #gfg-{{ sid }} {
+    /* PAS de content-visibility ici : il empêchait le navigateur de découvrir
+       les images tant que la section n'était pas presque à l'écran → cartes
+       grises au scroll. Le préchargement JS ci-dessous fait le travail. */
+    --gfg-font:      var(--font-body--family, 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif);
+    --gfg-font-head: var(--font-heading--family, 'Oswald', sans-serif);
+    --gfg-accent:    {{ accent }};
+    --gfg-ar:        {{ ar }};
+    --gfg-ag:        {{ ag }};
+    --gfg-ab:        {{ ab }};
+    --gfg-text:      {{ txt }};
+    --gfg-hd:        {{ txt_hd }};
+    --gfg-mut:       {{ txt_mut }};
+    --gfg-card-bg:   {{ card_bg }};
+    --gfg-cols:      {{ cols }};
+    --gfg-cols-m:    {{ cols_m }};
+    --gfg-gap:       {{ gap }}px;
+    --gfg-rad:       {{ rad }}px;
+    --gfg-ratio:     {{ ratio }};
+    --gfg-heading:   {{ heading_size }}px;
+
+    font-family: var(--gfg-font);
+    background: {{ root_bg }};
+    color: var(--gfg-text);
+    padding: {{ s.padding_top_mobile | default: 40 }}px 16px {{ s.padding_bottom_mobile | default: 40 }}px;
+  }
+
+  /* ── Header ── */
+  #gfg-{{ sid }} .gfg-hd { text-align:center; margin-bottom:30px; }
+  #gfg-{{ sid }} .gfg-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(var(--gfg-ar),var(--gfg-ag),var(--gfg-ab),0.09);
+    border:1px solid rgba(var(--gfg-ar),var(--gfg-ag),var(--gfg-ab),0.22);
+    color:var(--gfg-accent);
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em;
+    padding:6px 14px; border-radius:100px; margin-bottom:16px; line-height:1;
+  }
+  /* même mécanique que les autres sections GF (before-after) :
+     taille explicite réglable, ×0.78 en mobile, pleine taille en desktop. */
+  #gfg-{{ sid }} .gfg-title {
+    font-family:var(--gfg-font-head); color:var(--gfg-hd);
+    font-size:clamp(22px, calc(var(--gfg-heading) * 0.78), var(--gfg-heading));
+    font-weight:700; line-height:1.15; letter-spacing:-0.02em;
+    margin:0 auto 12px; max-width:620px; text-wrap:balance; text-decoration:none;
+  }
+  #gfg-{{ sid }} .gfg-hd p { font-size:14px; color:var(--gfg-mut); line-height:1.5; max-width:480px; margin:0 auto; }
+
+  /* ── Grille ── */
+  #gfg-{{ sid }} .gfg-grid {
+    display:grid;
+    grid-template-columns:repeat(var(--gfg-cols-m),1fr);
+    gap:var(--gfg-gap);
+    max-width:1120px; margin:0 auto;
+  }
+
+  /* ── Carte ── */
+  #gfg-{{ sid }} .gfg-card {
+    position:relative; aspect-ratio:var(--gfg-ratio);
+    border-radius:var(--gfg-rad); overflow:hidden; background:var(--gfg-card-bg);
+    box-shadow:0 4px 14px rgba(0,0,0,0.09);
+    transition:transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s cubic-bezier(.22,1,.36,1);
+  }
+  #gfg-{{ sid }} .gfg-card img { width:100%; height:100%; object-fit:cover; display:block; position:relative; z-index:1; transition:transform .5s cubic-bezier(.22,1,.36,1), opacity .35s ease; }
+
+  /* ── Chargement : skeleton animé + fondu (activés seulement si le JS tourne,
+     donc jamais d'image invisible si le JS échoue) ── */
+  #gfg-{{ sid }}.gfg-js .gfg-card::before {
+    content:''; position:absolute; inset:0; z-index:0;
+    background:linear-gradient(100deg, var(--gfg-card-bg) 18%, rgba(255,255,255,.6) 38%, var(--gfg-card-bg) 58%);
+    background-size:220% 100%;
+    animation:gfg-shim-{{ sid }} 1.3s ease-in-out infinite;
+  }
+  #gfg-{{ sid }}.gfg-js .gfg-card img { opacity:0; }
+  #gfg-{{ sid }}.gfg-js .gfg-card.gfg-ready::before { display:none; }
+  #gfg-{{ sid }}.gfg-js .gfg-card.gfg-ready img { opacity:1; }
+  @keyframes gfg-shim-{{ sid }} { 0% { background-position:120% 0; } 100% { background-position:-120% 0; } }
+  @media (prefers-reduced-motion:reduce) {
+    #gfg-{{ sid }}.gfg-js .gfg-card::before { animation:none; }
+  }
+
+  #gfg-{{ sid }} .gfg-ov {
+    position:absolute; left:0; right:0; bottom:0; padding:16px 13px 12px;
+    z-index:2; /* au-dessus de l'image (z-index:1) et du skeleton (z-index:0) */
+    background:linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.32) 55%, transparent 100%);
+    display:flex; flex-direction:column; pointer-events:none;
+  }
+  #gfg-{{ sid }} .gfg-name { font-size:14px; font-weight:700; color:#fff; line-height:1.25; letter-spacing:-0.01em; }
+  #gfg-{{ sid }} .gfg-role { font-size:11px; font-weight:500; color:rgba(255,255,255,0.66); line-height:1.25; margin-top:2px; }
+
+  /* placeholder (sans image) */
+  #gfg-{{ sid }} .gfg-ph { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(150deg,#f1f1f4,#e4e4e9); color:#c2c2cc; }
+  #gfg-{{ sid }} .gfg-ph svg { width:30px; height:30px; }
+
+  /* hover — appareils à vrai survol uniquement */
+  @media (hover:hover) and (pointer:fine) {
+    #gfg-{{ sid }} .gfg-card:hover { transform:translateY(-3px); box-shadow:0 14px 32px rgba(0,0,0,0.15); }
+    #gfg-{{ sid }} .gfg-card:hover img { transform:scale(1.05); }
+  }
+
+  /* Voir plus */
+  #gfg-{{ sid }} .gfg-more {
+    display:none; width:fit-content; margin:22px auto 0;
+    background:transparent; border:1.5px solid rgba(var(--gfg-ar),var(--gfg-ag),var(--gfg-ab),0.45);
+    color:var(--gfg-accent); font-family:var(--gfg-font); font-size:13px; font-weight:700; letter-spacing:0.02em;
+    padding:11px 24px; border-radius:100px; cursor:pointer;
+    transition:background .2s ease, color .2s ease, border-color .2s ease; -webkit-tap-highlight-color:transparent;
+  }
+  #gfg-{{ sid }} .gfg-more svg { width:15px; height:15px; }
+  #gfg-{{ sid }} .gfg-more:hover { background:var(--gfg-accent); color:#fff; border-color:transparent; }
+
+  /* empty */
+  #gfg-{{ sid }} .gfg-empty { text-align:center; padding:40px 24px; color:var(--gfg-mut); font-size:14px; line-height:1.5; }
+
+  /* ── Desktop ── */
+  @media (min-width:750px) {
+    #gfg-{{ sid }} { padding: {{ s.padding_top | default: 40 }}px 16px {{ s.padding_bottom | default: 40 }}px; }
+    #gfg-{{ sid }} .gfg-grid { grid-template-columns:repeat(var(--gfg-cols),1fr); gap:calc(var(--gfg-gap) + 2px); }
+    #gfg-{{ sid }} .gfg-title { font-size:var(--gfg-heading); }
+    #gfg-{{ sid }} .gfg-hd { margin-bottom:44px; }
+    #gfg-{{ sid }} .gfg-hd p { font-size:15px; }
+    #gfg-{{ sid }} .gfg-ov { padding:20px 16px 15px; }
+    #gfg-{{ sid }} .gfg-name { font-size:15px; }
+    #gfg-{{ sid }} .gfg-role { font-size:12px; }
+  }
+
+  /* ── « Voir plus » : cap mobile ── */
+  @media (max-width:749px) {
+    #gfg-{{ sid }}.gfg-collapsed .gfg-card:nth-child(n+{{ lim1 }}) { display:none; }
+    #gfg-{{ sid }}.gfg-collapsed .gfg-more { display:flex; align-items:center; gap:6px; }
+  }
+
+  /* ── Anim d'entrée (activée par JS via .gfg-anim, révélée par .gfg-in) ── */
+  #gfg-{{ sid }}.gfg-anim .gfg-hd { opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1); }
+  #gfg-{{ sid }}.gfg-anim.gfg-in .gfg-hd { opacity:1; transform:none; }
+  #gfg-{{ sid }}.gfg-anim .gfg-card { opacity:0; transform:translateY(16px); transition:opacity .55s ease, transform .55s cubic-bezier(.22,1,.36,1); transition-delay:var(--gfg-d,0ms); }
+  #gfg-{{ sid }}.gfg-anim.gfg-in .gfg-card { opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce) {
+    #gfg-{{ sid }}.gfg-anim .gfg-hd,
+    #gfg-{{ sid }}.gfg-anim .gfg-card { opacity:1 !important; transform:none !important; transition:none !important; }
+  }
+</style>
+
+<section id="gfg-{{ sid }}"{% if show_more %} class="gfg-collapsed"{% endif %}>
+
+  <div class="gfg-hd">
+    {%- if s.badge_text != blank -%}<span class="gfg-badge">{{ s.badge_text }}</span>{%- endif -%}
+    <{{ h_tag }} class="gfg-title">{{ s.heading }}</{{ h_tag }}>
+    {%- if s.subheading != blank -%}<p>{{ s.subheading }}</p>{%- endif -%}
+  </div>
+
+  {%- if nblocks > 0 -%}
+    <div class="gfg-grid">
+      {%- for block in section.blocks -%}
+        {%- assign d = forloop.index0 | times: 40 | plus: 60 | at_most: 420 -%}
+        <div class="gfg-card" style="--gfg-d:{{ d }}ms" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <img src="{{ block.settings.image | image_url: width: 600 }}"
+                 srcset="{{ block.settings.image | image_url: width: 300 }} 300w,
+                        {{ block.settings.image | image_url: width: 500 }} 500w,
+                        {{ block.settings.image | image_url: width: 700 }} 700w,
+                        {{ block.settings.image | image_url: width: 900 }} 900w"
+                 sizes="(max-width: 749px) 45vw, 260px"
+                 alt="{{ block.settings.name | default: '' | escape }}"
+                 loading="lazy" decoding="async"
+                 width="300" height="400" draggable="false">
+          {%- else -%}
+            <div class="gfg-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+          {%- endif -%}
+          <div class="gfg-ov">
+            {%- if block.settings.name != blank -%}<span class="gfg-name">{{ block.settings.name }}</span>{%- endif -%}
+            {%- if block.settings.role != blank -%}<span class="gfg-role">{{ block.settings.role }}</span>{%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if show_more -%}
+      <button class="gfg-more" data-gfg-more>
+        {{ s.more_text | default: 'Voir plus' }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+    {%- endif -%}
+  {%- else -%}
+    <div class="gfg-empty">Ajoutez des cartes influenceur dans les blocs de cette section.</div>
+  {%- endif -%}
+
+</section>
+
+<script>
+(function(){
+  var root = document.getElementById('gfg-{{ sid }}');
+  if (!root) return;
+
+  /* ── Images : téléchargement déclenché BIEN avant l'arrivée à l'écran
+     (Safari iOS déclenche le lazy natif beaucoup trop tard), puis fondu
+     quand l'image est réellement décodée. ── */
+  (function () {
+    var imgs = root.querySelectorAll('.gfg-card img');
+    if (!imgs.length) return;
+    root.classList.add('gfg-js');
+    function ready(im) {
+      var card = im.closest('.gfg-card');
+      if (card) card.classList.add('gfg-ready');
+    }
+    imgs.forEach(function (im) {
+      if (im.complete && im.naturalWidth) { ready(im); return; }
+      im.addEventListener('load', function () { ready(im); });
+      im.addEventListener('error', function () { ready(im); }); /* jamais bloqué */
+    });
+    function fetchNow(im) {
+      if (im.loading === 'lazy') im.loading = 'eager';
+      if (im.decode) { try { im.decode().then(function () { ready(im); }, function () {}); } catch (err) {} }
+    }
+    /* 1) à l'approche (scroll rapide) */
+    if ('IntersectionObserver' in window) {
+      var pre = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          pre.unobserve(e.target);
+          fetchNow(e.target);
+        });
+      }, { rootMargin: '2500px 0px' });
+      imgs.forEach(function (im) { pre.observe(im); });
+    }
+    /* 2) filet décisif : une fois la page chargée et le réseau libre, on récupère
+       TOUTES les images de la section même si elles sont loin (≈50 Ko chacune).
+       → quand l'utilisateur arrive dessus, elles sont déjà là. */
+    function fetchAll() {
+      /* plafond de sécurité : au-delà de 12 cartes, les suivantes restent
+         gérées par l'observateur d'approche (évite de tirer 2 Mo pour rien) */
+      for (var i = 0; i < imgs.length && i < 12; i++) fetchNow(imgs[i]);
+    }
+    function schedule() {
+      if (window.requestIdleCallback) window.requestIdleCallback(fetchAll, { timeout: 2500 });
+      else setTimeout(fetchAll, 1200);
+    }
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule);
+  })();
+
+  var moreBtn = root.querySelector('[data-gfg-more]');
+  if (moreBtn) {
+    moreBtn.addEventListener('click', function(){ root.classList.remove('gfg-collapsed'); });
+  }
+
+  {%- if s.enable_animation -%}
+  if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    root.classList.add('gfg-anim');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if (e.isIntersecting){ root.classList.add('gfg-in'); io.disconnect(); } });
+      }, { threshold: 0.08 });
+      io.observe(root);
+    } else {
+      root.classList.add('gfg-in');
+    }
+  }
+  {%- endif -%}
+})();
+</script>
+
+{% schema %}
+{
+  "name": "GF Influenceurs (grille)",
+  "tag": "section",
+  "class": "gf-influencers-grid",
+  "max_blocks": 24,
+  "settings": [
+    { "type": "header", "content": "── En-tête ──" },
+    { "type": "text", "id": "badge_text", "label": "Badge (vide = masqué)", "default": "Communauté" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Adopté par les meilleurs" },
+    { "type": "text", "id": "subheading", "label": "Sous-titre", "default": "Rejoins la communauté GUMFORCE" },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Taille titre (px)",
+      "min": 20,
+      "max": 56,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Type de titre",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" }
+      ],
+      "default": "h2"
+    },
+
+    { "type": "header", "content": "── Grille ──" },
+    { "type": "range", "id": "cols_desktop", "label": "Colonnes (desktop)", "min": 2, "max": 6, "step": 1, "default": 4 },
+    { "type": "select", "id": "cols_mobile", "label": "Colonnes (mobile)", "options": [{"value":"1","label":"1"},{"value":"2","label":"2"},{"value":"3","label":"3"}], "default": "2" },
+    { "type": "select", "id": "card_ratio", "label": "Format des cartes", "options": [{"value":"portrait","label":"Portrait 3:4"},{"value":"tall","label":"Portrait haut 4:5"},{"value":"square","label":"Carré 1:1"},{"value":"landscape","label":"Paysage 4:3"}], "default": "portrait" },
+    { "type": "range", "id": "grid_gap", "label": "Écart", "min": 4, "max": 24, "step": 2, "default": 12, "unit": "px" },
+    { "type": "range", "id": "card_radius", "label": "Arrondi", "min": 0, "max": 28, "step": 2, "default": 16, "unit": "px" },
+
+    { "type": "header", "content": "── Voir plus (mobile) ──" },
+    { "type": "checkbox", "id": "show_limit", "label": "Limiter sur mobile + bouton « Voir plus »", "default": true },
+    { "type": "range", "id": "limit_mobile", "label": "Cartes visibles avant « Voir plus »", "min": 2, "max": 20, "step": 1, "default": 6 },
+    { "type": "text", "id": "more_text", "label": "Texte du bouton", "default": "Voir plus" },
+
+    { "type": "header", "content": "── Apparence ──" },
+    { "type": "checkbox", "id": "transparent_bg", "label": "Fond transparent (laisse voir le dégradé)", "default": true },
+    { "type": "color", "id": "color_bg", "label": "Couleur de fond (si non transparent)", "default": "#ffffff" },
+    { "type": "color", "id": "color_heading", "label": "Couleur titre", "default": "#0e0e0e" },
+    { "type": "color", "id": "color_text", "label": "Couleur texte", "default": "#0e0e0e" },
+    { "type": "color", "id": "color_muted", "label": "Couleur texte secondaire", "default": "#6b6b6b" },
+    { "type": "color", "id": "accent_color", "label": "Couleur accent", "default": "#2AB5B4" },
+    { "type": "color", "id": "color_card", "label": "Fond carte (chargement)", "default": "#e9e9ec" },
+
+    { "type": "header", "content": "── Animation ──" },
+    { "type": "checkbox", "id": "enable_animation", "label": "Animation d'entrée au scroll", "default": true },
+
+    { "type": "header", "content": "── Espacement ──" },
+    { "type": "range", "id": "padding_top_mobile", "label": "Espace haut (mobile)", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Espace bas (mobile)", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_top", "label": "Espace haut (desktop)", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Espace bas (desktop)", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Influenceur",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "name", "label": "Nom", "default": "Nom" },
+        { "type": "text", "id": "role", "label": "Rôle / description", "default": "Créateur fitness" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF Influenceurs (grille)",
+      "category": "Social proof",
+      "blocks": [
+        { "type": "card", "settings": { "name": "Lucas Martin", "role": "Coach musculation · 245K" } },
+        { "type": "card", "settings": { "name": "Emma Dubois", "role": "Créatrice fitness · 180K" } },
+        { "type": "card", "settings": { "name": "Thomas Petit", "role": "Athlète IFBB · 320K" } },
+        { "type": "card", "settings": { "name": "Léa Bernard", "role": "Nutritionniste · 95K" } },
+        { "type": "card", "settings": { "name": "Hugo Moreau", "role": "Boxeur pro · 150K" } },
+        { "type": "card", "settings": { "name": "Chloé Laurent", "role": "Yoga & bien-être · 210K" } },
+        { "type": "card", "settings": { "name": "Nathan Roux", "role": "Crossfit · 130K" } },
+        { "type": "card", "settings": { "name": "Sarah Klein", "role": "Running · 88K" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

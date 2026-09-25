@@ -1,0 +1,431 @@
+{%- liquid
+  # ─────────────────────────────────────────────
+  # PRODUCT-LINK GATE
+  # If a product is selected, only show on that product's page.
+  # If no product is selected, show on every page (default).
+  # ─────────────────────────────────────────────
+  assign show_bar = true
+  if section.settings.linked_product != blank
+    assign show_bar = false
+    if template.name == 'product' and product.handle == section.settings.linked_product.handle
+      assign show_bar = true
+    endif
+  endif
+-%}
+
+{%- if show_bar -%}
+
+{% if section.blocks.size > 1 %}
+  <script
+    src="{{ 'announcement-bar.js' | asset_url }}"
+    type="module"
+    fetchpriority="low"
+  ></script>
+{% endif %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<aside
+  class="announcement-bar{% if section.settings.show_timer %} announcement-bar--has-timer{% endif %} spacing-style section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
+  style="{% render 'spacing-padding', settings: section.settings %}; --border-bottom-width: {{ section.settings.divider_width }}px;"
+>
+  {% liquid
+    assign autoplay = false
+    assign show_arrows = false
+    if section.blocks.size > 1
+      assign autoplay = true
+      assign show_arrows = true
+    endif
+  %}
+
+  <announcement-bar-component
+    class="announcement-bar__slider{% if show_arrows %} announcement-bar__slider--has-arrows{% endif %}"
+    {% if autoplay == true %}
+      autoplay="{{ section.settings.speed }}" aria-live="polite"
+    {% endif %}
+  >
+    {% if show_arrows %}
+      {% render 'slideshow-arrows', icon_style: 'chevron' %}
+    {% endif %}
+
+    <div class="announcement-bar__slides">
+      {% content_for 'blocks' %}
+    </div>
+
+  </announcement-bar-component>
+
+  {%- if section.settings.show_timer -%}
+    <div class="announcement-timer" id="ann-timer-{{ section.id }}"
+         {%- if request.design_mode %} data-design-mode="true"{% endif -%}>
+      <div class="ann-t-block">
+        <span class="ann-t-num" data-ann-h="{{ section.id }}">{{ section.settings.timer_hours | default: 2 | prepend: '00' | slice: -2, 2 }}</span>
+        <span class="ann-t-unit">Heures</span>
+      </div>
+      <span class="ann-t-sep">:</span>
+      <div class="ann-t-block">
+        <span class="ann-t-num" data-ann-m="{{ section.id }}">{{ section.settings.timer_minutes | default: 47 | prepend: '00' | slice: -2, 2 }}</span>
+        <span class="ann-t-unit">Min</span>
+      </div>
+      <span class="ann-t-sep">:</span>
+      <div class="ann-t-block">
+        <span class="ann-t-num" data-ann-s="{{ section.id }}">00</span>
+        <span class="ann-t-unit">Sec</span>
+      </div>
+    </div>
+  {%- endif -%}
+</aside>
+
+{%- if section.settings.show_timer -%}
+<script>
+(function(){
+  var el = document.getElementById('ann-timer-{{ section.id }}');
+  if (!el || el.hasAttribute('data-design-mode')) return;
+
+  var sid = {{ section.id | json }};
+  var hEl = el.querySelector('[data-ann-h="' + sid + '"]');
+  var mEl = el.querySelector('[data-ann-m="' + sid + '"]');
+  var sEl = el.querySelector('[data-ann-s="' + sid + '"]');
+  if (!hEl || !mEl || !sEl) return;
+
+  var KEY = 'gft_offer_end';
+  var iH  = parseInt({{ section.settings.timer_hours | default: 2 | json }}, 10) || 2;
+  var iM  = parseInt({{ section.settings.timer_minutes | default: 47 | json }}, 10) || 47;
+  var tot = (iH * 3600 + iM * 60) * 1000;
+
+  var stored = localStorage.getItem(KEY);
+  var end = (stored && Number(stored) > Date.now())
+    ? Number(stored)
+    : (function(){ var e = Date.now() + tot; localStorage.setItem(KEY, String(e)); return e; })();
+
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+  function tick() {
+    var left = end - Date.now();
+    if (left <= 0) {
+      end = Date.now() + tot;
+      localStorage.setItem(KEY, String(end));
+      left = tot;
+    }
+    var t = Math.floor(left / 1000);
+    hEl.textContent = pad(Math.floor(t / 3600));
+    mEl.textContent = pad(Math.floor((t % 3600) / 60));
+    sEl.textContent = pad(t % 60);
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+{%- endif -%}
+
+{%- endif -%}
+
+{% stylesheet %}
+  .announcement-bar {
+    border-block-end: var(--border-bottom-width) solid var(--color-border);
+    text-align: center;
+  }
+
+  .announcement-bar__slider {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    @media screen and (max-width: 749px) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .announcement-bar__slides {
+    display: grid;
+    grid: [stack] auto / [stack] auto;
+    width: 100%;
+    max-width: 680px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  /* Only reserve space for arrows when arrows are actually rendered */
+  .announcement-bar__slider--has-arrows .announcement-bar__slides {
+    width: calc(100% - var(--button-size) * 2);
+  }
+
+  .announcement-bar__slides > * {
+    grid-area: stack;
+  }
+
+  .announcement-bar__slide {
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    content-visibility: visible;
+    text-align: center;
+    place-content: center;
+    line-height: 1.45;
+
+    &[aria-hidden='true'] {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  /* Empêche les emojis d'être coupés en bas (override overflow:hidden du thème + ligne plus aérée) */
+  .announcement-bar,
+  .announcement-bar__slider,
+  .announcement-bar__slides,
+  .announcement-bar__slide,
+  .announcement-bar__text {
+    overflow: visible;
+  }
+
+  .announcement-bar__slider slideshow-arrows {
+    padding: 0;
+    mix-blend-mode: normal;
+  }
+
+  .announcement-bar__slider slideshow-arrows .slideshow-control {
+    color: var(--color-foreground);
+  }
+
+  .announcement-bar__slider .slideshow-control {
+    display: flex;
+    padding: 0;
+    width: var(--button-size);
+    height: var(--button-size);
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    animation: none;
+
+    @media screen and (min-width: 750px) {
+      --slideshow-control-offset: calc((var(--button-size) - var(--icon-size-xs)) / 2);
+
+      .section--page-width &.slideshow-control--previous {
+        transform: translateX(var(--slideshow-control-offset));
+      }
+    }
+  }
+
+  .announcement-bar__slider .slideshow-control .svg-wrapper {
+    width: var(--icon-size-xs);
+    height: var(--icon-size-xs);
+  }
+
+  .announcement-bar__text:first-child {
+    margin: 0;
+  }
+
+  .announcement-bar__link {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* ── Announcement Timer — centered together ── */
+  .announcement-bar.announcement-bar--has-timer {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .announcement-bar--has-timer .announcement-bar__slider {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .announcement-bar--has-timer .announcement-bar__slides {
+    width: auto;
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  .announcement-timer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .ann-t-block {
+    text-align: center;
+    min-width: 30px;
+  }
+
+  .ann-t-num {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .ann-t-unit {
+    display: block;
+    font-size: 7px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.45;
+    line-height: 1;
+    margin-top: 1px;
+  }
+
+  .ann-t-sep {
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.25;
+    align-self: flex-start;
+    padding-top: 1px;
+    line-height: 1.2;
+  }
+
+  @media screen and (max-width: 480px) {
+    .ann-t-block { min-width: 24px; }
+    .ann-t-num { font-size: 13px; }
+    .ann-t-sep { font-size: 11px; }
+  }
+
+  @media screen and (max-width: 360px) {
+    .announcement-timer { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.announcement_bar",
+  "blocks": [
+    {
+      "type": "_announcement"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Show only on a specific product"
+    },
+    {
+      "type": "paragraph",
+      "content": "Pick a product to limit this announcement to that product's page only. Leave blank to show on every page."
+    },
+    {
+      "type": "product",
+      "id": "linked_product",
+      "label": "Linked product"
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "t:settings.scroll_speed",
+      "min": 2,
+      "max": 10,
+      "default": 5,
+      "unit": "sec"
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.section_width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "scheme-4",
+      "label": "t:settings.color_scheme"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "t:settings.divider_thickness",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "── Timer countdown ──"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_timer",
+      "label": "Afficher countdown",
+      "default": false,
+      "info": "Synchronisé avec le timer du Trial Offer via localStorage (clé gft_offer_end)."
+    },
+    {
+      "type": "range",
+      "id": "timer_hours",
+      "label": "Heures initiales",
+      "min": 0,
+      "max": 23,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "timer_minutes",
+      "label": "Minutes initiales",
+      "min": 0,
+      "max": 59,
+      "step": 1,
+      "default": 47
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.announcement_bar",
+      "blocks": {
+        "announcement_1": {
+          "type": "_announcement"
+        }
+      },
+      "block_order": ["announcement_1"]
+    }
+  ]
+}
+{% endschema %}

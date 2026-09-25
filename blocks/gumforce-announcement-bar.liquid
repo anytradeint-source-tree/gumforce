@@ -1,0 +1,117 @@
+{% comment %}
+  ============================================================
+  GF — BARRE D'ANNONCE COULISSANTE  (marquee, sans timer)
+  ------------------------------------------------------------
+  Messages qui défilent en boucle façon Lemme, avec une icône
+  (uploadable) entre chaque message. Couleur + vitesse réglables.
+  Boucle sans couture (contenu rendu 6× + translateX -50%).
+  À ajouter dans la zone d'annonce / haut de page.
+  ============================================================
+{% endcomment %}
+{%- assign s = block.settings -%}
+{%- assign uid = block.id | handleize -%}
+{%- liquid
+  assign raw = ''
+  for i in (1..6)
+    assign key = 'message_' | append: i
+    assign m = s[key]
+    if m != blank
+      assign raw = raw | append: m | append: '|||'
+    endif
+  endfor
+  assign msg_list = raw | split: '|||'
+-%}
+{%- if msg_list.size > 0 -%}
+<style>
+  #gfab-{{ uid }} {
+    background: {{ s.bg_color | default: '#c5fff7' }};
+    overflow: hidden;
+    width: 100%;
+    padding-block: {{ s.padding | default: 10 }}px;
+    display: flex;
+  }
+  #gfab-{{ uid }} .gfab-track {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: max-content;
+    animation: gfab-scroll-{{ uid }} {{ s.speed | default: 30 }}s linear infinite;
+    will-change: transform;
+  }
+  #gfab-{{ uid }}:hover .gfab-track { animation-play-state: paused; }
+  #gfab-{{ uid }} .gfab-item { display: flex; align-items: center; white-space: nowrap; }
+  #gfab-{{ uid }} .gfab-msg {
+    font-family: var(--font-heading--family, 'Oswald', sans-serif);
+    font-weight: {{ s.font_weight | default: 600 }};
+    font-size: {{ s.font_size | default: 14 }}px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: {{ s.text_color | default: '#0a0a0a' }};
+  }
+  #gfab-{{ uid }} .gfab-ic {
+    width: {{ s.icon_size | default: 18 }}px;
+    height: {{ s.icon_size | default: 18 }}px;
+    margin-inline: {{ s.gap | default: 28 }}px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+  }
+  #gfab-{{ uid }} .gfab-ic-svg { color: {{ s.text_color | default: '#0a0a0a' }}; }
+  @keyframes gfab-scroll-{{ uid }} {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @media (max-width: 749px) {
+    #gfab-{{ uid }} .gfab-msg { font-size: {{ s.font_size_mobile | default: 12 }}px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #gfab-{{ uid }} .gfab-track { animation: none; transform: translateX(0); }
+  }
+</style>
+<div id="gfab-{{ uid }}" {{ block.shopify_attributes }} role="marquee" aria-label="Annonces">
+  <div class="gfab-track">
+    {%- for pass in (1..6) -%}
+      {%- for m in msg_list -%}
+        <span class="gfab-item">
+          <span class="gfab-msg">{{ m }}</span>
+          {%- if s.icon_image != blank -%}
+            <img class="gfab-ic" src="{{ s.icon_image | image_url: width: 96 }}" alt="" aria-hidden="true" width="{{ s.icon_size | default: 18 }}" height="{{ s.icon_size | default: 18 }}" loading="lazy">
+          {%- else -%}
+            <svg class="gfab-ic gfab-ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/></svg>
+          {%- endif -%}
+        </span>
+      {%- endfor -%}
+    {%- endfor -%}
+  </div>
+</div>
+{%- endif -%}
+{% schema %}
+{
+  "name": "GF Barre annonce",
+  "settings": [
+    { "type": "paragraph", "content": "Barre d'annonce coulissante (sans timer). Les messages défilent en boucle, avec une icône entre chaque. À placer dans la zone d'annonce / haut de page." },
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color", "label": "Fond", "default": "#c5fff7" },
+    { "type": "color", "id": "text_color", "label": "Texte + icône par défaut", "default": "#0a0a0a" },
+    { "type": "header", "content": "Messages (défilent en boucle)" },
+    { "type": "text", "id": "message_1", "label": "Message 1", "default": "LIVRAISON EXPRESS OFFERTE" },
+    { "type": "text", "id": "message_2", "label": "Message 2", "default": "2 SACHETS OFFERTS POUR DÉMARRER" },
+    { "type": "text", "id": "message_3", "label": "Message 3", "default": "SATISFAIT OU REMBOURSÉ 90 JOURS" },
+    { "type": "text", "id": "message_4", "label": "Message 4" },
+    { "type": "text", "id": "message_5", "label": "Message 5" },
+    { "type": "text", "id": "message_6", "label": "Message 6" },
+    { "type": "header", "content": "Icône (entre les messages)" },
+    { "type": "image_picker", "id": "icon_image", "label": "Icône à uploader", "info": "PNG/SVG transparent recommandé. Vide = étoile par défaut (couleur du texte)." },
+    { "type": "range", "id": "icon_size", "label": "Taille de l'icône", "min": 10, "max": 40, "step": 1, "default": 18, "unit": "px" },
+    { "type": "range", "id": "gap", "label": "Espace autour de l'icône", "min": 8, "max": 64, "step": 2, "default": 28, "unit": "px" },
+    { "type": "header", "content": "Animation & texte" },
+    { "type": "range", "id": "speed", "label": "Durée d'un cycle (plus grand = plus lent)", "min": 10, "max": 90, "step": 2, "default": 30, "unit": "s" },
+    { "type": "range", "id": "font_size", "label": "Taille du texte (desktop)", "min": 10, "max": 24, "step": 1, "default": 14, "unit": "px" },
+    { "type": "range", "id": "font_size_mobile", "label": "Taille du texte (mobile)", "min": 9, "max": 20, "step": 1, "default": 12, "unit": "px" },
+    { "type": "select", "id": "font_weight", "label": "Graisse", "default": "600", "options": [ {"value":"400","label":"Normal"}, {"value":"500","label":"Medium"}, {"value":"600","label":"Semi-bold"}, {"value":"700","label":"Bold"} ] },
+    { "type": "range", "id": "padding", "label": "Hauteur (padding vertical)", "min": 4, "max": 24, "step": 1, "default": 10, "unit": "px" }
+  ],
+  "presets": [{ "name": "GF Barre annonce" }]
+}
+{% endschema %}

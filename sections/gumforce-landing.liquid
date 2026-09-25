@@ -1,0 +1,485 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Landing — SECTION À BLOCS (pages Shopify)
+  ----------------------------------------------------------------------------
+  Landing éditoriale 100% modulaire : chaque élément est un bloc que l'on
+  peut éditer, déplacer, dupliquer ou supprimer dans l'éditeur. Rien de figé.
+  Blocs : Titre · Texte · Image · Bouton · Avant/Après ×3 · Puces · Question
+  FAQ · Espace. Identité GF : recette titre canonique (clamp ×0.78 mobile),
+  Manrope/Oswald du thème, accent teal, colonne de lecture 680px.
+  S'utilise avec le template templates/page.gumforce-landing.json qui
+  pré-remplit tout le contenu — modifiable ensuite librement.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign accent = s.accent_color | default: '#2AB5B4'
+  assign ar = accent | color_extract: 'red'
+  assign ag = accent | color_extract: 'green'
+  assign ab = accent | color_extract: 'blue'
+
+  assign txt_hd  = s.color_heading | default: '#0e0e0e'
+  assign txt     = s.color_text    | default: '#1c1c1e'
+  assign txt_mut = s.color_muted   | default: '#6b6b6b'
+
+  if s.transparent_bg == false
+    assign root_bg = s.color_bg | default: '#ffffff'
+  else
+    assign root_bg = 'transparent'
+  endif
+
+  assign h1_size = s.h1_size | default: 40
+  assign h2_size = s.h2_size | default: 28
+
+  assign gf_first_img = true
+-%}
+
+<style>
+  #gfl-{{ sid }},
+  #gfl-{{ sid }} *,
+  #gfl-{{ sid }} *::before,
+  #gfl-{{ sid }} *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  #gfl-{{ sid }} {
+    --gfl-font:      var(--font-body--family, 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif);
+    --gfl-font-head: var(--font-heading--family, 'Oswald', sans-serif);
+    --gfl-accent:    {{ accent }};
+    --gfl-ar:        {{ ar }};
+    --gfl-ag:        {{ ag }};
+    --gfl-ab:        {{ ab }};
+    --gfl-text:      {{ txt }};
+    --gfl-hd:        {{ txt_hd }};
+    --gfl-mut:       {{ txt_mut }};
+    --gfl-h1:        {{ h1_size }}px;
+    --gfl-h2:        {{ h2_size }}px;
+    --gfl-radius:    {{ s.img_radius | default: 16 }}px;
+
+    font-family: var(--gfl-font);
+    background: {{ root_bg }};
+    color: var(--gfl-text);
+    padding: {{ s.padding_top | default: 40 }}px 16px {{ s.padding_bottom | default: 64 }}px;
+  }
+  #gfl-{{ sid }} .gfl-w { max-width: 680px; margin: 0 auto; }
+
+  /* ── Titres — recette GF canonique : clamp ×0.78 mobile, pleine taille desktop ── */
+  #gfl-{{ sid }} .gfl-h {
+    font-family: var(--gfl-font-head); color: var(--gfl-hd);
+    font-weight: 700; line-height: 1.12; letter-spacing: -0.02em;
+    text-wrap: balance; margin: 46px 0 14px;
+  }
+  #gfl-{{ sid }} .gfl-h--1 { font-size: clamp(26px, calc(var(--gfl-h1) * 0.78), var(--gfl-h1)); margin-top: 0; }
+  #gfl-{{ sid }} .gfl-h--2 { font-size: clamp(21px, calc(var(--gfl-h2) * 0.78), var(--gfl-h2)); }
+  #gfl-{{ sid }} .gfl-h--c { text-align: center; }
+  #gfl-{{ sid }} .gfl-num { color: var(--gfl-accent); margin-right: 10px; }
+  /* dans un titre, l'italique sert de marqueur de couleur (pas de penché) */
+  #gfl-{{ sid }} .gfl-h em { font-style: normal; color: var(--gfl-accent); }
+
+  /* ── Texte ── */
+  #gfl-{{ sid }} .gfl-t { font-size: 16.5px; line-height: 1.72; margin: 14px 0; }
+  #gfl-{{ sid }} .gfl-t p + p { margin-top: 12px; }
+  #gfl-{{ sid }} .gfl-t strong { font-weight: 700; color: var(--gfl-hd); }
+  #gfl-{{ sid }} .gfl-t a { color: var(--gfl-accent); text-decoration: underline; text-underline-offset: 2px; }
+  #gfl-{{ sid }} .gfl-t--lead { font-size: 18.5px; line-height: 1.6; font-weight: 500; }
+  #gfl-{{ sid }} .gfl-t--punch {
+    font-family: var(--gfl-font-head); font-size: 19px; line-height: 1.35;
+    font-weight: 600; color: var(--gfl-hd); letter-spacing: -0.01em;
+  }
+  #gfl-{{ sid }} .gfl-t--small { font-size: 13.5px; color: var(--gfl-mut); }
+  #gfl-{{ sid }} .gfl-t--c { text-align: center; }
+
+  /* ── Images ── */
+  #gfl-{{ sid }} .gfl-img { margin: 22px auto; }
+  #gfl-{{ sid }} .gfl-img img { width: 100%; height: auto; display: block; border-radius: var(--gfl-radius); }
+  #gfl-{{ sid }} .gfl-img--medium { max-width: 75%; }
+  #gfl-{{ sid }} .gfl-img--small { max-width: 55%; }
+  #gfl-{{ sid }} .gfl-img figcaption { font-size: 12.5px; color: var(--gfl-mut); text-align: center; margin-top: 8px; line-height: 1.4; }
+  #gfl-{{ sid }} .gfl-imgph {
+    aspect-ratio: 4 / 3; border-radius: var(--gfl-radius);
+    background: linear-gradient(150deg,#f1f1f4,#e4e4e9);
+    display: flex; align-items: center; justify-content: center; color: #c2c2cc;
+  }
+  #gfl-{{ sid }} .gfl-imgph svg { width: 34px; height: 34px; }
+
+  /* ── Avant/Après ×3 ── */
+  #gfl-{{ sid }} .gfl-row { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 22px 0 8px; }
+  #gfl-{{ sid }} .gfl-row img { width: 100%; height: auto; display: block; border-radius: var(--gfl-radius); }
+  @media (min-width: 750px) {
+    #gfl-{{ sid }} .gfl-row { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* ── Avis (mobile : carrousel swipe · desktop : grille 3 col) ── */
+  #gfl-{{ sid }} .gfl-revs {
+    display: flex; gap: 10px; margin: 22px -16px 8px; padding: 0 16px 6px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  #gfl-{{ sid }} .gfl-revs::-webkit-scrollbar { display: none; }
+  #gfl-{{ sid }} .gfl-revs img {
+    flex: 0 0 78%; width: 78%; height: auto; display: block;
+    border-radius: var(--gfl-radius); scroll-snap-align: center;
+  }
+  @media (min-width: 750px) {
+    #gfl-{{ sid }} .gfl-revs {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      margin: 22px 0 8px; padding: 0; overflow: visible;
+    }
+    #gfl-{{ sid }} .gfl-revs img { width: 100%; flex: none; }
+  }
+
+  /* ── Bouton ── */
+  #gfl-{{ sid }} .gfl-ctawrap { text-align: center; margin: 26px 0; }
+  #gfl-{{ sid }} .gfl-cta {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: {{ s.cta_bg | default: '#111111' }}; color: {{ s.cta_text_color | default: '#ffffff' }};
+    font-family: var(--gfl-font); font-size: 15.5px; font-weight: 700; letter-spacing: 0.01em;
+    text-decoration: none; padding: 17px 34px; border-radius: 100px;
+    min-width: min(320px, 100%);
+    transition: transform .25s cubic-bezier(.22,1,.36,1), background .2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #gfl-{{ sid }} .gfl-cta svg { width: 16px; height: 16px; flex-shrink: 0; }
+  @media (hover:hover) and (pointer:fine) {
+    #gfl-{{ sid }} .gfl-cta:hover { transform: translateY(-2px); background: var(--gfl-accent); }
+  }
+  #gfl-{{ sid }} .gfl-ctanote { font-size: 12.5px; color: var(--gfl-mut); margin-top: 9px; }
+
+  /* ── Bénéfices (liste à coches, motif page produit) ── */
+  #gfl-{{ sid }} .gfl-chips {
+    display: flex; flex-direction: column; gap: 11px;
+    width: fit-content; margin: 20px auto;
+  }
+  #gfl-{{ sid }} .gfl-chip {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 600; color: var(--gfl-hd); line-height: 1.35;
+  }
+  #gfl-{{ sid }} .gfl-chip svg { width: 17px; height: 17px; flex-shrink: 0; color: var(--gfl-accent); }
+
+  /* ── FAQ — accordéon (clic pour ouvrir) ── */
+  #gfl-{{ sid }} .gfl-faq { margin: 0; border-top: 1px solid rgba(0,0,0,0.08); }
+  #gfl-{{ sid }} .gfl-faq .gfl-q {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    font-size: 16px; font-weight: 700; color: var(--gfl-hd); line-height: 1.4;
+    padding: 16px 0; cursor: pointer; list-style: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #gfl-{{ sid }} .gfl-faq .gfl-q::-webkit-details-marker { display: none; }
+  #gfl-{{ sid }} .gfl-faq .gfl-q svg {
+    width: 16px; height: 16px; flex-shrink: 0; color: var(--gfl-mut);
+    transition: transform .25s cubic-bezier(.22,1,.36,1);
+  }
+  #gfl-{{ sid }} .gfl-faq[open] .gfl-q svg { transform: rotate(180deg); }
+  #gfl-{{ sid }} .gfl-faq .gfl-a { font-size: 15.5px; line-height: 1.65; color: var(--gfl-text); padding: 0 0 16px; }
+  #gfl-{{ sid }} .gfl-faq .gfl-a p + p { margin-top: 10px; }
+  @media (hover:hover) {
+    #gfl-{{ sid }} .gfl-faq .gfl-q:hover svg { color: var(--gfl-accent); }
+  }
+
+  /* ── Espace ── */
+  #gfl-{{ sid }} .gfl-sp--s { height: 14px; }
+  #gfl-{{ sid }} .gfl-sp--m { height: 34px; }
+  #gfl-{{ sid }} .gfl-sp--l { height: 62px; }
+
+  @media (min-width: 750px) {
+    #gfl-{{ sid }} .gfl-h--1 { font-size: var(--gfl-h1); }
+    #gfl-{{ sid }} .gfl-h--2 { font-size: var(--gfl-h2); }
+    #gfl-{{ sid }} .gfl-t { font-size: 17px; }
+  }
+
+  /* ── PERF : les blocs hors écran ne sont ni mis en page ni peints
+     (le navigateur les rend au fur et à mesure du scroll) ── */
+  /* pas de content-visibility sur les blocs : mesuré sur WebKit, il retardait le chargement des images lazy jusqu'à l'écran */
+
+  /* ── Anim d'entrée par bloc (classe posée par le JS → jamais de contenu
+     invisible si le JS échoue) — légère : 14px, 0.55s ── */
+  #gfl-{{ sid }}.gfl-anim .gfl-w > * {
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .55s ease, transform .55s cubic-bezier(.22,1,.36,1);
+  }
+  #gfl-{{ sid }}.gfl-anim .gfl-w > *.gfl-in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    #gfl-{{ sid }}.gfl-anim .gfl-w > * { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+</style>
+
+<section id="gfl-{{ sid }}">
+  <div class="gfl-w">
+    {%- for block in section.blocks -%}
+      {%- assign b = block.settings -%}
+      {%- case block.type -%}
+
+        {%- when 'heading' -%}
+          {%- assign h_tag = b.tag | default: 'h2' -%}
+          {%- assign h_cls = 'gfl-h--2' -%}
+          {%- if h_tag == 'h1' -%}{%- assign h_cls = 'gfl-h--1' -%}{%- endif -%}
+          <{{ h_tag }} class="gfl-h {{ h_cls }}{% if b.align == 'center' %} gfl-h--c{% endif %}" {{ block.shopify_attributes }}>{%- if b.number != blank -%}<span class="gfl-num">{{ b.number }}.</span> {% endif -%}{{ b.text }}</{{ h_tag }}>
+
+        {%- when 'text' -%}
+          <div class="gfl-t{% if b.style == 'lead' %} gfl-t--lead{% elsif b.style == 'punch' %} gfl-t--punch{% elsif b.style == 'small' %} gfl-t--small{% endif %}{% if b.align == 'center' %} gfl-t--c{% endif %}" {{ block.shopify_attributes }}>{{ b.text }}</div>
+
+        {%- when 'image' -%}
+          {%- comment -%} vide + hors éditeur → rien (pas de cadre gris en live) {%- endcomment -%}
+          {%- if b.image != blank or request.design_mode -%}
+          <figure class="gfl-img{% if b.size == 'medium' %} gfl-img--medium{% elsif b.size == 'small' %} gfl-img--small{% endif %}" {{ block.shopify_attributes }}>
+            {%- if b.image != blank -%}
+              <picture>
+                {%- if b.image_mobile != blank -%}
+                  <source media="(max-width: 749px)"
+                          srcset="{{ b.image_mobile | image_url: width: 480 }} 480w,
+                                 {{ b.image_mobile | image_url: width: 720 }} 720w,
+                                 {{ b.image_mobile | image_url: width: 960 }} 960w"
+                          sizes="92vw"
+                          width="{{ b.image_mobile.width }}" height="{{ b.image_mobile.height }}">
+                {%- endif -%}
+                <img src="{{ b.image | image_url: width: 1360 }}"
+                     srcset="{{ b.image | image_url: width: 480 }} 480w,
+                            {{ b.image | image_url: width: 680 }} 680w,
+                            {{ b.image | image_url: width: 1020 }} 1020w,
+                            {{ b.image | image_url: width: 1360 }} 1360w"
+                     sizes="(max-width: 749px) 92vw, 680px"
+                     alt="{{ b.image.alt | default: b.caption | escape }}"
+                     {% if gf_first_img %}loading="eager" fetchpriority="high"{% assign gf_first_img = false %}{% else %}loading="lazy" decoding="async"{% endif %}
+                     width="{{ b.image.width }}" height="{{ b.image.height }}">
+              </picture>
+            {%- else -%}
+              <div class="gfl-imgph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+            {%- endif -%}
+            {%- if b.caption != blank -%}<figcaption>{{ b.caption }}</figcaption>{%- endif -%}
+          </figure>
+          {%- endif -%}
+
+        {%- when 'cta' -%}
+          <div class="gfl-ctawrap" {{ block.shopify_attributes }}>
+            <a class="gfl-cta" href="{{ b.link | default: '/products/gumforce' }}">
+              {{ b.text | default: 'Je commande' }}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            {%- if b.note != blank -%}<div class="gfl-ctanote">{{ b.note }}</div>{%- endif -%}
+          </div>
+
+        {%- when 'trio' -%}
+          {%- assign gf_trio_any = false -%}
+          {%- if b.image1 != blank or b.image2 != blank or b.image3 != blank -%}{%- assign gf_trio_any = true -%}{%- endif -%}
+          {%- if gf_trio_any or request.design_mode -%}
+          <div {{ block.shopify_attributes }}>
+            <div class="gfl-row">
+              {%- if b.image1 != blank -%}<img src="{{ b.image1 | image_url: width: 640 }}" srcset="{{ b.image1 | image_url: width: 420 }} 420w, {{ b.image1 | image_url: width: 640 }} 640w, {{ b.image1 | image_url: width: 900 }} 900w" sizes="(max-width: 749px) 92vw, 220px" alt="{{ b.image1.alt | escape }}" loading="lazy" decoding="async" width="{{ b.image1.width }}" height="{{ b.image1.height }}">{%- endif -%}
+              {%- if b.image2 != blank -%}<img src="{{ b.image2 | image_url: width: 640 }}" srcset="{{ b.image2 | image_url: width: 420 }} 420w, {{ b.image2 | image_url: width: 640 }} 640w, {{ b.image2 | image_url: width: 900 }} 900w" sizes="(max-width: 749px) 92vw, 220px" alt="{{ b.image2.alt | escape }}" loading="lazy" decoding="async" width="{{ b.image2.width }}" height="{{ b.image2.height }}">{%- endif -%}
+              {%- if b.image3 != blank -%}<img src="{{ b.image3 | image_url: width: 640 }}" srcset="{{ b.image3 | image_url: width: 420 }} 420w, {{ b.image3 | image_url: width: 640 }} 640w, {{ b.image3 | image_url: width: 900 }} 900w" sizes="(max-width: 749px) 92vw, 220px" alt="{{ b.image3.alt | escape }}" loading="lazy" decoding="async" width="{{ b.image3.width }}" height="{{ b.image3.height }}">{%- endif -%}
+              {%- if b.image1 == blank and b.image2 == blank and b.image3 == blank -%}
+                <div class="gfl-imgph"></div><div class="gfl-imgph"></div><div class="gfl-imgph"></div>
+              {%- endif -%}
+            </div>
+            {%- if b.caption != blank -%}<div class="gfl-t gfl-t--small gfl-t--c">{{ b.caption }}</div>{%- endif -%}
+          </div>
+          {%- endif -%}
+
+        {%- when 'reviews' -%}
+          <div {{ block.shopify_attributes }}>
+            <div class="gfl-revs">
+              {%- for i in (1..6) -%}
+                {%- assign rk = 'image' | append: i -%}
+                {%- assign rimg = b[rk] -%}
+                {%- if rimg != blank -%}
+                  <img src="{{ rimg | image_url: width: 640 }}"
+                       srcset="{{ rimg | image_url: width: 420 }} 420w, {{ rimg | image_url: width: 640 }} 640w, {{ rimg | image_url: width: 900 }} 900w"
+                       sizes="(max-width: 749px) 78vw, 220px"
+                       alt="{{ rimg.alt | default: 'Avis client' | escape }}"
+                       loading="lazy" decoding="async"
+                       width="{{ rimg.width }}" height="{{ rimg.height }}">
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            {%- if b.caption != blank -%}<div class="gfl-t gfl-t--small gfl-t--c">{{ b.caption }}</div>{%- endif -%}
+          </div>
+
+        {%- when 'chips' -%}
+          {%- capture gf_check -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>{%- endcapture -%}
+          <div class="gfl-chips" {{ block.shopify_attributes }}>
+            {%- if b.chip1 != blank -%}<span class="gfl-chip">{{ gf_check }}{{ b.chip1 }}</span>{%- endif -%}
+            {%- if b.chip2 != blank -%}<span class="gfl-chip">{{ gf_check }}{{ b.chip2 }}</span>{%- endif -%}
+            {%- if b.chip3 != blank -%}<span class="gfl-chip">{{ gf_check }}{{ b.chip3 }}</span>{%- endif -%}
+            {%- if b.chip4 != blank -%}<span class="gfl-chip">{{ gf_check }}{{ b.chip4 }}</span>{%- endif -%}
+          </div>
+
+        {%- when 'faq' -%}
+          <details class="gfl-faq" {{ block.shopify_attributes }}{% if b.open_default %} open{% endif %}>
+            <summary class="gfl-q">{{ b.question }}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
+            <div class="gfl-a">{{ b.answer }}</div>
+          </details>
+
+        {%- when 'spacer' -%}
+          <div class="gfl-sp--{{ b.size | default: 'm' }}" {{ block.shopify_attributes }}></div>
+
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById('gfl-{{ sid }}');
+  if (!root) return;
+  {%- if s.enable_animation -%}
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+  root.classList.add('gfl-anim');
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('gfl-in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.06, rootMargin: '0px 0px -8% 0px' });
+  root.querySelectorAll('.gfl-w > *').forEach(function (el) { io.observe(el); });
+  {%- endif -%}
+
+  /* pré-chargeur d'images : Safari iOS déclenche le lazy natif trop tard →
+     on force le téléchargement 2000px avant l'écran (l'image est prête
+     quand on arrive dessus). Sans JS, le lazy natif reste en filet. */
+  if ('IntersectionObserver' in window) {
+    var pre = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var im = e.target;
+        pre.unobserve(im);
+        if (im.loading === 'lazy') im.loading = 'eager';
+      });
+    }, { rootMargin: '2000px 0px' });
+    root.querySelectorAll('img[loading="lazy"]').forEach(function (im) { pre.observe(im); });
+  }
+  /* filet : page chargée + réseau libre → on récupère les 12 premières images même sans scroll */
+  function fetchAll() {
+    var all = root.querySelectorAll('img[loading="lazy"]');
+    for (var i = 0; i < all.length && i < 12; i++) { all[i].loading = 'eager'; }
+  }
+  function later() { if (window.requestIdleCallback) window.requestIdleCallback(fetchAll, { timeout: 4000 }); else setTimeout(fetchAll, 2500); }
+  if (document.readyState === 'complete') later(); else window.addEventListener('load', later);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "GF Landing",
+  "tag": "section",
+  "class": "gf-landing",
+  "settings": [
+    { "type": "paragraph", "content": "Landing modulaire : tout le contenu est en blocs (éditer, déplacer, dupliquer, supprimer). Utilisée par le template de page « gumforce-landing »." },
+
+    { "type": "header", "content": "── Titres ──" },
+    { "type": "range", "id": "h1_size", "label": "Taille H1 (px)", "min": 26, "max": 64, "step": 2, "default": 40 },
+    { "type": "range", "id": "h2_size", "label": "Taille H2 (px)", "min": 20, "max": 48, "step": 2, "default": 28 },
+
+    { "type": "header", "content": "── Apparence ──" },
+    { "type": "checkbox", "id": "transparent_bg", "label": "Fond transparent", "default": false },
+    { "type": "color", "id": "color_bg", "label": "Couleur de fond", "default": "#ffffff" },
+    { "type": "color", "id": "color_heading", "label": "Couleur titres", "default": "#0e0e0e" },
+    { "type": "color", "id": "color_text", "label": "Couleur texte", "default": "#1c1c1e" },
+    { "type": "color", "id": "color_muted", "label": "Couleur texte secondaire", "default": "#6b6b6b" },
+    { "type": "color", "id": "accent_color", "label": "Couleur accent", "default": "#2AB5B4" },
+    { "type": "color", "id": "cta_bg", "label": "Fond des boutons", "default": "#111111" },
+    { "type": "color", "id": "cta_text_color", "label": "Texte des boutons", "default": "#ffffff" },
+    { "type": "range", "id": "img_radius", "label": "Arrondi des images", "min": 0, "max": 28, "step": 2, "default": 16, "unit": "px" },
+
+    { "type": "header", "content": "── Animation ──" },
+    { "type": "checkbox", "id": "enable_animation", "label": "Animation d'entrée au scroll", "default": true },
+
+    { "type": "header", "content": "── Mise en page ──" },
+    { "type": "range", "id": "padding_top", "label": "Padding haut", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bas", "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Titre",
+      "settings": [
+        { "type": "inline_richtext", "id": "text", "label": "Texte", "info": "Mets une partie du texte en italique (bouton I) → elle s'affiche en couleur accent.", "default": "Titre de section" },
+        { "type": "text", "id": "number", "label": "Numéro (listicle, optionnel)", "info": "Ex. : 1 → affiche « 1. » en couleur accent devant le titre." },
+        { "type": "select", "id": "tag", "label": "Niveau", "options": [ {"value":"h1","label":"H1 (grand)"}, {"value":"h2","label":"H2"}, {"value":"h3","label":"H3"} ], "default": "h2" },
+        { "type": "select", "id": "align", "label": "Alignement", "options": [ {"value":"left","label":"Gauche"}, {"value":"center","label":"Centré"} ], "default": "left" }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Texte",
+      "settings": [
+        { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Ton paragraphe.</p>" },
+        { "type": "select", "id": "style", "label": "Style", "options": [ {"value":"normal","label":"Normal"}, {"value":"lead","label":"Chapô (plus grand)"}, {"value":"punch","label":"Punchline (Oswald)"}, {"value":"small","label":"Petit / note"} ], "default": "normal" },
+        { "type": "select", "id": "align", "label": "Alignement", "options": [ {"value":"left","label":"Gauche"}, {"value":"center","label":"Centré"} ], "default": "left" }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Image mobile (optionnel)", "info": "Vide = l'image principale s'affiche partout. Le navigateur ne télécharge que la bonne version." },
+        { "type": "select", "id": "size", "label": "Largeur", "options": [ {"value":"full","label":"Pleine largeur"}, {"value":"medium","label":"Moyenne (75%)"}, {"value":"small","label":"Petite (55%)"} ], "default": "full" },
+        { "type": "text", "id": "caption", "label": "Légende (optionnel)" }
+      ]
+    },
+    {
+      "type": "cta",
+      "name": "Bouton",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "default": "Je commande" },
+        { "type": "url", "id": "link", "label": "Lien" },
+        { "type": "text", "id": "note", "label": "Note sous le bouton (optionnel)" }
+      ]
+    },
+    {
+      "type": "trio",
+      "name": "Avant/Après ×3",
+      "settings": [
+        { "type": "image_picker", "id": "image1", "label": "Image 1" },
+        { "type": "image_picker", "id": "image2", "label": "Image 2" },
+        { "type": "image_picker", "id": "image3", "label": "Image 3" },
+        { "type": "text", "id": "caption", "label": "Légende", "default": "Photos envoyées par des clients satisfaits." }
+      ]
+    },
+    {
+      "type": "reviews",
+      "name": "Avis (défilement)",
+      "settings": [
+        { "type": "paragraph", "content": "Jusqu'à 6 captures d'avis. Mobile : carrousel à swiper. Desktop : grille de 3 colonnes. Les emplacements vides sont ignorés." },
+        { "type": "image_picker", "id": "image1", "label": "Avis 1" },
+        { "type": "image_picker", "id": "image2", "label": "Avis 2" },
+        { "type": "image_picker", "id": "image3", "label": "Avis 3" },
+        { "type": "image_picker", "id": "image4", "label": "Avis 4" },
+        { "type": "image_picker", "id": "image5", "label": "Avis 5" },
+        { "type": "image_picker", "id": "image6", "label": "Avis 6" },
+        { "type": "text", "id": "caption", "label": "Légende", "default": "Ils en parlent mieux que nous." }
+      ]
+    },
+    {
+      "type": "chips",
+      "name": "Bénéfices (coches)",
+      "settings": [
+        { "type": "text", "id": "chip1", "label": "Puce 1", "default": "2 achetés = 4 sachets" },
+        { "type": "text", "id": "chip2", "label": "Puce 2", "default": "1 pièce = 1 séance" },
+        { "type": "text", "id": "chip3", "label": "Puce 3", "default": "Soit 0,36 € la séance" },
+        { "type": "text", "id": "chip4", "label": "Puce 4", "default": "Livraison 48 h offerte" }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "Question FAQ",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Ta question ?" },
+        { "type": "richtext", "id": "answer", "label": "Réponse", "default": "<p>La réponse.</p>" },
+        { "type": "checkbox", "id": "open_default", "label": "Ouverte par défaut", "default": false }
+      ]
+    },
+    {
+      "type": "spacer",
+      "name": "Espace",
+      "settings": [
+        { "type": "select", "id": "size", "label": "Taille", "options": [ {"value":"s","label":"Petit"}, {"value":"m","label":"Moyen"}, {"value":"l","label":"Grand"} ], "default": "m" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "GF Landing" }
+  ]
+}
+{% endschema %}

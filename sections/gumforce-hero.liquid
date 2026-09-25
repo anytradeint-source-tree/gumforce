@@ -1,0 +1,920 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Hero — Full-Bleed Image with Transparent Header Overlay
+  ============================================================================
+  Immersive hero that bleeds under the site header. Single lifestyle
+  image : format au choix sur desktop (16:9 par défaut) et sur mobile
+  (plein écran par défaut, ou ratio fixe 9:16 / 4:5 / 3:4 / 1:1).
+  Heading, subheading, and CTA float at the bottom over a soft
+  gradient scrim. Negative top margin pulls the section under the
+  header so the header sits transparently on the image.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign image_desktop    = s.image_desktop
+  assign image_mobile     = s.image_mobile
+  assign overlay_opacity  = s.overlay_opacity | default: 0 | times: 0.01
+  assign scrim_intensity  = s.scrim_intensity | default: 55 | times: 0.01
+
+  assign heading          = s.heading
+  assign heading_tag      = s.heading_tag | default: 'h1'
+  assign heading_size_d   = s.heading_size_desktop | default: 52
+  assign heading_size_m   = s.heading_size_mobile | default: 32
+  assign heading_weight   = s.heading_weight | default: 500
+  assign heading_tracking = s.heading_tracking | default: -1
+
+  assign subheading       = s.subheading
+  assign sub_size_d       = s.subheading_size_desktop | default: 13
+  assign sub_size_m       = s.subheading_size_mobile | default: 11
+  assign sub_tracking     = s.subheading_tracking | default: 3
+
+  assign cta_text         = s.cta_text | default: 'Shop Now'
+  assign cta_link         = s.cta_link
+  assign cta_scroll       = s.cta_scroll_to_bundle
+  assign text_color       = s.text_color | default: '#ffffff'
+  assign cta_style        = s.cta_style | default: 'outline'
+  assign cta_bg           = s.cta_bg | default: '#ffffff'
+  assign cta_text_color   = s.cta_text_color | default: '#ffffff'
+  assign cta_radius       = s.cta_radius | default: 100
+
+  assign content_align    = s.content_align | default: 'center'
+  assign content_v_pos    = s.content_position | default: 'bottom'
+  assign enable_parallax  = s.enable_parallax
+
+  # formats d'image (desktop / mobile) et position du texte propre au mobile
+  assign desktop_format   = s.desktop_format | default: '16/9'
+  assign mobile_format    = s.mobile_format | default: 'screen100'
+  assign m_align          = s.content_align_mobile | default: 'inherit'
+  assign m_v_pos          = s.content_position_mobile | default: 'inherit'
+
+  # align-items reçoit flex-start/center/flex-end ; text-align a besoin de left/center/right
+  case content_align
+    when 'flex-start'
+      assign text_align_d = 'left'
+    when 'flex-end'
+      assign text_align_d = 'right'
+    else
+      assign text_align_d = 'center'
+  endcase
+  case m_align
+    when 'flex-start'
+      assign text_align_m = 'left'
+    when 'flex-end'
+      assign text_align_m = 'right'
+    else
+      assign text_align_m = 'center'
+  endcase
+-%}
+
+{%- comment -%}
+  Anti-FOUT : PAS de preload ici — le thème ne déclare que certaines graisses
+  en @font-face (ex. Oswald 600/700) et précharge déjà leurs fichiers ;
+  précharger la graisse « réglée » (ex. 500) télécharge un fichier qu'aucun
+  @font-face n'utilise. Le gate JS ci-dessous attend le fichier réellement
+  matché par le rendu via document.fonts.load(style calculé).
+{%- endcomment -%}
+
+<style>
+  /* ================================================================
+     SECTION WRAPPER — full-bleed, pulled under the header
+     ================================================================ */
+  #gfh-{{ sid }} {
+    --gfh-text:         {{ text_color }};
+    --gfh-heading-d:    {{ heading_size_d }}px;
+    --gfh-heading-m:    {{ heading_size_m }}px;
+    --gfh-heading-w:    {{ heading_weight }};
+    --gfh-heading-ls:   {{ heading_tracking | times: 0.01 }}em;
+    --gfh-sub-d:        {{ sub_size_d }}px;
+    --gfh-sub-m:        {{ sub_size_m }}px;
+    --gfh-sub-ls:       {{ sub_tracking | times: 0.01 }}em;
+    --gfh-cta-radius:   {{ cta_radius }}px;
+    --gfh-scrim:        {{ scrim_intensity }};
+
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #000;
+    margin-top: 0 !important;
+    padding-top: 0;
+  }
+
+  /* ================================================================
+     IMAGE CONTAINER — aspect ratio control
+     ================================================================ */
+  .gfh-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 560px;
+  }
+
+  .gfh-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .gfh-img--mobile { display: none; }
+
+  /* ── Format desktop (réglage « Format de l'image (desktop) ») ── */
+  #gfh-{{ sid }} .gfh-media {
+    {%- if desktop_format == 'screen' %}
+    aspect-ratio: auto;
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+    {%- else %}
+    aspect-ratio: {{ desktop_format }};
+    min-height: 560px;
+    {%- endif %}
+  }
+
+  /* ── Dark overlay ── */
+  .gfh-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, {{ overlay_opacity }});
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Bottom gradient scrim for text legibility ── */
+  .gfh-scrim {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 55%;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, var(--gfh-scrim)) 0%,
+      rgba(0, 0, 0, calc(var(--gfh-scrim) * 0.5)) 40%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* ================================================================
+     CONTENT — positioned over the image
+     ================================================================ */
+  .gfh-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: {{ content_align }};
+    text-align: {{ text_align_d }};
+    gap: 16px;
+    padding: 0 32px;
+    {%- case content_v_pos -%}
+      {%- when 'bottom' -%}
+        bottom: 48px;
+      {%- when 'center' -%}
+        top: 50%;
+        transform: translateY(-50%);
+      {%- when 'top' -%}
+        top: calc(var(--header-height, 80px) + 48px);
+    {%- endcase -%}
+  }
+
+  /* ── Subheading ── */
+  .gfh-subheading {
+    font-size: var(--gfh-sub-d);
+    font-weight: 400;
+    color: var(--gfh-text);
+    opacity: 0.7;
+    letter-spacing: var(--gfh-sub-ls);
+    text-transform: uppercase;
+    line-height: 1;
+    margin: 0;
+  }
+
+  /* ── Heading ── */
+  .gfh-heading {
+    font-size: var(--gfh-heading-d);
+    font-weight: var(--gfh-heading-w);
+    color: var(--gfh-text);
+    letter-spacing: var(--gfh-heading-ls);
+    line-height: 1.05;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  /* ── CTA ── */
+  .gfh-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    padding: 12px 36px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    text-decoration: none;
+    border-radius: var(--gfh-cta-radius);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease,
+      transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.25s ease;
+  }
+
+  {%- if cta_style == 'outline' -%}
+  .gfh-cta {
+    background: transparent;
+    color: {{ cta_text_color }};
+    border: 1px solid {{ cta_text_color | color_modify: 'alpha', 0.5 }};
+  }
+  .gfh-cta:hover {
+    background: {{ cta_text_color | color_modify: 'alpha', 0.1 }};
+    border-color: {{ cta_text_color }};
+    transform: translateY(-1px);
+  }
+  {%- elsif cta_style == 'filled' -%}
+  .gfh-cta {
+    background: {{ cta_bg }};
+    color: {{ cta_text_color }};
+    border: 1px solid transparent;
+  }
+  .gfh-cta:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+  }
+  {%- else -%}
+  .gfh-cta {
+    background: transparent;
+    color: {{ cta_text_color }};
+    border: none;
+    padding: 12px 4px;
+    border-bottom: 1px solid {{ cta_text_color | color_modify: 'alpha', 0.4 }};
+    border-radius: 0;
+  }
+  .gfh-cta:hover {
+    border-bottom-color: {{ cta_text_color }};
+  }
+  {%- endif -%}
+
+  .gfh-cta:active {
+    transform: scale(0.97);
+    transition-duration: 0.08s;
+  }
+
+  .gfh-cta:focus-visible {
+    outline: 2px solid var(--gfh-text);
+    outline-offset: 3px;
+  }
+
+  /* ================================================================
+     PARALLAX (optional)
+     ================================================================ */
+  {%- if enable_parallax -%}
+  .gfh-media.has-parallax .gfh-img {
+    height: 120%;
+    top: -10%;
+    will-change: transform;
+  }
+  {%- endif -%}
+
+  /* ================================================================
+     ENTRANCE ANIMATION — gated on font readiness
+     L'état caché n'existe que si le JS pose .gfh-anim (donc jamais de
+     texte invisible si le JS échoue), et la révélation attend visibilité
+     ET polices prêtes → le swap de police se produit pendant que le
+     texte est encore transparent, il n'est jamais visible.
+     ================================================================ */
+  #gfh-{{ sid }}.gfh-anim .gfh-content > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity   0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #gfh-{{ sid }}.gfh-anim .gfh-content.is-visible > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #gfh-{{ sid }}.gfh-anim .gfh-content > :nth-child(1) { transition-delay: 0.1s; }
+  #gfh-{{ sid }}.gfh-anim .gfh-content > :nth-child(2) { transition-delay: 0.25s; }
+  #gfh-{{ sid }}.gfh-anim .gfh-content > :nth-child(3) { transition-delay: 0.4s; }
+
+  /* ================================================================
+     MOBILE — format au choix (plein écran ou ratio), typo réduite
+     ================================================================ */
+  @media (max-width: 749px) {
+    #gfh-{{ sid }} {
+      margin-top: 0 !important;
+    }
+
+    /* Format mobile (réglage « Format de l'image (mobile) ») :
+       plein écran = hauteur de l'écran (≈ 9:16 à 9:19,5 selon le téléphone),
+       ou un ratio fixe → la boîte suit exactement l'image uploadée dans ce ratio */
+    #gfh-{{ sid }} .gfh-media {
+      {%- case mobile_format %}
+        {%- when 'screen90' %}
+      aspect-ratio: auto; min-height: 0; height: 90vh; height: 90svh;
+        {%- when 'screen85' %}
+      aspect-ratio: auto; min-height: 0; height: 85vh; height: 85svh;
+        {%- when 'screen80' %}
+      aspect-ratio: auto; min-height: 0; height: 80vh; height: 80svh;
+        {%- when '9/16' %}
+      aspect-ratio: 9 / 16; min-height: 0; height: auto;
+        {%- when '4/5' %}
+      aspect-ratio: 4 / 5; min-height: 0; height: auto;
+        {%- when '3/4' %}
+      aspect-ratio: 3 / 4; min-height: 0; height: auto;
+        {%- when '1/1' %}
+      aspect-ratio: 1 / 1; min-height: 0; height: auto;
+        {%- else %}
+      aspect-ratio: auto; min-height: 0; height: 100vh; height: 100svh;
+      {%- endcase %}
+    }
+
+    .gfh-img--desktop { display: none; }
+    .gfh-img--mobile  { display: block; }
+
+    .gfh-heading  { font-size: var(--gfh-heading-m); }
+    .gfh-subheading { font-size: var(--gfh-sub-m); }
+
+    .gfh-content {
+      padding: 0 24px;
+      {%- if content_v_pos == 'bottom' -%}
+        bottom: 36px;
+      {%- endif -%}
+    }
+
+    /* Position du texte propre au mobile (« Comme desktop » = réglages desktop) */
+    #gfh-{{ sid }} .gfh-content {
+      {%- if m_align != 'inherit' %}
+      align-items: {{ m_align }};
+      text-align: {{ text_align_m }};
+      {%- endif %}
+      {%- case m_v_pos %}
+        {%- when 'bottom' %}
+      top: auto; bottom: 36px; transform: none;
+        {%- when 'center' %}
+      bottom: auto; top: 50%; transform: translateY(-50%);
+        {%- when 'top' %}
+      bottom: auto; top: calc(var(--header-height, 80px) + 36px); transform: none;
+      {%- endcase %}
+    }
+
+    .gfh-cta {
+      padding: 11px 30px;
+      font-size: 12px;
+    }
+  }
+
+  /* ================================================================
+     TABLET
+     ================================================================ */
+  @media (min-width: 750px) and (max-width: 989px) {
+    .gfh-media {
+      aspect-ratio: 3 / 2;
+    }
+  }
+
+  /* ================================================================
+     REDUCED MOTION
+     ================================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    #gfh-{{ sid }}.gfh-anim .gfh-content > * {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    {%- if enable_parallax -%}
+    .gfh-media.has-parallax .gfh-img {
+      height: 100%;
+      top: 0;
+    }
+    {%- endif -%}
+  }
+
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HTML
+     ═══════════════════════════════════════════════════════════ -->
+<div id="gfh-{{ sid }}">
+  <div class="gfh-media{% if enable_parallax %} has-parallax{% endif %}">
+
+    {%- if image_desktop -%}
+      <img
+        class="gfh-img gfh-img--desktop"
+        src="{{ image_desktop | image_url: width: 3200 }}"
+        srcset="
+          {{ image_desktop | image_url: width: 1400 }} 1400w,
+          {{ image_desktop | image_url: width: 2000 }} 2000w,
+          {{ image_desktop | image_url: width: 2800 }} 2800w,
+          {{ image_desktop | image_url: width: 3200 }} 3200w"
+        sizes="100vw"
+        alt="{{ s.image_alt | default: heading | escape }}"
+        width="{{ image_desktop.width }}"
+        height="{{ image_desktop.height }}"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async">
+    {%- else -%}
+      <div class="gfh-img gfh-img--desktop" style="background: #1a1a1a;"></div>
+    {%- endif -%}
+
+    {%- if image_mobile -%}
+      <img
+        class="gfh-img gfh-img--mobile"
+        src="{{ image_mobile | image_url: width: 900 }}"
+        srcset="
+          {{ image_mobile | image_url: width: 750 }} 750w,
+          {{ image_mobile | image_url: width: 900 }} 900w,
+          {{ image_mobile | image_url: width: 1200 }} 1200w"
+        sizes="100vw"
+        alt="{{ s.image_alt | default: heading | escape }}"
+        width="{{ image_mobile.width }}"
+        height="{{ image_mobile.height }}"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async">
+    {%- else -%}
+      {%- comment -%}Fall back to desktop on mobile if no mobile image{%- endcomment -%}
+    {%- endif -%}
+
+    <div class="gfh-overlay" aria-hidden="true"></div>
+    <div class="gfh-scrim" aria-hidden="true"></div>
+
+    <div class="gfh-content">
+      {%- if subheading != blank -%}
+        <p class="gfh-subheading">{{ subheading }}</p>
+      {%- endif -%}
+
+      {%- if heading != blank -%}
+        <{{ heading_tag }} class="gfh-heading">{{ heading }}</{{ heading_tag }}>
+      {%- endif -%}
+
+      {%- if cta_text != blank -%}
+        <a
+          class="gfh-cta"
+          {%- if cta_scroll -%}
+            href="#"
+            data-scroll-bundle="true"
+          {%- elsif cta_link != blank -%}
+            href="{{ cta_link }}"
+          {%- else -%}
+            href="#"
+          {%- endif -%}
+        >{{ cta_text }}</a>
+      {%- endif -%}
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  var section = document.getElementById('gfh-{{ sid }}');
+  if (!section) return;
+
+  /* ── Entrance animation — vraiment gated sur les polices ──
+     Révèle quand (section visible) ET (polices prêtes OU 900ms écoulées).
+     Le swap de police a lieu pendant que le texte est transparent. */
+  var content = section.querySelector('.gfh-content');
+  if (content && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    section.classList.add('gfh-anim'); /* script inline juste après le markup → posé avant le premier paint */
+    var seen = false, fontsOk = false, done = false;
+    function tryReveal() {
+      if (done || !seen || !fontsOk) return;
+      done = true;
+      content.classList.add('is-visible');
+    }
+    /* Attendre les FICHIERS de police que le rendu va réellement matcher :
+       document.fonts.load(«graisse 1em famille» calculées) applique la même
+       correspondance que le moteur (ex. titre réglé 500 → face Oswald 600).
+       document.fonts.ready ne suffit pas (résout parfois avant la découverte
+       des faces) et un timeout court re-crée le swap sur chargement à froid. */
+    var fontTimeout = setTimeout(function () { fontsOk = true; tryReveal(); }, 3000);
+    function fontsSettled() { fontsOk = true; clearTimeout(fontTimeout); tryReveal(); }
+    try {
+      if (document.fonts && document.fonts.load) {
+        var els = content.querySelectorAll('.gfh-subheading, .gfh-heading, .gfh-cta');
+        var specs = [], i, cs;
+        for (i = 0; i < els.length; i++) {
+          cs = getComputedStyle(els[i]);
+          if (cs && cs.fontFamily) specs.push(cs.fontWeight + ' 1em ' + cs.fontFamily);
+        }
+        var allCached = specs.length > 0;
+        for (i = 0; i < specs.length; i++) {
+          if (!document.fonts.check(specs[i])) { allCached = false; break; }
+        }
+        if (allCached) {
+          fontsSettled(); /* polices déjà en cache → zéro délai */
+        } else if (specs.length) {
+          Promise.all(specs.map(function (sp) { return document.fonts.load(sp); }))
+            .then(fontsSettled, fontsSettled);
+        } else {
+          fontsSettled();
+        }
+      } else {
+        fontsSettled();
+      }
+    } catch (e) { fontsSettled(); }
+    if (typeof IntersectionObserver !== 'undefined') {
+      new IntersectionObserver(function (entries, obs) {
+        if (entries[0].isIntersecting) {
+          seen = true;
+          obs.disconnect();
+          tryReveal();
+        }
+      }, { threshold: 0.1 }).observe(content);
+    } else {
+      seen = true;
+      tryReveal();
+    }
+  }
+
+  {% if enable_parallax %}
+  /* ── Parallax ── */
+  var img = section.querySelector('.gfh-media.has-parallax .gfh-img');
+  if (img && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(function () {
+          var rect = section.getBoundingClientRect();
+          var vh = window.innerHeight;
+          if (rect.bottom > 0 && rect.top < vh) {
+            var progress = (vh - rect.top) / (vh + rect.height);
+            var shift = (progress - 0.5) * 60;
+            img.style.transform = 'translateY(' + shift + 'px)';
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+  {% endif %}
+
+  /* ── Scroll to bundle CTA ── */
+  var cta = section.querySelector('[data-scroll-bundle]');
+  if (cta) {
+    cta.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target = document.querySelector('.gf-options')
+                || document.querySelector('[id^="gf-"] .gf-header')
+                || document.querySelector('[id^="gf-"]');
+      if (!target) return;
+      var offset = 20;
+      var hdr = document.querySelector('header, .header, .shopify-section-header');
+      if (hdr) offset = hdr.offsetHeight + 10;
+      var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "GF Hero",
+  "tag": "section",
+  "class": "gfh-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Image desktop",
+      "info": "Uploade-la dans le format choisi ci-dessous (16:9 par défaut). 2400 px de large minimum."
+    },
+    {
+      "type": "select",
+      "id": "desktop_format",
+      "label": "Format de l'image (desktop)",
+      "options": [
+        { "value": "16/9", "label": "16:9" },
+        { "value": "21/9", "label": "21:9 (cinéma)" },
+        { "value": "3/2", "label": "3:2" },
+        { "value": "4/3", "label": "4:3" },
+        { "value": "screen", "label": "Plein écran (hauteur de l'écran)" }
+      ],
+      "default": "16/9"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image mobile",
+      "info": "Uploade-la dans le format choisi ci-dessous, sinon elle est recadrée. Si vide, l'image desktop est utilisée (recadrée)."
+    },
+    {
+      "type": "select",
+      "id": "mobile_format",
+      "label": "Format de l'image (mobile)",
+      "info": "Plein écran = hauteur de l'écran du téléphone, soit ≈ 9:16 à 9:19,5 selon le modèle : une image 4:5 y perd un tiers de sa largeur. Choisis un ratio fixe pour que la boîte suive exactement ton image.",
+      "options": [
+        { "value": "screen100", "label": "Plein écran (100 % de l'écran)" },
+        { "value": "screen90", "label": "90 % de l'écran" },
+        { "value": "screen85", "label": "85 % de l'écran" },
+        { "value": "screen80", "label": "80 % de l'écran" },
+        { "value": "9/16", "label": "9:16 (story)" },
+        { "value": "4/5", "label": "4:5 (portrait)" },
+        { "value": "3/4", "label": "3:4" },
+        { "value": "1/1", "label": "1:1 (carré)" }
+      ],
+      "default": "screen100"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "info": "Accessibility: describe the image for screen readers."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay darkness",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "%",
+      "default": 0,
+      "info": "Darkens the entire image. 0 = no overlay."
+    },
+    {
+      "type": "range",
+      "id": "scrim_intensity",
+      "label": "Bottom gradient intensity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 55,
+      "info": "Gradient that makes bottom text readable. 0 = off."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Parallax scrolling",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "info": "Small uppercase label above the heading."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Heading HTML tag",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "p", "label": "P" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading size (desktop)",
+      "min": 24,
+      "max": 96,
+      "step": 2,
+      "unit": "px",
+      "default": 52
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size (mobile)",
+      "min": 20,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "heading_tracking",
+      "label": "Heading letter spacing",
+      "min": -4,
+      "max": 8,
+      "step": 1,
+      "default": -1,
+      "info": "Negative = tighter. In hundredths of an em."
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_desktop",
+      "label": "Subheading size (desktop)",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_mobile",
+      "label": "Subheading size (mobile)",
+      "min": 8,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "subheading_tracking",
+      "label": "Subheading letter spacing",
+      "min": 0,
+      "max": 12,
+      "step": 1,
+      "default": 3,
+      "info": "In hundredths of an em. Higher = wider spacing."
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "cta_scroll_to_bundle",
+      "label": "Scroll to bundle picker",
+      "info": "Overrides the link. Smoothly scrolls to the bundle section.",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "cta_style",
+      "label": "Button style",
+      "options": [
+        { "value": "outline", "label": "Outline" },
+        { "value": "filled", "label": "Filled" },
+        { "value": "underline", "label": "Underline" }
+      ],
+      "default": "outline"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Button fill color",
+      "info": "Only used for Filled style.",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Button text / border color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "cta_radius",
+      "label": "Button corner radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 100,
+      "info": "100 = fully rounded pill."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "Alignement horizontal (desktop)",
+      "options": [
+        { "value": "flex-start", "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "flex-end", "label": "Droite" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Position verticale (desktop)",
+      "options": [
+        { "value": "bottom", "label": "Bas" },
+        { "value": "center", "label": "Centre" },
+        { "value": "top", "label": "Haut (sous le header)" }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "select",
+      "id": "content_align_mobile",
+      "label": "Alignement horizontal (mobile)",
+      "options": [
+        { "value": "inherit", "label": "Comme desktop" },
+        { "value": "flex-start", "label": "Gauche" },
+        { "value": "center", "label": "Centre" },
+        { "value": "flex-end", "label": "Droite" }
+      ],
+      "default": "inherit"
+    },
+    {
+      "type": "select",
+      "id": "content_position_mobile",
+      "label": "Position verticale (mobile)",
+      "options": [
+        { "value": "inherit", "label": "Comme desktop" },
+        { "value": "bottom", "label": "Bas" },
+        { "value": "center", "label": "Centre" },
+        { "value": "top", "label": "Haut (sous le header)" }
+      ],
+      "default": "inherit"
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF Hero",
+      "settings": {
+        "heading": "New Arrivals",
+        "cta_text": "Shop Now",
+        "cta_style": "outline",
+        "cta_radius": 100,
+        "content_align": "center",
+        "content_position": "bottom",
+        "text_color": "#ffffff",
+        "overlay_opacity": 0,
+        "scrim_intensity": 55,
+        "heading_size_desktop": 52,
+        "heading_size_mobile": 32,
+        "heading_weight": "500"
+      }
+    }
+  ]
+}
+{% endschema %}

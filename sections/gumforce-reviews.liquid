@@ -1,0 +1,1450 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Reviews — Loox-Inspired Masonry Grid
+  ============================================================================
+  Dark masonry grid of customer review cards.
+  Each review = image (optional) + name + verified badge + date + stars + text.
+  Highlight key phrases with a gold/accent mark.
+  CSS-columns masonry — zero JS for layout.
+  "Show more" progressive reveal.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign bg_color        = s.bg_color | default: '#0e0e0e'
+  assign card_bg         = s.card_bg | default: '#1a1a1a'
+  assign card_border     = s.card_border | default: 'rgba(255,255,255,0.06)'
+  assign card_radius     = s.card_radius | default: 12
+  assign star_color      = s.star_color | default: '#F5A623'
+  assign stars_img_5     = s.stars_img_5
+  assign stars_img_4_5   = s.stars_img_4_5
+  assign stars_img_4     = s.stars_img_4
+  assign stars_header_h  = s.stars_header_height | default: 18
+  assign stars_card_h    = s.stars_card_height | default: 14
+  assign name_color      = s.name_color | default: '#f4f4f4'
+  assign date_color      = s.date_color | default: '#888888'
+  assign text_color      = s.text_color | default: '#cccccc'
+  assign verified_color  = s.verified_color | default: '#4FC3F7'
+  assign highlight_bg    = s.highlight_bg | default: 'rgba(245,166,35,0.18)'
+  assign highlight_text  = s.highlight_text_color | default: '#f4f4f4'
+  assign meta_color      = s.meta_color | default: '#777777'
+  assign header_color    = s.header_color | default: '#f4f4f4'
+  assign columns_desktop = s.columns_desktop | default: 4
+  assign columns_tablet  = s.columns_tablet | default: 3
+  assign columns_mobile  = s.columns_mobile | default: 2
+  assign column_gap      = s.column_gap | default: 14
+  assign card_gap        = s.card_gap | default: 14
+  assign show_header     = s.show_header
+  assign header_rating   = s.header_rating | default: '4.8'
+  assign header_count    = s.header_count
+  assign heading_text    = s.heading_text
+  assign initial_count   = s.initial_count | default: 8
+  if request.locale.iso_code == 'fr'
+    assign load_more_text = s.load_more_text | default: 'Voir plus d&#39;avis'
+  else
+    assign load_more_text = s.load_more_text | default: 'Show more reviews'
+  endif
+  assign btn_bg          = s.btn_bg | default: '#ffffff'
+  assign btn_text_color  = s.btn_text_color | default: '#0e0e0e'
+  assign btn_radius      = s.btn_radius | default: 0
+
+  assign verified_image     = s.verified_badge_image
+  assign verified_image_url = s.verified_badge_url
+  assign verified_height    = s.verified_badge_height | default: 14
+
+  if request.locale.iso_code == 'fr'
+    assign verified_label = 'Achat vérifié'
+  else
+    assign verified_label = 'Verified'
+  endif
+
+  assign pad_top         = s.padding_top | default: 40
+  assign pad_bottom      = s.padding_bottom | default: 40
+  assign pad_top_mobile  = s.padding_top_mobile | default: 40
+  assign pad_bot_mobile  = s.padding_bottom_mobile | default: 40
+
+  assign enable_animations = s.enable_animations
+
+  comment
+    ── Star logic: only exact X.0 = full, any decimal = half star ──
+  endcomment
+  assign full_stars = header_rating | plus: 0 | floor
+  assign decimal    = header_rating | split: '.' | last | plus: 0
+  assign has_half   = false
+  if decimal > 0
+    assign has_half = true
+  endif
+  assign empty_stars = 5 | minus: full_stars
+  if has_half
+    assign empty_stars = empty_stars | minus: 1
+  endif
+-%}
+
+<style>
+  #gfrev-{{ sid }} {
+    /* pas de content-visibility : mesuré sur WebKit, il retardait le chargement des images lazy jusqu'à l'écran */
+    --gfrev-bg: {{ bg_color }};
+    --gfrev-card-bg: {{ card_bg }};
+    --gfrev-card-border: {{ card_border }};
+    --gfrev-card-radius: {{ card_radius }}px;
+    --gfrev-star: {{ star_color }};
+    --gfrev-name: {{ name_color }};
+    --gfrev-date: {{ date_color }};
+    --gfrev-text: {{ text_color }};
+    --gfrev-verified: {{ verified_color }};
+    --gfrev-highlight-bg: {{ highlight_bg }};
+    --gfrev-highlight-text: {{ highlight_text }};
+    --gfrev-meta: {{ meta_color }};
+    --gfrev-header: {{ header_color }};
+    --gfrev-gap: {{ column_gap }}px;
+    --gfrev-card-gap: {{ card_gap }}px;
+    --gfrev-cols: {{ columns_desktop }};
+    --gfrev-pad-top: {{ pad_top }}px;
+    --gfrev-pad-bot: {{ pad_bottom }}px;
+    --gfrev-pad-top-m: {{ pad_top_mobile }}px;
+    --gfrev-pad-bot-m: {{ pad_bot_mobile }}px;
+    --gfrev-btn-bg: {{ btn_bg }};
+    --gfrev-btn-text: {{ btn_text_color }};
+    --gfrev-verified-h: {{ verified_height }}px;
+
+    background: var(--gfrev-bg);
+    width: 100%;
+    overflow: hidden;
+  }
+
+  #gfrev-{{ sid }} *,
+  #gfrev-{{ sid }} *::before,
+  #gfrev-{{ sid }} *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ── Inner ── */
+  #gfrev-{{ sid }} .gfrev-inner {
+    max-width: 1340px; padding-block: clamp(48px, 6vw, 88px);
+    margin: 0 auto;
+    padding: var(--gfrev-pad-top-m) 20px var(--gfrev-pad-bot-m);
+  }
+
+  /* ── Header ── */
+  #gfrev-{{ sid }} .gfrev-header {
+    text-align: center;
+    margin-bottom: 30px; /* en-tête → contenu : recette GF (30 mobile / 44 desktop) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  #gfrev-{{ sid }} .gfrev-heading {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 700;
+    color: var(--gfrev-header);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 18px;
+  }
+
+  #gfrev-{{ sid }} .gfrev-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #gfrev-{{ sid }} .gfrev-avg {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gfrev-header);
+  }
+
+  #gfrev-{{ sid }} .gfrev-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  #gfrev-{{ sid }} .gfrev-stars svg {
+    width: {{ stars_header_h }}px;
+    height: {{ stars_header_h }}px;
+    display: block;
+  }
+
+  #gfrev-{{ sid }} .gfrev-stars img.gfrev-stars-img {
+    height: {{ stars_header_h }}px;
+    width: auto;
+    display: block;
+  }
+
+  #gfrev-{{ sid }} .gfrev-count {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gfrev-header);
+    opacity: 0.5;
+  }
+
+  /* ── Masonry Grid (JS absolute-positioned) ── */
+  #gfrev-{{ sid }} .gfrev-grid {
+    position: relative;
+    width: 100%;
+  }
+
+  /* ── Card ── */
+  #gfrev-{{ sid }} .gfrev-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    background: var(--gfrev-card-bg);
+    border: 1px solid var(--gfrev-card-border);
+    border-radius: var(--gfrev-card-radius);
+    overflow: hidden;
+    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  #gfrev-{{ sid }} .gfrev-card.gfrev-visible {
+    opacity: 1;
+  }
+
+  #gfrev-{{ sid }} .gfrev-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  /* Grid height transition wrapper */
+  #gfrev-{{ sid }} .gfrev-grid-wrap {
+    overflow: hidden;
+  }
+
+  /* ── Card Image ── */
+  #gfrev-{{ sid }} .gfrev-img-wrap {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #222;
+  }
+
+  #gfrev-{{ sid }} .gfrev-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+
+  #gfrev-{{ sid }} .gfrev-card:hover .gfrev-img {
+    transform: scale(1.03);
+  }
+
+  /* ── Card Body ── */
+  #gfrev-{{ sid }} .gfrev-body {
+    padding: 14px 16px 16px;
+  }
+
+  /* Name row */
+  #gfrev-{{ sid }} .gfrev-name-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+
+  #gfrev-{{ sid }} .gfrev-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gfrev-name);
+    line-height: 1.3;
+  }
+
+  #gfrev-{{ sid }} .gfrev-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+  }
+
+  #gfrev-{{ sid }} .gfrev-verified-icon {
+    width: var(--gfrev-verified-h);
+    height: var(--gfrev-verified-h);
+    flex-shrink: 0;
+    display: block;
+    object-fit: contain;
+  }
+
+  /* SVG fallback icon */
+  #gfrev-{{ sid }} .gfrev-verified svg.gfrev-verified-icon {
+    color: var(--gfrev-verified);
+  }
+
+  #gfrev-{{ sid }} .gfrev-verified-label {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--gfrev-verified);
+    line-height: 1;
+  }
+
+  /* Date */
+  #gfrev-{{ sid }} .gfrev-date {
+    font-size: 12px;
+    color: var(--gfrev-date);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  /* Card stars */
+  #gfrev-{{ sid }} .gfrev-card-stars {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    margin-bottom: 8px;
+  }
+
+  #gfrev-{{ sid }} .gfrev-card-stars svg {
+    width: {{ stars_card_h }}px;
+    height: {{ stars_card_h }}px;
+    display: block;
+  }
+
+  #gfrev-{{ sid }} .gfrev-card-stars img.gfrev-stars-img {
+    height: {{ stars_card_h }}px;
+    width: auto;
+    display: block;
+  }
+
+  /* Review text */
+  #gfrev-{{ sid }} .gfrev-text {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--gfrev-text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  #gfrev-{{ sid }} .gfrev-highlight {
+    background: var(--gfrev-highlight-bg);
+    color: var(--gfrev-highlight-text);
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  /* Meta (item type) */
+  #gfrev-{{ sid }} .gfrev-meta {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--gfrev-card-border);
+  }
+
+  #gfrev-{{ sid }} .gfrev-meta-label {
+    font-size: 11px;
+    color: var(--gfrev-meta);
+    line-height: 1.3;
+  }
+
+  #gfrev-{{ sid }} .gfrev-meta-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gfrev-name);
+    line-height: 1.3;
+  }
+
+  /* ── Show more button ── */
+  #gfrev-{{ sid }} .gfrev-more-wrap {
+    text-align: center;
+    padding-top: 28px;
+  }
+
+  #gfrev-{{ sid }} .gfrev-more-wrap.gfrev-hide {
+    display: none;
+  }
+
+  #gfrev-{{ sid }} .gfrev-more-btn {
+    display: inline-block;
+    padding: 13px 36px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--gfrev-btn-text);
+    background: var(--gfrev-btn-bg);
+    border: none;
+    border-radius: {{ btn_radius }}px;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.08s;
+    -webkit-appearance: none;
+  }
+
+  #gfrev-{{ sid }} .gfrev-more-btn:hover {
+    filter: brightness(0.9);
+  }
+
+  #gfrev-{{ sid }} .gfrev-more-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* ── Write a Review toggle ── */
+  #gfrev-{{ sid }} .gfrev-write-toggle {
+    margin-top: 16px;
+    padding: 0;
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gfrev-header);
+    opacity: 0.5;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.25s;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+  }
+
+  #gfrev-{{ sid }} .gfrev-write-toggle:hover {
+    opacity: 1;
+  }
+
+  /* ── Write a Review form ── */
+  #gfrev-{{ sid }} .gfrev-form-wrap {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.4s ease;
+    opacity: 0;
+  }
+
+  #gfrev-{{ sid }} .gfrev-form-wrap.gfrev-form-open {
+    max-height: 600px;
+    opacity: 1;
+  }
+
+  #gfrev-{{ sid }} .gfrev-form {
+    max-width: 480px;
+    margin: 28px auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  #gfrev-{{ sid }} .gfrev-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  #gfrev-{{ sid }} .gfrev-input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--gfrev-header);
+    background: color-mix(in srgb, var(--gfrev-header) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--gfrev-header) 18%, transparent);
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+
+  #gfrev-{{ sid }} .gfrev-input::placeholder {
+    color: color-mix(in srgb, var(--gfrev-header) 42%, transparent);
+  }
+
+  #gfrev-{{ sid }} .gfrev-input:focus {
+    border-color: color-mix(in srgb, var(--gfrev-header) 42%, transparent);
+  }
+
+  #gfrev-{{ sid }} textarea.gfrev-input {
+    min-height: 80px;
+    resize: vertical;
+    line-height: 1.5;
+  }
+
+  /* Star picker */
+  #gfrev-{{ sid }} .gfrev-star-pick {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  #gfrev-{{ sid }} .gfrev-star-pick button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #555;
+    transition: transform 0.15s;
+    -webkit-appearance: none;
+    line-height: 1;
+  }
+
+  #gfrev-{{ sid }} .gfrev-star-pick button svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+  }
+
+  #gfrev-{{ sid }} .gfrev-star-pick button.gfrev-star-active {
+    color: var(--gfrev-star);
+  }
+
+  #gfrev-{{ sid }} .gfrev-star-pick button:hover {
+    transform: scale(1.15);
+  }
+
+  /* Submit */
+  #gfrev-{{ sid }} .gfrev-submit {
+    align-self: flex-start;
+    padding: 12px 32px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gfrev-btn-text);
+    background: var(--gfrev-btn-bg);
+    border: none;
+    border-radius: {{ btn_radius }}px;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.08s;
+    -webkit-appearance: none;
+  }
+
+  #gfrev-{{ sid }} .gfrev-submit:hover {
+    filter: brightness(0.9);
+  }
+
+  #gfrev-{{ sid }} .gfrev-submit:active {
+    transform: scale(0.97);
+  }
+
+  /* Success message */
+  #gfrev-{{ sid }} .gfrev-form-success {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gfrev-star);
+    letter-spacing: 0.01em;
+  }
+
+  @media (max-width: 749px) {
+    #gfrev-{{ sid }} .gfrev-form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── Animations ── */
+  {%- if enable_animations %}
+  #gfrev-{{ sid }} .gfrev-anim {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  #gfrev-{{ sid }} .gfrev-anim.gfrev-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  {%- endif %}
+
+  /* ── Responsive ── */
+  @media (min-width: 750px) {
+    #gfrev-{{ sid }} .gfrev-inner {
+      padding: var(--gfrev-pad-top) 40px var(--gfrev-pad-bot);
+    }
+    #gfrev-{{ sid }} .gfrev-header {
+      margin-bottom: 44px;
+    }
+  }
+
+  @media (max-width: 749px) {
+    #gfrev-{{ sid }} .gfrev-body {
+      padding: 12px 13px 14px;
+    }
+    #gfrev-{{ sid }} .gfrev-stars svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+</style>
+
+<section id="gfrev-{{ sid }}">
+  <div id="reviews" style="position: absolute; margin-top: -80px;" aria-hidden="true"></div>
+  <div class="gfrev-inner">
+
+    {%- if show_header -%}
+    <div class="gfrev-header{% if enable_animations %} gfrev-anim{% endif %}">
+
+      {%- if heading_text != blank -%}
+        <h2 class="gfrev-heading">{{ heading_text }}</h2>
+      {%- endif -%}
+
+      <div class="gfrev-summary">
+        <span class="gfrev-avg">{{ header_rating }}/5</span>
+        <span class="gfrev-stars" role="img" aria-label="Rating: {{ header_rating }} out of 5">
+          {%- liquid
+            assign header_star_img = nil
+            if full_stars == 5 and stars_img_5 != blank
+              assign header_star_img = stars_img_5
+            elsif full_stars == 4 and has_half and stars_img_4_5 != blank
+              assign header_star_img = stars_img_4_5
+            elsif full_stars == 4 and has_half == false and stars_img_4 != blank
+              assign header_star_img = stars_img_4
+            endif
+          -%}
+          {%- if header_star_img -%}
+            {%- assign stars_h_3x = stars_header_h | times: 3 -%}
+            {{ header_star_img | image_url: height: stars_h_3x | image_tag: class: 'gfrev-stars-img', loading: 'lazy', alt: 'Stars' }}
+          {%- else -%}
+            {%- for i in (1..full_stars) -%}
+              <svg viewBox="0 0 24 24" fill="var(--gfrev-star)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            {%- endfor -%}
+            {%- if has_half -%}
+              <svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="gfrev-half-{{ sid }}" x1="0" x2="1" y1="0" y2="0"><stop offset="50%" stop-color="var(--gfrev-star)"/><stop offset="50%" stop-color="#555"/></linearGradient></defs><path fill="url(#gfrev-half-{{ sid }})" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            {%- endif -%}
+            {%- for i in (1..empty_stars) -%}
+              <svg viewBox="0 0 24 24" fill="#555" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            {%- endfor -%}
+          {%- endif -%}
+        </span>
+        {%- if header_count != blank -%}
+          <span class="gfrev-count">{{ header_count }}</span>
+        {%- endif -%}
+      </div>
+
+      <button type="button" class="gfrev-write-toggle" data-gfrev-toggle-form="{{ sid }}">Laisser un avis</button>
+
+      <div class="gfrev-form-wrap" id="gfrev-form-{{ sid }}">
+        <form class="gfrev-form" data-gfrev-form="{{ sid }}" novalidate>
+          <div class="gfrev-form-row">
+            <input type="text" class="gfrev-input" name="name" placeholder="Votre nom" required autocomplete="name">
+            <input type="email" class="gfrev-input" name="email" placeholder="Adresse email" required autocomplete="email">
+          </div>
+          <div class="gfrev-star-pick" data-gfrev-stars>
+            {%- for i in (1..5) -%}
+              <button type="button" data-star="{{ i }}" aria-label="{{ i }} étoile{% if i > 1 %}s{% endif %}">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </button>
+            {%- endfor -%}
+          </div>
+          <input type="hidden" name="rating" value="5">
+          <textarea class="gfrev-input" name="review" placeholder="Partagez votre expérience..." required></textarea>
+          <button type="submit" class="gfrev-submit">Envoyer mon avis</button>
+        </form>
+        <div class="gfrev-form-success">Merci ! Votre avis a bien été envoyé.</div>
+      </div>
+
+    </div>
+    {%- endif -%}
+
+    <div class="gfrev-grid-wrap">
+    <div class="gfrev-grid">
+      {%- assign card_index = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign b = block.settings
+          assign r_name     = b.reviewer_name
+          assign r_date     = b.review_date
+          assign r_rating   = b.rating | default: 5 | plus: 0
+          assign r_text     = b.review_text
+          assign r_image    = b.review_image
+          assign r_verified = b.verified
+          assign r_highlight = b.highlight_text
+          assign r_item     = b.item_type
+        -%}
+
+        {%- if r_name != blank -%}
+          {%- assign card_index = card_index | plus: 1 -%}
+          {%- assign is_hidden = false -%}
+          {%- if card_index > initial_count -%}
+            {%- assign is_hidden = true -%}
+          {%- endif -%}
+
+        <div class="gfrev-card{% if is_hidden %} gfrev-more{% endif %}" {{ block.shopify_attributes }}>
+
+          {%- if r_image != blank -%}
+          <div class="gfrev-img-wrap">
+            {%- assign r_alt = r_name | append: ' review photo' -%}
+            {{ r_image | image_url: width: 600 | image_tag:
+                class: 'gfrev-img',
+                loading: 'lazy',
+                alt: r_alt }}
+          </div>
+          {%- endif -%}
+
+          <div class="gfrev-body">
+
+            <div class="gfrev-name-row">
+              <span class="gfrev-name">{{ r_name }}</span>
+              {%- if r_verified -%}
+              <span class="gfrev-verified">
+                {%- if verified_image != blank -%}
+                  {%- assign v_height = verified_height | times: 3 -%}
+                  {{ verified_image | image_url: height: v_height | image_tag:
+                      class: 'gfrev-verified-icon',
+                      loading: 'lazy',
+                      alt: verified_label }}
+                {%- elsif verified_image_url != blank -%}
+                  <img src="{{ verified_image_url }}" class="gfrev-verified-icon" alt="{{ verified_label }}" loading="lazy">
+                {%- else -%}
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-label="{{ verified_label }}" class="gfrev-verified-icon">
+                    <path d="M12 1l3.09 1.64L18.55 2l1.64 3.09L22 8.55l-.73 3.45.73 3.45-1.81 3.46L18.55 22l-3.46-.73L12 23l-3.09-1.64L5.45 22l-1.64-3.09L2 15.45l.73-3.45L2 8.55l1.81-3.46L5.45 2l3.46.73L12 1zm-1.5 14l5.5-5.5-1.41-1.41L10.5 12.17l-2.09-2.08L7 11.5l3.5 3.5z"/>
+                  </svg>
+                {%- endif -%}
+                <span class="gfrev-verified-label">{{ verified_label }}</span>
+              </span>
+              {%- endif -%}
+            </div>
+
+            {%- if r_date != blank -%}
+              <div class="gfrev-date">{{ r_date }}</div>
+            {%- endif -%}
+
+            <div class="gfrev-card-stars" role="img" aria-label="Rating: {{ r_rating }} out of 5">
+              {%- liquid
+                assign card_star_img = nil
+                if r_rating == 5 and stars_img_5 != blank
+                  assign card_star_img = stars_img_5
+                elsif r_rating == 4 and stars_img_4 != blank
+                  assign card_star_img = stars_img_4
+                endif
+              -%}
+              {%- if card_star_img -%}
+                {%- assign stars_c_3x = stars_card_h | times: 3 -%}
+                {{ card_star_img | image_url: height: stars_c_3x | image_tag: class: 'gfrev-stars-img', loading: 'lazy', alt: 'Stars' }}
+              {%- else -%}
+                {%- for i in (1..5) -%}
+                  {%- if i <= r_rating -%}
+                    <svg viewBox="0 0 24 24" fill="var(--gfrev-star)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 24 24" fill="#555" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            </div>
+
+            {%- if r_text != blank -%}
+              <div class="gfrev-text">
+                {%- if r_highlight != blank -%}
+                  {%- assign hl_open  = '<mark class="gfrev-highlight">' -%}
+                  {%- assign hl_close = '</mark>' -%}
+                  {%- assign hl_wrap  = hl_open | append: r_highlight | append: hl_close -%}
+                  {{ r_text | replace: r_highlight, hl_wrap }}
+                {%- else -%}
+                  {{ r_text }}
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            {%- if r_item != blank -%}
+              <div class="gfrev-meta">
+                <div class="gfrev-meta-label">Item type:</div>
+                <div class="gfrev-meta-value">{{ r_item }}</div>
+              </div>
+            {%- endif -%}
+
+          </div>
+        </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    </div>
+
+    {%- if card_index > initial_count -%}
+    <div class="gfrev-more-wrap">
+      <button type="button" class="gfrev-more-btn" data-gfrev-expand="{{ sid }}">{{ load_more_text }}</button>
+    </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+(function(){
+  var root = document.getElementById('gfrev-{{ sid }}');
+  if (!root) return;
+
+  /* ── Images : chargement anticipé. Mesuré sur WebKit (Safari/iOS) : avec
+     content-visibility le lazy natif ne demandait l'image qu'à ~15px de l'écran
+     (placeholder noir visible), ~850px sans. Ici on observe la SECTION à 2000px
+     et on passe ses images en eager → prêtes avant d'arriver dessus ; filet
+     après le chargement de la page (réseau libre). Sans JS : lazy natif. ── */
+  (function () {
+    var imgs = root.querySelectorAll('.gfrev-card:not(.gfrev-more) img[loading="lazy"]');
+    if (!imgs.length) return;
+    function warm(im) {
+      if (im.loading === 'lazy') im.loading = 'eager';
+      if (im.decode) { try { im.decode().then(null, function () {}); } catch (e) {} }
+    }
+    function warmAll() { for (var i = 0; i < imgs.length && i < 24; i++) warm(imgs[i]); }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) {
+        for (var i = 0; i < es.length; i++) { if (es[i].isIntersecting) { io.disconnect(); warmAll(); return; } }
+      }, { rootMargin: '2000px 0px' });
+      io.observe(root);
+    } else { warmAll(); }
+    function later() { if (window.requestIdleCallback) window.requestIdleCallback(warmAll, { timeout: 4000 }); else setTimeout(warmAll, 2500); }
+    if (document.readyState === 'complete') later(); else window.addEventListener('load', later);
+  })();
+
+  /* ── Handle #reviews hash on page load (from menu links on other pages) ── */
+  if (window.location.hash === '#reviews') {
+    var anchor = document.getElementById('reviews');
+    if (anchor) {
+      window.addEventListener('load', function(){
+        setTimeout(function(){
+          anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      });
+    }
+  }
+
+  function _boot(){
+  /* Touch-scroll guard */
+  var tY = 0, scrolling = false;
+  root.addEventListener('touchstart', function(e){ tY = e.touches[0].clientY; scrolling = false; }, { passive: true });
+  root.addEventListener('touchmove', function(e){ if (Math.abs(e.touches[0].clientY - tY) > 10) scrolling = true; }, { passive: true });
+
+  /* ═══════════════════════════════════════════
+     JS Masonry — absolute positioning engine
+     ═══════════════════════════════════════════ */
+  var gridWrap = root.querySelector('.gfrev-grid-wrap');
+  var grid     = root.querySelector('.gfrev-grid');
+  var btnWrap  = root.querySelector('.gfrev-more-wrap');
+  var btn      = root.querySelector('[data-gfrev-expand]');
+  if (!grid) return;
+
+  /* Separate visible / hidden cards */
+  var allCards = Array.from(grid.querySelectorAll('.gfrev-card'));
+  var placed   = [];
+  var queue    = [];
+  allCards.forEach(function(c){
+    if (c.classList.contains('gfrev-more')) { queue.push(c); c.remove(); }
+    else placed.push(c);
+  });
+
+  /* Config helpers */
+  var colGap  = {{ column_gap | default: 14 }};
+  var cardGap = {{ card_gap | default: 14 }};
+  function getColCount(){
+    var w = root.offsetWidth || window.innerWidth;
+    if (w <= 749) return {{ columns_mobile }};
+    if (w <= 999) return {{ columns_tablet }};
+    return {{ columns_desktop }};
+  }
+  function gaps(){
+    var m = window.innerWidth <= 749;
+    return { col: m ? 10 : colGap, card: m ? 10 : cardGap };
+  }
+
+  /* Column heights state */
+  var colH = [];
+
+  /* Full layout pass — positions every card in grid */
+  function layout(){
+    var g   = gaps();
+    var n   = getColCount();
+    var gW  = grid.offsetWidth;
+    if (!gW) return;
+    var cW  = (gW - (n - 1) * g.col) / n;
+    colH = [];
+    for (var i = 0; i < n; i++) colH.push(0);
+
+    var cards = grid.querySelectorAll('.gfrev-card');
+    cards.forEach(function(card){
+      card.style.width = cW + 'px';
+      var mi = 0;
+      for (var j = 1; j < n; j++){ if (colH[j] < colH[mi]) mi = j; }
+      card.style.left = (mi * (cW + g.col)) + 'px';
+      card.style.top  = colH[mi] + 'px';
+      colH[mi] += card.offsetHeight + g.card;
+    });
+    var max = Math.max.apply(null, colH);
+    grid.style.height = Math.max(0, max - g.card) + 'px';
+  }
+
+  /* Initial layout + stagger fade */
+  layout();
+  placed.forEach(function(card, i){
+    setTimeout(function(){ card.classList.add('gfrev-visible'); }, i * 50);
+  });
+
+  /* Relayout after lazy images load (prevents overlap) */
+  var imgs = grid.querySelectorAll('img');
+  var pending = 0;
+  var relayoutTimer = null;
+  function onImgReady(){
+    pending--;
+    clearTimeout(relayoutTimer);
+    relayoutTimer = setTimeout(function(){ layout(); }, 80);
+  }
+  imgs.forEach(function(img){
+    if (!img.complete) { pending++; img.addEventListener('load', onImgReady); img.addEventListener('error', onImgReady); }
+  });
+
+  /* Responsive — relayout on width change */
+  var rT, lastW = root.offsetWidth;
+  window.addEventListener('resize', function(){
+    clearTimeout(rT);
+    rT = setTimeout(function(){
+      var nw = root.offsetWidth;
+      if (nw !== lastW){ lastW = nw; layout(); }
+    }, 150);
+  });
+
+  /* ── Show more (5 at a time) ── */
+  if (btn && gridWrap) {
+    btn.addEventListener('click', function(){
+      if (scrolling) return;
+      if (!queue.length) return;
+      var batch = queue.splice(0, 5);
+      var g  = gaps();
+      var n  = getColCount();
+      var gW = grid.offsetWidth;
+      var cW = (gW - (n - 1) * g.col) / n;
+      var oldH = parseFloat(grid.style.height) || 0;
+
+      batch.forEach(function(card){
+        card.classList.remove('gfrev-more');
+        card.style.width = cW + 'px';
+        grid.appendChild(card);
+        card.querySelectorAll('img[loading="lazy"]').forEach(function(im){ im.loading = 'eager'; });
+        var mi = 0;
+        for (var j = 1; j < n; j++){ if (colH[j] < colH[mi]) mi = j; }
+        card.style.left = (mi * (cW + g.col)) + 'px';
+        card.style.top  = colH[mi] + 'px';
+        colH[mi] += card.offsetHeight + g.card;
+      });
+
+      var newH = Math.max(0, Math.max.apply(null, colH) - g.card);
+      grid.style.height = newH + 'px';
+
+      /* Smooth height reveal via wrapper */
+      gridWrap.style.height = oldH + 'px';
+      gridWrap.animate(
+        [{ height: oldH + 'px' }, { height: newH + 'px' }],
+        { duration: 420, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+      ).onfinish = function(){ gridWrap.style.height = ''; };
+
+      /* Stagger fade-in */
+      batch.forEach(function(card, j){
+        setTimeout(function(){ card.classList.add('gfrev-visible'); }, 80 + j * 100);
+      });
+
+      /* Relayout when new batch images load */
+      batch.forEach(function(card){
+        var bImgs = card.querySelectorAll('img');
+        bImgs.forEach(function(img){
+          if (!img.complete) { img.addEventListener('load', function(){ layout(); }); }
+        });
+      });
+
+      if (!queue.length && btnWrap) btnWrap.classList.add('gfrev-hide');
+    });
+  }
+
+  /* ── Write a Review form ── */
+  var formToggle = root.querySelector('[data-gfrev-toggle-form]');
+  var formWrap = document.getElementById('gfrev-form-{{ sid }}');
+  if (formToggle && formWrap) {
+    formToggle.addEventListener('click', function(){
+      if (scrolling) return;
+      formWrap.classList.toggle('gfrev-form-open');
+      formToggle.textContent = formWrap.classList.contains('gfrev-form-open') ? 'Annuler' : 'Laisser un avis';
+    });
+
+    var starPick = formWrap.querySelector('[data-gfrev-stars]');
+    var ratingInput = formWrap.querySelector('input[name="rating"]');
+    if (starPick) {
+      var starBtns = starPick.querySelectorAll('button');
+      function setStars(n) {
+        starBtns.forEach(function(b, i){ b.classList.toggle('gfrev-star-active', i < n); });
+        if (ratingInput) ratingInput.value = n;
+      }
+      setStars(5);
+      starBtns.forEach(function(b){
+        b.addEventListener('click', function(){ setStars(parseInt(b.getAttribute('data-star'), 10)); });
+      });
+    }
+
+    var form = formWrap.querySelector('[data-gfrev-form]');
+    var successMsg = formWrap.querySelector('.gfrev-form-success');
+    if (form) {
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        form.style.display = 'none';
+        if (successMsg) successMsg.style.display = 'block';
+        setTimeout(function(){
+          formWrap.classList.remove('gfrev-form-open');
+          formToggle.textContent = 'Laisser un avis';
+          setTimeout(function(){
+            form.style.display = '';
+            form.reset();
+            setStars(5);
+            if (successMsg) successMsg.style.display = 'none';
+          }, 500);
+        }, 2500);
+      });
+    }
+  }
+
+  {%- if enable_animations %}
+  /* ── Scroll animations for non-card elements (header) ── */
+  var anims = root.querySelectorAll('.gfrev-anim');
+  if (anims.length) {
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('gfrev-visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    anims.forEach(function(el){ obs.observe(el); });
+  }
+  {%- endif %}
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function(e,o){if(e[0].isIntersecting){o.disconnect();_boot();}},{rootMargin:'1500px'}).observe(root);
+  } else _boot();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "GF Reviews Grid",
+  "class": "gfrev-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "What Our Customers Say"
+    },
+    {
+      "type": "select",
+      "id": "header_rating",
+      "label": "Average rating",
+      "options": [
+        { "value": "5.0", "label": "5.0" },
+        { "value": "4.9", "label": "4.9" },
+        { "value": "4.8", "label": "4.8" },
+        { "value": "4.7", "label": "4.7" },
+        { "value": "4.6", "label": "4.6" },
+        { "value": "4.5", "label": "4.5" },
+        { "value": "4.0", "label": "4.0" }
+      ],
+      "default": "4.8"
+    },
+    {
+      "type": "text",
+      "id": "header_count",
+      "label": "Review count text",
+      "default": "8,145 Reviews"
+    },
+    {
+      "type": "header",
+      "content": "Star images"
+    },
+    {
+      "type": "image_picker",
+      "id": "stars_img_5",
+      "label": "5 stars image",
+      "info": "Upload a custom star row for 5-star ratings. Leave blank for default SVG stars."
+    },
+    {
+      "type": "image_picker",
+      "id": "stars_img_4_5",
+      "label": "4.5 stars image",
+      "info": "Used for header when average rating rounds to 4.5."
+    },
+    {
+      "type": "image_picker",
+      "id": "stars_img_4",
+      "label": "4 stars image",
+      "info": "Used for 4-star review cards."
+    },
+    {
+      "type": "range",
+      "id": "stars_header_height",
+      "label": "Stars size — header",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "stars_card_height",
+      "label": "Stars size — cards",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Verified badge"
+    },
+    {
+      "type": "image_picker",
+      "id": "verified_badge_image",
+      "label": "Upload badge icon",
+      "info": "Upload your own verified badge. Leave blank for default SVG."
+    },
+    {
+      "type": "text",
+      "id": "verified_badge_url",
+      "label": "Or paste badge image URL",
+      "info": "Use if image is in Shopify Files. Leave blank if using picker above."
+    },
+    {
+      "type": "range",
+      "id": "verified_badge_height",
+      "label": "Badge icon height (px)",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "initial_count",
+      "label": "Reviews shown initially",
+      "min": 4,
+      "max": 30,
+      "step": 1,
+      "default": 8,
+      "info": "Remaining reviews appear after clicking 'Show more'."
+    },
+    {
+      "type": "text",
+      "id": "load_more_text",
+      "label": "Show more button text",
+      "default": "Show more reviews"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns — desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_tablet",
+      "label": "Columns — tablet",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Columns — mobile",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap (px)",
+      "min": 6,
+      "max": 24,
+      "step": 2,
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Card gap (px)",
+      "min": 6,
+      "max": 24,
+      "step": 2,
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#0e0e0e"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card border",
+      "default": "#2a2a2a"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card radius (px)",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star color",
+      "default": "#F5A623"
+    },
+    {
+      "type": "color",
+      "id": "name_color",
+      "label": "Name color",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "date_color",
+      "label": "Date color",
+      "default": "#888888"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Review text color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "verified_color",
+      "label": "Verified badge color",
+      "default": "#4FC3F7"
+    },
+    {
+      "type": "color",
+      "id": "highlight_bg",
+      "label": "Highlight background",
+      "default": "#3d2e0a"
+    },
+    {
+      "type": "color",
+      "id": "highlight_text_color",
+      "label": "Highlight text color",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "meta_color",
+      "label": "Meta text color",
+      "default": "#777777"
+    },
+    {
+      "type": "color",
+      "id": "header_color",
+      "label": "Header text color",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button text color",
+      "default": "#0e0e0e"
+    },
+    {
+      "type": "range",
+      "id": "btn_radius",
+      "label": "Button corner radius (px)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "── Espacement ──"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Espace haut (mobile)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Espace bas (mobile)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Espace haut (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Espace bas (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Enable scroll animations",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "limit": 50,
+      "settings": [
+        {
+          "type": "text",
+          "id": "reviewer_name",
+          "label": "Name",
+          "default": "Alex M."
+        },
+        {
+          "type": "text",
+          "id": "review_date",
+          "label": "Date",
+          "default": "01/04/2026"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Star rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Verified purchase",
+          "default": true
+        },
+        {
+          "type": "textarea",
+          "id": "review_text",
+          "label": "Review text",
+          "default": "Great product, really noticed a difference after a few weeks of use."
+        },
+        {
+          "type": "text",
+          "id": "highlight_text",
+          "label": "Highlight phrase (optional)",
+          "info": "Exact text from the review to highlight with an accent."
+        },
+        {
+          "type": "image_picker",
+          "id": "review_image",
+          "label": "Customer photo (optional)"
+        },
+        {
+          "type": "text",
+          "id": "item_type",
+          "label": "Item type (optional)",
+          "info": "e.g. 'Fresh Mint' or '3-Pack Bundle'"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF Reviews Grid",
+      "blocks": [
+        { "type": "review", "settings": { "reviewer_name": "Alex M.", "review_date": "02/04/2026", "rating": 5, "verified": true, "review_text": "This gum is insane. You can actually feel the resistance when you chew. My jaw feels stronger already after 2 weeks.", "highlight_text": "You can actually feel the resistance when you chew." } },
+        { "type": "review", "settings": { "reviewer_name": "Jordan K.", "review_date": "28/03/2026", "rating": 5, "verified": true, "review_text": "Best jawline gum I've tried. The creatine is a nice bonus and the mint flavor is strong. Will reorder.", "item_type": "Fresh Mint" } },
+        { "type": "review", "settings": { "reviewer_name": "Marcus T.", "review_date": "25/03/2026", "rating": 5, "verified": false, "review_text": "Bought the 3-pack bundle. Shipping was fast, gum is tough as advertised.", "highlight_text": "gum is tough as advertised.", "item_type": "3-Pack Bundle" } },
+        { "type": "review", "settings": { "reviewer_name": "Tyler R.", "review_date": "22/03/2026", "rating": 5, "verified": true, "review_text": "I chew this at the gym and during work. Nobody even knows I'm training my jaw." } },
+        { "type": "review", "settings": { "reviewer_name": "Chris B.", "review_date": "20/03/2026", "rating": 4, "verified": true, "review_text": "Really good. Tough at first but you get used to it. Can definitely feel the muscles working.", "highlight_text": "Can definitely feel the muscles working." } },
+        { "type": "review", "settings": { "reviewer_name": "David L.", "review_date": "18/03/2026", "rating": 5, "verified": true, "review_text": "Third order. This is part of my daily routine now. My jawline is noticeably more defined.", "item_type": "Fresh Mint" } },
+        { "type": "review", "settings": { "reviewer_name": "Nathan W.", "review_date": "15/03/2026", "rating": 5, "verified": true, "review_text": "10x harder is no joke. Two months in and I can see real definition.", "highlight_text": "I can see real definition." } },
+        { "type": "review", "settings": { "reviewer_name": "Ryan H.", "review_date": "12/03/2026", "rating": 5, "verified": true, "review_text": "Love the creatine infusion. Getting my daily creatine while training my jaw is genius." } },
+        { "type": "review", "settings": { "reviewer_name": "Jake P.", "review_date": "10/03/2026", "rating": 5, "verified": false, "review_text": "Skeptical at first but this stuff is legit. Way harder than any other gum.", "highlight_text": "this stuff is legit." } },
+        { "type": "review", "settings": { "reviewer_name": "Ethan C.", "review_date": "08/03/2026", "rating": 4, "verified": true, "review_text": "Good product. The gum is genuinely hard. Wish the mint lasted a bit longer but the resistance is unmatched." } },
+        { "type": "review", "settings": { "reviewer_name": "Liam D.", "review_date": "05/03/2026", "rating": 5, "verified": true, "review_text": "Bought for my boyfriend. He loves it. Says his jaw feels like it got a workout.", "item_type": "Fresh Mint" } },
+        { "type": "review", "settings": { "reviewer_name": "Oscar F.", "review_date": "03/03/2026", "rating": 5, "verified": true, "review_text": "Finally a gum that's actually hard. Regular gum feels like nothing after using GumForce.", "highlight_text": "Finally a gum that's actually hard." } },
+        { "type": "review", "settings": { "reviewer_name": "Kai S.", "review_date": "01/03/2026", "rating": 5, "verified": true, "review_text": "The packaging is clean, the gum tastes good, and it's actually challenging to chew." } },
+        { "type": "review", "settings": { "reviewer_name": "Adrian V.", "review_date": "27/02/2026", "rating": 5, "verified": true, "review_text": "I train jaw every day now. Noticed my face looks leaner after 6 weeks.", "highlight_text": "my face looks leaner after 6 weeks." } },
+        { "type": "review", "settings": { "reviewer_name": "Daniel G.", "review_date": "25/02/2026", "rating": 4, "verified": false, "review_text": "Solid gum. Very tough, good flavor. I go through a pack pretty fast because I chew 3-4 pieces a day." } },
+        { "type": "review", "settings": { "reviewer_name": "Leo N.", "review_date": "22/02/2026", "rating": 5, "verified": true, "review_text": "My friends keep asking what I'm doing differently. It's the gum. Simple as that.", "highlight_text": "My friends keep asking what I'm doing differently.", "item_type": "3-Pack Bundle" } },
+        { "type": "review", "settings": { "reviewer_name": "Mason R.", "review_date": "20/02/2026", "rating": 5, "verified": true, "review_text": "Sugar free and loaded with creatine. Two things I care about. Plus the jaw workout is real." } },
+        { "type": "review", "settings": { "reviewer_name": "Brandon J.", "review_date": "18/02/2026", "rating": 5, "verified": true, "review_text": "Ordered on Monday, arrived Thursday. Immediately felt the difference from regular gum.", "highlight_text": "immediately felt the difference from regular gum." } },
+        { "type": "review", "settings": { "reviewer_name": "Sam E.", "review_date": "15/02/2026", "rating": 5, "verified": true, "review_text": "The mint flavor is actually really good. Not artificial tasting at all. And the resistance is perfect." } },
+        { "type": "review", "settings": { "reviewer_name": "Connor A.", "review_date": "12/02/2026", "rating": 5, "verified": false, "review_text": "I've tried mastic gum, falim gum, and jawline exercisers. This is better than all of them combined.", "highlight_text": "better than all of them combined." } },
+        { "type": "review", "settings": { "reviewer_name": "Will T.", "review_date": "10/02/2026", "rating": 4, "verified": true, "review_text": "Really happy with this. The hardness is exactly what I wanted. Great product overall.", "item_type": "Fresh Mint" } },
+        { "type": "review", "settings": { "reviewer_name": "Noah Z.", "review_date": "08/02/2026", "rating": 5, "verified": true, "review_text": "Game changer. Jaw is visibly more defined after 3 weeks.", "highlight_text": "Jaw is visibly more defined after 3 weeks." } },
+        { "type": "review", "settings": { "reviewer_name": "Jaden M.", "review_date": "05/02/2026", "rating": 5, "verified": true, "review_text": "Clean ingredients, real results. This isn't some gimmick. My jaw gets a genuine workout every time." } },
+        { "type": "review", "settings": { "reviewer_name": "Evan K.", "review_date": "02/02/2026", "rating": 5, "verified": true, "review_text": "Second month using GumForce. Jawline is noticeably sharper. People are commenting on it.", "highlight_text": "Jawline is noticeably sharper.", "item_type": "3-Pack Bundle" } },
+        { "type": "review", "settings": { "reviewer_name": "Mike L.", "review_date": "30/01/2026", "rating": 5, "verified": true, "review_text": "Hands down the best jaw training product out there. The gum format is so much easier than silicone chew toys." } },
+        { "type": "review", "settings": { "reviewer_name": "Derek H.", "review_date": "28/01/2026", "rating": 5, "verified": true, "review_text": "Ordered the 3-pack and gave one to my brother. We're both hooked.", "highlight_text": "We're both hooked.", "item_type": "3-Pack Bundle" } },
+        { "type": "review", "settings": { "reviewer_name": "Caleb O.", "review_date": "25/01/2026", "rating": 5, "verified": true, "review_text": "Way better than mastic gum. This actually has flavor and the resistance is consistent." } },
+        { "type": "review", "settings": { "reviewer_name": "Trevor P.", "review_date": "23/01/2026", "rating": 4, "verified": true, "review_text": "Really tough gum. My jaw was legit sore the first couple days but now it's getting easier. That means it's working.", "highlight_text": "That means it's working." } },
+        { "type": "review", "settings": { "reviewer_name": "Austin W.", "review_date": "20/01/2026", "rating": 5, "verified": true, "review_text": "Been chewing for 6 weeks now. Compliments on my jawline are coming in. This is the real deal.", "highlight_text": "Compliments on my jawline are coming in.", "item_type": "Fresh Mint" } },
+        { "type": "review", "settings": { "reviewer_name": "Bryce F.", "review_date": "18/01/2026", "rating": 5, "verified": false, "review_text": "I was spending $30 on mastic gum that tasted like tree bark. This is the same workout with actual flavor and creatine." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

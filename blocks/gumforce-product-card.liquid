@@ -1,0 +1,345 @@
+{% comment %}
+  ============================================================
+  GF — MISE EN PAGE PRODUIT  (façon Lemme)
+  ------------------------------------------------------------
+  - Colonne info (#ProductInformation) en carte unique.
+  - Carte fine + grosses marges gauche/droite (grille centrée).
+  - Miniatures plus grandes + espace miniatures ↔ image.
+  - Colonnes alignées en haut + air sous le menu.
+  - Neutralise le fond gris #f4f4f4 du carrousel.
+  - Trial-offer aplati (pas de carte dans la carte).
+  Toutes les proportions sont réglables ci-dessous.
+
+  À ajouter UNE fois sur la page produit (invisible).
+  ============================================================
+{% endcomment %}
+{%- assign s = block.settings -%}
+{%- assign gf_hide_marker = s.hide_alt_marker | default: '#checkout' | strip -%}
+{%- assign gf_hm_css = gf_hide_marker | replace: '"', '' -%}
+<style>
+  /* Carrousel : enlève le fond gris (#f4f4f4) des slides */
+  slideshow-container, slideshow-slide, slideshow-slides, slideshow-component {
+    background-color: transparent !important;
+  }
+
+  /* Colonne info en carte.
+     IMPORTANT : la carte est peinte sur le GROUPE (l'élément sticky du thème),
+     pas sur le wrapper. Sinon, au scroll, le groupe sticky glisse à l'intérieur
+     du wrapper-carte pour rester sous le header → gros vide en haut de la carte. */
+  [id^="ProductInformation"] {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+  [id^="ProductInformation"] > .group-block {
+    background: {{ s.card_bg | default: '#ffffff' }};
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    border-radius: {{ s.card_radius | default: 28 }}px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04), 0 20px 56px rgba(0, 0, 0, 0.10);
+    padding: {{ s.card_pad | default: 34 }}px !important;
+    padding-top: {{ s.card_pad_top | default: 12 }}px !important;
+  }
+
+  /* Le trial-offer ne refait pas une carte par-dessus la carte colonne */
+  [id^="ProductInformation"] [id^="gft-"]:not([id*="-err-"]):not([id*="-cta-"]) {
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* ===== DESKTOP : mise en page façon Lemme ===== */
+  @media (min-width: 750px) {
+    .product-information__grid {
+      width: 100% !important;
+      max-width: {{ s.content_max | default: 1380 }}px !important;
+      margin-inline: auto !important;
+      grid-template-columns: 1fr {{ s.card_width | default: 480 }}px !important;
+      gap: {{ s.media_card_gap | default: 64 }}px !important;
+      padding-top: {{ s.top_gap | default: 34 }}px !important;
+    }
+    /* miniatures plus grandes */
+    media-gallery { --thumbnail-width: {{ s.thumb_size | default: 96 }}px !important; }
+    /* espace entre les miniatures et l'image */
+    .slideshow-controls__thumbnails { margin-right: {{ s.thumb_gap | default: 36 }}px !important; }
+  }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 749px) {
+    .product-information__grid { padding-top: {{ s.top_gap_mobile | default: 18 }}px !important; }
+    [id^="ProductInformation"] > .group-block {
+      border-radius: {{ s.card_radius_mobile | default: 20 }}px;
+      padding: {{ s.card_pad_mobile | default: 18 }}px !important;
+      padding-top: {{ s.card_pad_top_mobile | default: 8 }}px !important;
+    }
+    /* Image mobile : pas pleine largeur + coins arrondis */
+    media-gallery { padding-inline: {{ s.mobile_media_inset | default: 12 }}px !important; }
+    media-gallery img, media-gallery video, media-gallery iframe, media-gallery deferred-media { border-radius: {{ s.mobile_media_radius | default: 16 }}px !important; }
+    media-gallery video, media-gallery deferred-media { overflow: hidden !important; }
+  }
+
+  {%- if gf_hide_marker != blank %}
+  /* ── Médias « checkout uniquement » ──
+     Tout média dont le texte ALT contient le marqueur est retiré de la
+     galerie : slide, miniature, et slide du zoom. L'image reste attachée à
+     sa variante → le panier et le checkout l'affichent normalement.
+     CSS pur → survit aux re-rendus de la galerie au changement de variante. */
+  slideshow-slide:has(img[alt*="{{ gf_hm_css }}"]),
+  .slideshow-controls__thumbnail:has(img[alt*="{{ gf_hm_css }}"]) { display:none !important; }
+  {%- endif %}
+</style>
+<div {{ block.shopify_attributes }} style="display:none"></div>
+<script>
+  /* Titre produit : "CHEWING-GUM" insécable (ne pas couper le titre) */
+  (function () {
+    var sc = document.currentScript;
+    var w = sc && sc.closest('[id^="shopify-block-"]');
+    /* position:absolute = hors du flux flex → ne génère plus de gap (height:0 en génère un) */
+    if (w) { w.style.cssText += ';position:absolute!important;width:0!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;'; }
+    /* ── PERF : dompte les vidéos de la galerie. Le thème les met en autoplay
+       (1080p ≈ 7 MB ×4 rendus) → réseau saturé au chargement, photo produit
+       lente, décodage saccadé. Ici : aucun téléchargement au load (preload
+       none), lecture muette uniquement quand la vidéo est à l'écran (>60%),
+       pause dès qu'elle en sort. ── */
+    function gfRestore(v) {
+      if (v.__gfRestored) return; v.__gfRestored = true;
+      if (v.dataset.gfSrc) v.setAttribute('src', v.dataset.gfSrc);
+      v.querySelectorAll('source').forEach(function (s2) {
+        if (s2.dataset.gfSrc) s2.setAttribute('src', s2.dataset.gfSrc);
+      });
+      v.preload = 'auto';
+      try { v.load(); } catch (err) {}
+    }
+    function tameGalleryVideos() {
+      var vids = document.querySelectorAll('media-gallery video, slideshow-container video');
+      if (!vids.length) return;
+      if (!window.__gfVidIO && 'IntersectionObserver' in window) {
+        window.__gfVidIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            var v = e.target;
+            if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+              gfRestore(v);
+              v.muted = true;
+              var p = v.play(); if (p && p.catch) p.catch(function () {});
+            } else if (!v.paused) { v.pause(); }
+          });
+        }, { threshold: [0, 0.5] });
+      }
+      var canFacade = !!window.__gfVidIO; /* sans IO on ne retire pas les sources (sinon jamais restaurées) */
+      vids.forEach(function (v) {
+        if (v.__gfTamed) return; v.__gfTamed = true;
+        v.removeAttribute('autoplay'); v.autoplay = false;
+        v.preload = 'none';
+        v.muted = true; v.setAttribute('playsinline', '');
+        if (canFacade) {
+          /* façade : sources retirées → 0 octet vidéo au chargement (le poster reste),
+             restaurées + lecture dès que la vidéo devient visible */
+          if (v.getAttribute('src')) { v.dataset.gfSrc = v.getAttribute('src'); v.removeAttribute('src'); }
+          v.querySelectorAll('source').forEach(function (s2) {
+            if (s2.getAttribute('src')) { s2.dataset.gfSrc = s2.getAttribute('src'); s2.removeAttribute('src'); }
+          });
+          try { v.load(); } catch (err) {} /* annule le téléchargement déjà entamé */
+        }
+        try { v.pause(); } catch (err) {}
+        if (window.__gfVidIO) window.__gfVidIO.observe(v);
+      });
+    }
+    /* filet :has() — vieux navigateurs uniquement (le CSS fait le travail ailleurs) */
+    var GF_HM = {{ gf_hide_marker | json }};
+    var gfNeedJsHide = true;
+    try { gfNeedJsHide = !(window.CSS && CSS.supports && CSS.supports('selector(:has(img))')); } catch (err) {}
+    function gfHideCheckoutMedia() {
+      if (!GF_HM || !gfNeedJsHide) return;
+      document.querySelectorAll('slideshow-slide, .slideshow-controls__thumbnail').forEach(function (el) {
+        if (el.__gfHidden) return;
+        var im = el.querySelector('img');
+        if (im && im.alt && im.alt.indexOf(GF_HM) !== -1) { el.__gfHidden = true; el.style.display = 'none'; }
+      });
+    }
+    tameGalleryVideos(); gfHideCheckoutMedia();
+    setTimeout(tameGalleryVideos, 800);   /* rattrape les re-rendus du thème */
+    setTimeout(gfHideCheckoutMedia, 800);
+    setTimeout(tameGalleryVideos, 2500);
+    /* le thème RE-CRÉE des <video> (re-rendus) → on dompte toute nouvelle vidéo à l'instant où elle apparaît */
+    if ('MutationObserver' in window) {
+      var gfVmoT = 0;
+      new MutationObserver(function () {
+        if (gfVmoT) return;
+        gfVmoT = setTimeout(function () { gfVmoT = 0; tameGalleryVideos(); gfHideCheckoutMedia(); }, 120);
+      }).observe(document.body, { childList: true, subtree: true });
+    }
+
+    function run() {
+      var info = document.querySelector('[id^="ProductInformation"]');
+      if (!info) return;
+      var nb = String.fromCharCode(0x2011);
+      var w = document.createTreeWalker(info, NodeFilter.SHOW_TEXT), n;
+      while ((n = w.nextNode())) {
+        if (/chewing-gum/i.test(n.nodeValue)) {
+          n.nodeValue = n.nodeValue.replace(/(chewing)-(gum)/gi, '$1' + nb + '$2');
+        }
+      }
+    }
+    if (document.readyState !== 'loading') run(); else document.addEventListener('DOMContentLoaded', run);
+  })();
+</script>
+{% schema %}
+{
+  "name": "GF Carte produit",
+  "settings": [
+    { "type": "header", "content": "── Médias checkout uniquement ──" },
+    { "type": "text", "id": "hide_alt_marker", "label": "Marqueur ALT à masquer", "default": "#checkout", "info": "Tout média du produit dont le texte alternatif contient ce marqueur est masqué de la galerie, mais reste l'image de variante (panier + checkout). Vide = désactivé." },
+    {
+      "type": "paragraph",
+      "content": "Mise en page produit façon Lemme. À ajouter UNE fois sur la page produit. Toutes les proportions sont réglables ci-dessous."
+    },
+    { "type": "header", "content": "Mise en page (ordinateur)" },
+    {
+      "type": "range",
+      "id": "card_width",
+      "label": "Largeur de la carte",
+      "min": 380,
+      "max": 640,
+      "step": 10,
+      "default": 480,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "content_max",
+      "label": "Largeur max (= marges gauche/droite)",
+      "min": 1200,
+      "max": 1700,
+      "step": 20,
+      "default": 1380,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "media_card_gap",
+      "label": "Espace image ↔ carte",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "top_gap",
+      "label": "Air au-dessus (galerie + carte)",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "default": 34,
+      "unit": "px"
+    },
+    { "type": "header", "content": "Miniatures (ordinateur)" },
+    {
+      "type": "range",
+      "id": "thumb_size",
+      "label": "Taille des miniatures",
+      "min": 60,
+      "max": 130,
+      "step": 2,
+      "default": 96,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "thumb_gap",
+      "label": "Espace miniatures ↔ image",
+      "min": 0,
+      "max": 70,
+      "step": 2,
+      "default": 36,
+      "unit": "px"
+    },
+    { "type": "header", "content": "Carte" },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Fond de la carte",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Arrondi des coins",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_pad",
+      "label": "Padding intérieur",
+      "min": 16,
+      "max": 56,
+      "step": 2,
+      "default": 34,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_pad_top",
+      "label": "Padding HAUT de la carte",
+      "info": "Séparé des côtés : serre le haut sans toucher gauche/droite/bas.",
+      "min": 0,
+      "max": 56,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    { "type": "header", "content": "Mobile" },
+    { "type": "range", "id": "mobile_media_inset", "label": "Marge latérale de l'image (mobile)", "min": 0, "max": 40, "step": 2, "default": 12, "unit": "px" },
+    { "type": "range", "id": "mobile_media_radius", "label": "Arrondi de l'image (mobile)", "min": 0, "max": 32, "step": 2, "default": 16, "unit": "px" },
+    {
+      "type": "range",
+      "id": "card_radius_mobile",
+      "label": "Arrondi des coins (mobile)",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_pad_mobile",
+      "label": "Padding intérieur (mobile)",
+      "min": 10,
+      "max": 32,
+      "step": 2,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_pad_top_mobile",
+      "label": "Padding HAUT de la carte (mobile)",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "top_gap_mobile",
+      "label": "Air au-dessus (mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "default": 18,
+      "unit": "px"
+    }
+  ],
+  "presets": [{ "name": "GF Carte produit" }]
+}
+{% endschema %}

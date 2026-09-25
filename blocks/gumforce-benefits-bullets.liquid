@@ -1,0 +1,234 @@
+{%- liquid
+  assign gf_id = block.id
+  assign s     = block.settings
+
+  assign b1 = s.bullet_1
+  assign b2 = s.bullet_2
+  assign b3 = s.bullet_3
+  assign b4 = s.bullet_4
+  assign b5 = s.bullet_5
+  assign b6 = s.bullet_6
+  assign b7 = s.bullet_7
+  assign b8 = s.bullet_8
+
+  assign has_any = false
+  if b1 != blank or b2 != blank or b3 != blank or b4 != blank
+    assign has_any = true
+  endif
+  if b5 != blank or b6 != blank or b7 != blank or b8 != blank
+    assign has_any = true
+  endif
+-%}
+{%- if has_any -%}
+
+<style>
+  /* Typo reliée aux variables du thème Horizon. Couleurs = réglages du block. */
+  #gfbl-{{ gf_id }} {
+    --gfbl-icon: {{ s.color_icon | default: '#2ab5b4' }};
+    --gfbl-text: {{ s.color_text | default: '#18181b' }};
+    --gfbl-isz:  {{ s.icon_size  | default: 16 }}px;
+    --gfbl-gap:  {{ s.gap        | default: 10 }}px;
+  }
+  #gfbl-{{ gf_id }} .gfbl-header {
+    font-family: var(--font-heading--family, 'Oswald', sans-serif);
+    font-size: var(--font-h6--size, 1rem);
+    font-weight: var(--font-heading--weight, 600);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+    color: var(--gfbl-text);
+    margin-bottom: calc(var(--gfbl-gap) * 1.4);
+  }
+  #gfbl-{{ gf_id }} ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gfbl-gap);
+  }
+  #gfbl-{{ gf_id }} li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body--family, 'Manrope', sans-serif);
+    font-size: var(--font-paragraph--size, 0.875rem);
+    font-weight: var(--font-body--weight, 400);
+    line-height: 1.5;
+    color: var(--gfbl-text);
+  }
+  #gfbl-{{ gf_id }} .gfbl-icon {
+    width: var(--gfbl-isz);
+    height: var(--gfbl-isz);
+    flex-shrink: 0;
+    color: var(--gfbl-icon);
+    display: block;
+  }
+</style>
+
+<div id="gfbl-{{ gf_id }}" {{ block.shopify_attributes }}>
+
+  {%- if s.header_text != blank -%}
+    <div class="gfbl-header">{{ s.header_text }}</div>
+  {%- endif -%}
+
+  <ul>
+    {%- for i in (1..8) -%}
+      {%- assign bkey = 'bullet_' | append: i -%}
+      {%- assign bval = s[bkey] -%}
+      {%- if bval != blank -%}
+        <li>
+          <span class="gfbl-icon" aria-hidden="true">
+            {%- case s.icon_type -%}
+              {%- when 'circle-check' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>
+                </svg>
+              {%- when 'star' -%}
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              {%- when 'arrow' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              {%- when 'dot' -%}
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="12" r="5"/>
+                </svg>
+              {%- else -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+            {%- endcase -%}
+          </span>
+          {{ bval }}
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+
+</div>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "GF Benefits Bullets",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Typo reliée aux réglages du thème (police Heading=Oswald, Body=Manrope + taille preset). Seules les couleurs sont réglables ici."
+    },
+    {
+      "type": "text",
+      "id": "header_text",
+      "label": "Section header (optional)",
+      "placeholder": "e.g. Why GumForce?"
+    },
+    {
+      "type": "header",
+      "content": "Bullets"
+    },
+    {
+      "type": "text",
+      "id": "bullet_1",
+      "label": "Bullet 1",
+      "default": "Supports jaw muscle development"
+    },
+    {
+      "type": "text",
+      "id": "bullet_2",
+      "label": "Bullet 2",
+      "default": "Enhanced with Creatine Monohydrate"
+    },
+    {
+      "type": "text",
+      "id": "bullet_3",
+      "label": "Bullet 3",
+      "default": "Natural flavors, no artificial ingredients"
+    },
+    {
+      "type": "text",
+      "id": "bullet_4",
+      "label": "Bullet 4"
+    },
+    {
+      "type": "text",
+      "id": "bullet_5",
+      "label": "Bullet 5"
+    },
+    {
+      "type": "text",
+      "id": "bullet_6",
+      "label": "Bullet 6"
+    },
+    {
+      "type": "text",
+      "id": "bullet_7",
+      "label": "Bullet 7"
+    },
+    {
+      "type": "text",
+      "id": "bullet_8",
+      "label": "Bullet 8"
+    },
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "select",
+      "id": "icon_type",
+      "label": "Icon type",
+      "options": [
+        { "value": "check",        "label": "✓ Checkmark" },
+        { "value": "circle-check", "label": "⊙ Circle checkmark" },
+        { "value": "star",         "label": "★ Star" },
+        { "value": "arrow",        "label": "› Arrow" },
+        { "value": "dot",          "label": "• Dot" }
+      ],
+      "default": "check"
+    },
+    {
+      "type": "color",
+      "id": "color_icon",
+      "label": "Icon color",
+      "default": "#2ab5b4"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size (px)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Text color",
+      "default": "#18181b"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Spacing between bullets (px)",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF Benefits Bullets"
+    }
+  ]
+}
+{% endschema %}

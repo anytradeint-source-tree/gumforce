@@ -1,0 +1,688 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Quiz — LE TEST DU MASSÉTER (pages Shopify)
+  ----------------------------------------------------------------------------
+  Funnel quiz : landing + Q1 → questions → analyse animée → diagnostic
+  (verdict, jauge, 4 cartes) → projection 90 jours → CTA offre.
+  • Chaque question = un BLOC éditable (titre, 4 options, points 0-3, méta).
+    L'ordre des blocs = l'ordre des questions. La 1re s'affiche sur la landing.
+  • Tous les textes (héro, avis, analyse, verdicts, timeline, CTA) = réglages.
+  • Design system GF : Oswald/Manrope du thème, teal, cartes claires,
+    sélection façon pack offer, CTA noir pilule. Mobile-first (colonne 520px).
+  • Verdicts : score ≤ seuil 1 → verdict 1 ; ≤ seuil 2 → verdict 2 ; sinon 3.
+  S'utilise avec templates/page.gumforce-quiz.json (contenu pré-rempli).
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign accent = s.accent_color | default: '#2AB5B4'
+  assign ar = accent | color_extract: 'red'
+  assign ag = accent | color_extract: 'green'
+  assign ab = accent | color_extract: 'blue'
+
+  assign txt_hd  = s.color_heading | default: '#0e0e0e'
+  assign txt     = s.color_text    | default: '#1c1c1e'
+  assign txt_mut = s.color_muted   | default: '#6b6b6b'
+  assign card_bg = s.color_card    | default: '#ffffff'
+
+  assign bg_style = s.bg_style | default: 'gradient'
+  if bg_style == 'transparent'
+    assign root_bg = 'transparent'
+  elsif bg_style == 'solid'
+    assign root_bg = s.color_bg | default: '#ffffff'
+  else
+    assign root_bg = 'linear-gradient(175deg, rgba(' | append: ar | append: ',' | append: ag | append: ',' | append: ab | append: ',0.10) 0%, rgba(' | append: ar | append: ',' | append: ag | append: ',' | append: ab | append: ',0.035) 45%, #ffffff 100%)'
+  endif
+
+  assign gf_track = s.enable_tracking | default: true, allow_false: true
+  assign r1_tp = s.review1_trustpilot | default: true, allow_false: true
+  assign r2_tp = s.review2_trustpilot | default: true, allow_false: true
+  assign skip_style = s.skip_style | default: 'link'
+  assign qcount = section.blocks.size
+  assign cta_link_final = s.cta_link | default: '/products/gumforce'
+  assign skip_link_final = s.skip_link | default: cta_link_final
+-%}
+
+<style>
+  #gfq-{{ sid }},
+  #gfq-{{ sid }} *,
+  #gfq-{{ sid }} *::before,
+  #gfq-{{ sid }} *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  #gfq-{{ sid }} {
+    --gfq-font:      var(--font-body--family, 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif);
+    --gfq-font-head: var(--font-heading--family, 'Oswald', sans-serif);
+    --gfq-accent:    {{ accent }};
+    --gfq-soft:      rgba({{ ar }},{{ ag }},{{ ab }},0.08);
+    --gfq-ring:      rgba({{ ar }},{{ ag }},{{ ab }},0.16);
+    --gfq-ink:       {{ txt }};
+    --gfq-hd:        {{ txt_hd }};
+    --gfq-mut:       {{ txt_mut }};
+    --gfq-card:      {{ card_bg }};
+    --gfq-line:      #e7e7ea;
+
+    font-family: var(--gfq-font);
+    background: {{ root_bg }};
+    color: var(--gfq-ink);
+    padding: {{ s.padding_top | default: 28 }}px 16px {{ s.padding_bottom | default: 56 }}px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #gfq-{{ sid }} .gfq-w { max-width: 520px; margin: 0 auto; min-height: 70vh; display: flex; flex-direction: column; }
+
+  /* ── écrans ── */
+  #gfq-{{ sid }} .gfq-screen { display: none; flex: 1; flex-direction: column; animation: gfq-in-{{ sid }} .35s ease both; }
+  #gfq-{{ sid }} .gfq-screen.gfq-on { display: flex; }
+  @keyframes gfq-in-{{ sid }} { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  /* ── héro (recette titre GF : Oswald 700, -0.02em) ── */
+  #gfq-{{ sid }} .gfq-hero {
+    font-family: var(--gfq-font-head); color: var(--gfq-hd);
+    font-size: clamp(26px, 7.2vw, 32px); line-height: 1.1; letter-spacing: -0.02em;
+    font-weight: 700; text-transform: uppercase; text-wrap: balance; margin: 10px 0 16px;
+  }
+  #gfq-{{ sid }} .gfq-hero em { font-style: normal; color: var(--gfq-accent); }
+
+  #gfq-{{ sid }} .gfq-check { display: flex; gap: 11px; align-items: flex-start; margin: 0 0 20px; }
+  #gfq-{{ sid }} .gfq-check svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--gfq-accent); margin-top: 2px; }
+  #gfq-{{ sid }} .gfq-check p { color: var(--gfq-mut); font-size: 15.5px; line-height: 1.55; }
+
+  /* ── boutons ── */
+  #gfq-{{ sid }} .gfq-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; border: 0; cursor: pointer; text-decoration: none; text-align: center;
+    font-family: var(--gfq-font); font-weight: 700; font-size: 15.5px; letter-spacing: 0.01em;
+    background: {{ s.cta_bg | default: '#111111' }}; color: {{ s.cta_text_color | default: '#ffffff' }};
+    border-radius: 100px; padding: 17px 22px; margin-top: auto;
+    transition: transform .2s cubic-bezier(.22,1,.36,1), background .2s ease;
+  }
+  #gfq-{{ sid }} .gfq-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  #gfq-{{ sid }} .gfq-btn:active { transform: scale(.98); }
+  @media (hover:hover) and (pointer:fine) {
+    #gfq-{{ sid }} .gfq-btn:hover { background: var(--gfq-accent); }
+  }
+  #gfq-{{ sid }} .gfq-skip {
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    width: 100%; text-decoration: none; cursor: pointer;
+    font-family: var(--gfq-font); font-weight: 700; font-size: 13.5px;
+    color: var(--gfq-accent); background: transparent;
+    border: 1.5px solid var(--gfq-ring); border-radius: 100px;
+    padding: 12px 18px; margin: 0 0 22px;
+    transition: background .2s ease, border-color .2s ease;
+  }
+  @media (hover:hover) { #gfq-{{ sid }} .gfq-skip:hover { background: var(--gfq-soft); border-color: var(--gfq-accent); } }
+  #gfq-{{ sid }} .gfq-skip--link {
+    border: 0; background: transparent; color: var(--gfq-mut);
+    font-weight: 500; font-size: 12.5px; padding: 6px 0; margin: 14px 0 0;
+    text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--gfq-accent);
+  }
+  @media (hover:hover) { #gfq-{{ sid }} .gfq-skip--link:hover { background: transparent; color: var(--gfq-accent); } }
+
+  /* ── carte avis ── */
+  #gfq-{{ sid }} .gfq-review {
+    background: var(--gfq-card); border: 1px solid var(--gfq-line); border-radius: 16px;
+    padding: 16px; display: flex; gap: 13px; margin: 0 0 28px; align-items: flex-start;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  }
+  #gfq-{{ sid }} .gfq-review .gfq-av {
+    flex: 0 0 44px; width: 44px; height: 44px; border-radius: 50%;
+    background: var(--gfq-soft); color: var(--gfq-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--gfq-font-head); font-weight: 700; font-size: 16px;
+  }
+  #gfq-{{ sid }} .gfq-review img.gfq-av { object-fit: cover; border: 1px solid var(--gfq-line); }
+  #gfq-{{ sid }} .gfq-review .gfq-stars { color: var(--gfq-accent); letter-spacing: 2px; font-size: 12px; margin-bottom: 4px; }
+  #gfq-{{ sid }} .gfq-tpstars { display: flex; gap: 2px; margin-bottom: 6px; }
+  #gfq-{{ sid }} .gfq-tpstars span {
+    width: 15px; height: 15px; background: #00B67A; color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; line-height: 1;
+  }
+  #gfq-{{ sid }} .gfq-review .gfq-rt { font-style: italic; color: var(--gfq-mut); font-size: 14.5px; line-height: 1.5; margin-bottom: 7px; }
+  #gfq-{{ sid }} .gfq-review .gfq-rw { font-size: 13px; font-weight: 700; color: var(--gfq-hd); }
+
+  /* ── questions ── */
+  #gfq-{{ sid }} .gfq-qtitle {
+    font-family: var(--gfq-font-head); color: var(--gfq-hd);
+    font-size: clamp(19px, 5.6vw, 22px); line-height: 1.2; letter-spacing: -0.01em;
+    font-weight: 700; text-transform: uppercase; text-wrap: balance; margin: 0 0 8px;
+  }
+  #gfq-{{ sid }} .gfq-hint { color: var(--gfq-accent); font-weight: 600; font-size: 13.5px; margin: 0 0 18px; }
+  #gfq-{{ sid }} .gfq-qhead { display: flex; justify-content: space-between; align-items: center; margin: 4px 0 9px; }
+  #gfq-{{ sid }} .gfq-qhead span:first-child {
+    background: var(--gfq-accent); color: #fff;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.05em;
+    padding: 4px 11px; border-radius: 100px; line-height: 1.3;
+  }
+  #gfq-{{ sid }} .gfq-qhead span:last-child {
+    font-family: var(--gfq-font-head); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; color: var(--gfq-mut); text-transform: uppercase;
+  }
+  #gfq-{{ sid }} .gfq-bar { height: 5px; background: rgba({{ ar }},{{ ag }},{{ ab }},0.14); border-radius: 3px; overflow: hidden; margin-bottom: 20px; }
+  #gfq-{{ sid }} .gfq-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--gfq-accent), #5DCAA5); border-radius: 3px; transition: width .3s ease; }
+
+  /* option = sélection façon pack offer, chip lettre/emoji + check */
+  #gfq-{{ sid }} .gfq-opt {
+    display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; cursor: pointer;
+    background: var(--gfq-card); border: 1.5px solid var(--gfq-line); color: var(--gfq-ink);
+    font-family: var(--gfq-font); font-weight: 600; font-size: 15px; line-height: 1.4;
+    border-radius: 14px; padding: 13px 15px; margin-bottom: 10px;
+    transition: border-color .16s ease, background .16s ease, transform .15s cubic-bezier(.34,1.56,.64,1);
+    animation: gfq-in-{{ sid }} .3s ease both;
+  }
+  #gfq-{{ sid }} .gfq-opt:active { transform: scale(.97); }
+  #gfq-{{ sid }} .gfq-opt.gfq-picked { border-color: var(--gfq-accent); background: var(--gfq-soft); color: var(--gfq-hd); }
+  #gfq-{{ sid }} .gfq-ol {
+    width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+    background: rgba({{ ar }},{{ ag }},{{ ab }},0.10); color: var(--gfq-accent);
+    font-size: 12.5px; font-weight: 800;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background .16s ease, color .16s ease;
+  }
+  #gfq-{{ sid }} .gfq-ol--e { width: 30px; height: 30px; border-radius: 9px; font-size: 16px; }
+  #gfq-{{ sid }} .gfq-opt.gfq-picked .gfq-ol { background: var(--gfq-accent); color: #fff; }
+  #gfq-{{ sid }} .gfq-opt.gfq-picked .gfq-ol--e { background: #fff; }
+  #gfq-{{ sid }} .gfq-ot { flex: 1; min-width: 0; }
+  #gfq-{{ sid }} .gfq-ock { color: var(--gfq-accent); font-size: 15px; opacity: 0; flex-shrink: 0; transition: opacity .15s ease; }
+  #gfq-{{ sid }} .gfq-opt.gfq-picked .gfq-ock { opacity: 1; }
+
+  /* ── analyse ── */
+  #gfq-{{ sid }} .gfq-analysis { justify-content: center; }
+  #gfq-{{ sid }} .gfq-an {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--gfq-mut); font-size: 15.5px; margin: 13px 0; opacity: 0;
+    animation: gfq-in-{{ sid }} .4s ease forwards;
+  }
+  #gfq-{{ sid }} .gfq-an svg { width: 22px; height: 22px; flex-shrink: 0; color: var(--gfq-accent); }
+
+  /* ── résultats ── */
+  /* ruban plein sur le bord de la carte — même motif que les badges de tiers du site */
+  #gfq-{{ sid }} .gfq-badge {
+    position: absolute; top: -10px; left: 16px; z-index: 1;
+    font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
+    color: #fff; background: var(--gfq-accent);
+    border-radius: 100px; padding: 4px 12px; line-height: 1.3; white-space: nowrap;
+    box-shadow: 0 3px 8px rgba({{ ar }},{{ ag }},{{ ab }},0.35);
+  }
+  #gfq-{{ sid }} .gfq-card {
+    position: relative;
+    background: var(--gfq-card); border: 1px solid var(--gfq-line); border-radius: 18px;
+    padding: 20px 18px; margin: 10px 0; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  }
+  #gfq-{{ sid }} .gfq-card--badged { margin-top: 20px; padding-top: 24px; }
+  #gfq-{{ sid }} .gfq-vlabel { font-size: 12px; color: var(--gfq-mut); letter-spacing: 0.1em; font-weight: 600; margin-bottom: 5px; }
+  #gfq-{{ sid }} .gfq-vmain {
+    font-family: var(--gfq-font-head); font-weight: 700; letter-spacing: -0.01em;
+    font-size: 30px; line-height: 1.08; color: var(--gfq-accent); margin-bottom: 9px; text-transform: uppercase;
+  }
+  #gfq-{{ sid }} .gfq-vsub { color: var(--gfq-mut); font-size: 15px; line-height: 1.55; }
+
+  #gfq-{{ sid }} .gfq-gauge { margin: 14px 0 2px; }
+  #gfq-{{ sid }} .gfq-gpill {
+    text-align: center; font-weight: 700; font-size: 12px; letter-spacing: 0.12em; color: var(--gfq-hd);
+    background: #ececef; border-radius: 100px; padding: 4px 14px; width: fit-content; margin: 0 auto 10px;
+  }
+  #gfq-{{ sid }} .gfq-gbar { position: relative; height: 8px; border-radius: 6px; background: linear-gradient(90deg,#5DC98A 0%,#D9C34A 45%,#D96A4A 100%); }
+  #gfq-{{ sid }} .gfq-gdot {
+    position: absolute; top: 50%; transform: translate(-50%,-50%); left: 50%;
+    width: 18px; height: 18px; border-radius: 50%; background: #fff;
+    border: 3px solid var(--gfq-hd); transition: left .5s cubic-bezier(.22,1,.36,1);
+  }
+  #gfq-{{ sid }} .gfq-glabels { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--gfq-mut); margin-top: 8px; }
+
+  #gfq-{{ sid }} .gfq-kcards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0 16px; }
+  #gfq-{{ sid }} .gfq-k { background: var(--gfq-card); border: 1px solid var(--gfq-line); border-radius: 14px; padding: 13px; }
+  #gfq-{{ sid }} .gfq-k--mint { background: var(--gfq-soft); border-color: var(--gfq-ring); }
+  #gfq-{{ sid }} .gfq-k .gfq-kl { font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em; color: var(--gfq-accent); margin-bottom: 5px; text-transform: uppercase; }
+  #gfq-{{ sid }} .gfq-k .gfq-kv { font-family: var(--gfq-font-head); font-weight: 600; font-size: 14.5px; line-height: 1.3; color: var(--gfq-hd); }
+
+  #gfq-{{ sid }} .gfq-btitle { font-family: var(--gfq-font-head); font-weight: 700; font-size: 18.5px; line-height: 1.25; color: var(--gfq-hd); margin-bottom: 7px; }
+  #gfq-{{ sid }} .gfq-btitle em { font-style: normal; color: var(--gfq-accent); }
+  #gfq-{{ sid }} .gfq-card p.gfq-body { color: var(--gfq-mut); font-size: 15px; line-height: 1.6; }
+
+  #gfq-{{ sid }} .gfq-tl { margin: 4px 0 0; padding: 0; list-style: none; }
+  #gfq-{{ sid }} .gfq-tl li {
+    display: flex; gap: 12px; padding: 9px 0; color: var(--gfq-mut); font-size: 14.5px; line-height: 1.5;
+    border-bottom: 1px dashed var(--gfq-line); align-items: baseline;
+  }
+  #gfq-{{ sid }} .gfq-tl li:last-child { border-bottom: 0; }
+  #gfq-{{ sid }} .gfq-tl .gfq-tw { flex: 0 0 88px; font-family: var(--gfq-font-head); font-weight: 600; color: var(--gfq-accent); font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+  #gfq-{{ sid }} .gfq-reassure { text-align: center; font-size: 12.5px; color: var(--gfq-mut); margin-top: 10px; }
+  #gfq-{{ sid }} .gfq-foot { margin-top: 22px; text-align: center; font-size: 11.5px; color: var(--gfq-mut); opacity: .8; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #gfq-{{ sid }} .gfq-screen, #gfq-{{ sid }} .gfq-an, #gfq-{{ sid }} .gfq-opt { animation: none !important; opacity: 1 !important; }
+  }
+</style>
+
+<section id="gfq-{{ sid }}">
+  <div class="gfq-w">
+
+    <div class="gfq-screen gfq-on" data-gfq-screen="landing">
+      <h1 class="gfq-hero">{{ s.hero }}</h1>
+      <div class="gfq-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <p>{{ s.check_text }}</p>
+      </div>
+      {%- if s.review1_text != blank -%}
+        <div class="gfq-review">
+          {%- if s.review1_avatar != blank -%}
+            <img class="gfq-av" src="{{ s.review1_avatar | image_url: width: 96, height: 96, crop: 'center' }}" alt="{{ s.review1_author | escape }}" width="44" height="44" loading="eager">
+          {%- else -%}
+            <div class="gfq-av">{{ s.review1_text | slice: 2, 1 | upcase | default: 'K' }}.</div>
+          {%- endif -%}
+          <div>
+            {%- if r1_tp -%}<div class="gfq-tpstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>{%- endif -%}
+            <p class="gfq-rt">{{ s.review1_text }}</p>
+            <p class="gfq-rw">{{ s.review1_author }}</p>
+          </div>
+        </div>
+      {%- endif -%}
+      {%- if qcount > 1 -%}
+        <div class="gfq-qhead"><span>QUESTION 1 / {{ qcount }}</span><span>{{ s.quiz_label | default: 'LE TEST DU MASSÉTER' }}</span></div>
+        <div class="gfq-bar"><i style="width: {{ 100 | divided_by: qcount }}%"></i></div>
+      {%- endif -%}
+      <h2 class="gfq-qtitle" data-gfq-q1title></h2>
+      {%- if s.q1_hint != blank -%}<p class="gfq-hint">{{ s.q1_hint }}</p>{%- endif -%}
+      <div data-gfq-q1opts></div>
+      {%- if s.skip_text != blank -%}
+        <a class="gfq-skip{% if skip_style == 'link' %} gfq-skip--link{% endif %}" href="{{ skip_link_final }}">{{ s.skip_text }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="gfq-screen" data-gfq-screen="quiz">
+      <div class="gfq-qhead"><span data-gfq-count></span><span>{{ s.quiz_label | default: 'LE TEST DU MASSÉTER' }}</span></div>
+      <div class="gfq-bar"><i data-gfq-progress></i></div>
+      <h2 class="gfq-qtitle" data-gfq-qtitle></h2>
+      <div data-gfq-qopts></div>
+    </div>
+
+    <div class="gfq-screen gfq-analysis" data-gfq-screen="analysis">
+      <div>
+        {%- assign an1 = s.an1 | default: 'On regarde ce que ton masséter fait quand tu serres…' -%}
+        {%- assign an2 = s.an2 | default: 'On croise ton assiette avec ton âge…' -%}
+        {%- assign an3 = s.an3 | default: 'On prépare ton résultat…' -%}
+        {%- assign gf_check_svg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="16 9.5 10.8 14.8 8 12"/></svg>' -%}
+        <div class="gfq-an" style="animation-delay:.2s">{{ gf_check_svg }}{{ an1 }}</div>
+        <div class="gfq-an" style="animation-delay:1.2s">{{ gf_check_svg }}{{ an2 }}</div>
+        <div class="gfq-an" style="animation-delay:2.2s">{{ gf_check_svg }}{{ an3 }}</div>
+      </div>
+    </div>
+
+    <div class="gfq-screen" data-gfq-screen="r1">
+      <div class="gfq-card gfq-card--badged">
+        <span class="gfq-badge">{{ s.r1_badge | default: 'TON DIAGNOSTIC' }}</span>
+        <div class="gfq-vlabel">{{ s.verdict_label | default: 'TON MASSÉTER :' }}</div>
+        <div class="gfq-vmain" data-gfq-verdict></div>
+        <p class="gfq-vsub" data-gfq-verdictsub></p>
+      </div>
+      <div class="gfq-gauge">
+        <div class="gfq-gpill" data-gfq-level></div>
+        <div class="gfq-gbar"><div class="gfq-gdot" data-gfq-dot></div></div>
+        <div class="gfq-glabels"><span>{{ s.gauge_low | default: 'Faible' }}</span><span>{{ s.gauge_mid | default: 'Sous-utilisation' }}</span><span>{{ s.gauge_high | default: 'Élevée' }}</span></div>
+      </div>
+      <div class="gfq-kcards">
+        <div class="gfq-k"><div class="gfq-kl">{{ s.k1_label | default: 'Ton corps' }}</div><div class="gfq-kv" data-gfq-k1></div></div>
+        <div class="gfq-k gfq-k--mint"><div class="gfq-kl">{{ s.k2_label | default: 'Ton masséter' }}</div><div class="gfq-kv">{{ s.k2_value | default: 'Zéro série, depuis toujours' }}</div></div>
+        <div class="gfq-k"><div class="gfq-kl">{{ s.k3_label | default: 'Ton assiette' }}</div><div class="gfq-kv" data-gfq-k3></div></div>
+        <div class="gfq-k gfq-k--mint"><div class="gfq-kl">{{ s.k4_label | default: 'Ton constat' }}</div><div class="gfq-kv" data-gfq-k4></div></div>
+      </div>
+      <button type="button" class="gfq-btn" data-gfq-tor2>{{ s.r1_cta | default: 'Montre-moi ce qui est possible' }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+
+    <div class="gfq-screen" data-gfq-screen="r2">
+      <div class="gfq-card gfq-card--badged">
+        <span class="gfq-badge">{{ s.r2_badge | default: "CE QUI T'ATTEND" }}</span>
+        <p class="gfq-btitle">{{ s.b1_title }}</p>
+        <p class="gfq-body">{{ s.b1_text }}</p>
+      </div>
+      {%- if s.review2_text != blank -%}
+        <div class="gfq-review" style="margin:4px 0 10px">
+          {%- if s.review2_avatar != blank -%}
+            <img class="gfq-av" src="{{ s.review2_avatar | image_url: width: 96, height: 96, crop: 'center' }}" alt="{{ s.review2_author | escape }}" width="44" height="44" loading="eager">
+          {%- else -%}
+            <div class="gfq-av">{{ s.review2_text | slice: 2, 1 | upcase | default: 'T' }}.</div>
+          {%- endif -%}
+          <div>
+            {%- if r2_tp -%}<div class="gfq-tpstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+            {%- else -%}<p class="gfq-stars">★★★★★</p>{%- endif -%}
+            <p class="gfq-rt">{{ s.review2_text }}</p>
+            <p class="gfq-rw">{{ s.review2_author }}</p>
+          </div>
+        </div>
+      {%- endif -%}
+      <div class="gfq-card">
+        <p class="gfq-btitle" data-gfq-r2title></p>
+        <ul class="gfq-tl">
+          {%- if s.tl1_text != blank -%}<li><span class="gfq-tw">{{ s.tl1_label }}</span><span>{{ s.tl1_text }}</span></li>{%- endif -%}
+          {%- if s.tl2_text != blank -%}<li><span class="gfq-tw">{{ s.tl2_label }}</span><span>{{ s.tl2_text }}</span></li>{%- endif -%}
+          {%- if s.tl3_text != blank -%}<li><span class="gfq-tw">{{ s.tl3_label }}</span><span>{{ s.tl3_text }}</span></li>{%- endif -%}
+          {%- if s.tl4_text != blank -%}<li><span class="gfq-tw">{{ s.tl4_label }}</span><span>{{ s.tl4_text }}</span></li>{%- endif -%}
+        </ul>
+      </div>
+      <a class="gfq-btn" href="{{ cta_link_final }}">{{ s.cta_text | default: "Voir l'offre 2+2 offerts" }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      {%- if s.reassure_text != blank -%}<p class="gfq-reassure">{{ s.reassure_text }}</p>{%- endif -%}
+      {%- if s.footer_note != blank -%}<p class="gfq-foot">{{ s.footer_note }}</p>{%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById('gfq-{{ sid }}');
+  if (!root) return;
+
+  /* questions construites depuis les blocs de la section (100% éditables) */
+  var QUESTIONS = [
+    {%- for block in section.blocks -%}
+      {
+        key: {{ block.settings.qkey | json }},
+        title: {{ block.settings.title | json }},
+        opts: [
+          { t: {{ block.settings.opt1 | json }}, v: {{ block.settings.val1 | default: 0 }}, m: {{ block.settings.meta1 | json }} },
+          { t: {{ block.settings.opt2 | json }}, v: {{ block.settings.val2 | default: 0 }}, m: {{ block.settings.meta2 | json }} },
+          { t: {{ block.settings.opt3 | json }}, v: {{ block.settings.val3 | default: 0 }}, m: {{ block.settings.meta3 | json }} },
+          { t: {{ block.settings.opt4 | json }}, v: {{ block.settings.val4 | default: 0 }}, m: {{ block.settings.meta4 | json }} }
+        ]
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ];
+  QUESTIONS.forEach(function (q) { q.opts = q.opts.filter(function (o) { return o.t && String(o.t).trim(); }); });
+  QUESTIONS = QUESTIONS.filter(function (q) { return q.title && q.opts.length; });
+  if (!QUESTIONS.length) return;
+
+  var TH1 = {{ s.threshold1 | default: 2 }};
+  var TH2 = {{ s.threshold2 | default: 6 }};
+  var DAYS = {{ s.days_ahead | default: 90 }};
+  var V = [
+    { t: {{ s.v1_title | default: 'RÉVEILLÉ' | json }}, l: {{ s.level1 | default: 'LÉGER' | json }}, s: {{ s.v1_sub | default: "Il travaille déjà un peu, mais jamais contre une vraie résistance. Il a de la marge, et c'est le profil qui progresse le plus vite." | json }} },
+    { t: {{ s.v2_title | default: 'SOUS-ENTRAÎNÉ' | json }}, l: {{ s.level2 | default: 'MODÉRÉ' | json }}, s: {{ s.v2_sub | default: "Il est là, tu l'as senti sous tes doigts. Mais avec ce que tu manges, il ne travaille presque jamais." | json }} },
+    { t: {{ s.v3_title | default: 'ENDORMI' | json }}, l: {{ s.level3 | default: 'ÉLEVÉ' | json }}, s: {{ s.v3_sub | default: "Il est là, mais il n'a jamais eu une vraie charge. Tout ce que tu mâches est déjà mou avant d'arriver dans ta bouche." | json }} }
+  ];
+  var R2TPL = {{ s.r2_title | default: "D'ici le [date], ton masséter aura fait 90 jours de travail." | json }};
+
+  var state = { i: 0, answers: [] };
+  function q(sel) { return root.querySelector(sel); }
+
+  /* ── tracking : envoie vers les outils déjà présents (Pixel Meta, Klaviyo,
+     GA4/dataLayer). Chaque appel est gardé : outil absent = ignoré. ── */
+  var TRACK = {{ gf_track | json }};
+  var gfqStarted = false;
+  function track(name, data) {
+    if (!TRACK) return;
+    data = data || {};
+    try { if (window.fbq) window.fbq('trackCustom', name, data); } catch (e1) {}
+    try {
+      if (window.klaviyo && window.klaviyo.push) window.klaviyo.push(['track', name, data]);
+      else if (window._learnq) window._learnq.push(['track', name, data]);
+    } catch (e2) {}
+    try { if (window.dataLayer) window.dataLayer.push(Object.assign({ event: name }, data)); } catch (e3) {}
+  }
+
+  function show(name) {
+    var screens = root.querySelectorAll('.gfq-screen');
+    for (var k = 0; k < screens.length; k++) screens[k].classList.remove('gfq-on');
+    q('[data-gfq-screen="' + name + '"]').classList.add('gfq-on');
+    var top = root.getBoundingClientRect().top + window.pageYOffset - 90;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
+  }
+
+  var LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+  function splitEmoji(text) {
+    /* emoji en tête d'option (tapé dans l'éditeur) → pastille dédiée */
+    try {
+      var m = text.match(/^(\p{Extended_Pictographic}(?:\uFE0F)?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F)?)*)\s+/u);
+      if (m) return { e: m[1], t: text.slice(m[0].length) };
+    } catch (err) {}
+    return { e: null, t: text };
+  }
+  function makeOpt(container, text, onpick, idx) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'gfq-opt';
+    b.style.animationDelay = (idx * 60) + 'ms';
+    var parts = splitEmoji(text);
+    var chip = document.createElement('span');
+    chip.className = parts.e ? 'gfq-ol gfq-ol--e' : 'gfq-ol';
+    chip.textContent = parts.e ? parts.e : (LETTERS[idx] || '');
+    var t = document.createElement('span');
+    t.className = 'gfq-ot';
+    t.textContent = parts.t;
+    var ck = document.createElement('span');
+    ck.className = 'gfq-ock';
+    ck.textContent = '✓';
+    b.appendChild(chip); b.appendChild(t); b.appendChild(ck);
+    b.onclick = onpick;
+    container.appendChild(b);
+    return b;
+  }
+
+  /* Q1 sur la landing */
+  q('[data-gfq-q1title]').textContent = QUESTIONS[0].title;
+  (function () {
+    var box = q('[data-gfq-q1opts]');
+    QUESTIONS[0].opts.forEach(function (o, j) {
+      makeOpt(box, o.t, function () {
+        var opts = box.querySelectorAll('.gfq-opt');
+        for (var k = 0; k < opts.length; k++) opts[k].classList.remove('gfq-picked');
+        this.classList.add('gfq-picked');
+        state.answers[0] = j;
+        if (!gfqStarted) { gfqStarted = true; track('QuizStart', {}); }
+        track('QuizAnswer', { question: QUESTIONS[0].key, step: 1, answer: QUESTIONS[0].opts[j].t });
+        setTimeout(function () {
+          if (QUESTIONS.length > 1) { state.i = 1; renderQ(); show('quiz'); }
+          else { startAnalysis(); }
+        }, 380);
+      }, j);
+    });
+  })();
+
+  function renderQ() {
+    var qq = QUESTIONS[state.i];
+    q('[data-gfq-count]').textContent = (state.i + 1) + ' / ' + QUESTIONS.length;
+    q('[data-gfq-progress]').style.width = ((state.i + 1) / QUESTIONS.length * 100) + '%';
+    q('[data-gfq-qtitle]').textContent = qq.title;
+    var box = q('[data-gfq-qopts]');
+    box.innerHTML = '';
+    qq.opts.forEach(function (o, j) {
+      makeOpt(box, o.t, function () {
+        var opts = box.querySelectorAll('.gfq-opt');
+        for (var k = 0; k < opts.length; k++) opts[k].classList.remove('gfq-picked');
+        this.classList.add('gfq-picked');
+        state.answers[state.i] = j;
+        track('QuizAnswer', { question: qq.key, step: state.i + 1, answer: qq.opts[j].t });
+        setTimeout(function () {
+          if (state.i < QUESTIONS.length - 1) { state.i++; renderQ(); }
+          else { startAnalysis(); }
+        }, 380);
+      }, j);
+    });
+    var sc = q('[data-gfq-screen="quiz"]');
+    sc.classList.remove('gfq-on'); void sc.offsetWidth; sc.classList.add('gfq-on');
+  }
+
+  function startAnalysis() {
+    show('analysis');
+    setTimeout(buildResults, 3100);
+  }
+
+  function ans(key) {
+    for (var k = 0; k < QUESTIONS.length; k++) {
+      if (QUESTIONS[k].key === key) return QUESTIONS[k].opts[state.answers[k]];
+    }
+    return null;
+  }
+
+  function buildResults() {
+    var score = 0, maxScore = 0;
+    QUESTIONS.forEach(function (qq, k) {
+      var a = qq.opts[state.answers[k]];
+      if (a) score += a.v;
+      var mx = 0;
+      qq.opts.forEach(function (o) { if (o.v > mx) mx = o.v; });
+      maxScore += mx;
+    });
+    var pct = maxScore ? Math.min(88, Math.max(18, Math.round(score / maxScore * 100))) : 50;
+    var vd = score <= TH1 ? V[0] : (score <= TH2 ? V[1] : V[2]);
+
+    q('[data-gfq-verdict]').textContent = vd.t;
+    q('[data-gfq-verdictsub]').textContent = vd.s;
+    q('[data-gfq-level]').textContent = vd.l;
+    q('[data-gfq-dot]').style.left = pct + '%';
+
+    var aS = ans('sport'), aA = ans('assiette'), aC = ans('constat'), aG = ans('age');
+    q('[data-gfq-k1]').textContent = aS && aS.m ? aS.m : '—';
+    q('[data-gfq-k3]').textContent = aA && aA.m ? aA.m : '—';
+    q('[data-gfq-k4]').textContent = (aC && aC.m ? aC.m : '—') + (aG && aG.m ? ', ' + aG.m : '');
+
+    var d = new Date(); d.setDate(d.getDate() + DAYS);
+    var dateStr;
+    try { dateStr = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' }).format(d); }
+    catch (e) { dateStr = d.getDate() + '/' + (d.getMonth() + 1); }
+    q('[data-gfq-r2title]').textContent = R2TPL.replace('[date]', dateStr);
+
+    track('QuizComplete', { verdict: vd.t, score: score, max: maxScore, pct: pct });
+    /* verdict dans l'URL du bouton final → attribution par diagnostic dans les analytics */
+    var cta = root.querySelector('[data-gfq-screen="r2"] a.gfq-btn');
+    if (cta) {
+      var href = cta.getAttribute('href') || '';
+      var sep = href.indexOf('?') === -1 ? '?' : '&';
+      cta.setAttribute('href', href + sep + 'utm_source=quiz&utm_content=' + encodeURIComponent(vd.t.toLowerCase()));
+      cta.addEventListener('click', function () { track('QuizCTA', { verdict: vd.t }); });
+    }
+
+    show('r1');
+  }
+
+  q('[data-gfq-tor2]').addEventListener('click', function () { show('r2'); });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "GF Quiz mâchoire",
+  "tag": "section",
+  "class": "gf-quiz",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "paragraph", "content": "Funnel quiz. Les questions sont des BLOCS (ordre des blocs = ordre des questions, la 1re s'affiche sur l'accueil). Score : chaque option vaut 0 à 3 points." },
+
+    { "type": "header", "content": "── Accueil ──" },
+    { "type": "inline_richtext", "id": "hero", "label": "Titre héro", "info": "Mets un mot en italique → il s'affiche en teal.", "default": "Ton visage a un muscle que t'as <em>jamais</em> entraîné" },
+    { "type": "text", "id": "check_text", "label": "Texte sous le titre", "default": "Test de 45 secondes : où en est ton masséter, et combien de temps pour le réveiller." },
+    { "type": "text", "id": "skip_text", "label": "Lien « ignorer » (vide = masqué)", "default": "Ignorer le test, découvrir GUMFORCE" },
+    { "type": "select", "id": "skip_style", "label": "Style du lien « ignorer »", "options": [ {"value":"link","label":"Lien discret (sous les options)"}, {"value":"pill","label":"Pilule"} ], "default": "link" },
+    { "type": "url", "id": "skip_link", "label": "Destination du lien « ignorer »" },
+    { "type": "text", "id": "review1_text", "label": "Avis accueil (vide = masqué)", "default": "« Dès que j'ai vu le produit, j'ai voulu commander sans hésiter. »" },
+    { "type": "text", "id": "review1_author", "label": "Auteur avis accueil", "default": "KEVIN · Avis Trustpilot vérifié" },
+    { "type": "checkbox", "id": "review1_trustpilot", "label": "Étoiles Trustpilot sur cet avis", "default": true },
+    { "type": "image_picker", "id": "review1_avatar", "label": "Photo du client (optionnel)", "info": "Carrée de préférence. Vide = initiale." },
+    { "type": "text", "id": "q1_hint", "label": "Aide sous la question 1", "default": "👆 Fais-le maintenant, ça prend 5 secondes." },
+    { "type": "text", "id": "quiz_label", "label": "Label en-tête du quiz", "default": "LE TEST DU MASSÉTER" },
+
+    { "type": "header", "content": "── Analyse (3 lignes) ──" },
+    { "type": "text", "id": "an1", "label": "Ligne 1", "default": "On regarde ce que ton masséter fait quand tu serres…" },
+    { "type": "text", "id": "an2", "label": "Ligne 2", "default": "On croise ton assiette avec ton âge…" },
+    { "type": "text", "id": "an3", "label": "Ligne 3", "default": "On prépare ton résultat…" },
+
+    { "type": "header", "content": "── Diagnostic ──" },
+    { "type": "text", "id": "r1_badge", "label": "Badge", "default": "TON DIAGNOSTIC" },
+    { "type": "text", "id": "verdict_label", "label": "Label verdict", "default": "TON MASSÉTER :" },
+    { "type": "range", "id": "threshold1", "label": "Seuil verdict 1 (score ≤)", "min": 0, "max": 10, "step": 1, "default": 2 },
+    { "type": "range", "id": "threshold2", "label": "Seuil verdict 2 (score ≤)", "min": 1, "max": 15, "step": 1, "default": 6 },
+    { "type": "text", "id": "v1_title", "label": "Verdict 1 — titre", "default": "RÉVEILLÉ" },
+    { "type": "text", "id": "v1_sub", "label": "Verdict 1 — texte", "default": "Il travaille déjà un peu, mais jamais contre une vraie résistance. Il a de la marge, et c'est le profil qui progresse le plus vite." },
+    { "type": "text", "id": "level1", "label": "Verdict 1 — niveau jauge", "default": "LÉGER" },
+    { "type": "text", "id": "v2_title", "label": "Verdict 2 — titre", "default": "SOUS-ENTRAÎNÉ" },
+    { "type": "text", "id": "v2_sub", "label": "Verdict 2 — texte", "default": "Il est là, tu l'as senti sous tes doigts. Mais avec ce que tu manges, il ne travaille presque jamais." },
+    { "type": "text", "id": "level2", "label": "Verdict 2 — niveau jauge", "default": "MODÉRÉ" },
+    { "type": "text", "id": "v3_title", "label": "Verdict 3 — titre", "default": "ENDORMI" },
+    { "type": "text", "id": "v3_sub", "label": "Verdict 3 — texte", "default": "Il est là, mais il n'a jamais eu une vraie charge. Tout ce que tu mâches est déjà mou avant d'arriver dans ta bouche." },
+    { "type": "text", "id": "level3", "label": "Verdict 3 — niveau jauge", "default": "ÉLEVÉ" },
+    { "type": "text", "id": "gauge_low", "label": "Jauge — gauche", "default": "Faible" },
+    { "type": "text", "id": "gauge_mid", "label": "Jauge — centre", "default": "Sous-utilisation" },
+    { "type": "text", "id": "gauge_high", "label": "Jauge — droite", "default": "Élevée" },
+    { "type": "text", "id": "k1_label", "label": "Carte 1 — label (rempli par la question « sport »)", "default": "Ton corps" },
+    { "type": "text", "id": "k2_label", "label": "Carte 2 — label", "default": "Ton masséter" },
+    { "type": "text", "id": "k2_value", "label": "Carte 2 — valeur fixe", "default": "Zéro série, depuis toujours" },
+    { "type": "text", "id": "k3_label", "label": "Carte 3 — label (question « assiette »)", "default": "Ton assiette" },
+    { "type": "text", "id": "k4_label", "label": "Carte 4 — label (questions « constat » + « age »)", "default": "Ton constat" },
+    { "type": "text", "id": "r1_cta", "label": "Bouton vers l'étape suivante", "default": "Montre-moi ce qui est possible" },
+
+    { "type": "header", "content": "── Ce qui t'attend ──" },
+    { "type": "text", "id": "r2_badge", "label": "Badge", "default": "CE QUI T'ATTEND" },
+    { "type": "inline_richtext", "id": "b1_title", "label": "Carte 1 — titre", "info": "Italique = teal.", "default": "Tu sauras si ça marche au bout de <em>3 jours</em>, pas de 3 mois." },
+    { "type": "text", "id": "b1_text", "label": "Carte 1 — texte", "default": "Le premier signal, c'est pas ton visage. C'est la courbature. Tu vas la sentir sous les pommettes au bout de 48 à 72 heures, comme après une première séance de jambes." },
+    { "type": "text", "id": "review2_text", "label": "Avis (vide = masqué)", "default": "« J'ai eu des courbatures à la mâchoire et j'ai pu mâcher pendant plus d'une heure sans m'en lasser. »" },
+    { "type": "text", "id": "review2_author", "label": "Auteur avis", "default": "Avis Trustpilot vérifié" },
+    { "type": "checkbox", "id": "review2_trustpilot", "label": "Étoiles Trustpilot sur cet avis", "default": true },
+    { "type": "image_picker", "id": "review2_avatar", "label": "Photo du client (optionnel)", "info": "Carrée de préférence. Vide = initiale." },
+    { "type": "text", "id": "r2_title", "label": "Carte timeline — titre", "info": "[date] = aujourd'hui + le nombre de jours ci-dessous.", "default": "D'ici le [date], ton masséter aura fait 90 jours de travail." },
+    { "type": "range", "id": "days_ahead", "label": "Jours de projection", "min": 30, "max": 120, "step": 10, "default": 90 },
+    { "type": "text", "id": "tl1_label", "label": "Étape 1 — quand", "default": "JOUR 3" },
+    { "type": "text", "id": "tl1_text", "label": "Étape 1 — quoi", "default": "Premières courbatures. Le muscle découvre la résistance." },
+    { "type": "text", "id": "tl2_label", "label": "Étape 2 — quand", "default": "SEMAINE 2" },
+    { "type": "text", "id": "tl2_text", "label": "Étape 2 — quoi", "default": "Mâcher devient facile. Le muscle s'adapte, comme les autres." },
+    { "type": "text", "id": "tl3_label", "label": "Étape 3 — quand", "default": "SEMAINE 6" },
+    { "type": "text", "id": "tl3_text", "label": "Étape 3 — quoi", "default": "La contraction se voit sans forcer." },
+    { "type": "text", "id": "tl4_label", "label": "Étape 4 — quand", "default": "SEMAINE 12" },
+    { "type": "text", "id": "tl4_text", "label": "Étape 4 — quoi", "default": "Photo de contrôle. Compare avec le jour 1." },
+    { "type": "text", "id": "cta_text", "label": "Bouton final", "default": "Voir l'offre 2+2 offerts" },
+    { "type": "url", "id": "cta_link", "label": "Destination du bouton final" },
+    { "type": "text", "id": "reassure_text", "label": "Ligne sous le bouton", "default": "2 sachets achetés = 2 offerts · Livraison 48 h gratuite · Garantie 90 jours" },
+    { "type": "text", "id": "footer_note", "label": "Note de bas de page", "default": "Ton résultat vient de tes réponses, pas d'un scanner. On préfère te le dire." },
+
+    { "type": "header", "content": "── Tracking ──" },
+    { "type": "checkbox", "id": "enable_tracking", "label": "Envoyer les réponses aux outils de tracking", "default": true, "info": "Événements QuizStart, QuizAnswer, QuizComplete, QuizCTA envoyés au Pixel Meta, à Klaviyo et à GA4 (dataLayer) s'ils sont présents sur le site." },
+
+    { "type": "header", "content": "── Apparence ──" },
+    { "type": "select", "id": "bg_style", "label": "Fond", "options": [ {"value":"gradient","label":"Dégradé menthe (recommandé)"}, {"value":"solid","label":"Couleur unie"}, {"value":"transparent","label":"Transparent"} ], "default": "gradient" },
+    { "type": "color", "id": "color_bg", "label": "Couleur de fond (si unie)", "default": "#ffffff" },
+    { "type": "color", "id": "color_card", "label": "Fond des cartes", "default": "#ffffff" },
+    { "type": "color", "id": "color_heading", "label": "Couleur titres", "default": "#0e0e0e" },
+    { "type": "color", "id": "color_text", "label": "Couleur texte", "default": "#1c1c1e" },
+    { "type": "color", "id": "color_muted", "label": "Couleur texte secondaire", "default": "#6b6b6b" },
+    { "type": "color", "id": "accent_color", "label": "Couleur accent", "default": "#2AB5B4" },
+    { "type": "color", "id": "cta_bg", "label": "Fond des boutons", "default": "#111111" },
+    { "type": "color", "id": "cta_text_color", "label": "Texte des boutons", "default": "#ffffff" },
+    { "type": "header", "content": "── Mise en page ──" },
+    { "type": "range", "id": "padding_top", "label": "Padding haut", "min": 0, "max": 120, "step": 4, "default": 28, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bas", "min": 0, "max": 120, "step": 4, "default": 56, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "select", "id": "qkey", "label": "Rôle de la question", "info": "Sert au remplissage des cartes du diagnostic : « sport » → Ton corps · « assiette » → Ton assiette · « constat » + « age » → Ton constat.", "options": [ {"value":"test","label":"test (Q1)"}, {"value":"sport","label":"sport"}, {"value":"assiette","label":"assiette"}, {"value":"constat","label":"constat"}, {"value":"age","label":"age"}, {"value":"temps","label":"temps / autre"} ], "default": "temps" },
+        { "type": "text", "id": "title", "label": "Question", "default": "Ta question ?" },
+        { "type": "text", "id": "opt1", "label": "Option 1", "default": "Réponse 1" },
+        { "type": "range", "id": "val1", "label": "Points option 1", "min": 0, "max": 3, "step": 1, "default": 0 },
+        { "type": "text", "id": "meta1", "label": "Méta option 1 (texte carte diagnostic)" },
+        { "type": "text", "id": "opt2", "label": "Option 2", "default": "Réponse 2" },
+        { "type": "range", "id": "val2", "label": "Points option 2", "min": 0, "max": 3, "step": 1, "default": 0 },
+        { "type": "text", "id": "meta2", "label": "Méta option 2" },
+        { "type": "text", "id": "opt3", "label": "Option 3 (vide = masquée)" },
+        { "type": "range", "id": "val3", "label": "Points option 3", "min": 0, "max": 3, "step": 1, "default": 0 },
+        { "type": "text", "id": "meta3", "label": "Méta option 3" },
+        { "type": "text", "id": "opt4", "label": "Option 4 (vide = masquée)" },
+        { "type": "range", "id": "val4", "label": "Points option 4", "min": 0, "max": 3, "step": 1, "default": 0 },
+        { "type": "text", "id": "meta4", "label": "Méta option 4" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "GF Quiz mâchoire" }
+  ]
+}
+{% endschema %}

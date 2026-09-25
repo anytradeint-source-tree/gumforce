@@ -1,0 +1,1641 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Bundle Cards — Side-by-side Sub vs One-time
+  ----------------------------------------------------------------------------
+  Based on gumforce-offer-selector.liquid architecture.
+  All colors configurable. Card images uploadable via settings.
+
+  AUTO-DETECTS:
+    • Subscription vs one-time variants (selling plan allocations)
+    • Selling plan ID
+    • Flavor list (option1)
+    • Live prices (Markets-aware)
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign s  = block.settings
+  assign pr = s.product
+
+  if pr == blank and request.visual_preview_mode
+    assign pr = collections.all.products.first
+  endif
+
+  assign gf_id = block.id | replace: '-', ''
+-%}
+
+{%- if pr == blank -%}
+
+  <style>
+    #gfb-empty-{{ gf_id }} {
+      max-width: 540px;
+      margin: 24px auto;
+      padding: 32px 24px;
+      border: 2px dashed #e5e5e5;
+      border-radius: 14px;
+      text-align: center;
+      font-family: inherit;
+      color: #555;
+      background: #fafafa;
+    }
+    #gfb-empty-{{ gf_id }} h3 { font-size: 16px; margin: 0 0 8px; color: #111; font-weight: 700; }
+    #gfb-empty-{{ gf_id }} p  { margin: 0; font-size: 13px; line-height: 1.5; }
+  </style>
+  <div id="gfb-empty-{{ gf_id }}" role="alert">
+    <h3>GF Bundle Cards — setup required</h3>
+    <p>Pick a product in the block settings to display the subscription vs one-time cards.</p>
+  </div>
+
+{%- else -%}
+
+  {%- liquid
+    # ─────────────────────────────────────────────────────────
+    # AUTO-DETECT subscription / one-time variants
+    # ─────────────────────────────────────────────────────────
+    assign sub_variant = nil
+    if s.sub_pack_filter != blank
+      for v in pr.variants
+        if v.option2 == s.sub_pack_filter
+          assign sub_variant = v
+          break
+        endif
+      endfor
+    endif
+    if sub_variant == nil
+      for v in pr.variants
+        if v.selling_plan_allocations.size > 0
+          assign sub_variant = v
+          break
+        endif
+      endfor
+    endif
+    if sub_variant == nil
+      assign sub_variant = pr.variants.first
+    endif
+
+    assign sub_pack = sub_variant.option2 | default: ''
+
+    assign once_variant = nil
+    if s.once_pack_filter != blank
+      for v in pr.variants
+        if v.option2 == s.once_pack_filter
+          assign once_variant = v
+          break
+        endif
+      endfor
+    endif
+    if once_variant == nil
+      for v in pr.variants
+        if v.selling_plan_allocations.size == 0 and v.option2 != sub_pack
+          assign once_variant = v
+          break
+        endif
+      endfor
+    endif
+    if once_variant == nil
+      for v in pr.variants
+        if v.option2 != sub_pack
+          assign once_variant = v
+          break
+        endif
+      endfor
+    endif
+    if once_variant == nil
+      assign once_variant = pr.variants.first
+    endif
+
+    assign once_pack = once_variant.option2 | default: ''
+
+    # ─────────────────────────────────────────────────────────
+    # SELLING PLAN ID
+    # ─────────────────────────────────────────────────────────
+    assign selling_plan_id = s.selling_plan_id | plus: 0
+    if selling_plan_id == 0
+      if sub_variant.selling_plan_allocations.size > 0
+        assign selling_plan_id = sub_variant.selling_plan_allocations.first.selling_plan.id
+      elsif pr.selling_plan_groups.size > 0
+        assign first_group = pr.selling_plan_groups.first
+        if first_group.selling_plans.size > 0
+          assign selling_plan_id = first_group.selling_plans.first.id
+        endif
+      endif
+    endif
+
+    # ─────────────────────────────────────────────────────────
+    # COLLECT FLAVOR LIST (option1)
+    # ─────────────────────────────────────────────────────────
+    assign flavor_blob = ''
+    for v in pr.variants
+      assign include_v = false
+      if sub_pack != blank and v.option2 == sub_pack
+        assign include_v = true
+      endif
+      if once_pack != blank and v.option2 == once_pack
+        assign include_v = true
+      endif
+      if sub_pack == blank and once_pack == blank
+        assign include_v = true
+      endif
+      if include_v and v.option1 != blank
+        unless flavor_blob contains v.option1
+          assign flavor_blob = flavor_blob | append: v.option1 | append: '|||'
+        endunless
+      endif
+    endfor
+    assign flavor_blob = flavor_blob | remove_last: '|||'
+    assign flavor_values = flavor_blob | split: '|||'
+
+    assign show_flavors = false
+    if flavor_values.size > 1
+      assign show_flavors = true
+    endif
+
+    # ─────────────────────────────────────────────────────────
+    # PRICING
+    # ─────────────────────────────────────────────────────────
+    if s.sub_price_manual != blank
+      assign sub_price_str = s.sub_price_manual
+    else
+      assign sub_price_str = sub_variant.price | money
+    endif
+
+    if s.sub_compare_manual != blank
+      assign sub_compare_str = s.sub_compare_manual
+    elsif sub_variant.compare_at_price > sub_variant.price
+      assign sub_compare_str = sub_variant.compare_at_price | money
+    else
+      assign sub_compare_str = ''
+    endif
+
+    if s.once_price_manual != blank
+      assign once_price_str = s.once_price_manual
+    else
+      assign once_price_str = once_variant.price | money
+    endif
+
+    if s.once_compare_manual != blank
+      assign once_compare_str = s.once_compare_manual
+    elsif once_variant.compare_at_price > once_variant.price
+      assign once_compare_str = once_variant.compare_at_price | money
+    else
+      assign once_compare_str = ''
+    endif
+
+    # ─────────────────────────────────────────────────────────
+    # MISC
+    # ─────────────────────────────────────────────────────────
+    assign default_card = s.default_card | default: 'sub'
+    assign cta_text     = s.cta_text | default: 'Ajouter au panier'
+
+    if s.use_theme_font
+      assign gf_font = 'var(--font-body-family, var(--body-font-family, inherit))'
+    else
+      assign gf_font = "'Inter', -apple-system, sans-serif"
+    endif
+
+    # Sub card colors — gradient takes priority over solid
+    assign sub_gradient = s.sub_card_gradient
+    assign sub_bg       = s.sub_card_bg       | default: '#0f2626'
+    assign sub_border   = s.sub_card_border   | default: '#2AB5B4'
+    assign sub_text     = s.sub_card_text     | default: '#ffffff'
+    assign sub_muted    = s.sub_card_muted    | default: '#7aadad'
+    assign sub_tag_bg   = s.sub_tag_bg        | default: '#1a3d3d'
+    assign sub_tag_color = s.sub_tag_color    | default: '#2AB5B4'
+
+    # Once card colors — gradient takes priority over solid
+    assign once_gradient = s.once_card_gradient
+    assign once_bg       = s.once_card_bg     | default: '#1a1a1a'
+    assign once_border   = s.once_card_border | default: 'rgba(255,255,255,0.12)'
+    assign once_text     = s.once_card_text   | default: '#ffffff'
+    assign once_muted    = s.once_card_muted  | default: '#777777'
+    assign once_tag_bg   = s.once_tag_bg      | default: '#2a2a2a'
+    assign once_tag_color = s.once_tag_color  | default: '#999999'
+
+    # Global
+    assign accent       = s.color_accent      | default: '#2AB5B4'
+    assign section_text = s.section_text_color | default: '#111111'
+
+    # Reassurance
+    assign reas_bg     = s.reas_bg     | default: 'rgba(42,181,180,0.06)'
+    assign reas_border = s.reas_border | default: 'rgba(42,181,180,0.15)'
+
+    # Pill colors
+    assign pill_bg        = s.pill_bg        | default: '#1a1a1a'
+    assign pill_border    = s.pill_border    | default: '#333333'
+    assign pill_text      = s.pill_text      | default: '#888888'
+    assign pill_active_bg = s.pill_active_bg | default: '#2AB5B4'
+    assign pill_active_text = s.pill_active_text | default: '#ffffff'
+    assign pill_active_border = s.pill_active_border | default: '#2AB5B4'
+  -%}
+
+  <style>
+    #gfb-{{ gf_id }} {
+      --gfb-font: {{ gf_font }};
+      --gfb-accent: {{ accent }};
+      --gfb-section-text: {{ section_text }};
+      --gfb-radius: {{ s.border_radius | default: 16 }}px;
+
+      padding-block-start:  {{ s.padding_top    | default: 0 }}px;
+      padding-block-end:    {{ s.padding_bottom | default: 8 }}px;
+      padding-inline-start: {{ s.padding_left   | default: 0 }}px;
+      padding-inline-end:   {{ s.padding_right  | default: 0 }}px;
+
+      font-family: var(--gfb-font);
+      color: var(--gfb-section-text);
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    #gfb-{{ gf_id }} *,
+    #gfb-{{ gf_id }} *::before,
+    #gfb-{{ gf_id }} *::after { box-sizing: border-box; }
+
+    /* ── FLAVOR PILLS ── */
+    #gfb-{{ gf_id }} .gfb-flavor-section { margin-bottom: 20px; }
+    #gfb-{{ gf_id }} .gfb-flavor-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    #gfb-{{ gf_id }} .gfb-flavor-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gfb-section-text);
+      flex-shrink: 0;
+    }
+    #gfb-{{ gf_id }} .gfb-flavor-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    #gfb-{{ gf_id }} .gfb-pill {
+      padding: 9px 18px;
+      border-radius: 100px;
+      border: 1.5px solid {{ pill_border }};
+      background: {{ pill_bg }};
+      color: {{ pill_text }};
+      font-family: var(--gfb-font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #gfb-{{ gf_id }} .gfb-pill:hover {
+      border-color: {{ pill_active_border }};
+      opacity: 0.7;
+    }
+    #gfb-{{ gf_id }} .gfb-pill.active {
+      background: {{ pill_active_bg }};
+      color: {{ pill_active_text }};
+      border-color: {{ pill_active_border }};
+    }
+    #gfb-{{ gf_id }} .gfb-pill.unavailable {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    /* ── OOS TOAST ── */
+    #gfb-{{ gf_id }} .gfb-oos-toast {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #d97706;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 7px 12px;
+      margin-top: 8px;
+      animation: gfb-fadeIn 0.2s ease;
+    }
+    #gfb-{{ gf_id }} .gfb-oos-toast.is-visible { display: inline-flex; }
+    #gfb-{{ gf_id }} .gfb-oos-toast svg { width: 14px; height: 14px; flex-shrink: 0; }
+    @keyframes gfb-fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── GRID ── */
+    #gfb-{{ gf_id }} .gfb-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    #gfb-{{ gf_id }} .gfb-radio {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    #gfb-{{ gf_id }} .gfb-card-wrap { position: relative; }
+
+    #gfb-{{ gf_id }} .gfb-card {
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--gfb-radius);
+      padding: 20px 16px;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      height: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── SUB CARD ── */
+    #gfb-{{ gf_id }} .gfb-card--sub {
+      background: {% if sub_gradient != blank %}{{ sub_gradient }}{% else %}{{ sub_bg }}{% endif %};
+      border: 2px solid {{ once_border }};
+      color: {{ sub_text }};
+      opacity: 0.7;
+    }
+    #gfb-{{ gf_id }} .gfb-radio:checked + .gfb-card--sub {
+      border: 3px solid {{ sub_border }};
+      padding: 19px 15px;
+      opacity: 1;
+      box-shadow: 0 0 0 3px {{ sub_border }}33, 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    /* ── ONCE CARD ── */
+    #gfb-{{ gf_id }} .gfb-card--once {
+      background: {% if once_gradient != blank %}{{ once_gradient }}{% else %}{{ once_bg }}{% endif %};
+      border: 2px solid {{ once_border }};
+      color: {{ once_text }};
+      opacity: 0.7;
+    }
+    #gfb-{{ gf_id }} .gfb-radio:checked + .gfb-card--once {
+      border: 3px solid {{ sub_border }};
+      padding: 19px 15px;
+      opacity: 1;
+      box-shadow: 0 0 0 3px {{ sub_border }}33, 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    /* ── TAG ── */
+    #gfb-{{ gf_id }} .gfb-tag {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 14px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      align-self: flex-start;
+    }
+    #gfb-{{ gf_id }} .gfb-card--sub .gfb-tag {
+      background: {{ sub_tag_bg }};
+      color: {{ sub_tag_color }};
+    }
+    #gfb-{{ gf_id }} .gfb-card--once .gfb-tag {
+      background: {{ once_tag_bg }};
+      color: {{ once_tag_color }};
+    }
+
+    /* ── PRICE ROW ── */
+    #gfb-{{ gf_id }} .gfb-price-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── DISCOUNT BADGE ── */
+    #gfb-{{ gf_id }} .gfb-badge {
+      display: inline-flex;
+      align-items: center;
+      background: {{ s.badge_bg | default: '#e53e3e' }};
+      color: {{ s.badge_text_color | default: '#ffffff' }};
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    /* ── CARD IMAGE ── */
+    #gfb-{{ gf_id }} .gfb-card-img {
+      width: 100%;
+      max-height: 120px;
+      object-fit: contain;
+      margin-bottom: 14px;
+      border-radius: 8px;
+    }
+
+    /* ── CARD TEXT ── */
+    #gfb-{{ gf_id }} .gfb-name {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+      line-height: 1.25;
+    }
+    #gfb-{{ gf_id }} .gfb-card--sub .gfb-desc { color: {{ sub_muted }}; }
+    #gfb-{{ gf_id }} .gfb-card--once .gfb-desc { color: {{ once_muted }}; }
+    #gfb-{{ gf_id }} .gfb-desc {
+      font-size: 12px;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    #gfb-{{ gf_id }} .gfb-price {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    #gfb-{{ gf_id }} .gfb-price-per {
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    #gfb-{{ gf_id }} .gfb-card--sub .gfb-price-per { color: {{ sub_muted }}; }
+    #gfb-{{ gf_id }} .gfb-card--once .gfb-price-per { color: {{ once_muted }}; }
+    #gfb-{{ gf_id }} .gfb-old-price {
+      font-size: 13px;
+      text-decoration: line-through;
+      margin-top: 4px;
+    }
+    #gfb-{{ gf_id }} .gfb-card--sub .gfb-old-price { color: {{ sub_muted }}; }
+    #gfb-{{ gf_id }} .gfb-card--once .gfb-old-price { color: {{ once_muted }}; }
+    #gfb-{{ gf_id }} .gfb-unit-price {
+      font-size: 11px;
+      color: var(--gfb-accent);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    #gfb-{{ gf_id }} .gfb-ship {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: auto;
+      padding-top: 14px;
+      font-size: 11px;
+    }
+    #gfb-{{ gf_id }} .gfb-card--sub .gfb-ship { color: {{ sub_muted }}; }
+    #gfb-{{ gf_id }} .gfb-card--once .gfb-ship { color: {{ once_muted }}; }
+    #gfb-{{ gf_id }} .gfb-ship svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    /* ── REASSURANCE ── */
+    #gfb-{{ gf_id }} .gfb-reassurance {
+      margin-top: 12px;
+      background: {{ reas_bg }};
+      border: 1px solid {{ reas_border }};
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      transition: opacity 0.3s, max-height 0.35s ease, padding 0.3s, margin 0.3s;
+      overflow: hidden;
+    }
+    #gfb-{{ gf_id }} .gfb-reassurance.is-hidden {
+      max-height: 0;
+      opacity: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-top: 0;
+      border-color: transparent;
+    }
+    #gfb-{{ gf_id }} .gfb-reassurance:not(.is-hidden) {
+      max-height: 250px;
+      opacity: 1;
+    }
+    #gfb-{{ gf_id }} .gfb-reas-shield {
+      width: 20px; height: 20px;
+      flex-shrink: 0;
+      color: var(--gfb-accent);
+      margin-top: 1px;
+    }
+    #gfb-{{ gf_id }} .gfb-reas-content { flex: 1; }
+    #gfb-{{ gf_id }} .gfb-reas-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gfb-accent);
+      margin-bottom: 4px;
+    }
+    #gfb-{{ gf_id }} .gfb-reas-text {
+      font-size: 12px;
+      color: {{ s.reas_text_color | default: '#666666' }};
+      line-height: 1.5;
+    }
+    #gfb-{{ gf_id }} .gfb-reas-how {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gfb-accent);
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: var(--gfb-font);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    #gfb-{{ gf_id }} .gfb-reas-how svg { width: 12px; height: 12px; }
+
+    /* ── HOW IT WORKS POPUP ── */
+    #gfb-{{ gf_id }} .gfb-how-popup {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.25s ease, margin 0.3s ease;
+      margin-top: 0;
+    }
+    #gfb-{{ gf_id }} .gfb-how-popup.is-open {
+      max-height: 300px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+    #gfb-{{ gf_id }} .gfb-how-popup-body {
+      background: {{ reas_bg }};
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 12.5px;
+      color: {{ s.reas_text_color | default: '#666666' }};
+      line-height: 1.55;
+      border: 1px solid {{ reas_border }};
+    }
+    #gfb-{{ gf_id }} .gfb-how-popup-body p { margin: 0; }
+    #gfb-{{ gf_id }} .gfb-how-popup-body strong { color: var(--gfb-accent); }
+
+    /* ── ERROR ── */
+    #gfb-{{ gf_id }} .gfb-error {
+      display: none;
+      color: #b91c1c;
+      font-size: 12px;
+      text-align: center;
+      margin: 10px 0;
+      padding: 8px 12px;
+      background: #fef2f2;
+      border-radius: 6px;
+      border: 1px solid #fecaca;
+    }
+
+    /* ── CTA ── */
+    #gfb-{{ gf_id }} .gfb-cta {
+      width: 100%;
+      padding: 18px;
+      border-radius: 14px;
+      border: 2px solid {{ s.cta_bg | default: '#111111' }};
+      background: {{ s.cta_bg | default: '#111111' }};
+      color: {{ s.cta_text_color | default: '#ffffff' }};
+      font-family: var(--gfb-font);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: all 0.2s;
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      line-height: 1;
+      -webkit-appearance: none;
+    }
+    #gfb-{{ gf_id }} .gfb-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    #gfb-{{ gf_id }} .gfb-cta:active { transform: scale(0.99); box-shadow: none; }
+    #gfb-{{ gf_id }} .gfb-cta.loading { opacity: 0.6; pointer-events: none; }
+    #gfb-{{ gf_id }} .gfb-cta.success { background: #16a34a !important; border-color: #16a34a !important; color: #fff !important; }
+
+    /* ── DELIVERY ── */
+    #gfb-{{ gf_id }} .gfb-delivery {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: {{ s.delivery_text_color | default: '#888888' }};
+      line-height: 1.6;
+    }
+    #gfb-{{ gf_id }} .gfb-delivery-line1 {
+      font-weight: 500;
+    }
+    #gfb-{{ gf_id }} .gfb-delivery-flag {
+      font-size: 13px;
+      line-height: 1;
+      vertical-align: -1px;
+    }
+    #gfb-{{ gf_id }} .gfb-delivery-city {
+      font-weight: 700;
+      color: var(--gfb-section-text);
+    }
+    #gfb-{{ gf_id }} .gfb-delivery-countdown {
+      font-weight: 700;
+      color: var(--gfb-section-text);
+    }
+    #gfb-{{ gf_id }} .gfb-delivery-date {
+      font-weight: 700;
+      color: var(--gfb-section-text);
+    }
+
+    /* ── TRUST BAR ── */
+    #gfb-{{ gf_id }} .gfb-trust {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+    #gfb-{{ gf_id }} .gfb-trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: {{ s.trust_text_color | default: '#999999' }};
+      white-space: nowrap;
+    }
+    #gfb-{{ gf_id }} .gfb-trust-item svg {
+      color: {{ s.trust_icon_color | default: '#aaaaaa' }};
+      width: 13px; height: 13px;
+      flex-shrink: 0;
+    }
+    #gfb-{{ gf_id }} .gfb-trust-dot {
+      color: {{ s.trust_text_color | default: '#999999' }};
+      opacity: 0.5;
+      font-size: 11px;
+      line-height: 1;
+      user-select: none;
+    }
+    #gfb-{{ gf_id }} .gfb-info-trigger {
+      background: none;
+      border: none;
+      padding: 0;
+      margin-left: 2px;
+      color: {{ s.trust_icon_color | default: '#aaaaaa' }};
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+    }
+    #gfb-{{ gf_id }} .gfb-info-trigger:hover { color: var(--gfb-accent); }
+
+    /* ── Cancel popup ── */
+    #gfb-{{ gf_id }} .gfb-cancel-popup {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.25s ease, margin 0.3s ease;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    #gfb-{{ gf_id }} .gfb-cancel-popup.is-open {
+      max-height: 200px;
+      opacity: 1;
+      margin-bottom: 10px;
+    }
+    #gfb-{{ gf_id }} .gfb-cancel-popup-body {
+      background: {{ reas_bg }};
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 12.5px;
+      color: {{ s.reas_text_color | default: '#666666' }};
+      line-height: 1.5;
+      border: 1px solid {{ reas_border }};
+    }
+    #gfb-{{ gf_id }} .gfb-cancel-popup-body p { margin: 0; }
+    #gfb-{{ gf_id }} .gfb-cancel-popup-body strong { color: var(--gfb-accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 400px) {
+      #gfb-{{ gf_id }} .gfb-card { padding: 16px 12px; }
+      #gfb-{{ gf_id }} .gfb-name { font-size: 14px; }
+      #gfb-{{ gf_id }} .gfb-price { font-size: 20px; }
+      #gfb-{{ gf_id }} .gfb-card-img { max-height: 90px; }
+      #gfb-{{ gf_id }} .gfb-trust { gap: 4px; }
+      #gfb-{{ gf_id }} .gfb-trust-item { font-size: 10px; gap: 3px; }
+      #gfb-{{ gf_id }} .gfb-trust-item svg { width: 11px; height: 11px; }
+    }
+  </style>
+
+  <div id="gfb-{{ gf_id }}" data-pid="{{ pr.id }}" class="gfb-root" {{ block.shopify_attributes }}>
+
+    {%- comment -%} ──── FLAVOR PILLS ──── {%- endcomment -%}
+    {%- if show_flavors -%}
+      <div class="gfb-flavor-section">
+        <div class="gfb-flavor-row">
+          {%- if s.flavor_label != blank -%}
+            <span class="gfb-flavor-label">{{ s.flavor_label }}</span>
+          {%- endif -%}
+          <div class="gfb-flavor-pills" role="radiogroup" aria-label="{{ s.flavor_label | default: 'Flavor' }}">
+            {%- for fv in flavor_values -%}
+              {%- if fv == blank -%}{%- continue -%}{%- endif -%}
+              {%- assign emoji_key = 'flavor_emoji_' | append: forloop.index -%}
+              {%- assign pill_emoji = s[emoji_key] | default: '' -%}
+              <button type="button"
+                      class="gfb-pill{% if forloop.first %} active{% endif %}"
+                      data-flavor="{{ fv | escape }}"
+                      aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">
+                {%- if pill_emoji != blank -%}{{ pill_emoji }} {%- endif -%}{{ fv }}
+              </button>
+            {%- endfor -%}
+          </div>
+        </div>
+        <div class="gfb-oos-toast" data-oos-toast>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span data-oos-text>Ce goût est épuisé pour cette offre</span>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ──── OFFERS GRID ──── {%- endcomment -%}
+    <div class="gfb-grid">
+
+      {%- comment -%} ───── Subscription card ───── {%- endcomment -%}
+      <div class="gfb-card-wrap">
+        <input type="radio"
+               class="gfb-radio"
+               name="gfb-{{ gf_id }}"
+               id="gfb-{{ gf_id }}-sub"
+               value="sub"
+               data-card="sub"
+               data-pack="{{ sub_pack | escape }}"
+               data-selling-plan="{{ selling_plan_id }}"
+               {% if default_card == 'sub' %}checked{% endif %}>
+        <label for="gfb-{{ gf_id }}-sub" class="gfb-card gfb-card--sub">
+
+          <span class="gfb-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="11" height="11"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+            {{ s.sub_tag_text }}
+          </span>
+
+          {%- if s.sub_image -%}
+            <img class="gfb-card-img" src="{{ s.sub_image | image_url: width: 400 }}" alt="{{ s.sub_title | default: '' | escape }}" loading="lazy">
+          {%- endif -%}
+
+          <div class="gfb-name">{{ s.sub_title }}</div>
+          <div class="gfb-desc">{{ s.sub_desc }}</div>
+
+          <div class="gfb-price-row">
+            <div class="gfb-price">{{ sub_price_str }}</div>
+            {%- if s.sub_badge_text != blank -%}
+              <span class="gfb-badge">{{ s.sub_badge_text }}</span>
+            {%- endif -%}
+          </div>
+          {%- if s.sub_period != blank -%}
+            <div class="gfb-price-per">{{ s.sub_period }}</div>
+          {%- endif -%}
+          {%- if sub_compare_str != blank -%}
+            <div class="gfb-old-price">{{ sub_compare_str }}</div>
+          {%- endif -%}
+          {%- if s.sub_per_unit != blank -%}
+            <div class="gfb-unit-price">{{ s.sub_per_unit }}</div>
+          {%- endif -%}
+
+          <div class="gfb-ship">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            {{ s.shipping_text }}
+          </div>
+        </label>
+      </div>
+
+      {%- comment -%} ───── One-time card ───── {%- endcomment -%}
+      <div class="gfb-card-wrap">
+        <input type="radio"
+               class="gfb-radio"
+               name="gfb-{{ gf_id }}"
+               id="gfb-{{ gf_id }}-once"
+               value="once"
+               data-card="once"
+               data-pack="{{ once_pack | escape }}"
+               data-selling-plan=""
+               {% if default_card == 'once' %}checked{% endif %}>
+        <label for="gfb-{{ gf_id }}-once" class="gfb-card gfb-card--once">
+
+          <span class="gfb-tag">{{ s.once_tag_text }}</span>
+
+          {%- if s.once_image -%}
+            <img class="gfb-card-img" src="{{ s.once_image | image_url: width: 400 }}" alt="{{ s.once_title | default: '' | escape }}" loading="lazy">
+          {%- endif -%}
+
+          <div class="gfb-name">{{ s.once_title }}</div>
+          <div class="gfb-desc">{{ s.once_desc }}</div>
+
+          <div class="gfb-price-row">
+            <div class="gfb-price">{{ once_price_str }}</div>
+            {%- if s.once_badge_text != blank -%}
+              <span class="gfb-badge">{{ s.once_badge_text }}</span>
+            {%- endif -%}
+          </div>
+          <div class="gfb-price-per">&nbsp;</div>
+          {%- if once_compare_str != blank -%}
+            <div class="gfb-old-price">{{ once_compare_str }}</div>
+          {%- endif -%}
+
+          <div class="gfb-ship">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            {{ s.shipping_text }}
+          </div>
+        </label>
+      </div>
+
+    </div>
+
+    {%- comment -%} ──── REASSURANCE (visible when sub selected) ──── {%- endcomment -%}
+    <div class="gfb-reassurance{% unless default_card == 'sub' %} is-hidden{% endunless %}" data-reassurance>
+      <svg class="gfb-reas-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div class="gfb-reas-content">
+        <div class="gfb-reas-title">{{ s.reassurance_title }}</div>
+        {%- if s.reassurance_text != blank -%}
+          <div class="gfb-reas-text">{{ s.reassurance_text }}</div>
+        {%- endif -%}
+        {%- if s.show_how_it_works -%}
+          <button class="gfb-reas-how" data-how-toggle type="button">
+            {{ s.how_it_works_label }}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </button>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if s.show_how_it_works and s.how_it_works_content != blank -%}
+      <div class="gfb-how-popup" data-how-popup aria-hidden="true">
+        <div class="gfb-how-popup-body">
+          {{ s.how_it_works_content }}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ──── ERROR ──── {%- endcomment -%}
+    <div class="gfb-error" role="alert"></div>
+
+    {%- comment -%} ──── CTA ──── {%- endcomment -%}
+    <button type="button" class="gfb-cta" id="gfb-cta-{{ gf_id }}"
+            data-cta-base="{{ cta_text | escape }}"
+            data-price-sub="{{ sub_price_str | escape }}"
+            data-price-once="{{ once_price_str | escape }}"
+            data-show-price="{% if s.show_price_in_cta %}1{% else %}0{% endif %}">
+      <span>{{ cta_text }}{% if s.show_price_in_cta %} — {{ sub_price_str }}{% endif %}</span>
+    </button>
+
+    {%- comment -%} ──── DELIVERY ESTIMATE ──── {%- endcomment -%}
+    {%- if s.show_delivery_estimate -%}
+      <div
+        class="gfb-delivery"
+        data-delivery
+        data-delivery-days="{{ s.delivery_days_default | default: 7 }}"
+        data-delivery-overrides="{{ s.delivery_days_overrides | escape }}"
+        data-text-order="{{ s.delivery_text_order | default: 'Commandez dans' | escape }}"
+        data-text-for="{{ s.delivery_text_for | default: 'pour une livraison le' | escape }}"
+        data-text-shipping="{{ s.delivery_text_shipping | default: 'Livraison vers' | escape }}"
+        style="display: none;"
+      >
+        <div class="gfb-delivery-line1" data-delivery-line1></div>
+        <div class="gfb-delivery-line2" data-delivery-line2></div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ──── TRUST BAR ──── {%- endcomment -%}
+    {%- if s.trust_1 != blank or s.trust_2 != blank or s.trust_3 != blank -%}
+      <div class="gfb-trust">
+        {%- assign tc = 0 -%}
+        {%- for i in (1..3) -%}
+          {%- assign tk = 'trust_' | append: i -%}
+          {%- assign tv = s[tk] -%}
+          {%- assign ik = 'trust_icon_' | append: i -%}
+          {%- assign iv = s[ik] | default: 'lock' -%}
+          {%- if tv != blank -%}
+            {%- if tc > 0 -%}<span class="gfb-trust-dot" aria-hidden="true">&middot;</span>{%- endif -%}
+            <span class="gfb-trust-item">
+              {%- case iv -%}
+                {%- when 'lock' -%}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                {%- when 'shield' -%}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                {%- when 'refresh' -%}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><polyline points="21 3 21 9 15 9"/></svg>
+                {%- when 'check' -%}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {%- when 'truck' -%}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              {%- endcase -%}
+              {{ tv }}
+              {%- if i == 3 and s.show_cancel_info -%}
+                <button class="gfb-info-trigger" data-cancel-info-toggle type="button" aria-label="Plus d'infos">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+              {%- endif -%}
+            </span>
+            {%- assign tc = tc | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if s.show_cancel_info and s.cancel_info_content != blank -%}
+      <div class="gfb-cancel-popup" data-cancel-popup aria-hidden="true">
+        <div class="gfb-cancel-popup-body">
+          {{ s.cancel_info_content }}
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+
+  <script>
+  (function(){
+    var root = document.getElementById('gfb-{{ gf_id }}');
+    if (!root) return;
+
+    /* ── Variant data ── */
+    var variants = [
+      {%- for v in pr.variants -%}
+        {
+          id: {{ v.id }},
+          option1: {{ v.option1 | default: '' | json }},
+          option2: {{ v.option2 | default: '' | json }},
+          available: {{ v.available }},
+          hasPlan: {% if v.selling_plan_allocations.size > 0 %}true{% else %}false{% endif %}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ];
+
+    var btn   = root.querySelector('.gfb-cta');
+    var errEl = root.querySelector('.gfb-error');
+
+    function showErr(m){ errEl.textContent = m; errEl.style.display = 'block'; }
+    function clearErr(){ errEl.style.display = 'none'; errEl.textContent = ''; }
+
+    /* ── Flavor pills ── */
+    var pills = root.querySelectorAll('.gfb-pill');
+    var selectedFlavor = pills.length ? pills[0].dataset.flavor : '';
+
+    /* Which pack value does each card use? */
+    var subPack  = '{{ sub_pack | escape }}';
+    var oncePack = '{{ once_pack | escape }}';
+
+    function getAvailableFlavorsForCard(card) {
+      var pack = card === 'sub' ? subPack : oncePack;
+      var pool = {};
+      for (var i = 0; i < variants.length; i++) {
+        var v = variants[i];
+        if (!v.option1) continue;
+        if (!v.available) continue;
+        /* Filter by pack-size only — selling plan is handled at cart level */
+        if (pack && v.option2 !== pack) continue;
+        pool[v.option1] = true;
+      }
+      return pool;
+    }
+
+    function updatePillAvailability() {
+      var checked = root.querySelector('.gfb-radio:checked');
+      var card = checked ? (checked.dataset.card || 'sub') : 'sub';
+      var available = getAvailableFlavorsForCard(card);
+
+      pills.forEach(function(pill) {
+        var fv = pill.dataset.flavor || '';
+        if (available[fv]) {
+          pill.classList.remove('unavailable');
+        } else {
+          pill.classList.add('unavailable');
+        }
+      });
+
+      if (selectedFlavor && !available[selectedFlavor]) {
+        var first = null;
+        for (var fv in available) { first = fv; break; }
+        if (first) {
+          pills.forEach(function(p){
+            p.classList.toggle('active', p.dataset.flavor === first);
+            p.setAttribute('aria-pressed', p.dataset.flavor === first ? 'true' : 'false');
+          });
+          selectedFlavor = first;
+        }
+      }
+    }
+
+    /* ── OOS toast ── */
+    var oosToast   = root.querySelector('[data-oos-toast]');
+    var oosText    = root.querySelector('[data-oos-text]');
+    var oosTimer   = null;
+
+    function showOosToast(flavorName) {
+      if (!oosToast) return;
+      var oosMsg = {{ s.oos_text | default: 'est épuisé pour cette offre' | json }};
+      if (oosText) oosText.textContent = flavorName + " " + oosMsg;
+      oosToast.classList.add('is-visible');
+      clearTimeout(oosTimer);
+      oosTimer = setTimeout(function() {
+        oosToast.classList.remove('is-visible');
+      }, 3000);
+    }
+    function hideOosToast() {
+      if (oosToast) oosToast.classList.remove('is-visible');
+      clearTimeout(oosTimer);
+    }
+
+    pills.forEach(function(pill) {
+      pill.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (pill.classList.contains('unavailable')) {
+          showOosToast(pill.dataset.flavor);
+          return;
+        }
+        hideOosToast();
+        pills.forEach(function(p) {
+          p.classList.remove('active');
+          p.setAttribute('aria-pressed', 'false');
+        });
+        pill.classList.add('active');
+        pill.setAttribute('aria-pressed', 'true');
+        selectedFlavor = pill.dataset.flavor;
+        clearErr();
+      });
+    });
+
+    /* ── All popups — centralized open/close ── */
+    var howTrigger    = root.querySelector('[data-how-toggle]');
+    var howPopup      = root.querySelector('[data-how-popup]');
+    var cancelTrigger = root.querySelector('[data-cancel-info-toggle]');
+    var cancelPopup   = root.querySelector('[data-cancel-popup]');
+
+    function closePopup(popup) {
+      if (popup) {
+        popup.classList.remove('is-open');
+        popup.setAttribute('aria-hidden', 'true');
+      }
+    }
+    function closeAllPopups() {
+      closePopup(howPopup);
+      closePopup(cancelPopup);
+    }
+
+    if (howTrigger && howPopup) {
+      howTrigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        closePopup(cancelPopup);
+        howPopup.classList.toggle('is-open');
+        howPopup.setAttribute('aria-hidden', String(!howPopup.classList.contains('is-open')));
+      });
+    }
+    if (cancelTrigger && cancelPopup) {
+      cancelTrigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        closePopup(howPopup);
+        cancelPopup.classList.toggle('is-open');
+        cancelPopup.setAttribute('aria-hidden', String(!cancelPopup.classList.contains('is-open')));
+      });
+    }
+
+    /* Close popups on outside click or Escape */
+    document.addEventListener('click', function(e) {
+      if (howPopup && howPopup.classList.contains('is-open')) {
+        if (!howPopup.contains(e.target) && e.target !== howTrigger && !(howTrigger && howTrigger.contains(e.target))) {
+          closePopup(howPopup);
+        }
+      }
+      if (cancelPopup && cancelPopup.classList.contains('is-open')) {
+        if (!cancelPopup.contains(e.target) && e.target !== cancelTrigger && !(cancelTrigger && cancelTrigger.contains(e.target))) {
+          closePopup(cancelPopup);
+        }
+      }
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeAllPopups();
+    });
+
+    /* ── Card switching — reassurance + popups + CTA price ── */
+    var radios = root.querySelectorAll('.gfb-radio');
+    var reassurance = root.querySelector('[data-reassurance]');
+
+    function getSelectedCard() {
+      var checked = root.querySelector('.gfb-radio:checked');
+      return checked ? (checked.dataset.card || 'sub') : 'sub';
+    }
+
+    function updateReassurance() {
+      if (!reassurance) return;
+      var isSub = getSelectedCard() === 'sub';
+      if (isSub) {
+        reassurance.classList.remove('is-hidden');
+      } else {
+        reassurance.classList.add('is-hidden');
+        /* Close all popups when leaving sub card */
+        closeAllPopups();
+      }
+    }
+
+    function updateCtaPrice() {
+      var showPrice = btn.dataset.showPrice === '1';
+      if (!showPrice) return;
+      var span = btn.querySelector('span');
+      if (!span) return;
+      var base  = btn.dataset.ctaBase || '';
+      var card  = getSelectedCard();
+      var price = card === 'sub' ? btn.dataset.priceSub : btn.dataset.priceOnce;
+      span.textContent = base + ' — ' + price;
+    }
+
+    function onCardChange() {
+      updatePillAvailability();
+      updateReassurance();
+      updateCtaPrice();
+      hideOosToast();
+      clearErr();
+    }
+
+    radios.forEach(function(r) {
+      r.addEventListener('change', onCardChange);
+    });
+
+    /* Initial state */
+    updatePillAvailability();
+    updateCtaPrice();
+
+    /* ── Variant lookup ── */
+    function findVariant(packValue, flavor, requireSubPlan) {
+      if (packValue && flavor) {
+        for (var i = 0; i < variants.length; i++) {
+          var v = variants[i];
+          if (v.option2 === packValue && v.option1 === flavor) return v;
+        }
+      }
+      if (packValue) {
+        for (var j = 0; j < variants.length; j++) {
+          if (variants[j].option2 === packValue) return variants[j];
+        }
+      }
+      if (requireSubPlan && flavor) {
+        for (var k = 0; k < variants.length; k++) {
+          if (variants[k].hasPlan && variants[k].option1 === flavor) return variants[k];
+        }
+      }
+      if (flavor) {
+        for (var m = 0; m < variants.length; m++) {
+          if (variants[m].option1 === flavor) return variants[m];
+        }
+      }
+      for (var n = 0; n < variants.length; n++) {
+        if (variants[n].available) return variants[n];
+      }
+      return variants[0] || null;
+    }
+
+    /* ── Cart helpers ── */
+    var cartRoot = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+
+    function getBalanceCartDrawer() { return document.querySelector('cart-drawer-component'); }
+
+    function openCartUI() {
+      var b = getBalanceCartDrawer();
+      if (b) {
+        if (typeof b.open === 'function')       { b.open(); return; }
+        if (typeof b.showDialog === 'function') { b.showDialog(); return; }
+      }
+      var d = document.querySelector('cart-drawer');
+      if (d) {
+        if (typeof d.open === 'function') { d.open(btn); return; }
+        if (typeof d.show === 'function') { d.show(btn); return; }
+      }
+      var n = document.querySelector('cart-notification');
+      if (n && typeof n.open === 'function') { n.open(); return; }
+    }
+
+    function updateCount(n) {
+      var sels = ['[data-cart-count]','[data-cart-item-count]','.cart-count','.cart-item-count','#cart-count','#CartCount','.cart-count-bubble span','.cart-link__bubble span','[data-header-cart-quantity]'];
+      sels.forEach(function(sel){
+        document.querySelectorAll(sel).forEach(function(el){
+          el.textContent = n;
+          el.setAttribute('data-count', n);
+          if (n > 0) { el.removeAttribute('hidden'); el.classList.remove('hidden'); }
+        });
+      });
+      document.querySelectorAll('.cart-count-bubble, [data-cart-bubble]').forEach(function(el){
+        if (n > 0) el.removeAttribute('hidden');
+      });
+    }
+
+    /* ── Add to cart ── */
+    btn.addEventListener('click', function(){
+      clearErr();
+      var checked = root.querySelector('.gfb-radio:checked');
+      if (!checked) { showErr('Veuillez choisir une option.'); return; }
+
+      var packValue   = checked.dataset.pack || '';
+      var sellingPlan = parseInt(checked.dataset.sellingPlan, 10) || null;
+      var requireSub  = checked.dataset.card === 'sub';
+
+      var variant = findVariant(packValue, selectedFlavor, requireSub);
+      if (!variant || !variant.id) { showErr("Cette combinaison n'est pas disponible."); return; }
+      if (!variant.available)      { showErr("Cette option est actuellement en rupture de stock."); return; }
+
+      if (requireSub && !variant.hasPlan && !sellingPlan) {
+        showErr("L'abonnement n'est pas disponible pour cette combinaison.");
+        return;
+      }
+
+      var item = { id: variant.id, quantity: 1 };
+      if (sellingPlan) item.selling_plan = sellingPlan;
+
+      var span = btn.querySelector('span');
+      var orig = span ? span.textContent : btn.textContent;
+      if (span) span.textContent = 'Ajout en cours…'; else btn.textContent = 'Ajout en cours…';
+      btn.classList.add('loading');
+
+      var sectionIds = [];
+      document.querySelectorAll('cart-drawer-component').forEach(function(el){
+        var w = el.closest('[id^="shopify-section-"]');
+        if (w) {
+          var id = w.id.replace('shopify-section-','');
+          if (id && sectionIds.indexOf(id) === -1) sectionIds.push(id);
+        }
+      });
+
+      var body = { items: [item] };
+      if (sectionIds.length) {
+        body.sections = sectionIds;
+        body.sections_url = window.location.pathname;
+      }
+
+      fetch(cartRoot + 'cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(body)
+      })
+      .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
+      .then(function(res){
+        btn.classList.remove('loading');
+        if (!res.ok) throw new Error(res.data.description || res.data.message || "Impossible d'ajouter au panier.");
+
+        var resp = res.data;
+        var totalCount = resp.item_count || 1;
+
+        var detail = {
+          resource: { item_count: totalCount },
+          sourceId: 'gfb-{{ gf_id }}',
+          data: { sections: resp.sections || {}, source: 'gfb-{{ gf_id }}' }
+        };
+        document.dispatchEvent(new CustomEvent('cart:update', { bubbles: true, detail: detail }));
+
+        var bd = getBalanceCartDrawer();
+        if (bd) {
+          if (typeof bd.open === 'function') bd.open();
+          else if (typeof bd.showDialog === 'function') bd.showDialog();
+        } else {
+          openCartUI();
+        }
+
+        if (totalCount) updateCount(totalCount);
+
+        if (!resp.item_count) {
+          fetch(cartRoot + 'cart.js').then(function(r){ return r.json(); }).then(function(c){ updateCount(c.item_count); }).catch(function(){});
+        }
+
+        if (span) span.textContent = '✓ Ajouté !'; else btn.textContent = '✓ Ajouté !';
+        btn.classList.add('success');
+        setTimeout(function(){
+          if (span) span.textContent = orig; else btn.textContent = orig;
+          btn.classList.remove('success');
+        }, 1800);
+      })
+      .catch(function(err){
+        if (span) span.textContent = orig; else btn.textContent = orig;
+        btn.classList.remove('loading','success');
+        showErr(err.message || "Une erreur est survenue. Veuillez réessayer.");
+      });
+    });
+
+    /* ── Delivery estimate ── */
+    (function() {
+      var el = root.querySelector('[data-delivery]');
+      if (!el) return;
+
+      var line1 = el.querySelector('[data-delivery-line1]');
+      var line2 = el.querySelector('[data-delivery-line2]');
+      var defaultDays = parseInt(el.dataset.deliveryDays, 10) || 7;
+      var overrides = el.dataset.deliveryOverrides || '';
+      var txtOrder = el.dataset.textOrder || 'Commandez dans';
+      var txtFor = el.dataset.textFor || 'pour une livraison le';
+      var txtShipping = el.dataset.textShipping || 'Livraison vers';
+
+      var geoCountry = '';
+      var geoName = '';
+      var geoReady = false;
+
+      function flag(cc) {
+        try {
+          var upper = cc.toUpperCase();
+          return String.fromCodePoint(
+            0x1F1E6 - 65 + upper.charCodeAt(0),
+            0x1F1E6 - 65 + upper.charCodeAt(1)
+          );
+        } catch(e) { return ''; }
+      }
+
+      var tzCountryMap = {
+        'Europe/London':'GB','Europe/Paris':'FR','Europe/Berlin':'DE','Europe/Madrid':'ES',
+        'Europe/Rome':'IT','Europe/Amsterdam':'NL','Europe/Brussels':'BE','Europe/Zurich':'CH',
+        'Europe/Vienna':'AT','Europe/Stockholm':'SE','Europe/Oslo':'NO','Europe/Copenhagen':'DK',
+        'Europe/Helsinki':'FI','Europe/Dublin':'IE','Europe/Lisbon':'PT','Europe/Warsaw':'PL',
+        'Europe/Prague':'CZ','Europe/Bucharest':'RO','Europe/Budapest':'HU','Europe/Athens':'GR',
+        'America/New_York':'US','America/Chicago':'US','America/Denver':'US','America/Los_Angeles':'US',
+        'America/Toronto':'CA','America/Vancouver':'CA','America/Mexico_City':'MX',
+        'America/Sao_Paulo':'BR','America/Argentina/Buenos_Aires':'AR',
+        'Australia/Sydney':'AU','Australia/Melbourne':'AU','Australia/Perth':'AU',
+        'Pacific/Auckland':'NZ','Asia/Tokyo':'JP','Asia/Seoul':'KR','Asia/Shanghai':'CN',
+        'Asia/Singapore':'SG','Asia/Dubai':'AE','Asia/Kolkata':'IN','Asia/Istanbul':'TR'
+      };
+      var countryNames = {
+        'US':'United States','GB':'United Kingdom','CA':'Canada','AU':'Australia','NZ':'New Zealand',
+        'FR':'France','DE':'Allemagne','NL':'Pays-Bas','BE':'Belgique','CH':'Suisse',
+        'AT':'Autriche','IT':'Italie','ES':'Espagne','PT':'Portugal','IE':'Irlande','SE':'Suède',
+        'NO':'Norvège','DK':'Danemark','FI':'Finlande','PL':'Pologne','CZ':'République tchèque',
+        'RO':'Roumanie','HU':'Hongrie','GR':'Grèce','TR':'Turquie','BR':'Brésil','MX':'Mexique',
+        'AR':'Argentine','JP':'Japon','KR':'Corée du Sud','CN':'Chine','SG':'Singapour',
+        'AE':'Émirats arabes unis','IN':'Inde'
+      };
+
+      function countryFromTz() {
+        try {
+          var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+          return tzCountryMap[tz] || '';
+        } catch(e) { return ''; }
+      }
+
+      function fetchGeo() {
+        fetch('/browsing_context_suggestions.json')
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data && data.detected_values) {
+              var d = data.detected_values;
+              if (d.country && d.country.handle) {
+                geoCountry = d.country.handle.toUpperCase();
+                geoName = d.country.name || countryNames[geoCountry] || geoCountry;
+              }
+            }
+          })
+          .catch(function() {})
+          .finally(function() {
+            if (!geoCountry) {
+              geoCountry = countryFromTz();
+              geoName = countryNames[geoCountry] || '';
+            }
+            geoReady = true;
+            render();
+          });
+      }
+
+      function getDays() {
+        var days = defaultDays;
+        if (geoCountry && overrides) {
+          overrides.split(',').forEach(function(pair) {
+            var p = pair.trim().split(':');
+            if (p.length === 2 && p[0].trim().toUpperCase() === geoCountry) {
+              days = parseInt(p[1].trim(), 10) || defaultDays;
+            }
+          });
+        }
+        return days;
+      }
+
+      function addDays(start, n) {
+        var d = new Date(start);
+        d.setDate(d.getDate() + n);
+        return d;
+      }
+
+      function fmtDate(d) {
+        var dayNames = ['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+        var monthNames = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+        return dayNames[d.getDay()] + ' ' + d.getDate() + ' ' + monthNames[d.getMonth()];
+      }
+
+      function render() {
+        var now = new Date();
+        var midnight = new Date(now);
+        midnight.setHours(23, 59, 59, 999);
+        var diff = midnight - now;
+        if (diff < 0) diff = 0;
+
+        var h = Math.floor(diff / 3600000);
+        var m = Math.floor((diff % 3600000) / 60000);
+        var countdown = h > 0 ? (h + 'h ' + m + 'min') : (m + 'min');
+
+        var days = getDays();
+        var deliveryDate = addDays(now, days);
+        var dateStr = fmtDate(deliveryDate);
+
+        var h1 = '';
+        if (geoReady && geoCountry) {
+          var f = flag(geoCountry);
+          if (f) h1 += '<span class="gfb-delivery-flag">' + f + '</span> ';
+          h1 += txtShipping + ' <span class="gfb-delivery-city">' + geoName + '</span>';
+        }
+        line1.innerHTML = h1;
+
+        line2.innerHTML = txtOrder + ' <span class="gfb-delivery-countdown">' + countdown + '</span> '
+          + txtFor + ' <span class="gfb-delivery-date">' + dateStr + '</span>';
+
+        el.style.display = '';
+      }
+
+      geoCountry = countryFromTz();
+      geoName = countryNames[geoCountry] || '';
+      geoReady = true;
+      render();
+      fetchGeo();
+      setInterval(render, 60000);
+    })();
+  })();
+  </script>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "GF Bundle Cards",
+  "settings": [
+    { "type": "header", "content": "Product" },
+    { "type": "product", "id": "product", "label": "Product" },
+    {
+      "type": "select", "id": "default_card", "label": "Pre-selected card",
+      "options": [
+        { "value": "sub",  "label": "Subscription" },
+        { "value": "once", "label": "One-time" }
+      ],
+      "default": "sub"
+    },
+
+    { "type": "header", "content": "── Subscription card" },
+    { "type": "image_picker", "id": "sub_image", "label": "Card image" },
+    { "type": "text", "id": "sub_tag_text", "label": "Tag text", "default": "Abonnement" },
+    { "type": "text", "id": "sub_title", "label": "Title", "default": "Achetez 1, recevez 2" },
+    { "type": "text", "id": "sub_desc", "label": "Description (HTML)", "default": "1 sachet payé + 1 sachet offert<br>chaque mois" },
+    { "type": "text", "id": "sub_period", "label": "Period suffix", "default": "/ mois" },
+    { "type": "text", "id": "sub_per_unit", "label": "Per-unit text", "info": "e.g. 'soit 14,99 € / sachet'" },
+    { "type": "text", "id": "sub_pack_filter", "label": "Pack-size filter (optional)" },
+    { "type": "number", "id": "selling_plan_id", "label": "Selling plan ID (optional)" },
+    { "type": "text", "id": "sub_badge_text", "label": "Discount badge", "info": "e.g. -50%. Leave empty to hide.", "default": "-50%" },
+    { "type": "text", "id": "sub_price_manual", "label": "Price override (optional)" },
+    { "type": "text", "id": "sub_compare_manual", "label": "Compare-at override (optional)" },
+
+    { "type": "header", "content": "── One-time card" },
+    { "type": "image_picker", "id": "once_image", "label": "Card image" },
+    { "type": "text", "id": "once_tag_text", "label": "Tag text", "default": "Achat unique" },
+    { "type": "text", "id": "once_title", "label": "Title", "default": "1 sachet" },
+    { "type": "text", "id": "once_desc", "label": "Description (HTML)", "default": "Achat unique<br>sans engagement" },
+    { "type": "text", "id": "once_pack_filter", "label": "Pack-size filter (optional)" },
+    { "type": "text", "id": "once_badge_text", "label": "Discount badge", "info": "e.g. -20%. Leave empty to hide." },
+    { "type": "text", "id": "once_price_manual", "label": "Price override (optional)" },
+    { "type": "text", "id": "once_compare_manual", "label": "Compare-at override (optional)" },
+
+    { "type": "header", "content": "── Shared" },
+    { "type": "text", "id": "shipping_text", "label": "Shipping text", "default": "Livraison offerte" },
+
+    { "type": "header", "content": "Flavors" },
+    { "type": "text", "id": "flavor_label", "label": "Flavor label", "default": "Goût :" },
+    { "type": "paragraph", "content": "Emoji/prefix shown before each flavor name (in variant order). Leave blank for no emoji." },
+    { "type": "text", "id": "flavor_emoji_1", "label": "Flavor 1 emoji", "default": "🍃" },
+    { "type": "text", "id": "flavor_emoji_2", "label": "Flavor 2 emoji", "default": "🫐" },
+    { "type": "text", "id": "flavor_emoji_3", "label": "Flavor 3 emoji", "default": "🍋" },
+    { "type": "text", "id": "flavor_emoji_4", "label": "Flavor 4 emoji" },
+    { "type": "text", "id": "flavor_emoji_5", "label": "Flavor 5 emoji" },
+    { "type": "text", "id": "flavor_emoji_6", "label": "Flavor 6 emoji" },
+    { "type": "text", "id": "flavor_emoji_7", "label": "Flavor 7 emoji" },
+    { "type": "text", "id": "flavor_emoji_8", "label": "Flavor 8 emoji" },
+    { "type": "text", "id": "oos_text", "label": "Out of stock message", "default": "est épuisé pour cette offre", "info": "Shown after flavor name when unavailable." },
+
+    { "type": "header", "content": "Reassurance (subscription)" },
+    { "type": "text", "id": "reassurance_title", "label": "Title", "default": "Aucun engagement" },
+    { "type": "text", "id": "reassurance_text", "label": "Text", "default": "Modifiez, pausez ou annulez votre abonnement en 1 clic depuis votre espace client. Aucune condition, aucune pénalité." },
+    { "type": "checkbox", "id": "show_how_it_works", "label": "Show 'Comment ça marche?'", "default": true },
+    { "type": "text", "id": "how_it_works_label", "label": "Button label", "default": "Comment ça marche ?" },
+    {
+      "type": "richtext",
+      "id": "how_it_works_content",
+      "label": "How it works content",
+      "default": "<p><strong>1.</strong> Choisissez votre saveur et validez.<br><strong>2.</strong> Recevez 2 sachets chaque mois.<br><strong>3.</strong> Modifiez ou annulez à tout moment.</p>"
+    },
+
+    { "type": "header", "content": "Add to cart" },
+    { "type": "text", "id": "cta_text", "label": "Button text", "default": "Ajouter au panier" },
+    { "type": "checkbox", "id": "show_price_in_cta", "label": "Show price in button", "default": true },
+
+    { "type": "header", "content": "── Trust badges" },
+    { "type": "text", "id": "trust_1", "label": "Badge 1", "default": "Paiement sécurisé" },
+    {
+      "type": "select", "id": "trust_icon_1", "label": "Icon 1",
+      "options": [
+        { "value": "lock", "label": "Lock" },
+        { "value": "shield", "label": "Shield" },
+        { "value": "check", "label": "Check" },
+        { "value": "refresh", "label": "Refresh" },
+        { "value": "truck", "label": "Truck" }
+      ],
+      "default": "lock"
+    },
+    { "type": "text", "id": "trust_2", "label": "Badge 2", "default": "Garantie 30 jours" },
+    {
+      "type": "select", "id": "trust_icon_2", "label": "Icon 2",
+      "options": [
+        { "value": "lock", "label": "Lock" },
+        { "value": "shield", "label": "Shield" },
+        { "value": "check", "label": "Check" },
+        { "value": "refresh", "label": "Refresh" },
+        { "value": "truck", "label": "Truck" }
+      ],
+      "default": "shield"
+    },
+    { "type": "text", "id": "trust_3", "label": "Badge 3", "default": "Annulez quand vous voulez" },
+    {
+      "type": "select", "id": "trust_icon_3", "label": "Icon 3",
+      "options": [
+        { "value": "lock", "label": "Lock" },
+        { "value": "shield", "label": "Shield" },
+        { "value": "check", "label": "Check" },
+        { "value": "refresh", "label": "Refresh" },
+        { "value": "truck", "label": "Truck" }
+      ],
+      "default": "refresh"
+    },
+    { "type": "checkbox", "id": "show_cancel_info", "label": "Show info icon on badge 3", "default": true },
+    {
+      "type": "richtext",
+      "id": "cancel_info_content",
+      "label": "Cancel info content",
+      "default": "<p><strong>Annulez quand vous voulez</strong> — aucune condition. Gérez votre abonnement depuis votre espace client.</p>"
+    },
+
+    { "type": "header", "content": "── Delivery estimate" },
+    { "type": "checkbox", "id": "show_delivery_estimate", "label": "Show delivery estimate", "default": true },
+    { "type": "number", "id": "delivery_days_default", "label": "Default delivery days", "default": 7 },
+    { "type": "text", "id": "delivery_days_overrides", "label": "Country overrides", "placeholder": "FR:5,BE:6,DE:8" },
+    { "type": "text", "id": "delivery_text_order", "label": "Text: order within", "default": "Commandez dans" },
+    { "type": "text", "id": "delivery_text_for", "label": "Text: for delivery by", "default": "pour une livraison le" },
+    { "type": "text", "id": "delivery_text_shipping", "label": "Text: shipping to", "default": "Livraison vers" },
+
+    { "type": "header", "content": "── Colors: Subscription card" },
+    { "type": "text", "id": "sub_card_gradient", "label": "Background gradient (CSS)", "info": "Overrides solid color if set.", "default": "linear-gradient(145deg, #0e0e0e 0%, #1d5252 55%, #111111 100%)" },
+    { "type": "color", "id": "sub_card_bg", "label": "Background (solid fallback)", "default": "#0f2626" },
+    { "type": "color", "id": "sub_card_border", "label": "Border", "default": "#2AB5B4" },
+    { "type": "color", "id": "sub_card_text", "label": "Text", "default": "#ffffff" },
+    { "type": "color", "id": "sub_card_muted", "label": "Muted text", "default": "#7aadad" },
+    { "type": "color", "id": "sub_tag_bg", "label": "Tag background", "default": "#1a3d3d" },
+    { "type": "color", "id": "sub_tag_color", "label": "Tag text", "default": "#2AB5B4" },
+
+    { "type": "header", "content": "── Colors: One-time card" },
+    { "type": "text", "id": "once_card_gradient", "label": "Background gradient (CSS)", "info": "Overrides solid color if set.", "default": "linear-gradient(145deg, #141414 0%, #2a2a2a 55%, #111111 100%)" },
+    { "type": "color", "id": "once_card_bg", "label": "Background (solid fallback)", "default": "#1a1a1a" },
+    { "type": "color", "id": "once_card_border", "label": "Border", "default": "#333333" },
+    { "type": "color", "id": "once_card_text", "label": "Text", "default": "#ffffff" },
+    { "type": "color", "id": "once_card_muted", "label": "Muted text", "default": "#777777" },
+    { "type": "color", "id": "once_tag_bg", "label": "Tag background", "default": "#2a2a2a" },
+    { "type": "color", "id": "once_tag_color", "label": "Tag text", "default": "#999999" },
+
+    { "type": "header", "content": "── Colors: Discount badge" },
+    { "type": "color", "id": "badge_bg", "label": "Badge background", "default": "#e53e3e" },
+    { "type": "color", "id": "badge_text_color", "label": "Badge text", "default": "#ffffff" },
+
+    { "type": "header", "content": "── Colors: Global" },
+    { "type": "color", "id": "color_accent", "label": "Accent", "default": "#2AB5B4" },
+    { "type": "color", "id": "section_text_color", "label": "Section text (labels, delivery)", "default": "#111111" },
+    { "type": "color", "id": "cta_bg", "label": "CTA background", "default": "#111111" },
+    { "type": "color", "id": "cta_text_color", "label": "CTA text", "default": "#ffffff" },
+    { "type": "color", "id": "delivery_text_color", "label": "Delivery text", "default": "#888888" },
+    { "type": "color", "id": "trust_text_color", "label": "Trust text", "default": "#999999" },
+    { "type": "color", "id": "trust_icon_color", "label": "Trust icons", "default": "#aaaaaa" },
+
+    { "type": "header", "content": "── Colors: Reassurance" },
+    { "type": "color", "id": "reas_bg", "label": "Background", "default": "#f0faf9" },
+    { "type": "color", "id": "reas_border", "label": "Border", "default": "#d0e8e7" },
+    { "type": "color", "id": "reas_text_color", "label": "Text", "default": "#666666" },
+
+    { "type": "header", "content": "── Colors: Flavor pills" },
+    { "type": "color", "id": "pill_bg", "label": "Background", "default": "#1a1a1a" },
+    { "type": "color", "id": "pill_border", "label": "Border", "default": "#333333" },
+    { "type": "color", "id": "pill_text", "label": "Text", "default": "#888888" },
+    { "type": "color", "id": "pill_active_bg", "label": "Active background", "default": "#2AB5B4" },
+    { "type": "color", "id": "pill_active_text", "label": "Active text", "default": "#ffffff" },
+    { "type": "color", "id": "pill_active_border", "label": "Active border", "default": "#2AB5B4" },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "checkbox", "id": "use_theme_font", "label": "Use theme body font", "default": true },
+    { "type": "range", "id": "border_radius", "label": "Card corner radius", "min": 0, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 8 },
+    { "type": "range", "id": "padding_left", "label": "Padding left", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_right", "label": "Padding right", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 0 }
+  ],
+  "presets": [
+    {
+      "name": "GF Bundle Cards",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

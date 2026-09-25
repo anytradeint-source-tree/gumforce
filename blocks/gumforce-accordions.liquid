@@ -1,0 +1,488 @@
+{%- liquid
+  assign gf_id     = block.id
+  assign s         = block.settings
+  assign title_tag = s.title_tag | default: 'h3'
+  assign icon_style = s.icon_style | default: 'chevron'
+  assign open_first = s.open_first | default: false
+  assign one_at_a_time = s.one_at_a_time | default: false
+-%}
+
+<style>
+  #gfa-{{ gf_id }} {
+    --gfa-border   : {{ s.color_border | default: '#e5e7eb' }};
+    --gfa-title    : {{ s.color_title  | default: 'currentColor' }};
+    --gfa-body     : {{ s.color_body   | default: 'currentColor' }};
+    --gfa-icon     : {{ s.color_icon   | default: 'currentColor' }};
+    --gfa-accent   : {{ s.color_accent | default: 'transparent' }};
+    --gfa-hover-bg : {{ s.color_hover  | default: 'rgba(0,0,0,0.02)' }};
+    --gfa-dur      : 0.3s;
+    --gfa-ease     : cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    list-style     : none;
+    margin         : 0;
+    padding        : 0;
+  }
+
+  #gfa-{{ gf_id }} .gfa-item {
+    border-bottom : 1px solid var(--gfa-border);
+    position      : relative;
+    transition    : background-color var(--gfa-dur) var(--gfa-ease);
+  }
+  #gfa-{{ gf_id }} .gfa-item:first-child {
+    border-top : 1px solid var(--gfa-border);
+  }
+
+  /* accent bar */
+  #gfa-{{ gf_id }} .gfa-item::before {
+    content    : '';
+    position   : absolute;
+    left       : 0;
+    top        : 0;
+    bottom     : 0;
+    width      : 3px;
+    background : var(--gfa-accent);
+    opacity    : 0;
+    transition : opacity var(--gfa-dur) var(--gfa-ease);
+  }
+  #gfa-{{ gf_id }} .gfa-item.gfa-open::before {
+    opacity : 1;
+  }
+
+  /* heading */
+  #gfa-{{ gf_id }} .gfa-heading {
+    margin  : 0;
+    padding : 0;
+  }
+
+  /* trigger button */
+  #gfa-{{ gf_id }} .gfa-trigger {
+    all             : unset;
+    box-sizing      : border-box;
+    font            : inherit;
+    color           : var(--gfa-title);
+    display         : flex;
+    align-items     : center;
+    justify-content : space-between;
+    gap             : 16px;
+    width           : 100%;
+    padding         : {{ s.row_padding | default: 20 }}px 16px;
+    cursor          : pointer;
+    text-align      : left;
+    text-transform  : {{ s.text_transform | default: 'none' }};
+    letter-spacing  : {{ s.letter_spacing | default: '0' }}em;
+    transition      : color var(--gfa-dur) var(--gfa-ease);
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (hover: hover) {
+    #gfa-{{ gf_id }} .gfa-trigger:hover {
+      background : var(--gfa-hover-bg);
+    }
+  }
+  #gfa-{{ gf_id }} .gfa-trigger:focus-visible {
+    outline        : 2px solid var(--gfa-title);
+    outline-offset : -2px;
+    border-radius  : 2px;
+  }
+
+  /* icon — shared */
+  #gfa-{{ gf_id }} .gfa-icon {
+    flex-shrink : 0;
+    width       : 18px;
+    height      : 18px;
+    color       : var(--gfa-icon);
+    display     : block;
+    position    : relative;
+    transition  : transform var(--gfa-dur) var(--gfa-ease),
+                  color var(--gfa-dur) var(--gfa-ease);
+  }
+
+  /* chevron rotation */
+  #gfa-{{ gf_id }} .gfa-trigger[aria-expanded="true"] .gfa-icon--chevron {
+    transform : rotate(180deg);
+  }
+
+  /* plus/minus icon via CSS bars */
+  #gfa-{{ gf_id }} .gfa-icon--plus span {
+    display    : block;
+    position   : absolute;
+    background : currentColor;
+    border-radius : 1px;
+    transition : transform var(--gfa-dur) var(--gfa-ease),
+                 opacity var(--gfa-dur) var(--gfa-ease);
+  }
+  #gfa-{{ gf_id }} .gfa-icon--plus .gfa-h {
+    width  : 100%;
+    height : 2px;
+    top    : 50%;
+    left   : 0;
+    transform : translateY(-50%);
+  }
+  #gfa-{{ gf_id }} .gfa-icon--plus .gfa-v {
+    width  : 2px;
+    height : 100%;
+    left   : 50%;
+    top    : 0;
+    transform : translateX(-50%);
+  }
+  #gfa-{{ gf_id }} .gfa-trigger[aria-expanded="true"] .gfa-icon--plus .gfa-v {
+    transform : translateX(-50%) rotate(90deg);
+    opacity   : 0;
+  }
+
+  /* smooth height — grid trick */
+  #gfa-{{ gf_id }} .gfa-panel {
+    display            : grid;
+    grid-template-rows : 0fr;
+    transition         : grid-template-rows var(--gfa-dur) var(--gfa-ease);
+  }
+  #gfa-{{ gf_id }} .gfa-item.gfa-open .gfa-panel {
+    grid-template-rows : 1fr;
+  }
+
+  #gfa-{{ gf_id }} .gfa-overflow {
+    overflow : hidden;
+  }
+
+  /* body content with opacity fade */
+  #gfa-{{ gf_id }} .gfa-body {
+    font-family : var(--font-body-family, sans-serif);
+    font-weight : var(--font-body-weight, 400);
+    font-style  : var(--font-body-style, normal);
+    color       : var(--gfa-body);
+    font-size   : {{ s.body_size | default: 14 }}px;
+    line-height : {{ s.body_line_height | default: 1.75 }};
+    padding     : 0 16px 20px;
+    opacity     : 0;
+    transform   : translateY(-4px);
+    transition  : opacity var(--gfa-dur) var(--gfa-ease),
+                  transform var(--gfa-dur) var(--gfa-ease);
+  }
+  #gfa-{{ gf_id }} .gfa-item.gfa-open .gfa-body {
+    opacity   : 1;
+    transform : translateY(0);
+  }
+
+  #gfa-{{ gf_id }} .gfa-body p            { margin: 0 0 12px; }
+  #gfa-{{ gf_id }} .gfa-body p:last-child { margin-bottom: 0; }
+</style>
+
+<ul id="gfa-{{ gf_id }}" {{ block.shopify_attributes }}>
+  {%- for i in (1..6) -%}
+    {%- assign title_key = 'title_' | append: i -%}
+    {%- assign body_key  = 'body_'  | append: i -%}
+    {%- assign t = s[title_key] -%}
+    {%- assign b = s[body_key] -%}
+    {%- if t != blank and b != blank -%}
+      {%- assign body_html = b | newline_to_br | replace: '<br /><br />', '</p><p>' | prepend: '<p>' | append: '</p>' -%}
+      {%- assign is_first_open = false -%}
+      {%- if open_first and forloop.first -%}
+        {%- assign is_first_open = true -%}
+      {%- endif -%}
+      <li class="gfa-item{% if is_first_open %} gfa-open{% endif %}">
+
+        <{{ title_tag }} class="gfa-heading">
+          <button
+            class         = "gfa-trigger"
+            type          = "button"
+            aria-expanded = "{% if is_first_open %}true{% else %}false{% endif %}"
+            aria-controls = "gfa-p-{{ gf_id }}-{{ i }}"
+          >
+            {{ t }}
+            {%- if icon_style == 'plus' -%}
+              <span class="gfa-icon gfa-icon--plus" aria-hidden="true">
+                <span class="gfa-h"></span>
+                <span class="gfa-v"></span>
+              </span>
+            {%- else -%}
+              <svg class="gfa-icon gfa-icon--chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            {%- endif -%}
+          </button>
+        </{{ title_tag }}>
+
+        <div class="gfa-panel" id="gfa-p-{{ gf_id }}-{{ i }}" role="region" aria-label="{{ t }}">
+          <div class="gfa-overflow">
+            <div class="gfa-body">{{ body_html }}</div>
+          </div>
+        </div>
+
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+</ul>
+
+<script>
+(function(){
+  var root = document.getElementById('gfa-{{ gf_id }}');
+  if (!root) return;
+  var oneAtATime = {{ one_at_a_time }};
+
+  root.querySelectorAll('.gfa-trigger').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var isOpen = btn.getAttribute('aria-expanded') === 'true';
+      var item = btn.closest('.gfa-item');
+
+      if (oneAtATime && !isOpen) {
+        root.querySelectorAll('.gfa-trigger[aria-expanded="true"]').forEach(function(other){
+          other.setAttribute('aria-expanded', 'false');
+          other.closest('.gfa-item').classList.remove('gfa-open');
+        });
+      }
+
+      btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      item.classList.toggle('gfa-open', !isOpen);
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "GF Accordions",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Accordion 1"
+    },
+    {
+      "type": "text",
+      "id": "title_1",
+      "label": "Title",
+      "default": "How do I use it?"
+    },
+    {
+      "type": "textarea",
+      "id": "body_1",
+      "label": "Answer",
+      "default": "Chew one piece at a time using your back teeth (molars). Alternate sides every few minutes to train both sides evenly. Each session should last 10–15 minutes max. We recommend 3–4 pieces spread throughout the day. During your commute, at your desk, between sets — whenever.\n\nDon't overdo it. Your jaw is a muscle. You wouldn't do 6 hours of bicep curls. Same logic applies here. If you feel pain or discomfort, stop and rest. Build up gradually, especially in week one."
+    },
+    {
+      "type": "header",
+      "content": "Accordion 2"
+    },
+    {
+      "type": "text",
+      "id": "title_2",
+      "label": "Title",
+      "default": "Does it actually work?"
+    },
+    {
+      "type": "textarea",
+      "id": "body_2",
+      "label": "Answer",
+      "default": "GUMFORCE is 8x harder than regular gum. That means real resistance on your masseter muscles — the primary muscles that define your jawline. Like any muscle, they respond to consistent training with progressive resistance.\n\nEach piece also contains 500mg of creatine monohydrate. Creatine is the most researched sports supplement in existence. The European Food Safety Authority officially recognizes that creatine increases physical performance in high-intensity exercise.\n\nResults come from consistency, combined with overall fitness and low body fat for visible definition."
+    },
+    {
+      "type": "header",
+      "content": "Accordion 3"
+    },
+    {
+      "type": "text",
+      "id": "title_3",
+      "label": "Title",
+      "default": "What's in it?"
+    },
+    {
+      "type": "textarea",
+      "id": "body_3",
+      "label": "Answer",
+      "default": "Every piece contains 500mg creatine monohydrate. No fillers, no underdosing, no guessing. Unlike some creatine gummies on the market that tested for nearly zero actual creatine, what's on our label is what's in the gum.\n\nSugar-free. Dense, chunky white pieces. You'll feel the difference the second you start chewing. This is training equipment disguised as gum.\n\n100g resealable pouch. Vegan friendly."
+    },
+    {
+      "type": "header",
+      "content": "Accordion 4"
+    },
+    {
+      "type": "text",
+      "id": "title_4",
+      "label": "Title",
+      "default": "Shipping & returns"
+    },
+    {
+      "type": "textarea",
+      "id": "body_4",
+      "label": "Answer",
+      "default": "We ship worldwide. Orders are processed within 1–2 business days. Standard delivery takes 5–8 business days depending on your location. Tracking included with every order.\n\n90-day money-back guarantee. Not satisfied? Reach out and we'll make it right. We stand behind the product because we use it ourselves."
+    },
+    {
+      "type": "header",
+      "content": "Accordion 5 (optional)"
+    },
+    {
+      "type": "text",
+      "id": "title_5",
+      "label": "Title"
+    },
+    {
+      "type": "textarea",
+      "id": "body_5",
+      "label": "Answer"
+    },
+    {
+      "type": "header",
+      "content": "Accordion 6 (optional)"
+    },
+    {
+      "type": "text",
+      "id": "title_6",
+      "label": "Title"
+    },
+    {
+      "type": "textarea",
+      "id": "body_6",
+      "label": "Answer"
+    },
+    {
+      "type": "header",
+      "content": "Behaviour"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open first item by default",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "one_at_a_time",
+      "label": "Only one open at a time",
+      "info": "Closing others automatically when one is opened",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "icon_style",
+      "label": "Icon style",
+      "options": [
+        { "value": "chevron", "label": "Chevron ▾" },
+        { "value": "plus",    "label": "Plus / Minus +" }
+      ],
+      "default": "chevron"
+    },
+    {
+      "type": "range",
+      "id": "row_padding",
+      "label": "Row spacing (px)",
+      "info": "Vertical padding above and below each accordion title",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "select",
+      "id": "title_tag",
+      "label": "Title style",
+      "info": "Inherits directly from Theme settings → Typography",
+      "options": [
+        { "value": "h1", "label": "Heading 1" },
+        { "value": "h2", "label": "Heading 2" },
+        { "value": "h3", "label": "Heading 3" },
+        { "value": "h4", "label": "Heading 4" },
+        { "value": "h5", "label": "Heading 5" },
+        { "value": "p",  "label": "Paragraph" }
+      ],
+      "default": "h3"
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Title case",
+      "options": [
+        { "value": "none",       "label": "As typed" },
+        { "value": "uppercase",  "label": "UPPERCASE" },
+        { "value": "capitalize", "label": "Title Case" },
+        { "value": "lowercase",  "label": "lowercase" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "select",
+      "id": "letter_spacing",
+      "label": "Title letter-spacing",
+      "options": [
+        { "value": "0",    "label": "None" },
+        { "value": "0.03", "label": "Tight" },
+        { "value": "0.06", "label": "Normal" },
+        { "value": "0.1",  "label": "Wide" },
+        { "value": "0.15", "label": "Extra wide" }
+      ],
+      "default": "0.06"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body font size (px)",
+      "info": "Font family from Theme settings → Typography → Body",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "body_line_height",
+      "label": "Body line spacing",
+      "options": [
+        { "value": "1.2", "label": "Tight" },
+        { "value": "1.4", "label": "Compact" },
+        { "value": "1.6", "label": "Normal" },
+        { "value": "1.75", "label": "Relaxed" },
+        { "value": "2.0", "label": "Loose" }
+      ],
+      "default": "1.6"
+    },
+    {
+      "type": "header",
+      "content": "Colours"
+    },
+    {
+      "type": "color",
+      "id": "color_border",
+      "label": "Divider",
+      "default": "#e5e7eb"
+    },
+    {
+      "type": "color",
+      "id": "color_title",
+      "label": "Title",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "color_body",
+      "label": "Body text",
+      "default": "#374151"
+    },
+    {
+      "type": "color",
+      "id": "color_icon",
+      "label": "Icon",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "color_accent",
+      "label": "Active accent bar",
+      "info": "Left border on open items. Leave transparent to disable.",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "color_hover",
+      "label": "Hover background",
+      "info": "Subtle tint on hover. Leave transparent to disable."
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF Accordions"
+    }
+  ]
+}
+{% endschema %}

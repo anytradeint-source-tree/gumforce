@@ -1,0 +1,700 @@
+<style>
+  .shopify-section-group-header-group,
+  #shopify-section-header,
+  #header,
+  header.header,
+  .header-wrapper,
+  .section-header {
+    display: none !important;
+  }
+</style>
+
+<div class="ll" id="listicle-landing">
+
+  <section class="ll-hero">
+    <div class="ll-wrap">
+      <h1 class="ll-hero__h">{{ section.settings.hero_headline }}</h1>
+      <p class="ll-hero__sub"><em>{{ section.settings.hero_subhead }}</em></p>
+      {%- if section.settings.hero_image != blank -%}
+        {%- assign hero_img = section.settings.hero_image -%}
+        <div class="ll-hero__img">
+          <img
+            src="{{ hero_img | image_url: width: 1200 }}"
+            srcset="
+              {{ hero_img | image_url: width: 375 }} 375w,
+              {{ hero_img | image_url: width: 720 }} 720w,
+              {{ hero_img | image_url: width: 960 }} 960w,
+              {{ hero_img | image_url: width: 1200 }} 1200w
+            "
+            sizes="(max-width: 768px) calc(100vw - 48px), 672px"
+            alt="{{ section.settings.hero_image_alt | escape }}"
+            width="{{ hero_img.width }}"
+            height="{{ hero_img.height }}"
+          >
+        </div>
+      {%- endif -%}
+      <div class="ll-hero__recap">
+        {{ section.settings.recap_block }}
+      </div>
+    </div>
+  </section>
+
+  {%- assign item_idx = 0 -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'listicle_item' -%}
+      {%- assign item_idx = item_idx | plus: 1 -%}
+      {%- assign is_even = item_idx | modulo: 2 -%}
+      <section
+        class="ll-item{% if is_even == 0 %} ll-item--alt{% endif %}"
+        id="ll-item-{{ item_idx }}"
+        {{ block.shopify_attributes }}
+      >
+        <div class="ll-wrap">
+          <span class="ll-item__num" aria-hidden="true">{{ block.settings.item_number }}</span>
+          <h2 class="ll-item__h">{{ block.settings.item_headline }}</h2>
+          {%- if block.settings.item_image != blank -%}
+            {%- assign img = block.settings.item_image -%}
+            <div class="ll-item__img">
+              <img
+                src="{{ img | image_url: width: 960 }}"
+                srcset="
+                  {{ img | image_url: width: 375 }} 375w,
+                  {{ img | image_url: width: 720 }} 720w,
+                  {{ img | image_url: width: 960 }} 960w,
+                  {{ img | image_url: width: 1200 }} 1200w
+                "
+                sizes="(max-width: 768px) calc(100vw - 48px), 672px"
+                alt="{{ block.settings.item_image_alt | escape }}"
+                width="{{ img.width }}"
+                height="{{ img.height }}"
+                {% if item_idx > 1 %}loading="lazy"{% endif %}
+              >
+            </div>
+          {%- endif -%}
+          <div class="ll-item__body">
+            {{ block.settings.item_body }}
+          </div>
+        </div>
+      </section>
+
+    {%- elsif block.type == 'image' -%}
+      <section class="ll-image" {{ block.shopify_attributes }}>
+        {%- if block.settings.image != blank -%}
+          {%- if block.settings.full_width -%}
+            <img
+              src="{{ block.settings.image | image_url: width: 1600 }}"
+              srcset="
+                {{ block.settings.image | image_url: width: 375 }} 375w,
+                {{ block.settings.image | image_url: width: 768 }} 768w,
+                {{ block.settings.image | image_url: width: 1200 }} 1200w,
+                {{ block.settings.image | image_url: width: 1600 }} 1600w
+              "
+              sizes="100vw"
+              alt="{{ block.settings.image_alt | escape }}"
+              width="{{ block.settings.image.width }}"
+              height="{{ block.settings.image.height }}"
+              loading="lazy"
+            >
+          {%- else -%}
+            <div class="ll-wrap">
+              <img
+                src="{{ block.settings.image | image_url: width: 1200 }}"
+                srcset="
+                  {{ block.settings.image | image_url: width: 375 }} 375w,
+                  {{ block.settings.image | image_url: width: 720 }} 720w,
+                  {{ block.settings.image | image_url: width: 960 }} 960w,
+                  {{ block.settings.image | image_url: width: 1200 }} 1200w
+                "
+                sizes="(max-width: 768px) calc(100vw - 48px), 672px"
+                alt="{{ block.settings.image_alt | escape }}"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                loading="lazy"
+              >
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </section>
+    {%- endif -%}
+  {%- endfor -%}
+
+  <section class="ll-cta" id="ll-cta-primary">
+    <div class="ll-wrap">
+      <a class="ll-btn" href="{{ section.settings.cta_url }}">
+        {{ section.settings.cta_text }}
+      </a>
+      <div class="ll-guarantee">
+        {{ section.settings.guarantee_text }}
+      </div>
+    </div>
+  </section>
+
+  <section class="ll-testimonials">
+    <div class="ll-wrap">
+      {%- if section.settings.testimonials_heading != blank -%}
+        <h2 class="ll-testimonials__h">{{ section.settings.testimonials_heading }}</h2>
+      {%- endif -%}
+      <div class="ll-testimonials__grid">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'testimonial' -%}
+            <blockquote class="ll-quote" {{ block.shopify_attributes }}>
+              <div class="ll-quote__text">{{ block.settings.quote }}</div>
+              {%- if block.settings.avatar != blank -%}
+                <div class="ll-quote__img">
+                  <img
+                    src="{{ block.settings.avatar | image_url: width: 720 }}"
+                    srcset="
+                      {{ block.settings.avatar | image_url: width: 375 }} 375w,
+                      {{ block.settings.avatar | image_url: width: 720 }} 720w
+                    "
+                    sizes="(max-width: 768px) calc(100vw - 48px), 320px"
+                    alt="{{ block.settings.name | escape }}"
+                    width="{{ block.settings.avatar.width }}"
+                    height="{{ block.settings.avatar.height }}"
+                    loading="lazy"
+                  >
+                </div>
+              {%- endif -%}
+              <footer class="ll-quote__attr">
+                <cite class="ll-quote__name">{{ block.settings.name }}</cite>
+                {%- if block.settings.age != blank -%}
+                  <span class="ll-quote__age">, {{ block.settings.age }}</span>
+                {%- endif -%}
+                {%- if block.settings.verified -%}
+                  <span class="ll-quote__badge" aria-label="Verified buyer">&#10003; Verified</span>
+                {%- endif -%}
+              </footer>
+            </blockquote>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+
+  <section class="ll-cta" id="ll-cta-secondary">
+    <div class="ll-wrap">
+      <a class="ll-btn" href="{{ section.settings.cta_url }}">
+        {{ section.settings.cta_text }}
+      </a>
+    </div>
+  </section>
+
+  <section class="ll-closer">
+    <div class="ll-wrap">
+      <div class="ll-closer__text">
+        {{ section.settings.closer_paragraph }}
+      </div>
+      <a class="ll-btn" href="{{ section.settings.cta_url }}">
+        {{ section.settings.cta_text }}
+      </a>
+    </div>
+  </section>
+
+</div>
+
+{% stylesheet %}
+.ll *,
+.ll *::before,
+.ll *::after {
+  box-sizing: border-box;
+}
+
+.ll {
+  background: #0A0A0A;
+  color: #F5F5F5;
+  font-weight: 400;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ll-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.ll-hero {
+  padding: clamp(72px, 14vw, 152px) 0 clamp(40px, 7vw, 72px);
+}
+
+.ll-hero__h {
+  font-family: var(--font-heading-family, inherit);
+  font-size: clamp(28px, 5.5vw, 52px);
+  font-weight: 900;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  margin: 0 0 20px;
+}
+
+.ll-hero__sub {
+  font-size: clamp(16px, 2.2vw, 20px);
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 0.6;
+  margin: 0 0 clamp(32px, 5vw, 48px);
+}
+
+.ll-hero__img {
+  margin-bottom: clamp(32px, 5vw, 48px);
+}
+
+.ll-hero__img img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ll-hero__recap {
+  border-left: 3px solid #00BFC9;
+  padding-left: clamp(16px, 3vw, 24px);
+}
+
+.ll-hero__recap p {
+  font-size: clamp(15px, 2vw, 18px);
+  line-height: 1.7;
+  margin: 0 0 16px;
+  opacity: 0.85;
+}
+
+.ll-hero__recap p:last-child {
+  margin-bottom: 0;
+}
+
+.ll-item {
+  background: #0A0A0A;
+  padding: clamp(48px, 9vw, 88px) 0;
+}
+
+.ll-item--alt {
+  background: #141414;
+}
+
+.ll-item__num {
+  display: block;
+  font-family: var(--font-heading-family, inherit);
+  font-size: clamp(64px, 12vw, 140px);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.06em;
+  color: #00BFC9;
+  margin-left: -3px;
+  margin-bottom: clamp(12px, 2vw, 20px);
+}
+
+.ll-item__h {
+  font-family: var(--font-heading-family, inherit);
+  font-size: clamp(22px, 4vw, 36px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  margin: 0 0 clamp(24px, 4vw, 36px);
+}
+
+.ll-item__img {
+  margin: 0 0 clamp(24px, 4vw, 36px);
+}
+
+.ll-item__img img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ll-item__body {
+  font-size: clamp(15px, 2vw, 17px);
+  line-height: 1.72;
+}
+
+.ll-item__body p {
+  margin: 0 0 20px;
+}
+
+.ll-item__body p:last-child {
+  margin-bottom: 0;
+}
+
+.ll-item__body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+
+.ll-item__body li {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.ll-item__body li:last-child {
+  margin-bottom: 0;
+}
+
+.ll-item__body li::before {
+  content: '\2014';
+  position: absolute;
+  left: 0;
+  color: #00BFC9;
+}
+
+.ll-image {
+  background: #0A0A0A;
+}
+
+.ll-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ll-cta {
+  background: #0A0A0A;
+  padding: clamp(48px, 9vw, 88px) 0;
+  text-align: center;
+}
+
+.ll-btn {
+  display: inline-block;
+  background: #00BFC9;
+  color: #0A0A0A;
+  font-family: var(--font-heading-family, inherit);
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 20px clamp(36px, 6vw, 56px);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.ll-btn:hover {
+  background: #2dd1d9;
+  transform: translateY(-2px);
+}
+
+.ll-btn:active {
+  transform: translateY(0);
+}
+
+.ll-guarantee {
+  max-width: 560px;
+  margin: clamp(32px, 5vw, 48px) auto 0;
+  text-align: left;
+}
+
+.ll-guarantee p {
+  font-size: clamp(13px, 1.8vw, 15px);
+  line-height: 1.72;
+  opacity: 0.6;
+  margin: 0 0 14px;
+}
+
+.ll-guarantee p:last-child {
+  margin-bottom: 0;
+}
+
+.ll-testimonials {
+  background: #141414;
+  padding: clamp(48px, 9vw, 88px) 0;
+}
+
+.ll-testimonials__h {
+  font-family: var(--font-heading-family, inherit);
+  font-size: clamp(20px, 3.5vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 clamp(36px, 6vw, 56px);
+}
+
+.ll-testimonials__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(32px, 5vw, 48px);
+}
+
+.ll-quote {
+  margin: 0;
+  padding: 0 0 0 20px;
+  border-left: 2px solid rgba(0, 191, 201, 0.25);
+}
+
+.ll-quote__text {
+  font-size: clamp(14px, 1.9vw, 16px);
+  line-height: 1.72;
+}
+
+.ll-quote__text p {
+  margin: 0;
+  opacity: 0.85;
+}
+
+.ll-quote__img {
+  margin-bottom: 20px;
+}
+
+.ll-quote__img img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ll-quote__attr {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.ll-quote__name {
+  font-weight: 700;
+  font-style: normal;
+}
+
+.ll-quote__age {
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+.ll-quote__badge {
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #00BFC9;
+}
+
+.ll-closer {
+  background: #0A0A0A;
+  padding: clamp(48px, 9vw, 88px) 0;
+  text-align: center;
+}
+
+.ll-closer__text {
+  max-width: 600px;
+  margin: 0 auto clamp(36px, 5vw, 52px);
+  text-align: left;
+}
+
+.ll-closer__text p {
+  font-size: clamp(15px, 2vw, 17px);
+  line-height: 1.72;
+  margin: 0 0 20px;
+}
+
+.ll-closer__text p:last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 769px) {
+  .ll-testimonials__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ll-item__num {
+    margin-left: -8px;
+  }
+}
+{% endstylesheet %}
+
+{% javascript %}
+(function () {
+  document.querySelectorAll('#listicle-landing a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+})();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Listicle Landing",
+  "tag": "section",
+  "class": "listicle-landing-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "hero_headline",
+      "label": "Headline",
+      "default": "5 reasons you're getting zero matches on Tinder (the last one is the only thing that ever actually moved mine)"
+    },
+    {
+      "type": "text",
+      "id": "hero_subhead",
+      "label": "Subhead",
+      "default": "Quick recap if you skipped the long version."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "text",
+      "id": "hero_image_alt",
+      "label": "Hero image alt text"
+    },
+    {
+      "type": "richtext",
+      "id": "recap_block",
+      "label": "Recap block",
+      "default": "<p>5 months of zero matches. €500 burned in the app. 40 bio rewrites. 8 years in the gym. None of it moved the needle. One change did.</p><p>Here are the 5 things I figured out — in the order I wish someone had laid them out for me at 22.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "CHECK AVAILABILITY"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Guarantee"
+    },
+    {
+      "type": "richtext",
+      "id": "guarantee_text",
+      "label": "Guarantee text",
+      "default": "<p>90-day guarantee. Chew it for 90 days. If your face hasn't visibly changed and you're not getting more matches, send back what's left of the pouch, full refund, no return shipping.</p><p>No subscription trap. No \"results in 30 days or it's your fault.\" 90 days, your jaw, your call.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Testimonials"
+    },
+    {
+      "type": "text",
+      "id": "testimonials_heading",
+      "label": "Section heading",
+      "default": "What other guys figured out"
+    },
+    {
+      "type": "header",
+      "content": "Closer"
+    },
+    {
+      "type": "richtext",
+      "id": "closer_paragraph",
+      "label": "Closing text",
+      "default": "<p>One last thing.</p><p>If you're under 35 and you've burned money on Gold, Platinum, Boosts, photos, bio rewrites, and the gym, and nothing's worked — this is the thing nobody on the dating subs will tell you.</p><p>They all just say \"go to the gym bro.\"</p><p>I went to the gym for 8 years.</p><p>It didn't fix my face.</p><p>Train the jaw. Same way you train everything else.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "listicle_item",
+      "name": "Listicle item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "item_number",
+          "label": "Number",
+          "default": "1"
+        },
+        {
+          "type": "text",
+          "id": "item_headline",
+          "label": "Headline",
+          "default": "Item headline"
+        },
+        {
+          "type": "richtext",
+          "id": "item_body",
+          "label": "Body",
+          "default": "<p>Item body text.</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "item_image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "item_image_alt",
+          "label": "Image alt text"
+        }
+      ]
+    },
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "quote",
+          "label": "Quote",
+          "default": "<p>Customer quote.</p>"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Name"
+        },
+        {
+          "type": "text",
+          "id": "age",
+          "label": "Age"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Photo"
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Show verified badge",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Alt text"
+        },
+        {
+          "type": "checkbox",
+          "id": "full_width",
+          "label": "Full width (edge to edge)",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "max_blocks": 15,
+  "presets": [
+    {
+      "name": "Listicle Landing"
+    }
+  ]
+}
+{% endschema %}

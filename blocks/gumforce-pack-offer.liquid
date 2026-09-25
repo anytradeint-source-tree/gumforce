@@ -1,0 +1,1261 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Pack Offer — Bundle 2 tiers (sans abonnement)
+  ----------------------------------------------------------------------------
+  Theme/app block pour la page produit. 2 offres sélectionnables :
+    Tier 1 — 1 sachet            (variante 1 du produit)
+    Tier 2 — 2 + 2 offerts       (variante 2 du produit)
+  • Prix 100% live depuis Shopify (variant.price · money · multi-devises).
+  • Prix PAR SACHET en grand = prix variante ÷ nb sachets.
+  • Bouton ATC : ajoute 1 unité de la variante du tier sélectionné +
+    sous-ligne « Livraison prévue le [aujourd'hui + N j] » (calculée en JS).
+  • Garde : grille créatine, popup nutrition, réassurances, compteur stock.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign s  = block.settings
+  assign pr = s.product
+
+  if pr == blank
+    assign pr = product
+  endif
+  if pr == blank and request.visual_preview_mode
+    assign pr = collections.all.products.first
+  endif
+
+  assign gf_id = block.id | replace: '-', ''
+-%}
+
+{%- if pr == blank -%}
+
+  <style>
+    #gfp-empty-{{ gf_id }}{max-width:460px;margin:24px auto;padding:32px 24px;border:2px dashed #e5e5e5;
+      border-radius:14px;text-align:center;font-family:inherit;color:#555;background:#fafafa}
+    #gfp-empty-{{ gf_id }} h3{font-size:16px;margin:0 0 8px;color:#111;font-weight:700}
+    #gfp-empty-{{ gf_id }} p{margin:0;font-size:13px;line-height:1.5}
+  </style>
+  <div id="gfp-empty-{{ gf_id }}" role="alert">
+    <h3>GF Pack Offer — setup required</h3>
+    <p>Sélectionnez un produit dans les réglages du bloc pour afficher l'offre.</p>
+  </div>
+
+{%- else -%}
+
+{%- liquid
+  assign gf_font = "var(--font-body--family, 'Manrope', sans-serif)"
+  assign gf_font_head = "var(--font-heading--family, 'Oswald', sans-serif)"
+
+  assign accent = '#2AB5B4'
+  assign ar = accent | color_extract: 'red'
+  assign ag = accent | color_extract: 'green'
+  assign ab = accent | color_extract: 'blue'
+
+  assign bg       = s.bg_color      | default: '#ffffff'
+  assign card_bg  = s.card_bg       | default: '#ffffff'
+  assign ink      = s.text_color    | default: '#111111'
+  assign head_col = s.heading_color | default: '#111111'
+  assign muted    = s.text_muted    | default: '#777777'
+  assign cta_bg   = s.cta_bg        | default: '#111111'
+  assign cta_txt  = s.cta_text_color | default: '#ffffff'
+
+  comment — 2 TIERS = 2 variantes du produit (par position) · prix 100% live Shopify
+    Option bundle : un produit dédié par tier (ex. bundle Shopify Bundles «2+2»
+    qui s'éclate en 4 articles au checkout) remplace la variante ci-dessous.
+  endcomment
+  assign i1 = s.tier1_variant | default: 1 | minus: 1
+  assign i2 = s.tier2_variant | default: 2 | minus: 1
+  assign v1 = pr.variants[i1]
+  assign v2 = pr.variants[i2]
+  if v1 == blank
+    assign v1 = pr.variants.first
+  endif
+  if v2 == blank
+    assign v2 = pr.variants.last
+  endif
+  if s.tier1_product != blank
+    assign v1 = s.tier1_product.selected_or_first_available_variant | default: s.tier1_product.variants.first
+  endif
+  if s.tier2_product != blank
+    assign v2 = s.tier2_product.selected_or_first_available_variant | default: s.tier2_product.variants.first
+  endif
+
+  assign t1_sach = s.tier1_sachets | default: 1
+  assign t2_sach = s.tier2_sachets | default: 4
+
+  comment — devise du visiteur ≠ devise boutique (Markets) → totaux avec code
+    ISO (« $49.99 CAD ») pour lever l'ambiguïté ; en devise boutique rien ne change
+  endcomment
+  comment — comparer la devise de LOCALISATION (celle qui pilote l'affichage
+    des prix), pas celle du panier : un panier créé en EUR reste en EUR pendant
+    qu'un visiteur étranger voit déjà des prix convertis → faux négatif
+  endcomment
+  assign gf_curcode = false
+  assign gf_loccur = localization.country.currency.iso_code | default: cart.currency.iso_code
+  if gf_loccur != shop.currency
+    assign gf_curcode = true
+  endif
+
+  assign v1_money = v1.price | money
+  assign v2_money = v2.price | money
+  if gf_curcode
+    assign v1_money = v1.price | money_with_currency
+    assign v2_money = v2.price | money_with_currency
+  endif
+
+  comment — prix par sachet (gros) = prix variante ÷ nb sachets
+  endcomment
+  assign v1_per_cents = v1.price | divided_by: t1_sach
+  assign v2_per_cents = v2.price | divided_by: t2_sach
+  assign v1_per = v1_per_cents | money
+  assign v2_per = v2_per_cents | money
+
+  comment — barré = compare_at_price Shopify (si > prix)
+  endcomment
+  assign v1_was = ''
+  if v1.compare_at_price > v1.price
+    assign v1_was = v1.compare_at_price | money
+    if gf_curcode
+      assign v1_was = v1.compare_at_price | money_with_currency
+    endif
+  endif
+  assign v2_was = ''
+  if v2.compare_at_price > v2.price
+    assign v2_was = v2.compare_at_price | money
+    if gf_curcode
+      assign v2_was = v2.compare_at_price | money_with_currency
+    endif
+  endif
+
+  comment — TIER 3 optionnel (A/B test) : masqué par défaut, et jamais affiché
+    si la 3e variante n'existe pas (aucun risque sur le live)
+  endcomment
+  assign i3 = s.tier3_variant | default: 3 | minus: 1
+  assign v3 = pr.variants[i3]
+  if s.tier3_product != blank
+    assign v3 = s.tier3_product.selected_or_first_available_variant | default: s.tier3_product.variants.first
+  endif
+  assign t3_sach = s.tier3_sachets | default: 6
+  assign show_t3 = false
+  if s.tier3_show and v3 != blank
+    assign show_t3 = true
+  endif
+  assign v3_money = v3.price | money
+  if gf_curcode
+    assign v3_money = v3.price | money_with_currency
+  endif
+  assign v3_per_cents = v3.price | divided_by: t3_sach
+  assign v3_per = v3_per_cents | money
+  assign v3_was = ''
+  if v3.compare_at_price > v3.price
+    assign v3_was = v3.compare_at_price | money
+    if gf_curcode
+      assign v3_was = v3.compare_at_price | money_with_currency
+    endif
+  endif
+
+  comment — affichage par tier : jamais zéro (garde), et la sélection par
+    défaut bascule automatiquement sur le tier restant
+  endcomment
+  assign show_t1 = s.tier1_show | default: true, allow_false: true
+  assign show_t2 = s.tier2_show | default: true, allow_false: true
+  if show_t1 == false and show_t2 == false
+    assign show_t2 = true
+  endif
+
+  comment — mode solo : exactement un tier visible → carte agrandie (.gfp-tiers--solo)
+  endcomment
+  assign gf_vis = 0
+  if show_t1
+    assign gf_vis = gf_vis | plus: 1
+  endif
+  if show_t2
+    assign gf_vis = gf_vis | plus: 1
+  endif
+  if show_t3
+    assign gf_vis = gf_vis | plus: 1
+  endif
+  assign gf_solo = false
+  if gf_vis == 1
+    assign gf_solo = true
+  endif
+
+  assign default_tier = s.default_tier | default: '2'
+  if default_tier == '3' and show_t3 == false
+    assign default_tier = '2'
+  endif
+  if default_tier == '2' and show_t2 == false
+    assign default_tier = '1'
+  endif
+  if default_tier == '1' and show_t1 == false
+    assign default_tier = '2'
+  endif
+
+  comment — RUPTURE DE STOCK (piloté par le stock Shopify, rien à régler) :
+    un tier dont la variante est épuisée est grisé ; si le tier par défaut est
+    épuisé et qu'un autre est dispo, la sélection bascule dessus ; si le tier
+    sélectionné est épuisé, le bouton passe en « rupture », l'urgence disparaît,
+    et le bloc « préviens-moi » + le pop-up Klaviyo prennent le relais.
+  endcomment
+  assign v1_ok = false
+  if v1 != blank and v1.available
+    assign v1_ok = true
+  endif
+  assign v2_ok = false
+  if v2 != blank and v2.available
+    assign v2_ok = true
+  endif
+  assign v3_ok = false
+  if v3 != blank and v3.available
+    assign v3_ok = true
+  endif
+  if default_tier == '2' and v2_ok == false and show_t1 and v1_ok
+    assign default_tier = '1'
+  elsif default_tier == '1' and v1_ok == false and show_t2 and v2_ok
+    assign default_tier = '2'
+  endif
+
+  assign oos_form_id  = s.oos_form_id | default: 'Y8CXkC' | strip
+  assign oos_cta_text = s.oos_cta_text | default: 'Rupture de stock'
+  assign oos_text     = s.oos_text | default: "En rupture de stock. Le prochain lot est en route. Laisse tes coordonnées pour qu'on te prévienne, avec 5 % de remise pour l'attente."
+  assign oos_btn_text = s.oos_btn_text | default: 'Préviens-moi du retour'
+  assign oos_delay    = s.oos_popup_delay | default: 5
+  assign oos_tier_tag = s.oos_tier_text | default: 'Épuisé'
+  assign oos_done_text = s.oos_done_text | default: "C'est noté, on te prévient"
+
+  assign cta_adding      = s.cta_adding_text      | default: 'Ajout en cours…'
+  assign cta_redirecting = s.cta_redirecting_text  | default: 'Redirection…'
+
+  assign show_offer_date = s.show_offer_date | default: true, allow_false: true
+
+  assign per_text = s.per_sachet_text | default: 'par sachet'
+
+  assign skip_sun = s.delivery_skip_sunday | default: true, allow_false: true
+
+  comment — image sur un tier → radios masqués sur LES DEUX cartes (cohérence) ;
+    la sélection est portée par l'état de la carte (bordure + fond + ring)
+  endcomment
+  assign has_timg = false
+  if s.tier1_image != blank or s.tier2_image != blank or s.tier3_image != blank
+    assign has_timg = true
+  endif
+-%}
+
+<script>
+(function(){
+  if(document.getElementById('gf-fg'))return;
+  var s=document.createElement('style');s.id='gf-fg';
+  s.textContent='.product-details .text-block p{visibility:hidden!important}html.gf-fonts-ok .product-details .text-block p{visibility:visible!important}';
+  document.head.appendChild(s);
+  /* ne pas forcer font-display:block — le thème est en swap (conforme Lighthouse) ;
+     l'anti-FOUT est déjà géré par le gate visibility ci-dessus */
+  var d=false;function r(){if(d)return;d=true;document.documentElement.classList.add('gf-fonts-ok');}
+  setTimeout(r,800);document.fonts.ready.then(r);
+})();
+</script>
+<style>
+  #gfp-{{ gf_id }},
+  #gfp-{{ gf_id }} *,
+  #gfp-{{ gf_id }} *::before,
+  #gfp-{{ gf_id }} *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  #gfp-{{ gf_id }} {
+    --gfp-font:{{ gf_font }};
+    --gfp-accent:{{ accent }};
+    --gfp-accent-soft:rgba({{ ar }},{{ ag }},{{ ab }},0.07);
+    --gfp-accent-ring:rgba({{ ar }},{{ ag }},{{ ab }},0.10);
+    --gfp-ink:{{ ink }};
+    --gfp-muted:{{ muted }};
+    --gfp-faint:#a1a1aa;
+    --gfp-line:#e7e7ea;
+    --gfp-card:{{ card_bg }};
+    --gfp-head:{{ head_col }};
+    --gfp-cta-bg:{{ cta_bg }};
+    --gfp-cta-text:{{ cta_txt }};
+    --gfp-cta-radius:{{ s.cta_radius | default: 12 }}px;
+    --gfp-font-head:{{ gf_font_head }};
+    --gfp-fg-icsize:{{ s.fg_icon_size | default: 56 }}px;
+
+    font-family:var(--gfp-font);
+    background:{{ bg }};
+    color:var(--gfp-ink);
+    display:flex;
+    justify-content:center;
+    padding:{{ s.padding_top | default: 32 }}px 16px {{ s.padding_bottom | default: 32 }}px;
+    width:100%;
+    -webkit-font-smoothing:antialiased;
+  }
+  #gfp-{{ gf_id }} .gfp-w { width:100%; max-width:720px; margin:0 auto; container-type:inline-size; }
+
+  #gfp-{{ gf_id }} .gfp-card {
+    background:var(--gfp-card);
+    border:1px solid var(--gfp-line);
+    border-radius:20px;
+    padding:28px 26px;
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 10px 30px rgba(0,0,0,.06);
+  }
+  /* mobile: pas de carte → contenu pleine largeur */
+  @container (max-width:559.98px){
+    #gfp-{{ gf_id }} .gfp-card { border:none; border-radius:0; box-shadow:none; background:transparent; padding:0; }
+  }
+
+  /* titre d'offre daté (remplace le compteur de stock) */
+  #gfp-{{ gf_id }} .gfp-datehead { display:flex; align-items:center; gap:9px; margin-bottom:18px; }
+  #gfp-{{ gf_id }} .gfp-dot { width:7px; height:7px; border-radius:50%; background:var(--gfp-accent); flex-shrink:0; animation:gfp-dotpulse 2s ease-in-out infinite; }
+  @keyframes gfp-dotpulse { 0%,100% { box-shadow:0 0 0 0 rgba({{ ar }},{{ ag }},{{ ab }},.35); } 50% { box-shadow:0 0 0 5px rgba({{ ar }},{{ ag }},{{ ab }},0); } }
+  #gfp-{{ gf_id }} .gfp-datetext { font-size:13.5px; line-height:1.3; color:var(--gfp-muted); font-weight:600; }
+  #gfp-{{ gf_id }} .gfp-datetext b { color:var(--gfp-ink); font-weight:800; }
+  @media (prefers-reduced-motion:reduce) { #gfp-{{ gf_id }} .gfp-dot { animation:none; } }
+
+  /* ── TIERS (sélecteur 2 offres) ── */
+  #gfp-{{ gf_id }} .gfp-tiers { display:flex; flex-direction:column; gap:16px; margin-top:20px; }
+  #gfp-{{ gf_id }} .gfp-tier {
+    position:relative; display:flex; align-items:center; gap:12px;
+    padding:15px 16px; border:1.5px solid var(--gfp-line); border-radius:16px; cursor:pointer;
+    transition:border-color .16s ease, background .16s ease, box-shadow .16s ease;
+  }
+  #gfp-{{ gf_id }} .gfp-tier.gfp-sel { border-color:var(--gfp-accent); background:var(--gfp-accent-soft); box-shadow:0 0 0 3px var(--gfp-accent-ring); }
+  #gfp-{{ gf_id }} .gfp-tier input { position:absolute; opacity:0; width:0; height:0; }
+  #gfp-{{ gf_id }} .gfp-radio { width:22px; height:22px; min-width:22px; border-radius:50%; border:2px solid #d4d4d8; position:relative; flex-shrink:0; transition:border-color .16s; }
+  #gfp-{{ gf_id }} .gfp-tier.gfp-sel .gfp-radio { border-color:var(--gfp-accent); }
+  #gfp-{{ gf_id }} .gfp-radio::after { content:''; position:absolute; inset:0; margin:auto; width:11px; height:11px; border-radius:50%; background:var(--gfp-accent); transform:scale(0); transition:transform .16s ease; }
+  #gfp-{{ gf_id }} .gfp-tier.gfp-sel .gfp-radio::after { transform:scale(1); }
+
+  /* ── Mode solo : un seul tier visible → carte agrandie ── */
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tier { padding:19px 18px; border-radius:18px; gap:14px; }
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-timg { width:60px; height:60px; }
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tname { font-size:16.5px; }
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tship { font-size:13px; }
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tship svg { width:15px; height:15px; }
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tper { font-size:26px; }
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tperlbl { font-size:12px; }
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tsub { font-size:13.5px; }
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tbadge { font-size:11px; padding:4px 12px; top:-11px; left:16px; }
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-radio { width:24px; height:24px; min-width:24px; }
+  #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-radio::after { width:12px; height:12px; }
+  @container (min-width:560px) {
+    #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tier { padding:22px; }
+    #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-timg { width:68px; height:68px; }
+    #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tname { font-size:18px; }
+    #gfp-{{ gf_id }} .gfp-tiers--solo .gfp-tper { font-size:29px; }
+  }
+  #gfp-{{ gf_id }} .gfp-tmain { flex:1; min-width:0; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  #gfp-{{ gf_id }} .gfp-tleft { display:flex; flex-direction:column; gap:6px; min-width:0; }
+  /* vignette optionnelle par bundle */
+  #gfp-{{ gf_id }} .gfp-timg { width:46px; height:46px; flex-shrink:0; }
+  #gfp-{{ gf_id }} .gfp-timg img { width:100%; height:100%; object-fit:contain; display:block; }
+  #gfp-{{ gf_id }} .gfp-tname { font-size:15px; font-weight:700; color:var(--gfp-ink); line-height:1.25; min-width:0; }
+  #gfp-{{ gf_id }} .gfp-tbadge { position:absolute; top:-9px; left:14px; z-index:2; font-size:10px; font-weight:800; color:#fff; background:var(--gfp-accent); padding:3px 10px; border-radius:100px; letter-spacing:.04em; white-space:nowrap; text-transform:uppercase; line-height:1.3; box-shadow:0 3px 8px rgba({{ ar }},{{ ag }},{{ ab }},0.35); }
+  /* colonne prix : l'histoire de haut en bas — barré → total → par sachet */
+  #gfp-{{ gf_id }} .gfp-tprice { display:flex; flex-direction:column; align-items:flex-end; flex-shrink:0; gap:2px; white-space:nowrap; }
+  #gfp-{{ gf_id }} .gfp-tper { font-size:23px; font-weight:800; letter-spacing:-.02em; line-height:1; color:var(--gfp-ink); }
+  #gfp-{{ gf_id }} .gfp-tperlbl { font-size:11px; color:var(--gfp-muted); font-weight:600; line-height:1.2; }
+  #gfp-{{ gf_id }} .gfp-tsub { font-size:12.5px; color:var(--gfp-muted); font-weight:600; white-space:nowrap; }
+  #gfp-{{ gf_id }} .gfp-tsub s { color:var(--gfp-faint); font-weight:500; margin-right:5px; }
+  #gfp-{{ gf_id }} .gfp-tship { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--gfp-muted); font-weight:500; line-height:1.35; }
+  #gfp-{{ gf_id }} .gfp-tship svg { width:14px; height:14px; flex-shrink:0; display:block; color:var(--gfp-accent); }
+
+  /* quantité (optionnel) */
+  #gfp-{{ gf_id }} .gfp-qty-row { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:10px; }
+  #gfp-{{ gf_id }} .gfp-qt { font-size:12px; font-weight:600; color:var(--gfp-muted); }
+  #gfp-{{ gf_id }} .gfp-qty { display:inline-flex; align-items:center; border:1.5px solid var(--gfp-line); border-radius:var(--gfp-cta-radius); overflow:hidden; flex-shrink:0; }
+  #gfp-{{ gf_id }} .gfp-qty button { width:30px; height:30px; border:none; background:#fff; font-size:15px; font-weight:600; color:var(--gfp-ink); cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; transition:background .15s ease; }
+  #gfp-{{ gf_id }} .gfp-qty button:hover { background:#f4f4f5; }
+  #gfp-{{ gf_id }} .gfp-qty button:disabled { color:#d4d4d8; cursor:not-allowed; background:#fafafa; }
+  #gfp-{{ gf_id }} .gfp-qval { min-width:46px; text-align:center; font-size:12.5px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--gfp-ink); white-space:nowrap; padding-inline:4px; }
+
+  /* CTA */
+  #gfp-{{ gf_id }} .gfp-cta {
+    width:100%; margin-top:18px; padding:17px; border:none; border-radius:var(--gfp-cta-radius);
+    background:var(--gfp-cta-bg); color:var(--gfp-cta-text); font-family:var(--gfp-font);
+    font-size:16px; font-weight:700; cursor:pointer; letter-spacing:.01em;
+    transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease; box-shadow:0 1px 3px rgba(0,0,0,.1);
+    -webkit-appearance:none; appearance:none; text-align:center; line-height:1.3;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+  }
+  #gfp-{{ gf_id }} .gfp-cta-main { display:inline-flex; align-items:center; justify-content:center; }
+  /* ligne d'urgence sous le bouton — coupure maîtrisée : 2 lignes équilibrées
+     sur mobile (token « | »), 1 seule ligne quand la carte est large */
+  #gfp-{{ gf_id }} .gfp-urgency { display:block; text-align:center; margin-top:12px; padding:0 8px; font-size:12.5px; font-weight:500; color:var(--gfp-muted); line-height:1.5; }
+  #gfp-{{ gf_id }} .gfp-urgency svg { display:inline-block; vertical-align:-2.5px; width:14px; height:14px; margin-right:4px; color:var(--gfp-accent); }
+  #gfp-{{ gf_id }} .gfp-urgency b { color:var(--gfp-ink); font-weight:800; white-space:nowrap; }
+  #gfp-{{ gf_id }} .gfp-urg-br { display:block; height:1px; }
+  @container (min-width:560px) {
+    #gfp-{{ gf_id }} .gfp-urg-br { display:inline; height:auto; }
+  }
+  #gfp-{{ gf_id }} .gfp-cta:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,.16); }
+  #gfp-{{ gf_id }} .gfp-cta.gfp-loading { opacity:.8; pointer-events:none; }
+  #gfp-{{ gf_id }} .gfp-cta.gfp-loading .gfp-cta-main::before {
+    content:''; width:14px; height:14px; margin-right:9px; flex-shrink:0;
+    border:2px solid rgba(255,255,255,.35); border-top-color:#fff; border-radius:50%;
+    animation:gfp-rot .7s linear infinite;
+  }
+  @keyframes gfp-rot { to { transform:rotate(360deg); } }
+  #gfp-{{ gf_id }} .gfp-cta.gfp-success { background:#16a34a; color:#fff; }
+  #gfp-{{ gf_id }} .gfp-ctaprice { font-weight:800; }
+  /* garantie sous le label CTA (unique sous-ligne du bouton) */
+  #gfp-{{ gf_id }} .gfp-cta-guar {
+    display:flex; align-items:center; justify-content:center; gap:5px;
+    margin-top:4px; font-size:10.5px; font-weight:400; line-height:1.2;
+    letter-spacing:.01em; color:var(--gfp-cta-text); opacity:.75;
+  }
+  #gfp-{{ gf_id }} .gfp-cta-guar svg { width:12px; height:12px; flex-shrink:0; color:var(--gfp-accent); }
+
+  #gfp-{{ gf_id }} .gfp-err {
+    display:none; text-align:center; font-size:13px; font-weight:600; color:#dc2626;
+    padding:8px; margin-top:10px; background:#fef2f2; border-radius:8px;
+  }
+
+  /* ── Rupture de stock ── */
+  #gfp-{{ gf_id }} .gfp-tier.gfp-tier--oos { opacity:.55; }
+  #gfp-{{ gf_id }} .gfp-tier.gfp-tier--oos .gfp-tper, #gfp-{{ gf_id }} .gfp-tier.gfp-tier--oos .gfp-tsub s { text-decoration:line-through; }
+  #gfp-{{ gf_id }} .gfp-tsoldout { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:800; color:#b91c1c; text-transform:uppercase; letter-spacing:.05em; line-height:1.3; }
+  #gfp-{{ gf_id }} .gfp-cta.gfp-soldout, #gfp-{{ gf_id }} .gfp-cta.gfp-soldout:hover { background:#e4e4e7; color:#71717a; cursor:not-allowed; box-shadow:none; transform:none; }
+  #gfp-{{ gf_id }} .gfp-cta.gfp-soldout .gfp-cta-guar { display:none; }
+  #gfp-{{ gf_id }}[data-gfp-soldout="true"] .gfp-urgency { display:none; }
+  #gfp-{{ gf_id }} .gfp-oos { margin-top:14px; padding:16px 16px 14px; border:1.5px dashed var(--gfp-line); border-radius:16px; background:#fafafa; text-align:center; }
+  #gfp-{{ gf_id }} .gfp-oos[hidden] { display:none; }
+  #gfp-{{ gf_id }} .gfp-oos-text { font-size:13.5px; line-height:1.55; font-weight:500; color:var(--gfp-ink); }
+  #gfp-{{ gf_id }} .gfp-oos-btn {
+    margin-top:12px; width:100%; padding:15px; border:none; border-radius:var(--gfp-cta-radius);
+    background:var(--gfp-accent); color:#fff; font-family:var(--gfp-font); font-size:14.5px; font-weight:800;
+    letter-spacing:.04em; text-transform:uppercase; cursor:pointer; -webkit-appearance:none; appearance:none;
+    transition:transform .15s ease, box-shadow .15s ease; box-shadow:0 1px 3px rgba(0,0,0,.1);
+  }
+  #gfp-{{ gf_id }} .gfp-oos-btn:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba({{ ar }},{{ ag }},{{ ab }},.35); }
+  #gfp-{{ gf_id }} .gfp-oos-btn.gfp-oos-done, #gfp-{{ gf_id }} .gfp-oos-btn.gfp-oos-done:hover { background:#e4e4e7; color:#3f3f46; cursor:default; transform:none; box-shadow:none; }
+
+  /* ── Garantie 90 jours (visible uniquement sur tier 2+2) ── */
+  #gfp-{{ gf_id }} .gfp-guarantee {
+    display:none; margin-top:14px; padding:10px 14px;
+    background:var(--gfp-accent-soft);
+    border:1px solid var(--gfp-accent-ring);
+    border-radius:10px;
+  }
+  #gfp-{{ gf_id }} .gfp-guarantee.gfp-visible { display:block; }
+  #gfp-{{ gf_id }} .gfp-guarantee-line {
+    display:flex; align-items:center; gap:7px;
+    font-size:12px; font-weight:600; line-height:1.35; color:var(--gfp-ink);
+  }
+  #gfp-{{ gf_id }} .gfp-guarantee-shield {
+    width:14px; height:14px; min-width:14px; color:var(--gfp-accent); flex-shrink:0;
+  }
+  #gfp-{{ gf_id }} .gfp-guarantee-text { flex:1; min-width:0; }
+  #gfp-{{ gf_id }} .gfp-guarantee-info {
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:0; width:18px; height:18px; min-width:18px;
+    background:transparent; border:none; color:var(--gfp-accent); cursor:pointer; flex-shrink:0;
+    -webkit-tap-highlight-color:transparent; transition:opacity .2s ease;
+  }
+  #gfp-{{ gf_id }} .gfp-guarantee-info svg { width:16px; height:16px; }
+  #gfp-{{ gf_id }} .gfp-guarantee-info:hover { opacity:.7; }
+  #gfp-{{ gf_id }} .gfp-guarantee-popup {
+    max-height:0; opacity:0; overflow:hidden; margin:0;
+    transition:max-height .3s ease, opacity .25s ease, margin .3s ease;
+  }
+  #gfp-{{ gf_id }} .gfp-guarantee-popup.gfp-open {
+    max-height:320px; opacity:1; margin-top:10px;
+  }
+  #gfp-{{ gf_id }} .gfp-guarantee-popup-body {
+    background:#fff; border:1px solid var(--gfp-line); border-radius:8px;
+    padding:12px 14px; font-size:12.5px; color:var(--gfp-muted); line-height:1.55;
+  }
+  #gfp-{{ gf_id }} .gfp-guarantee-popup-body p { margin:0 0 6px; }
+  #gfp-{{ gf_id }} .gfp-guarantee-popup-body p:last-child { margin:0; }
+  #gfp-{{ gf_id }} .gfp-guarantee-popup-body strong { color:var(--gfp-accent); font-weight:700; }
+
+  /* reassurances */
+  #gfp-{{ gf_id }} .gfp-reassure { display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-top:16px; }
+  #gfp-{{ gf_id }} .gfp-reassure span { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; color:var(--gfp-faint); font-weight:500; line-height:1.2; }
+  #gfp-{{ gf_id }} .gfp-reassure svg { width:13px; height:13px; flex-shrink:0; display:block; }
+
+  /* ── carte contact (confiance) : WhatsApp + email ── */
+  #gfp-{{ gf_id }} .gfp-contact { margin-top:18px; border:1px solid var(--gfp-line); border-radius:16px; padding:16px 16px 4px; background:var(--gfp-card); }
+  #gfp-{{ gf_id }} .gfp-ct-hd { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  #gfp-{{ gf_id }} .gfp-ct-title { font-family:var(--gfp-font-head); font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--gfp-head); line-height:1.3; }
+  #gfp-{{ gf_id }} .gfp-ct-sub { font-size:11.5px; color:var(--gfp-muted); font-weight:500; margin:4px 0 2px; line-height:1.4; }
+  #gfp-{{ gf_id }} .gfp-ct-badge {
+    display:inline-flex; align-items:center; gap:5px; flex-shrink:0;
+    background:rgba({{ ar }},{{ ag }},{{ ab }},0.12); color:{{ accent | color_darken: 30 }};
+    font-size:10px; font-weight:700; padding:3px 8px; border-radius:100px; white-space:nowrap; line-height:1.3;
+  }
+  #gfp-{{ gf_id }} .gfp-ct-dot { width:6px; height:6px; border-radius:50%; background:var(--gfp-accent); flex-shrink:0; }
+  #gfp-{{ gf_id }} .gfp-ct-row {
+    display:flex; align-items:center; gap:12px; padding:12px 0; min-height:44px;
+    text-decoration:none; -webkit-tap-highlight-color:transparent;
+  }
+  #gfp-{{ gf_id }} .gfp-ct-row + .gfp-ct-row { border-top:1px solid var(--gfp-line); }
+  #gfp-{{ gf_id }} .gfp-ct-ic { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  #gfp-{{ gf_id }} .gfp-ct-ic svg { width:18px; height:18px; display:block; }
+  #gfp-{{ gf_id }} .gfp-ct-ic--wa { background:#E9F9EF; color:#1DA851; }
+  #gfp-{{ gf_id }} .gfp-ct-ic--em { background:rgba({{ ar }},{{ ag }},{{ ab }},0.10); color:var(--gfp-accent); }
+  #gfp-{{ gf_id }} .gfp-ct-col { flex:1; min-width:0; display:flex; flex-direction:column; gap:1px; }
+  #gfp-{{ gf_id }} .gfp-ct-lbl { font-size:9.5px; color:var(--gfp-faint); font-weight:600; letter-spacing:.05em; text-transform:uppercase; line-height:1.2; }
+  #gfp-{{ gf_id }} .gfp-ct-val { font-size:12.5px; font-weight:700; color:var(--gfp-ink); line-height:1.3; word-break:break-all; }
+  #gfp-{{ gf_id }} .gfp-ct-chev { width:14px; height:14px; color:var(--gfp-faint); flex-shrink:0; }
+  @media (hover:hover) {
+    #gfp-{{ gf_id }} .gfp-ct-row:hover .gfp-ct-val { color:var(--gfp-accent); }
+  }
+
+  /* creatine benefits grid (style Trial) */
+  #gfp-{{ gf_id }} .gfp-fg { margin-top:24px; }
+  #gfp-{{ gf_id }} .gfp-fg-head { font-family:var(--gfp-font-head); font-size:16px; font-weight:700; line-height:1.3; text-transform:uppercase; letter-spacing:.04em; text-align:left; color:var(--gfp-head); margin:0 0 16px; }
+  #gfp-{{ gf_id }} .gfp-fg-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  #gfp-{{ gf_id }} .gfp-fg-item { text-align:center; }
+  #gfp-{{ gf_id }} .gfp-fg-ic { color:var(--gfp-accent); width:var(--gfp-fg-icsize); height:var(--gfp-fg-icsize); margin:0 auto 8px; border:1.5px solid var(--gfp-accent); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  #gfp-{{ gf_id }} .gfp-fg-ic svg { width:calc(var(--gfp-fg-icsize)*0.46); height:calc(var(--gfp-fg-icsize)*0.46); }
+  #gfp-{{ gf_id }} .gfp-fg-name { font-family:var(--gfp-font); text-transform:uppercase; letter-spacing:.02em; font-weight:700; font-size:clamp(8px,2.4vw,11px); line-height:1.2; color:var(--gfp-ink); white-space:nowrap; }
+
+  @media (max-width:480px) {
+    #gfp-{{ gf_id }} .gfp-reassure { gap:12px; }
+    #gfp-{{ gf_id }} .gfp-tper { font-size:21px; }
+  }
+</style>
+
+<div id="gfp-{{ gf_id }}"
+     data-pid="{{ pr.id }}"
+     data-gf-scroll-target
+     {{ block.shopify_attributes }}
+     {%- if request.design_mode %} data-design-mode="true"{% endif -%}>
+  <div class="gfp-w">
+    <div class="gfp-card">
+
+      {%- if show_offer_date -%}
+        <div class="gfp-datehead">
+          <span class="gfp-dot" aria-hidden="true"></span>
+          <span class="gfp-datetext">{{ s.offer_prefix | default: 'Offre valable le' }} <b data-gfp-date>{{ 'now' | date: '%d/%m/%Y' }}</b></span>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ── Sélecteur 2 tiers ── {%- endcomment -%}
+      <div class="gfp-tiers{% if gf_solo %} gfp-tiers--solo{% endif %}" role="radiogroup" aria-label="Choisis ton offre">
+        {%- assign t1_sel = false -%}{%- if default_tier == '1' -%}{%- assign t1_sel = true -%}{%- endif -%}
+        {%- assign t2_sel = false -%}{%- if default_tier == '2' -%}{%- assign t2_sel = true -%}{%- endif -%}
+      {%- assign t3_sel = false -%}{%- if default_tier == '3' -%}{%- assign t3_sel = true -%}{%- endif -%}
+
+        {%- if show_t1 -%}
+        <label class="gfp-tier{% if t1_sel %} gfp-sel{% endif %}{% unless v1_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="1" data-gfp-avail="{{ v1_ok }}" data-gfp-vid="{{ v1.id }}" data-gfp-total="{{ v1_money | escape }}" data-gfp-cents="{{ v1.price }}" data-gfp-sach="{{ t1_sach }}">
+          <input type="radio" name="gfp-tier-{{ gf_id }}" value="1"{% if t1_sel %} checked{% endif %}>
+          {%- unless has_timg -%}<span class="gfp-radio"></span>{%- endunless -%}
+          {%- if s.tier1_badge != blank -%}<span class="gfp-tbadge">{{ s.tier1_badge }}</span>{%- endif -%}
+          {%- if s.tier1_image != blank -%}<span class="gfp-timg"><img src="{{ s.tier1_image | image_url: width: 96 }}" alt="" width="46" height="46" loading="lazy"></span>{%- endif -%}
+          <span class="gfp-tmain">
+            <span class="gfp-tleft">
+              <span class="gfp-tname">{{ s.tier1_name | default: '1 sachet' }}</span>
+              {%- if v1_ok == false -%}<span class="gfp-tsoldout">{{ oos_tier_tag }}</span>{%- elsif s.tier1_ship != blank -%}<span class="gfp-tship"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>{{ s.tier1_ship }}</span>{%- endif -%}
+            </span>
+            <span class="gfp-tprice">
+              <span class="gfp-tper">{{ v1_per }}</span>
+              <span class="gfp-tperlbl">{{ per_text }}</span>
+              {%- if v1_was != blank or t1_sach > 1 -%}
+              <span class="gfp-tsub">{% if v1_was != blank %}<s>{{ v1_was }}</s>{% endif %}{% if t1_sach > 1 %}{{ v1_money }}{% endif %}</span>
+              {%- endif -%}
+            </span>
+          </span>
+        </label>
+        {%- endif -%}
+
+        {%- if show_t2 -%}
+        <label class="gfp-tier{% if t2_sel %} gfp-sel{% endif %}{% unless v2_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="2" data-gfp-avail="{{ v2_ok }}" data-gfp-vid="{{ v2.id }}" data-gfp-total="{{ v2_money | escape }}" data-gfp-cents="{{ v2.price }}" data-gfp-sach="{{ t2_sach }}">
+          <input type="radio" name="gfp-tier-{{ gf_id }}" value="2"{% if t2_sel %} checked{% endif %}>
+          {%- unless has_timg -%}<span class="gfp-radio"></span>{%- endunless -%}
+          {%- if s.tier2_badge != blank -%}<span class="gfp-tbadge">{{ s.tier2_badge }}</span>{%- endif -%}
+          {%- if s.tier2_image != blank -%}<span class="gfp-timg"><img src="{{ s.tier2_image | image_url: width: 96 }}" alt="" width="46" height="46" loading="lazy"></span>{%- endif -%}
+          <span class="gfp-tmain">
+            <span class="gfp-tleft">
+              <span class="gfp-tname">{{ s.tier2_name | default: '2 + 2 offerts' }}</span>
+              {%- if v2_ok == false -%}<span class="gfp-tsoldout">{{ oos_tier_tag }}</span>{%- elsif s.tier2_ship != blank -%}<span class="gfp-tship"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>{{ s.tier2_ship }}</span>{%- endif -%}
+            </span>
+            <span class="gfp-tprice">
+              <span class="gfp-tper">{{ v2_per }}</span>
+              <span class="gfp-tperlbl">{{ per_text }}</span>
+              {%- if v2_was != blank or t2_sach > 1 -%}
+              <span class="gfp-tsub">{% if v2_was != blank %}<s>{{ v2_was }}</s>{% endif %}{% if t2_sach > 1 %}{{ v2_money }}{% endif %}</span>
+              {%- endif -%}
+            </span>
+          </span>
+        </label>
+        {%- endif -%}
+
+      {%- if show_t3 -%}
+        <label class="gfp-tier{% if t3_sel %} gfp-sel{% endif %}{% unless v3_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="3" data-gfp-avail="{{ v3_ok }}" data-gfp-vid="{{ v3.id }}" data-gfp-total="{{ v3_money | escape }}" data-gfp-cents="{{ v3.price }}" data-gfp-sach="{{ t3_sach }}">
+          <input type="radio" name="gfp-tier-{{ gf_id }}" value="3"{% if t3_sel %} checked{% endif %}>
+          {%- unless has_timg -%}<span class="gfp-radio"></span>{%- endunless -%}
+          {%- if s.tier3_badge != blank -%}<span class="gfp-tbadge">{{ s.tier3_badge }}</span>{%- endif -%}
+          {%- if s.tier3_image != blank -%}<span class="gfp-timg"><img src="{{ s.tier3_image | image_url: width: 96 }}" alt="" width="46" height="46" loading="lazy"></span>{%- endif -%}
+          <span class="gfp-tmain">
+            <span class="gfp-tleft">
+              <span class="gfp-tname">{{ s.tier3_name | default: '3 + 3 offerts' }}</span>
+              {%- if v3_ok == false -%}<span class="gfp-tsoldout">{{ oos_tier_tag }}</span>{%- elsif s.tier3_ship != blank -%}<span class="gfp-tship"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>{{ s.tier3_ship }}</span>{%- endif -%}
+            </span>
+            <span class="gfp-tprice">
+              <span class="gfp-tper">{{ v3_per }}</span>
+              <span class="gfp-tperlbl">{{ per_text }}</span>
+              {%- if v3_was != blank or t3_sach > 1 -%}
+              <span class="gfp-tsub">{% if v3_was != blank %}<s>{{ v3_was }}</s>{% endif %}{% if t3_sach > 1 %}{{ v3_money }}{% endif %}</span>
+              {%- endif -%}
+            </span>
+          </span>
+        </label>
+        {%- endif -%}
+      </div>
+
+      {%- if s.show_quantity -%}
+        {%- liquid
+          assign q_sach = t1_sach
+          if default_tier == '2'
+            assign q_sach = t2_sach
+          endif
+          assign q_half = q_sach | divided_by: 2
+          assign q_even = q_half | times: 2
+          assign q_lab = 1
+          if q_sach > 1 and q_even == q_sach
+            assign q_lab = q_half | append: '+' | append: q_half
+          elsif q_sach > 1
+            assign q_lab = q_sach
+          endif
+        -%}
+        <div class="gfp-qty-row">
+          <span class="gfp-qt">{{ s.qty_label | default: 'Quantité' }}</span>
+          <span class="gfp-qty">
+            <button type="button" data-gfp-minus aria-label="Diminuer la quantité" disabled>−</button>
+            <span class="gfp-qval" data-gfp-qval>{{ q_lab }}</span>
+            <button type="button" data-gfp-plus aria-label="Augmenter la quantité">+</button>
+          </span>
+        </div>
+      {%- endif -%}
+
+      <div class="gfp-err" id="gfp-err-{{ gf_id }}"></div>
+
+      {%- comment -%} ——— Garantie 90j (visible uniquement quand le tier 2+2 est sélectionné) ——— {%- endcomment -%}
+      {%- if s.show_guarantee -%}
+        <div class="gfp-guarantee" data-gfp-guarantee>
+          <div class="gfp-guarantee-line">
+            <svg class="gfp-guarantee-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            <span class="gfp-guarantee-text">{{ s.guarantee_text | default: 'Garantie 90 jours : résultat ou 100 % remboursé' }}</span>
+            {%- if s.guarantee_expanded != blank -%}
+              <button type="button" class="gfp-guarantee-info" data-gfp-guarantee-info aria-label="Plus d'infos">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </button>
+            {%- endif -%}
+          </div>
+          {%- if s.guarantee_expanded != blank -%}
+            <div class="gfp-guarantee-popup" data-gfp-guarantee-popup aria-hidden="true">
+              <div class="gfp-guarantee-popup-body">{{ s.guarantee_expanded }}</div>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <button class="gfp-cta" id="gfp-cta-{{ gf_id }}">
+        <span class="gfp-cta-main"><span data-gfp-ctalabel>{{ s.cta_text | default: 'Ajouter au panier' }}</span><span class="gfp-ctaprice" data-gfp-ctaprice></span></span>
+        {%- if s.show_cta_guarantee -%}
+          <span class="gfp-cta-guar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>{{ s.cta_guarantee_text | default: 'Satisfait ou remboursé · 90 jours' | escape }}</span>
+        {%- endif -%}
+      </button>
+
+      {%- comment -%} Rupture de stock : bloc « préviens-moi » (affiché par le JS quand le tier sélectionné est épuisé) {%- endcomment -%}
+      <div class="gfp-oos" data-gfp-oos hidden>
+        <p class="gfp-oos-text">{{ oos_text }}</p>
+        {%- if oos_form_id != blank -%}
+          <button type="button" class="gfp-oos-btn" data-gfp-oos-btn>{{ oos_btn_text }}</button>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Urgence sous le bouton : « Commande dans les Xh XXmin pour une livraison le … » {%- endcomment -%}
+      <div class="gfp-urgency">
+        {%- case s.delivery_icon -%}
+          {%- when 'none' -%}
+          {%- when 'truck' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+          {%- when 'clock' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          {%- when 'package' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8Z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+          {%- when 'bolt' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8Z"/></svg>
+          {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        {%- endcase -%}
+        <span data-gfp-deliv></span>
+      </div>
+
+      {%- if s.show_reassure -%}
+        <div class="gfp-reassure">
+          {%- if s.reassure1 != blank -%}
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>{{ s.reassure1 }}</span>
+          {%- endif -%}
+          {%- if s.reassure2 != blank -%}
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{{ s.reassure2 }}</span>
+          {%- endif -%}
+          {%- if s.reassure3 != blank -%}
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>{{ s.reassure3 }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if s.show_contact -%}
+        {%- liquid
+          assign wa_link = ''
+          if s.contact_whatsapp != blank
+            assign wa_link = s.contact_whatsapp | remove: ' ' | remove: '+' | remove: '.' | remove: '-' | remove: '(' | remove: ')'
+          endif
+        -%}
+        <div class="gfp-contact">
+          <div class="gfp-ct-hd">
+            <p class="gfp-ct-title">{{ s.contact_title | default: 'Une question ?' | escape }}</p>
+            {%- if s.contact_badge != blank -%}
+              <span class="gfp-ct-badge"><span class="gfp-ct-dot" aria-hidden="true"></span>{{ s.contact_badge | escape }}</span>
+            {%- endif -%}
+          </div>
+          {%- if s.contact_sub != blank -%}<p class="gfp-ct-sub">{{ s.contact_sub | escape }}</p>{%- endif -%}
+          {%- if wa_link != '' -%}
+            <a class="gfp-ct-row" href="https://wa.me/{{ wa_link }}" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">
+              <span class="gfp-ct-ic gfp-ct-ic--wa"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span>
+              <span class="gfp-ct-col"><span class="gfp-ct-lbl">WhatsApp</span><span class="gfp-ct-val">{{ s.contact_whatsapp | escape }}</span></span>
+              <svg class="gfp-ct-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if s.contact_email != blank -%}
+            <a class="gfp-ct-row" href="mailto:{{ s.contact_email | strip }}" aria-label="Nous écrire par email">
+              <span class="gfp-ct-ic gfp-ct-ic--em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg></span>
+              <span class="gfp-ct-col"><span class="gfp-ct-lbl">Email</span><span class="gfp-ct-val">{{ s.contact_email | escape }}</span></span>
+              <svg class="gfp-ct-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if s.show_formgrid -%}
+        <div class="gfp-fg">
+          {%- if s.formgrid_head != blank -%}<p class="gfp-fg-head">{{ s.formgrid_head }}</p>{%- endif -%}
+          <div class="gfp-fg-grid">
+            {%- for i in (1..4) -%}
+              {%- assign fgn_key = 'fg' | append: i | append: '_label' -%}
+              {%- assign fgn = s[fgn_key] -%}
+              {%- if fgn != blank -%}
+                {%- assign fgi_key = 'fg' | append: i | append: '_icon' -%}
+                {%- assign fgi = s[fgi_key] | default: 'star' -%}
+                <div class="gfp-fg-item">
+                  <div class="gfp-fg-ic">
+                    {%- case fgi -%}
+                      {%- when 'dumbbell' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M6.5 12h11M3.5 9v6M20.5 9v6"/></svg>
+                      {%- when 'bolt' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8Z"/></svg>
+                      {%- when 'refresh' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 4 21 9 16 9"/><polyline points="3 20 3 15 8 15"/><path d="M4.6 9a8 8 0 0 1 13.2-3L21 9M3 15l3.2 3A8 8 0 0 0 19.4 15"/></svg>
+                      {%- when 'bulb' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.4c.6.6 1 1.3 1 2.1V16h6v-.5c0-.8.4-1.5 1-2.1A6 6 0 0 0 12 3Z"/></svg>
+                      {%- when 'flame' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c.6 3 3 4.2 3 7a3 3 0 0 1-6 0c0-1 .4-1.8 1-2.4C9.2 9.6 12 8.5 12 3Z"/><path d="M12 21a6 6 0 0 0 6-6c0-3.2-2.3-5-3.5-6.5"/></svg>
+                      {%- when 'shield' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3Z"/></svg>
+                      {%- when 'person' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 3-6 7-6s7 2 7 6"/></svg>
+                      {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.2l1-5.8L3.5 9.3l5.9-.9L12 3Z"/></svg>
+                    {%- endcase -%}
+                  </div>
+                  <div class="gfp-fg-name">{{ fgn }}</div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Lien infos nutritionnelles + popup (tout en bas de la carte) {%- endcomment -%}
+      {%- if s.nut_label != blank -%}
+      <div class="gfp-nut">
+        <button type="button" class="gfp-nut-link" aria-haspopup="dialog">{{ s.nut_label }}</button>
+        <div class="gfp-nut-ov" role="dialog" aria-modal="true" hidden>
+          <div class="gfp-nut-md">
+            <button type="button" class="gfp-nut-x" aria-label="Fermer">&times;</button>
+            <h3 class="gfp-nut-t">{{ s.nut_title | default: 'Informations nutritionnelles' }}</h3>
+            {%- if s.nut_portion != blank or s.nut_perpack != blank -%}<p class="gfp-nut-p">{{ s.nut_portion }}{% if s.nut_portion != blank and s.nut_perpack != blank %} &middot; {% endif %}{{ s.nut_perpack }}</p>{%- endif -%}
+            {%- assign nlines = s.nut_rows | newline_to_br | split: '<br />' -%}
+            {%- if s.nut_rows != blank -%}
+            <table class="gfp-nut-tb"><thead><tr><th></th><th>{{ s.nut_col1 | default: 'Par portion' }}</th><th>{{ s.nut_col2 | default: 'Pour 100g' }}</th></tr></thead><tbody>
+              {%- for line in nlines -%}{%- assign c = line | split: ';' -%}{%- assign lbl = c[0] | strip -%}{%- if lbl != blank -%}{%- assign f0 = lbl | slice: 0 -%}{%- assign sub = false -%}{%- if f0 == '-' -%}{%- assign sub = true -%}{%- assign lbl = lbl | remove_first: '-' | strip -%}{%- endif -%}<tr{% if sub %} class="sub"{% endif %}><td>{{ lbl }}</td><td>{{ c[1] | strip }}</td><td>{{ c[2] | strip }}</td></tr>{%- endif -%}{%- endfor -%}
+            </tbody></table>
+            {%- endif -%}
+            {%- if s.nut_ref != blank -%}<p class="gfp-nut-ref">{{ s.nut_ref }}</p>{%- endif -%}
+            {%- if s.nut_notes != blank -%}<div class="gfp-nut-n">{{ s.nut_notes }}</div>{%- endif -%}
+          </div>
+        </div>
+      </div>
+      <style>
+        #gfp-{{ gf_id }} .gfp-nut { text-align: center; margin-top: 22px; }
+        #gfp-{{ gf_id }} .gfp-nut-link { background:none;border:0;padding:0;cursor:pointer;font-family:var(--gfp-font);font-size:13px;color:#6b6b6b;text-decoration:underline;text-underline-offset:3px; }
+        #gfp-{{ gf_id }} .gfp-nut-link:hover { color:#111; }
+        #gfp-{{ gf_id }} .gfp-nut-ov { position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px; }
+        #gfp-{{ gf_id }} .gfp-nut-ov[hidden] { display:none; }
+        #gfp-{{ gf_id }} .gfp-nut-md { background:#fff;border-radius:18px;width:100%;max-width:440px;max-height:86vh;overflow-y:auto;padding:28px 26px 24px;position:relative;box-shadow:0 24px 70px rgba(0,0,0,.32);text-align:left; }
+        #gfp-{{ gf_id }} .gfp-nut-x { position:absolute;top:12px;right:14px;background:none;border:0;font-size:28px;line-height:1;color:#9a9a9a;cursor:pointer; }
+        #gfp-{{ gf_id }} .gfp-nut-t { font-family:var(--gfp-font-head,var(--gfp-font));font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:var(--font-h6--size,16px);margin:0 0 4px;color:#111; }
+        #gfp-{{ gf_id }} .gfp-nut-p { font-size:13px;color:#6b6b6b;margin:0 0 16px; }
+        #gfp-{{ gf_id }} .gfp-nut-tb { width:100%;border-collapse:collapse; }
+        #gfp-{{ gf_id }} .gfp-nut-tb th { font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:#9a9a9a;text-align:right;padding:0 0 8px;font-weight:600; }
+        #gfp-{{ gf_id }} .gfp-nut-tb th:first-child { text-align:left; }
+        #gfp-{{ gf_id }} .gfp-nut-tb td { font-size:14px;color:#1a1a1a;padding:9px 0;border-top:1px solid #ededed;text-align:right; }
+        #gfp-{{ gf_id }} .gfp-nut-tb td:first-child { text-align:left;font-weight:600; }
+        #gfp-{{ gf_id }} .gfp-nut-tb tr.sub td:first-child { font-weight:400;padding-left:16px;color:#6b6b6b; }
+        #gfp-{{ gf_id }} .gfp-nut-tb tr.sub td { color:#6b6b6b; }
+        #gfp-{{ gf_id }} .gfp-nut-ref { font-size:11px;color:#9a9a9a;margin:12px 0 0;line-height:1.4; }
+        #gfp-{{ gf_id }} .gfp-nut-n { font-size:13px;color:#4a4a4a;margin:14px 0 0;line-height:1.5;border-top:1px solid #ededed;padding-top:14px; }
+        #gfp-{{ gf_id }} .gfp-nut-n p { margin:0 0 6px; }
+      </style>
+      <script>
+        (function(){var r=document.getElementById('gfp-{{ gf_id }}');if(!r)return;var nl=r.querySelector('.gfp-nut-link'),ov=r.querySelector('.gfp-nut-ov'),cb=r.querySelector('.gfp-nut-x');if(!nl||!ov)return;function op(){ov.hidden=false;document.body.style.overflow='hidden';}function cl(){ov.hidden=true;document.body.style.overflow='';}nl.addEventListener('click',op);cb.addEventListener('click',cl);ov.addEventListener('click',function(e){if(e.target===ov)cl();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!ov.hidden)cl();});})();
+      </script>
+      {%- endif -%}
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var ID   = {{ gf_id | json }};
+  var root = document.getElementById('gfp-' + ID);
+  if (!root) return;
+
+  var isDesignMode = root.hasAttribute('data-design-mode');
+  var cartRoot = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+
+  /* ── DATE D'OFFRE — calculée côté client (jamais figée par le cache CDN) ── */
+  var dateEl = root.querySelector('[data-gfp-date]');
+  if (dateEl) {
+    try {
+      dateEl.textContent = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+    } catch (e) { /* fallback : la date serveur JJ/MM/AAAA reste affichée */ }
+  }
+
+  /* ── SÉLECTEUR DE TIERS ── */
+  var tiers   = root.querySelectorAll('[data-gfp-tier]');
+  var elLabel = root.querySelector('[data-gfp-ctalabel]');
+  var elPrice = root.querySelector('[data-gfp-ctaprice]');
+  var CTA     = {{ s.cta_text | default: 'Ajouter au panier' | json }};
+  var sel     = {{ default_tier | json }};
+
+  /* quantité (optionnelle) */
+  var qty    = 1;
+  var CUR    = {{ gf_loccur | default: shop.currency | json }};
+  var CURCODE = {{ gf_curcode | json }}; /* devise ≠ boutique → afficher le code ISO */
+  var QMAX   = 4;
+  var qval   = root.querySelector('[data-gfp-qval]');
+  var qminus = root.querySelector('[data-gfp-minus]');
+  var qplus  = root.querySelector('[data-gfp-plus]');
+  /* label d'une pastille : tier multi-sachets pair → « 2+2, 4+4… » (moitié
+     achetée + moitié offerte), impair → total sachets, 1 sachet → 1,2,3,4 */
+  function gfpQLabel(n, sach) {
+    if (sach > 1 && sach % 2 === 0) { var h = sach / 2 * n; return h + '+' + h; }
+    if (sach > 1) return String(sach * n);
+    return String(n);
+  }
+  function gfpMoney(cents){
+    try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: CUR, currencyDisplay: CURCODE ? 'code' : 'symbol' }).format(cents / 100); }
+    catch (e) { return (cents / 100).toFixed(2); }
+  }
+
+  function selectedEl(){ return root.querySelector('[data-gfp-tier="' + sel + '"]'); }
+
+  /* ── RUPTURE DE STOCK : lue sur data-gfp-avail (stock Shopify).
+     Mode aperçu sans toucher au stock : ajouter ?gf_oos=1 à l'URL de la page
+     produit → tout s'affiche comme en rupture (visuel uniquement). ── */
+  var OOS_CTA  = {{ oos_cta_text | json }};
+  var OOS_TAG  = {{ oos_tier_tag | json }};
+  var oosBox   = root.querySelector('[data-gfp-oos]');
+  if (/[?&]gf_oos=1(&|$)/.test(window.location.search)) {
+    for (var oi = 0; oi < tiers.length; oi++) {
+      var ot = tiers[oi];
+      ot.setAttribute('data-gfp-avail', 'false');
+      ot.classList.add('gfp-tier--oos');
+      var oleft = ot.querySelector('.gfp-tleft');
+      if (oleft && !oleft.querySelector('.gfp-tsoldout')) {
+        var otag = document.createElement('span'); otag.className = 'gfp-tsoldout'; otag.textContent = OOS_TAG;
+        var oship = oleft.querySelector('.gfp-tship');
+        if (oship) { oship.parentNode.replaceChild(otag, oship); } else { oleft.appendChild(otag); }
+      }
+    }
+  }
+  function applySoldOut(cur){
+    var avail = !!cur && cur.getAttribute('data-gfp-avail') === 'true';
+    var ctaBtn = document.getElementById('gfp-cta-' + ID);
+    root.setAttribute('data-gfp-soldout', avail ? 'false' : 'true');
+    if (ctaBtn) { ctaBtn.classList.toggle('gfp-soldout', !avail); ctaBtn.disabled = !avail; }
+    if (oosBox) oosBox.hidden = avail;
+    return avail;
+  }
+
+  function applyTier(){
+    for (var i = 0; i < tiers.length; i++){
+      var t = tiers[i];
+      var on = t.getAttribute('data-gfp-tier') === sel;
+      t.classList.toggle('gfp-sel', on);
+      var inp = t.querySelector('input'); if (inp && inp.checked !== on) inp.checked = on;
+    }
+    var cur = selectedEl();
+    if (!applySoldOut(cur)) {
+      if (elLabel) elLabel.textContent = OOS_CTA;
+      if (elPrice) elPrice.textContent = '';
+      return;
+    }
+    if (elLabel) elLabel.textContent = CTA;
+    if (elPrice) {
+      var total = '';
+      if (cur) {
+        var cents = parseInt(cur.getAttribute('data-gfp-cents'), 10) || 0;
+        total = qty === 1 ? cur.getAttribute('data-gfp-total') : gfpMoney(cents * qty);
+      }
+      elPrice.textContent = total ? (' · ' + total) : '';
+    }
+    if (qval && cur) {
+      var sach = parseInt(cur.getAttribute('data-gfp-sach'), 10) || 1;
+      qval.textContent = gfpQLabel(qty, sach);
+      if (qminus) qminus.disabled = qty <= 1;
+      if (qplus)  qplus.disabled = qty >= QMAX;
+    }
+  }
+  if (qminus) qminus.addEventListener('click', function(){ if (qty > 1) { qty--; applyTier(); } });
+  if (qplus)  qplus.addEventListener('click',  function(){ if (qty < QMAX) { qty++; applyTier(); } });
+
+  /* un seul écouteur délégué sur le change natif des radios → zéro double-déclenchement */
+  var tiersWrap = root.querySelector('.gfp-tiers');
+  if (tiersWrap) {
+    tiersWrap.addEventListener('change', function(e){
+      var inp = e.target;
+      if (!inp || inp.type !== 'radio' || !inp.checked) return;
+      var lbl = inp.closest('[data-gfp-tier]');
+      if (lbl) { sel = lbl.getAttribute('data-gfp-tier'); applyTier(); }
+    });
+  }
+  applyTier();
+
+  /* ── RUPTURE : bouton « préviens-moi » + pop-up Klaviyo ouvert par le site.
+     Le formulaire Klaviyo est en « déclenchement personnalisé » : il ne s'ouvre
+     jamais seul. Ici : au clic sur le bouton, et automatiquement après N s si le
+     tier sélectionné est épuisé. Réglage Klaviyo requis sur ce formulaire :
+     « réafficher après 0 jour » (sinon Klaviyo bloque toute réouverture, bouton
+     compris, pendant X jours après une fermeture). La fréquence est gérée ici,
+     à partir de la mémoire locale de Klaviyo : pas de pop-up automatique avant
+     5 jours après une fermeture, jamais après inscription ; après inscription,
+     le bouton passe en « c'est noté ». ── */
+  var OOS_FORM  = {{ oos_form_id | json }};
+  var OOS_DELAY = parseInt({{ oos_delay | json }}, 10) || 0;
+  var OOS_DONE  = {{ oos_done_text | json }};
+  var OOS_KEY   = 'gf_oos_' + OOS_FORM;
+  function oosState(){ try { return JSON.parse(localStorage.getItem(OOS_KEY) || '{}'); } catch (e) { return {}; } }
+  function oosSave(st){ try { localStorage.setItem(OOS_KEY, JSON.stringify(st)); } catch (e) {} }
+  function oosSync(){
+    /* recopie ce que Klaviyo a noté (fermeture, inscription) dans notre mémoire */
+    var st = oosState();
+    try {
+      var o = JSON.parse(localStorage.getItem('klaviyoOnsite') || '{}');
+      var m = o && o.viewedForms && o.viewedForms.modal;
+      var k = m && m.disabledForms && m.disabledForms[OOS_FORM];
+      if (k) {
+        if (k.successActionTypes && k.successActionTypes.length) st.done = st.done || Date.now();
+        if (k.lastCloseTime) st.closed = Math.max(st.closed || 0, k.lastCloseTime * 1000);
+      }
+    } catch (e) {}
+    oosSave(st);
+    return st;
+  }
+  function oosOpen(){ if (!OOS_FORM) return; window._klOnsite = window._klOnsite || []; window._klOnsite.push(['openForm', OOS_FORM]); }
+  var oosBtn = root.querySelector('[data-gfp-oos-btn]');
+  function oosMarkDone(){ if (!oosBtn) return; oosBtn.textContent = OOS_DONE; oosBtn.classList.add('gfp-oos-done'); oosBtn.disabled = true; }
+  if (OOS_FORM) {
+    var oosSt = oosSync();
+    if (oosSt.done) oosMarkDone();
+    if (oosBtn) oosBtn.addEventListener('click', function(){ if (!oosSync().done) oosOpen(); });
+    window.addEventListener('klaviyoForms', function(e){
+      var d = (e && e.detail) || {};
+      if (String(d.formId) !== String(OOS_FORM)) return;
+      var st = oosState();
+      if (d.type === 'submit') { st.done = Date.now(); oosMarkDone(); }
+      if (d.type === 'close')  { st.closed = Date.now(); }
+      oosSave(st);
+    });
+    (function(){
+      if (root.hasAttribute('data-design-mode')) return;
+      if (root.getAttribute('data-gfp-soldout') !== 'true') return;
+      if (oosSt.done) return;
+      if (oosSt.closed && Date.now() - oosSt.closed < 5 * 24 * 3600 * 1000) return;
+      setTimeout(function(){ if (root.getAttribute('data-gfp-soldout') === 'true' && !oosSync().done) oosOpen(); }, OOS_DELAY * 1000);
+    })();
+  }
+
+  /* ── URGENCE : « Commande dans les Xh XXmin pour une livraison le … » ──
+     Compte à rebours jusqu'à l'heure limite (minuit par défaut), mis à jour
+     toutes les 30 s ; passé l'heure limite, tout bascule sur demain. */
+  var elDeliv = root.querySelector('[data-gfp-deliv]');
+  if (elDeliv) {
+    var OFFSET   = {{ s.delivery_offset | default: 2 }};
+    var SKIP_SUN = {{ skip_sun | json }};
+    var CUTOFF   = {{ s.cutoff_hour | default: 24 }};
+    var TPL      = {{ s.urgency_text | default: 'Commande dans les [temps]|pour une livraison le [date]' | json }};
+    /* coupure 2 lignes garantie : si le texte n'a pas de « | », on le place
+       automatiquement avant « pour » (point de coupure naturel) */
+    if (TPL.indexOf('|') === -1) TPL = TPL.replace(' pour ', '|pour ');
+    function gfpUrg() {
+      var now = new Date();
+      var cut = new Date(now.getFullYear(), now.getMonth(), now.getDate(), CUTOFF, 0, 0);
+      var base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      if (now >= cut) { cut.setDate(cut.getDate() + 1); base.setDate(base.getDate() + 1); }
+      var ms = cut - now;
+      var h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000);
+      var t = h > 0 ? (h + 'h ' + (m < 10 ? '0' : '') + m + 'min') : (m + ' min');
+      var d = new Date(base), added = 0;
+      while (added < OFFSET) {
+        d.setDate(d.getDate() + 1);
+        if (!(SKIP_SUN && d.getDay() === 0)) added++;
+      }
+      var fmt;
+      try { fmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }).format(d); }
+      catch (e) { fmt = d.toLocaleDateString(); }
+      elDeliv.innerHTML = TPL
+        .replace('[temps]', '<b>' + t + '</b>')
+        .replace('[date]', '<b>' + fmt + '</b>')
+        .replace('|', '<span class="gfp-urg-br"> </span>');
+    }
+    gfpUrg();
+    window.__gfpUrg = window.__gfpUrg || {};
+    if (window.__gfpUrg[ID]) clearInterval(window.__gfpUrg[ID]);
+    window.__gfpUrg[ID] = setInterval(gfpUrg, 30000);
+  }
+
+  /* ── ADD TO CART ── */
+  var btn   = document.getElementById('gfp-cta-' + ID);
+  var errEl = document.getElementById('gfp-err-' + ID);
+  if (!btn) return;
+
+  var txtAdding      = {{ cta_adding | json }};
+  var txtRedirecting = {{ cta_redirecting | json }};
+
+  function showErr(msg){
+    if (!errEl) return;
+    errEl.textContent = msg; errEl.style.display = 'block';
+    setTimeout(function(){ errEl.style.display = 'none'; }, 5000);
+  }
+  function setLabel(txt){ if (elLabel) elLabel.textContent = txt; if (elPrice) elPrice.textContent = ''; }
+
+  btn.addEventListener('click', function(){
+    var link = {{ s.cta_link | default: '' | json }};
+    if (link && link.length > 0) { window.location.href = link; return; }
+
+    var cur = selectedEl();
+    if (!applySoldOut(cur)) { applyTier(); return; }
+    var vid = cur ? parseInt(cur.getAttribute('data-gfp-vid'), 10) : 0;
+    if (!vid) { showErr('Aucune variante disponible.'); return; }
+
+    setLabel(txtAdding);
+    btn.classList.add('gfp-loading');
+    if (errEl) errEl.style.display = 'none';
+
+    fetch(cartRoot + 'cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ items: [{ id: vid, quantity: qty }] })
+    })
+    .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
+    .then(function(res){
+      btn.classList.remove('gfp-loading');
+      if (!res.ok) { throw new Error(res.data.description || res.data.message || "Impossible d'ajouter au panier."); }
+      setLabel(txtRedirecting);
+      btn.classList.add('gfp-success');
+
+      {%- if s.go_to_checkout -%}
+        window.location.href = cartRoot + 'checkout';
+      {%- else -%}
+        document.dispatchEvent(new CustomEvent('cart:update', {
+          bubbles: true,
+          detail: { resource: { item_count: res.data.item_count || 1 }, sourceId: 'gfp-' + ID, data: { sections: res.data.sections || {}, source: 'gfp-' + ID } }
+        }));
+        var drawer = document.querySelector('cart-drawer, cart-drawer-component, .cart-drawer');
+        if (drawer && typeof drawer.open === 'function') {
+          drawer.open();
+          setTimeout(function(){ btn.classList.remove('gfp-success'); applyTier(); }, 2000);
+        } else {
+          window.location.href = cartRoot + 'cart';
+        }
+      {%- endif -%}
+    })
+    .catch(function(err){
+      btn.classList.remove('gfp-loading', 'gfp-success');
+      applyTier();
+      showErr(err.message || 'Une erreur est survenue.');
+    });
+  });
+
+  /* ── Garantie 90j : visible uniquement quand tier 2+2 est sélectionné ── */
+  (function(){
+    var guaranteeEl = root.querySelector('[data-gfp-guarantee]');
+    if (!guaranteeEl) return;
+
+    function updateGuaranteeVisibility(){
+      var checked = root.querySelector('input[name="gfp-tier-{{ gf_id }}"]:checked');
+      var isTier2 = checked && checked.value === '2';
+      guaranteeEl.classList.toggle('gfp-visible', !!isTier2);
+    }
+
+    root.querySelectorAll('input[name="gfp-tier-{{ gf_id }}"]').forEach(function(r){
+      r.addEventListener('change', updateGuaranteeVisibility);
+    });
+    updateGuaranteeVisibility();
+
+    /* Popup ⓘ toggle */
+    var trigger = guaranteeEl.querySelector('[data-gfp-guarantee-info]');
+    var popup   = guaranteeEl.querySelector('[data-gfp-guarantee-popup]');
+    if (trigger && popup){
+      trigger.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation();
+        popup.classList.toggle('gfp-open');
+        popup.setAttribute('aria-hidden', String(!popup.classList.contains('gfp-open')));
+      });
+      document.addEventListener('click', function(e){
+        if (!popup.contains(e.target) && e.target !== trigger && !trigger.contains(e.target)){
+          popup.classList.remove('gfp-open');
+          popup.setAttribute('aria-hidden', 'true');
+        }
+      });
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && popup.classList.contains('gfp-open')){
+          popup.classList.remove('gfp-open');
+          popup.setAttribute('aria-hidden', 'true');
+        }
+      });
+    }
+  })();
+})();
+</script>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "GF Pack Offer",
+  "settings": [
+    { "type": "header", "content": "Produit" },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Produit",
+      "info": "Le produit avec 2 variantes (ex. « 1 sachet » / « 2+2 »). Vide = produit de la page."
+    },
+
+    { "type": "header", "content": "── Offres (2 tiers) ──" },
+    { "type": "paragraph", "content": "Chaque tier = une variante du produit. Le prix est lu en LIVE depuis Shopify ; indique juste la position de la variante et le nb de sachets (pour le prix/sachet)." },
+    { "type": "checkbox", "id": "tier1_show", "label": "Afficher le Tier 1", "default": true },
+    { "type": "checkbox", "id": "tier2_show", "label": "Afficher le Tier 2", "default": true, "info": "Un seul tier affiché = il est sélectionné d'office, le bouton suit son prix." },
+    { "type": "select", "id": "default_tier", "label": "Offre sélectionnée par défaut", "options": [{"value":"1","label":"Tier 1"},{"value":"2","label":"Tier 2 (recommandé)"},{"value":"3","label":"Tier 3"}], "default": "2" },
+    { "type": "text", "id": "per_sachet_text", "label": "Texte prix par sachet", "default": "par sachet", "info": "Affiché sous le prix total : « 12,49 € par sachet »." },
+    { "type": "product", "id": "tier1_product", "label": "Tier 1 — produit dédié (optionnel)", "info": "Remplace la variante ci-dessous. Utile pour un bundle." },
+    { "type": "range", "id": "tier1_variant", "label": "Tier 1 — n° de variante", "min": 1, "max": 12, "step": 1, "default": 1 },
+    { "type": "text", "id": "tier1_name", "label": "Tier 1 — nom", "default": "1 sachet" },
+    { "type": "image_picker", "id": "tier1_image", "label": "Tier 1 — petite image (optionnel)", "info": "Avec image, les boutons radio disparaissent (la carte sélectionnée se voit par sa bordure). Mets une image sur les DEUX tiers ou aucun." },
+    { "type": "range", "id": "tier1_sachets", "label": "Tier 1 — nb de sachets", "min": 1, "max": 24, "step": 1, "default": 1 },
+    { "type": "text", "id": "tier1_badge", "label": "Tier 1 — badge (vide = masqué)" },
+    { "type": "text", "id": "tier1_ship", "label": "Tier 1 — livraison", "default": "Livraison en 48h" },
+    { "type": "product", "id": "tier2_product", "label": "Tier 2 — produit dédié (optionnel)", "info": "Sélectionne ici ton bundle « 2+2 » (app Shopify Bundles) → le checkout affichera 4 articles." },
+    { "type": "range", "id": "tier2_variant", "label": "Tier 2 — n° de variante", "min": 1, "max": 12, "step": 1, "default": 2 },
+    { "type": "text", "id": "tier2_name", "label": "Tier 2 — nom", "default": "2 + 2 offerts" },
+    { "type": "image_picker", "id": "tier2_image", "label": "Tier 2 — petite image (optionnel)" },
+    { "type": "range", "id": "tier2_sachets", "label": "Tier 2 — nb de sachets", "min": 1, "max": 24, "step": 1, "default": 4 },
+    { "type": "text", "id": "tier2_badge", "label": "Tier 2 — badge", "default": "MEILLEURE OFFRE" },
+    { "type": "text", "id": "tier2_ship", "label": "Tier 2 — livraison", "default": "Livraison gratuite en point relais" },
+    { "type": "header", "content": "── Tier 3 (optionnel) ──" },
+    { "type": "checkbox", "id": "tier3_show", "label": "Afficher le tier 3", "default": false, "info": "Pour un A/B test : nécessite une 3e variante du produit (ou un produit dédié ci-dessous). Jamais affiché si elle n'existe pas." },
+    { "type": "product", "id": "tier3_product", "label": "Tier 3 — produit dédié (optionnel)" },
+    { "type": "range", "id": "tier3_variant", "label": "Tier 3 — n° de variante", "min": 1, "max": 12, "step": 1, "default": 3 },
+    { "type": "text", "id": "tier3_name", "label": "Tier 3 — nom", "default": "3 + 3 offerts" },
+    { "type": "image_picker", "id": "tier3_image", "label": "Tier 3 — petite image (optionnel)" },
+    { "type": "range", "id": "tier3_sachets", "label": "Tier 3 — nb de sachets", "min": 1, "max": 24, "step": 1, "default": 6 },
+    { "type": "text", "id": "tier3_badge", "label": "Tier 3 — badge" },
+    { "type": "text", "id": "tier3_ship", "label": "Tier 3 — ligne livraison" },
+
+    { "type": "header", "content": "── Urgence sous le bouton ──" },
+    { "type": "text", "id": "urgency_text", "label": "Texte (tokens [temps] et [date])", "default": "Commande dans les [temps]|pour une livraison le [date]", "info": "[temps] = compte à rebours · [date] = date de livraison · « | » = retour à la ligne sur mobile (une seule ligne sur grand écran)." },
+    { "type": "range", "id": "cutoff_hour", "label": "Heure limite de commande (24 = minuit)", "min": 12, "max": 24, "step": 1, "default": 24, "unit": "h" },
+    { "type": "select", "id": "delivery_icon", "label": "Icône", "options": [{"value":"calendar","label":"Calendrier"},{"value":"truck","label":"Camion"},{"value":"clock","label":"Horloge"},{"value":"package","label":"Colis"},{"value":"bolt","label":"Éclair (express)"},{"value":"none","label":"Aucune"}], "default": "truck" },
+    { "type": "range", "id": "delivery_offset", "label": "Délai de livraison (jours)", "min": 1, "max": 7, "step": 1, "default": 2, "unit": "j" },
+    { "type": "checkbox", "id": "delivery_skip_sunday", "label": "Sauter le dimanche", "default": true },
+
+    { "type": "header", "content": "── Bénéfices créatine ──" },
+    { "type": "checkbox", "id": "show_formgrid", "label": "Afficher la grille créatine", "default": true },
+    { "type": "text", "id": "formgrid_head", "label": "Titre", "default": "Pourquoi la créatine" },
+    { "type": "range", "id": "fg_icon_size", "label": "Taille des icônes", "min": 36, "max": 88, "step": 2, "default": 56, "unit": "px" },
+    { "type": "select", "id": "fg1_icon", "label": "Item 1 — icône", "options": [{"value":"dumbbell","label":"Haltere"},{"value":"bolt","label":"Eclair"},{"value":"refresh","label":"Cycle"},{"value":"bulb","label":"Ampoule"},{"value":"flame","label":"Flamme"},{"value":"shield","label":"Bouclier"},{"value":"star","label":"Etoile"},{"value":"person","label":"Personne"}], "default": "dumbbell" },
+    { "type": "text", "id": "fg1_label", "label": "Item 1 — nom", "default": "FORCE" },
+    { "type": "select", "id": "fg2_icon", "label": "Item 2 — icône", "options": [{"value":"dumbbell","label":"Haltere"},{"value":"bolt","label":"Eclair"},{"value":"refresh","label":"Cycle"},{"value":"bulb","label":"Ampoule"},{"value":"flame","label":"Flamme"},{"value":"shield","label":"Bouclier"},{"value":"star","label":"Etoile"},{"value":"person","label":"Personne"}], "default": "bolt" },
+    { "type": "text", "id": "fg2_label", "label": "Item 2 — nom", "default": "PUISSANCE" },
+    { "type": "select", "id": "fg3_icon", "label": "Item 3 — icône", "options": [{"value":"dumbbell","label":"Haltere"},{"value":"bolt","label":"Eclair"},{"value":"refresh","label":"Cycle"},{"value":"bulb","label":"Ampoule"},{"value":"flame","label":"Flamme"},{"value":"shield","label":"Bouclier"},{"value":"star","label":"Etoile"},{"value":"person","label":"Personne"}], "default": "refresh" },
+    { "type": "text", "id": "fg3_label", "label": "Item 3 — nom", "default": "RÉCUPÉRATION" },
+    { "type": "select", "id": "fg4_icon", "label": "Item 4 — icône", "options": [{"value":"dumbbell","label":"Haltere"},{"value":"bolt","label":"Eclair"},{"value":"refresh","label":"Cycle"},{"value":"bulb","label":"Ampoule"},{"value":"flame","label":"Flamme"},{"value":"shield","label":"Bouclier"},{"value":"star","label":"Etoile"},{"value":"person","label":"Personne"}], "default": "bulb" },
+    { "type": "text", "id": "fg4_label", "label": "Item 4 — nom", "default": "MENTAL" },
+
+    { "type": "header", "content": "── Titre d'offre (date du jour) ──" },
+    { "type": "checkbox", "id": "show_offer_date", "label": "Afficher le titre daté", "default": true },
+    { "type": "text", "id": "offer_prefix", "label": "Texte avant la date", "default": "Offre valable le", "info": "Rendu : « Offre valable le lundi 3 août 2026 » — la date s'adapte automatiquement chaque jour." },
+
+    { "type": "header", "content": "── Quantité (optionnel) ──" },
+    { "type": "checkbox", "id": "show_quantity", "label": "Afficher le sélecteur de quantité", "default": false, "info": "Stepper adaptatif − / + : 2+2 → 8+8 sur l'offre 2+2 chiffres normaux sur 1 sachet. Pour l'A/B test Shoplift : activer uniquement sur la variante de test." },
+    { "type": "text", "id": "qty_label", "label": "Label", "default": "Quantité" },
+
+    { "type": "header", "content": "── Bouton CTA ──" },
+    { "type": "text", "id": "cta_text", "label": "Texte du bouton", "default": "Ajouter au panier" },
+    { "type": "color", "id": "cta_bg", "label": "Fond bouton", "default": "#18181b" },
+    { "type": "color", "id": "cta_text_color", "label": "Couleur texte bouton", "default": "#ffffff" },
+    { "type": "range", "id": "cta_radius", "label": "Arrondi bouton (px)", "min": 0, "max": 30, "step": 1, "default": 12, "unit": "px" },
+    { "type": "text", "id": "cta_link", "label": "Lien CTA (URL)", "info": "Vide = ajouter au panier." },
+    { "type": "checkbox", "id": "go_to_checkout", "label": "Rediriger vers checkout", "default": true, "info": "Décoché = ouvre le cart drawer après ajout." },
+    { "type": "text", "id": "cta_adding_text", "label": "Texte loading", "default": "Ajout en cours…" },
+    { "type": "text", "id": "cta_redirecting_text", "label": "Texte redirection", "default": "Redirection…" },
+    { "type": "checkbox", "id": "show_cta_guarantee", "label": "Garantie dans le bouton", "default": false },
+    { "type": "text", "id": "cta_guarantee_text", "label": "Texte de la garantie", "default": "Satisfait ou remboursé · 90 jours" },
+
+    { "type": "header", "content": "── Rupture de stock ──" },
+    { "type": "paragraph", "content": "Automatique : dès qu'une variante est à 0 dans Shopify (suivi de quantité activé), son offre est grisée. Si l'offre sélectionnée est épuisée, le bouton passe en rupture, l'urgence disparaît, et le bloc « préviens-moi » + le pop-up Klaviyo prennent le relais. Rien à toucher ici en temps normal." },
+    { "type": "text", "id": "oos_text", "label": "Texte sous le bouton", "default": "En rupture de stock. Le prochain lot est en route. Laisse tes coordonnées pour qu'on te prévienne, avec 5 % de remise pour l'attente." },
+    { "type": "text", "id": "oos_btn_text", "label": "Bouton « préviens-moi »", "default": "Préviens-moi du retour" },
+    { "type": "text", "id": "oos_cta_text", "label": "Texte du bouton grisé", "default": "Rupture de stock" },
+    { "type": "text", "id": "oos_tier_text", "label": "Étiquette sur une offre épuisée", "default": "Épuisé" },
+    { "type": "text", "id": "oos_done_text", "label": "Bouton après inscription", "default": "C'est noté, on te prévient" },
+    { "type": "text", "id": "oos_form_id", "label": "ID du formulaire Klaviyo", "default": "Y8CXkC", "info": "Formulaire en « déclenchement personnalisé » dans Klaviyo. Vide = pas de bouton ni de pop-up, juste le texte." },
+    { "type": "range", "id": "oos_popup_delay", "label": "Pop-up automatique après (secondes)", "min": 0, "max": 60, "step": 1, "default": 5, "unit": "s", "info": "Uniquement en rupture. Pas de nouveau pop-up avant 5 jours après une fermeture, jamais après inscription." },
+
+    { "type": "header", "content": "── Garantie 90 jours (2+2 uniquement) ──" },
+    { "type": "paragraph", "content": "Petit encart garantie affiché sous le bouton ATC. Visible uniquement quand le tier 2+2 est sélectionné. Désactivé par défaut (A/B test friendly)." },
+    { "type": "checkbox", "id": "show_guarantee", "label": "Afficher le message garantie", "default": false },
+    { "type": "text", "id": "guarantee_text", "label": "Phrase courte", "default": "Garantie 90 jours : résultat ou 100 % remboursé (vraiment)" },
+    { "type": "richtext", "id": "guarantee_expanded", "label": "Texte étendu (au clic sur ⓘ)", "default": "<p>On a tellement confiance en GUMFORCE qu'on te laisse 90 jours pour juger. Pas de résultat ? On te rembourse l'intégralité. Zéro risque de ton côté. Valable uniquement sur l'offre 2+2 (4 sachets = 90 jours d'entraînement).</p>" },
+
+    { "type": "header", "content": "── Réassurances ──" },
+    { "type": "checkbox", "id": "show_reassure", "label": "Afficher les réassurances", "default": true },
+    { "type": "text", "id": "reassure1", "label": "Réassurance 1", "default": "Livraison 48h" },
+    { "type": "text", "id": "reassure2", "label": "Réassurance 2", "default": "Paiement sécurisé" },
+    { "type": "text", "id": "reassure3", "label": "Réassurance 3", "default": "Garantie 90 jours" },
+
+    { "type": "header", "content": "── Carte contact ──" },
+    { "type": "checkbox", "id": "show_contact", "label": "Afficher la carte contact", "default": false },
+    { "type": "text", "id": "contact_title", "label": "Titre", "default": "Une question ?" },
+    { "type": "text", "id": "contact_sub", "label": "Sous-titre", "default": "Parle-nous en direct, on répond 7 j/7." },
+    { "type": "text", "id": "contact_badge", "label": "Badge (vide = masqué)", "default": "Réponse < 2 h" },
+    { "type": "text", "id": "contact_whatsapp", "label": "Numéro WhatsApp", "info": "Format international : +33612345678. Vide = rangée masquée." },
+    { "type": "text", "id": "contact_email", "label": "Adresse email", "default": "hello@gumforce.co", "info": "Vide = rangée masquée." },
+
+    { "type": "header", "content": "── Couleurs ──" },
+    { "type": "color", "id": "bg_color", "label": "Couleur de fond", "default": "#ffffff" },
+    { "type": "color", "id": "card_bg", "label": "Fond de la carte", "default": "#ffffff" },
+    { "type": "color", "id": "text_color", "label": "Texte principal", "default": "#18181b" },
+    { "type": "color", "id": "heading_color", "label": "Couleur titre", "default": "#18181b" },
+    { "type": "color", "id": "text_muted", "label": "Texte secondaire", "default": "#71717a" },
+
+    { "type": "header", "content": "── Mise en page ──" },
+    { "type": "range", "id": "padding_top", "label": "Padding haut", "min": 0, "max": 100, "step": 4, "default": 32, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bas", "min": 0, "max": 100, "step": 4, "default": 32, "unit": "px" },
+
+    { "type": "header", "content": "── Infos nutritionnelles (popup) ──" },
+    { "type": "text", "id": "nut_label", "label": "Texte du lien (vide = masqué)", "default": "Informations nutritionnelles" },
+    { "type": "text", "id": "nut_title", "label": "Titre du popup", "default": "Informations nutritionnelles" },
+    { "type": "text", "id": "nut_portion", "label": "Portion", "default": "Portion : 1 pièce (2,7 g)" },
+    { "type": "text", "id": "nut_perpack", "label": "Par sachet", "default": "35 pièces par sachet" },
+    { "type": "text", "id": "nut_col1", "label": "Colonne 1", "default": "Par portion" },
+    { "type": "text", "id": "nut_col2", "label": "Colonne 2", "default": "Pour 100g" },
+    { "type": "textarea", "id": "nut_rows", "label": "Lignes — Libelle;Valeur1;Valeur2 (prefixe - = sous-ligne)", "default": "Énergie;12 kJ / 3 kcal;445 kJ / 106 kcal\nMatières grasses;0 g;0 g\n-dont saturées;0 g;0 g\nGlucides;1 g;37 g\n-dont sucres;0 g;0 g\nProtéines;0 g;0 g\nSel;0 g;0 g" },
+    { "type": "text", "id": "nut_ref", "label": "Apports de référence", "default": "Apports de référence pour un adulte type (8400 kJ / 2000 kcal)." },
+    { "type": "richtext", "id": "nut_notes", "label": "Notes complémentaires", "default": "<p>Une consommation excessive peut avoir des effets laxatifs.</p><p><strong>Créatine Monohydrate : 500 mg par pièce.</strong></p>" }
+  ],
+  "presets": [
+    { "name": "GF Pack Offer", "category": "Product" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,620 @@
+{% capture submit_button %}
+  {% content_for 'block', type: 'contact-form-submit-button', id: 'submit-button' %}
+{% endcapture %}
+
+{% assign form_id = block.id | default: section.id | prepend: 'ContactForm-' %}
+{% assign name_id = form_id | append: '-name' %}
+{% assign email_id = form_id | append: '-email' %}
+{% assign phone_id = form_id | append: '-phone' %}
+{% assign body_id = form_id | append: '-body' %}
+{% assign error_id = form_id | append: '-error' %}
+
+<div
+  class="
+    contact-form
+    spacing-style size-style
+    {% if block.settings.inherit_color_scheme == false %}color-{{ block.settings.color_scheme }}{% endif %}
+  "
+  style="
+    {% render 'spacing-style', settings: block.settings %}
+    {% render 'size-style', settings: block.settings %}
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- form 'contact', id: form_id, class: 'contact-form__form' -%}
+    <input
+      name="contact[id]"
+      type="hidden"
+      value="{{ form_id }}"
+    >
+
+    {%- if form.errors -%}
+      <div
+        id="{{ error_id }}"
+        class="contact-form__status-card contact-form__status-card--error contact-form__error"
+        data-contact-error
+        role="alert"
+        tabindex="-1"
+      >
+        <span class="contact-form__status-icon" aria-hidden="true">
+          {{- 'icon-error.svg' | inline_asset_content -}}
+        </span>
+        <div class="contact-form__status-copy">
+          <strong>Le message n’a pas été envoyé.</strong>
+          <span>
+            {{- form.errors.translated_fields.email | capitalize }}
+            {{ form.errors.messages.email -}}
+          </span>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if form.posted_successfully? -%}
+      <div
+        class="contact-form__status-card contact-form__status-card--success contact-form__success"
+        data-contact-success
+        role="status"
+        tabindex="-1"
+      >
+        <svg class="contact-form__success-check" viewBox="0 0 52 52" aria-hidden="true">
+          <circle class="contact-form__success-check-circle" cx="26" cy="26" r="24" fill="none"></circle>
+          <path class="contact-form__success-check-mark" fill="none" d="M14 27l8 8 16-17"></path>
+        </svg>
+        <div class="contact-form__status-copy">
+          <strong>Message bien reçu.</strong>
+          <span>Merci pour ton message. On te répond dès que possible.</span>
+        </div>
+      </div>
+    {%- else -%}
+      <div class="contact-form__fields" data-contact-fields>
+        <div class="contact-form__form-row">
+          <label
+            class="visually-hidden"
+            for="{{ name_id }}"
+          >
+            {{- 'blocks.contact_form.name' | t -}}
+          </label>
+          <input
+            type="text"
+            id="{{ name_id }}"
+            class="contact-form__input"
+            autocomplete="name"
+            name="contact[name]"
+            value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+            placeholder="{{ 'blocks.contact_form.name' | t }}"
+          >
+
+          <label
+            class="visually-hidden"
+            for="{{ email_id }}"
+          >
+            {{- 'blocks.contact_form.email' | t -}}
+            <span aria-hidden="true">*</span>
+          </label>
+          <input
+            type="email"
+            id="{{ email_id }}"
+            class="contact-form__input"
+            autocomplete="email"
+            name="contact[email]"
+            spellcheck="false"
+            autocapitalize="off"
+            value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+            aria-required="true"
+            required
+            {% if form.errors contains 'email' %}
+              aria-invalid="true"
+              aria-describedby="{{ error_id }}"
+            {% endif %}
+            placeholder="{{ 'blocks.contact_form.email' | t }}"
+          >
+        </div>
+
+        <label
+          class="visually-hidden"
+          for="{{ phone_id }}"
+        >
+          {{- 'blocks.contact_form.phone' | t -}}
+        </label>
+        <input
+          type="tel"
+          id="{{ phone_id }}"
+          class="contact-form__input"
+          autocomplete="tel"
+          inputmode="tel"
+          name="contact[phone]"
+          value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+          placeholder="{{ 'blocks.contact_form.phone' | t }}"
+        >
+
+        <label
+          class="visually-hidden"
+          for="{{ body_id }}"
+        >
+          {{- 'blocks.contact_form.comment' | t -}}
+        </label>
+        <textarea
+          rows="10"
+          id="{{ body_id }}"
+          class="contact-form__input contact-form__input--textarea"
+          name="contact[body]"
+          placeholder="{{ 'blocks.contact_form.comment' | t }}"
+        >{{- form.body -}}</textarea>
+
+        {{ submit_button }}
+      </div>
+    {%- endif -%}
+  {%- endform -%}
+</div>
+
+<script>
+  (function () {
+    var formId = {{ form_id | json }};
+    var form = document.getElementById(formId);
+
+    if (!form || form.dataset.contactSubmitReady === 'true') return;
+    form.dataset.contactSubmitReady = 'true';
+
+    var submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+    var resultCard = form.querySelector('[data-contact-success], [data-contact-error]');
+    var storageKey = 'contact-form-position:' + window.location.pathname + ':' + formId;
+    var originalButtonContent = null;
+
+    /*
+     * Shopify ajoute normalement l'identifiant du formulaire à l'URL sous
+     * forme de #ContactForm-.... C'est ce fragment qui fait sauter la page
+     * vers le formulaire après l'envoi. Il n'est pas nécessaire au traitement
+     * du message, donc on le retire avant la soumission.
+     */
+    var actionAttribute = form.getAttribute('action');
+    if (actionAttribute && actionAttribute.indexOf('#') !== -1) {
+      form.setAttribute('action', actionAttribute.split('#')[0]);
+    }
+
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    if (submitButton) {
+      originalButtonContent = submitButton.tagName === 'INPUT'
+        ? submitButton.value
+        : submitButton.innerHTML;
+    }
+
+    function setSendingState() {
+      if (!submitButton) return;
+
+      submitButton.disabled = true;
+      submitButton.setAttribute('aria-busy', 'true');
+
+      if (submitButton.tagName === 'INPUT') {
+        submitButton.value = 'Envoi en cours…';
+      } else {
+        submitButton.innerHTML =
+          '<span class="contact-form__loading-label">' +
+            '<span class="contact-form__spinner" aria-hidden="true"></span>' +
+            '<span>Envoi en cours…</span>' +
+          '</span>';
+      }
+    }
+
+    function restoreButton() {
+      if (!submitButton || originalButtonContent === null) return;
+
+      submitButton.disabled = false;
+      submitButton.removeAttribute('aria-busy');
+
+      if (submitButton.tagName === 'INPUT') {
+        submitButton.value = originalButtonContent;
+      } else {
+        submitButton.innerHTML = originalButtonContent;
+      }
+    }
+
+    function readSavedPosition() {
+      try {
+        var stored = window.sessionStorage.getItem(storageKey);
+        if (stored === null) return null;
+
+        window.sessionStorage.removeItem(storageKey);
+
+        var position = parseInt(stored, 10);
+        return Number.isFinite(position) ? position : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function saveCurrentPosition() {
+      try {
+        window.sessionStorage.setItem(storageKey, String(Math.max(0, window.scrollY)));
+      } catch (error) {
+        // L'envoi reste fonctionnel même si sessionStorage est indisponible.
+      }
+    }
+
+    function removeContactHash() {
+      if (!window.location.hash || window.location.hash.indexOf('ContactForm-') === -1) return;
+
+      try {
+        window.history.replaceState(
+          null,
+          document.title,
+          window.location.pathname + window.location.search
+        );
+      } catch (error) {
+        // Aucun impact sur le fonctionnement du formulaire.
+      }
+    }
+
+    function restorePositionAfterResult() {
+      if (!resultCard) return;
+
+      var savedPosition = readSavedPosition();
+      removeContactHash();
+
+      if (savedPosition !== null) {
+        var applyPosition = function () {
+          window.scrollTo({
+            top: savedPosition,
+            left: 0,
+            behavior: 'auto'
+          });
+        };
+
+        applyPosition();
+        window.requestAnimationFrame(applyPosition);
+        window.setTimeout(applyPosition, 0);
+        window.addEventListener('load', applyPosition, { once: true });
+      }
+
+      window.requestAnimationFrame(function () {
+        try {
+          resultCard.focus({ preventScroll: true });
+        } catch (error) {
+          // Le rôle status/alert reste annoncé sans déplacer la page.
+        }
+      });
+    }
+
+    restorePositionAfterResult();
+
+    /*
+     * Aucun fetch AJAX ici : Shopify traite et confirme lui-même le formulaire.
+     * Cela évite le faux message « problème de serveur » suivi d'un succès.
+     */
+    form.addEventListener('submit', function () {
+      if (!form.checkValidity()) {
+        restoreButton();
+        return;
+      }
+
+      saveCurrentPosition();
+
+      var currentAction = form.getAttribute('action');
+      if (currentAction && currentAction.indexOf('#') !== -1) {
+        form.setAttribute('action', currentAction.split('#')[0]);
+      }
+
+      setSendingState();
+    }, true);
+
+    window.addEventListener('pageshow', function (event) {
+      if (event.persisted && !resultCard) {
+        restoreButton();
+      }
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .contact-form__form,
+  .contact-form__fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+  }
+
+  .contact-form__form-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+  }
+
+  @media screen and (min-width: 750px) {
+    .contact-form__form-row {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  .contact-form__input {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-input-text);
+    background-color: var(--color-input-background);
+    padding: var(--padding-lg) var(--padding-xl);
+    border-radius: var(--style-border-radius-inputs);
+    border: var(--style-border-width-inputs) solid var(--color-input-border);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .contact-form__input--textarea {
+    resize: vertical;
+    min-height: var(--input-textarea-min-height);
+  }
+
+  .contact-form__fields[hidden] {
+    display: none;
+  }
+
+  .contact-form__form--success {
+    min-height: 220px;
+    justify-content: center;
+  }
+
+  .contact-form__status-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 20px 24px;
+    border-radius: 12px;
+    animation: contact-form-fade-in 0.3s ease both;
+  }
+
+  .contact-form__status-card--success {
+    color: #ffffff;
+    background-color: #0e0e0e;
+    border: 1px solid rgba(0, 181, 180, 0.45);
+  }
+
+  .contact-form__status-card--error {
+    color: var(--color-input-text);
+    background-color: var(--color-input-background);
+    border: 1px solid currentColor;
+  }
+
+  .contact-form__status-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .contact-form__status-copy strong {
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+
+  .contact-form__status-copy span {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+
+  .contact-form__status-icon,
+  .contact-form__error-symbol {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+  }
+
+  .contact-form__status-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .contact-form__error-symbol {
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    font-weight: 700;
+  }
+
+  .contact-form__success-check {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    stroke: #00b5b4;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .contact-form__success-check-circle {
+    stroke-dasharray: 151;
+    stroke-dashoffset: 151;
+    animation: contact-form-draw 0.55s ease forwards 0.1s;
+  }
+
+  .contact-form__success-check-mark {
+    stroke-dasharray: 36;
+    stroke-dashoffset: 36;
+    animation: contact-form-draw 0.35s ease forwards 0.5s;
+  }
+
+  .contact-form__loading-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .contact-form__spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: contact-form-spin 0.7s linear infinite;
+  }
+
+  @keyframes contact-form-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes contact-form-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes contact-form-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-form__status-card,
+    .contact-form__success-check-circle,
+    .contact-form__success-check-mark,
+    .contact-form__spinner {
+      animation: none;
+    }
+
+    .contact-form__success-check-circle,
+    .contact-form__success-check-mark {
+      stroke-dashoffset: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.contact_form",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:settings.width_desktop",
+      "options": [
+        {
+          "value": "fit-content",
+          "label": "t:options.fit_content"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "t:settings.width",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "width_mobile",
+      "label": "t:settings.width_mobile",
+      "options": [
+        {
+          "value": "fit-content",
+          "label": "t:options.fit_content"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "t:settings.width",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width_mobile == 'custom' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "t:settings.inherit_color_scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.contact_form",
+      "category": "t:categories.forms"
+    }
+  ]
+}
+{% endschema %}

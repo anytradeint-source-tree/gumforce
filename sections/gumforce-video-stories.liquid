@@ -1,0 +1,817 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Vidéos clients — CARROUSEL UGC INFINI (v3)
+  ----------------------------------------------------------------------------
+  Rail scroll-snap infini et ÉQUILIBRÉ : la carte active est toujours au
+  centre avec des cartes des deux côtés, navigation gauche/droite sans fin.
+  • Boucle infinie par CLONES POSTER-ONLY (aucune <video> dupliquée) +
+    téléportation silencieuse quand on se pose sur un clone.
+  • Activation UNIQUEMENT au posé du scroll (scrollend + fallback 120 ms) :
+    les cartes traversées pendant un swipe ne jouent jamais → autoplay fiable,
+    avec retry si un play() est refusé + reprise au retour d'onglet.
+  • Réglage « Recommencer la vidéo au retour » (défaut oui).
+  • 0 octet vidéo au chargement (sources injectées à la demande, rendition
+    ≈720p choisie en Liquid), pré-buffer de la suivante, pause hors écran,
+    voile cinéma sur les voisines, halo accent sous la carte active.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign accent = s.accent_color | default: '#2AB5B4'
+  assign ar = accent | color_extract: 'red'
+  assign ag = accent | color_extract: 'green'
+  assign ab = accent | color_extract: 'blue'
+
+  assign txt_hd  = s.color_heading | default: '#0e0e0e'
+  assign txt_mut = s.color_muted   | default: '#6b6b6b'
+
+  if s.transparent_bg == false
+    assign root_bg = s.color_bg | default: '#ffffff'
+  else
+    assign root_bg = 'transparent'
+  endif
+
+  assign heading_size = s.heading_size | default: 32
+  assign h_tag = s.heading_tag | default: 'h2'
+
+  case s.ratio
+    when '9-16'
+      assign ratio = '9 / 16'
+    when '3-4'
+      assign ratio = '3 / 4'
+    else
+      assign ratio = '4 / 5'
+  endcase
+
+  assign card_w   = s.card_w   | default: 270
+  assign card_vw  = s.card_vw  | default: 76
+  assign card_gap = s.card_gap | default: 14
+  assign card_rad = s.player_radius | default: 18
+
+  assign autoplay_on = s.autoplay | default: true, allow_false: true
+  assign loop_on     = s.loop_all | default: true, allow_false: true
+  assign anim_on     = s.enable_animation | default: true, allow_false: true
+  assign restart_on  = s.restart_on_return | default: true, allow_false: true
+
+  assign nvids = 0
+  for block in section.blocks
+    if block.settings.video != blank
+      assign nvids = nvids | plus: 1
+    endif
+  endfor
+
+  assign nclone = 3
+  if nvids < nclone
+    assign nclone = nvids
+  endif
+-%}
+
+<style>
+  #gfvc-{{ sid }},
+  #gfvc-{{ sid }} *,
+  #gfvc-{{ sid }} *::before,
+  #gfvc-{{ sid }} *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  #gfvc-{{ sid }} {
+    /* pas de content-visibility : mesuré sur WebKit, il retardait le chargement des images lazy jusqu'à l'écran */
+    --gfvc-font:      var(--font-body--family, 'Manrope', -apple-system, sans-serif);
+    --gfvc-font-head: var(--font-heading--family, 'Oswald', sans-serif);
+    --gfvc-accent:    {{ accent }};
+    --gfvc-hd:        {{ txt_hd }};
+    --gfvc-mut:       {{ txt_mut }};
+    --gfvc-heading:   {{ heading_size }}px;
+    --gfvc-ratio:     {{ ratio }};
+    --gfvc-rad:       {{ card_rad }}px;
+    --gfvc-gap:       {{ card_gap }}px;
+    --gfvc-card-w:    {{ card_vw }}vw;
+
+    font-family: var(--gfvc-font);
+    background: {{ root_bg }};
+    color: var(--gfvc-mut);
+    padding: {{ s.padding_top_mobile | default: 40 }}px 0 {{ s.padding_bottom_mobile | default: 40 }}px;
+    overflow: hidden;
+  }
+  /* les ombres du rail peuvent dépasser verticalement (jamais horizontalement) */
+  @supports (overflow: clip) {
+    #gfvc-{{ sid }} { overflow-x: clip; overflow-y: visible; }
+  }
+
+  /* ── En-tête — recette standard GF (copiée d'influencers-grid) ── */
+  #gfvc-{{ sid }} .gfvc-hd { text-align:center; margin-bottom:30px; padding:0 16px; }
+  #gfvc-{{ sid }} .gfvc-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba({{ ar }},{{ ag }},{{ ab }},0.09);
+    border:1px solid rgba({{ ar }},{{ ag }},{{ ab }},0.22);
+    color:var(--gfvc-accent);
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em;
+    padding:6px 14px; border-radius:100px; margin-bottom:16px; line-height:1;
+  }
+  #gfvc-{{ sid }} .gfvc-title {
+    font-family:var(--gfvc-font-head); color:var(--gfvc-hd);
+    font-size:clamp(22px, calc(var(--gfvc-heading) * 0.78), var(--gfvc-heading));
+    font-weight:700; line-height:1.15; letter-spacing:-0.02em;
+    margin:0 auto 12px; max-width:620px; text-wrap:balance; text-decoration:none;
+  }
+  #gfvc-{{ sid }} .gfvc-title em { font-style:normal; color:var(--gfvc-accent); }
+  #gfvc-{{ sid }} .gfvc-hd p { font-size:14px; color:var(--gfvc-mut); line-height:1.5; max-width:480px; margin:0 auto; }
+
+  /* ── Rail ── */
+  #gfvc-{{ sid }} .gfvc-wrap { position:relative; }
+  #gfvc-{{ sid }} .gfvc-rail {
+    display:flex;
+    gap:var(--gfvc-gap);
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    /* halo + ombres jamais coupés (extension max 54px < 58px)…
+       …mais ces zones d'ombre ne comptent pas dans la hauteur : l'espace visible
+       autour des cartes reste exactement celui des réglages de la section */
+    padding-block:20px 58px;
+    margin-block:-20px -58px;
+    padding-inline:calc(50% - var(--gfvc-card-w) / 2);
+  }
+  #gfvc-{{ sid }} .gfvc-rail::-webkit-scrollbar { display:none; }
+
+  /* ── Carte ── */
+  #gfvc-{{ sid }} .gfvc-card {
+    position:relative; flex-shrink:0;
+    width:var(--gfvc-card-w);
+    aspect-ratio:var(--gfvc-ratio);
+    border-radius:var(--gfvc-rad); overflow:hidden;
+    background:#14181c center/cover no-repeat;
+    scroll-snap-align:center;
+    transform:scale(.92);
+    box-shadow:0 6px 18px rgba(0,0,0,.10);
+    /* transform SEUL est animé (compositeur GPU) — animer box-shadow = repaint
+       du flou à chaque frame = le zoom qui cale */
+    transition:transform .42s cubic-bezier(.22,1,.36,1);
+    will-change:transform;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  /* carte active : pleine taille + halo accent signature */
+  #gfvc-{{ sid }} .gfvc-card.gfvc-on {
+    transform:scale(1);
+    box-shadow:0 14px 30px rgba(0,0,0,.16), 0 10px 44px rgba({{ ar }},{{ ag }},{{ ab }},.28);
+    cursor:default;
+  }
+
+  /* voile cinéma des voisines : assombri, jamais délavé */
+  #gfvc-{{ sid }} .gfvc-card::after {
+    content:''; position:absolute; inset:0; background:#0b0b0c; opacity:.30;
+    transition:opacity .3s ease; pointer-events:none; z-index:3;
+  }
+  #gfvc-{{ sid }} .gfvc-card.gfvc-on::after { opacity:0; }
+
+  /* vidéo révélée à la 1re frame (le poster/fond couvre avant) */
+  #gfvc-{{ sid }} .gfvc-card video {
+    width:100%; height:100%; object-fit:cover; display:block;
+    opacity:0; transition:opacity .35s ease;
+  }
+  #gfvc-{{ sid }} .gfvc-card.gfvc-ready video { opacity:1; }
+
+  /* overlay nom */
+  #gfvc-{{ sid }} .gfvc-ov {
+    position:absolute; left:0; right:0; bottom:0; z-index:2;
+    padding:34px 14px 14px;
+    background:linear-gradient(to top, rgba(0,0,0,.78) 0%, transparent 100%);
+    pointer-events:none;
+  }
+  #gfvc-{{ sid }} .gfvc-name { font-size:13.5px; font-weight:800; color:#fff; line-height:1.25; }
+  #gfvc-{{ sid }} .gfvc-role { font-size:11px; font-weight:500; color:rgba(255,255,255,.68); line-height:1.25; margin-top:1px; }
+
+  /* progression — carte active seulement */
+  #gfvc-{{ sid }} .gfvc-prog {
+    position:absolute; left:12px; right:12px; bottom:7px; height:3px; z-index:4;
+    border-radius:100px; background:rgba(255,255,255,.28); overflow:hidden;
+    opacity:0; transition:opacity .25s ease;
+  }
+  #gfvc-{{ sid }} .gfvc-card.gfvc-on .gfvc-prog { opacity:1; }
+  #gfvc-{{ sid }} .gfvc-prog i { display:block; height:100%; width:0; background:#fff; border-radius:100px; }
+
+  /* son — carte active seulement */
+  #gfvc-{{ sid }} .gfvc-mute {
+    position:absolute; top:10px; right:10px; z-index:5;
+    width:30px; height:30px; border-radius:50%; border:0;
+    background:rgba(0,0,0,.42); color:#fff; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #gfvc-{{ sid }} .gfvc-card.gfvc-on .gfvc-mute { opacity:1; pointer-events:auto; }
+  #gfvc-{{ sid }} .gfvc-mute svg { width:14px; height:14px; display:block; }
+  #gfvc-{{ sid }} .gfvc-mute .gfvc-ic-on { display:none; }
+  #gfvc-{{ sid }} .gfvc-mute.gfvc-sound .gfvc-ic-on { display:block; }
+  #gfvc-{{ sid }} .gfvc-mute.gfvc-sound .gfvc-ic-off { display:none; }
+
+  /* spinner buffering — carte active seulement */
+  #gfvc-{{ sid }} .gfvc-spin {
+    position:absolute; inset:0; margin:auto; width:32px; height:32px; z-index:4;
+    border-radius:50%; border:2.5px solid rgba(255,255,255,.25); border-top-color:#fff;
+    opacity:0; transition:opacity .25s ease; pointer-events:none;
+  }
+  #gfvc-{{ sid }} .gfvc-card.gfvc-loading .gfvc-spin { opacity:1; animation:gfvc-rot .8s linear infinite; }
+  @keyframes gfvc-rot { to { transform:rotate(360deg); } }
+
+  /* flèches — desktop seulement, hors des vidéos */
+  #gfvc-{{ sid }} .gfvc-arr {
+    position:absolute; top:50%; transform:translateY(-50%); z-index:20;
+    width:46px; height:46px; border-radius:50%; border:1px solid rgba(0,0,0,.06);
+    background:rgba(255,255,255,.72); color:#15171a; cursor:pointer;
+    display:none; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.13);
+    -webkit-backdrop-filter:blur(10px) saturate(1.3); backdrop-filter:blur(10px) saturate(1.3);
+    transition:background .2s ease, color .2s ease, transform .2s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #gfvc-{{ sid }} .gfvc-arr:hover { background:var(--gfvc-accent); color:#fff; transform:translateY(-50%) scale(1.07); }
+  #gfvc-{{ sid }} .gfvc-arr:active { transform:translateY(-50%) scale(.93); }
+  #gfvc-{{ sid }} .gfvc-arr svg { width:17px; height:17px; display:block; }
+  #gfvc-{{ sid }} .gfvc-arr--prev { left:14px; }
+  #gfvc-{{ sid }} .gfvc-arr--next { right:14px; }
+
+  /* empty state */
+  #gfvc-{{ sid }} .gfvc-empty {
+    max-width:420px; margin:0 auto; aspect-ratio:var(--gfvc-ratio); max-height:420px;
+    border-radius:var(--gfvc-rad); background:#14181c;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+    color:rgba(255,255,255,.5); font-size:13px; text-align:center; padding:20px;
+  }
+  #gfvc-{{ sid }} .gfvc-empty svg { width:34px; height:34px; }
+
+  /* ── Desktop ── */
+  @media (min-width: 750px) {
+    #gfvc-{{ sid }} { --gfvc-card-w: {{ card_w }}px; padding: {{ s.padding_top | default: 40 }}px 0 {{ s.padding_bottom | default: 40 }}px; }
+    #gfvc-{{ sid }} .gfvc-hd { margin-bottom:44px; }
+    #gfvc-{{ sid }} .gfvc-hd p { font-size:15px; }
+    #gfvc-{{ sid }} .gfvc-title { font-size:var(--gfvc-heading); }
+    #gfvc-{{ sid }} .gfvc-arr { display:flex; }
+  }
+
+  /* ── Anim d'entrée (gated JS) ── */
+  #gfvc-{{ sid }}.gfvc-anim .gfvc-hd,
+  #gfvc-{{ sid }}.gfvc-anim .gfvc-wrap { opacity:0; transform:translateY(18px); transition:opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1); }
+  #gfvc-{{ sid }}.gfvc-anim .gfvc-wrap { transition-delay:.14s; }
+  #gfvc-{{ sid }}.gfvc-anim.gfvc-in .gfvc-hd,
+  #gfvc-{{ sid }}.gfvc-anim.gfvc-in .gfvc-wrap { opacity:1; transform:none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #gfvc-{{ sid }} .gfvc-card { transition:none; }
+    #gfvc-{{ sid }} .gfvc-card video { transition:none; opacity:1; }
+    #gfvc-{{ sid }}.gfvc-anim .gfvc-hd,
+    #gfvc-{{ sid }}.gfvc-anim .gfvc-wrap { opacity:1 !important; transform:none !important; transition:none !important; }
+  }
+</style>
+
+<section id="gfvc-{{ sid }}">
+
+  <div class="gfvc-hd">
+    {%- if s.badge_text != blank -%}<span class="gfvc-badge">{{ s.badge_text }}</span>{%- endif -%}
+    <{{ h_tag }} class="gfvc-title">{{ s.heading }}{% if s.heading_accent != blank %} <em>{{ s.heading_accent }}</em>{% endif %}</{{ h_tag }}>
+    {%- if s.subheading != blank -%}<p>{{ s.subheading }}</p>{%- endif -%}
+  </div>
+
+  {%- if nvids > 0 -%}
+  <div class="gfvc-wrap">
+    <div class="gfvc-rail" data-gfvc-rail role="region" aria-roledescription="carousel" aria-label="Vidéos clients" tabindex="0">
+
+      {%- comment -%} clones GAUCHE (poster-only, derniers originaux) — rail toujours équilibré {%- endcomment -%}
+      {%- if nvids > 1 -%}
+        {%- assign vc = 0 -%}
+        {%- assign cstart = nvids | minus: nclone -%}
+        {%- for block in section.blocks -%}
+          {%- assign v = block.settings.video -%}
+          {%- if v != blank -%}
+            {%- if vc >= cstart -%}
+              {%- assign vposter = v.preview_image | image_url: width: 560 -%}
+              <div class="gfvc-card gfvc-clone" data-gfvc-clone="{{ vc }}" aria-hidden="true"{% if vposter != blank %} style="background-image:url('{{ vposter }}')"{% endif %}>
+                {%- if block.settings.name != blank or block.settings.role != blank -%}
+                  <div class="gfvc-ov">
+                    {%- if block.settings.name != blank -%}<div class="gfvc-name">{{ block.settings.name }}</div>{%- endif -%}
+                    {%- if block.settings.role != blank -%}<div class="gfvc-role">{{ block.settings.role }}</div>{%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+            {%- assign vc = vc | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- comment -%} cartes RÉELLES (les seules avec <video>) {%- endcomment -%}
+      {%- assign vi = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- assign v = block.settings.video -%}
+        {%- if v != blank -%}
+          {%- liquid
+            comment — rendition MP4 la plus proche de 720p (bande passante maîtrisée)
+            endcomment
+            assign vsrc = ''
+            assign vbest = 99999
+            for srcx in v.sources
+              if srcx.mime_type == 'video/mp4'
+                assign hh = srcx.height | default: 720
+                assign diff = hh | minus: 720 | abs
+                if diff < vbest
+                  assign vbest = diff
+                  assign vsrc = srcx.url
+                endif
+              endif
+            endfor
+            comment — fallback : transcodage MP4 pas prêt → première source disponible
+            endcomment
+            if vsrc == '' and v.sources.size > 0
+              assign vsrc = v.sources.first.url
+            endif
+            assign vposter = v.preview_image | image_url: width: 560
+          -%}
+          <div class="gfvc-card{% if vi == 0 %} gfvc-on{% endif %}"
+               data-gfvc-card="{{ vi }}"
+               data-gfvc-src="{{ vsrc | escape }}"
+               {%- if vposter != blank %} style="background-image:url('{{ vposter }}')"{% endif %}
+               {{ block.shopify_attributes }}>
+            <video playsinline webkit-playsinline muted preload="none"
+                   {%- if vposter != blank %} poster="{{ vposter }}"{% endif %}
+                   aria-label="{{ block.settings.name | default: 'Vidéo client' | escape }}"></video>
+            <span class="gfvc-spin" aria-hidden="true"></span>
+            {%- if block.settings.name != blank or block.settings.role != blank -%}
+              <div class="gfvc-ov">
+                {%- if block.settings.name != blank -%}<div class="gfvc-name">{{ block.settings.name }}</div>{%- endif -%}
+                {%- if block.settings.role != blank -%}<div class="gfvc-role">{{ block.settings.role }}</div>{%- endif -%}
+              </div>
+            {%- endif -%}
+            <div class="gfvc-prog" aria-hidden="true"><i></i></div>
+            <button type="button" class="gfvc-mute" data-gfvc-mute aria-label="Activer ou couper le son">
+              <svg class="gfvc-ic-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5Z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+              <svg class="gfvc-ic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
+            </button>
+          </div>
+          {%- assign vi = vi | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- comment -%} clones DROITE (poster-only, premiers originaux) {%- endcomment -%}
+      {%- if nvids > 1 -%}
+        {%- assign vc = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- assign v = block.settings.video -%}
+          {%- if v != blank -%}
+            {%- if vc < nclone -%}
+              {%- assign vposter = v.preview_image | image_url: width: 560 -%}
+              <div class="gfvc-card gfvc-clone" data-gfvc-clone="{{ vc }}" aria-hidden="true"{% if vposter != blank %} style="background-image:url('{{ vposter }}')"{% endif %}>
+                {%- if block.settings.name != blank or block.settings.role != blank -%}
+                  <div class="gfvc-ov">
+                    {%- if block.settings.name != blank -%}<div class="gfvc-name">{{ block.settings.name }}</div>{%- endif -%}
+                    {%- if block.settings.role != blank -%}<div class="gfvc-role">{{ block.settings.role }}</div>{%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+            {%- assign vc = vc | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+
+    </div>
+
+    {%- if nvids > 1 -%}
+      <button type="button" class="gfvc-arr gfvc-arr--prev" data-gfvc-prev aria-label="Vidéo précédente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button type="button" class="gfvc-arr gfvc-arr--next" data-gfvc-next aria-label="Vidéo suivante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+    {%- endif -%}
+  </div>
+  {%- else -%}
+  <div class="gfvc-empty">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3V9Z"/></svg>
+    Ajoute des vidéos dans les blocs de cette section.
+  </div>
+  {%- endif -%}
+
+</section>
+
+{%- if nvids > 0 -%}
+<script>
+(function () {
+  var root = document.getElementById('gfvc-{{ sid }}');
+  if (!root) return;
+
+  var rail   = root.querySelector('[data-gfvc-rail]');
+  var reals  = root.querySelectorAll('[data-gfvc-card]');
+  var allCards = root.querySelectorAll('.gfvc-card');
+  var N = reals.length;
+  if (!rail || N === 0) return;
+
+  var AUTOPLAY = {{ autoplay_on | json }};
+  var ANIM     = {{ anim_on | json }};
+  var LOOP     = {{ loop_on | json }};
+  var RESTART  = {{ restart_on | json }};
+  var reduced  = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var saveData = navigator.connection && navigator.connection.saveData;
+  var canAuto  = AUTOPLAY && !reduced && !saveData;
+
+  var cur = -1, sound = false, started = false, progRaf = 0, railVisible = false;
+  var step = 0;
+  var vids = [], progs = [];
+  for (var i = 0; i < N; i++) {
+    vids.push(reals[i].querySelector('video'));
+    progs.push(reals[i].querySelector('.gfvc-prog i'));
+  }
+
+  function play(v) {
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {
+      /* retry unique : un play() avorté par un scroll ne tue plus l'autoplay */
+      setTimeout(function () {
+        if (v !== vids[cur] || !v.paused || !railVisible) return;
+        /* refus persistant (lecture AVEC SON hors geste, iOS) → retombée en
+           muet POUR CETTE CARTE seulement : le choix son global est conservé,
+           les cartes suivantes retentent avec le son */
+        if (!v.muted) {
+          v.muted = true;
+          var mbx = reals[cur] && reals[cur].querySelector('[data-gfvc-mute]');
+          if (mbx) mbx.classList.remove('gfvc-sound');
+        }
+        var q = v.play(); if (q && q.catch) q.catch(function () {});
+      }, 180);
+    });
+  }
+
+  /* source injectée à la demande — 0 octet vidéo avant ça */
+  function arm(i, preloadMode) {
+    var v = vids[i];
+    if (!v) return;
+    if (v.__gfArmed) { if (preloadMode === 'auto' && v.preload !== 'auto') v.preload = 'auto'; return; }
+    var src = reals[i].getAttribute('data-gfvc-src');
+    if (!src) return;
+    v.__gfArmed = true;
+    v.preload = preloadMode || 'metadata';
+    v.src = src;
+    try { v.load(); } catch (e) {}
+  }
+
+  /* iOS : un play() AVEC SON doit naître d'un geste utilisateur. À chaque
+     geste (tap sur le son, fin de swipe), on « bénit » les cartes voisines
+     déjà pré-buffées : jouées muettes un instant puis remises à zéro →
+     iOS les marque autorisées, leur lecture sonore programmatique passe. */
+  function unlockNeighbors() {
+    if (!sound || saveData) return;
+    var nx = cur + 1; if (nx >= N && LOOP) nx = 0;
+    var pvx = cur - 1; if (pvx < 0 && LOOP) pvx = N - 1;
+    var idxs = [];
+    if (nx >= 0 && nx < N && nx !== cur) idxs.push(nx);
+    if (pvx >= 0 && pvx < N && pvx !== cur && pvx !== nx) idxs.push(pvx);
+    for (var u = 0; u < idxs.length; u++) {
+      (function (i) {
+        var v = vids[i];
+        if (!v || v.__gfUnlocked) return;
+        arm(i, 'auto');
+        v.__gfUnlocked = true;
+        v.muted = true;
+        var p = v.play();
+        if (p && p.then) {
+          p.then(function () { if (i !== cur) { v.pause(); try { v.currentTime = 0; } catch (e) {} } })
+           .catch(function () { v.__gfUnlocked = false; });
+        } else if (i !== cur) { v.pause(); }
+      })(idxs[u]);
+    }
+  }
+
+  function setProg(i, w) { if (progs[i]) progs[i].style.width = (w * 100) + '%'; }
+  function progTick() {
+    var v = vids[cur];
+    if (v && v.duration > 0) setProg(cur, Math.min(v.currentTime / v.duration, 1));
+    progRaf = requestAnimationFrame(progTick);
+  }
+  function startProg() { stopProg(); progRaf = requestAnimationFrame(progTick); }
+  function stopProg() { if (progRaf) { cancelAnimationFrame(progRaf); progRaf = 0; } }
+
+  function activate(i, andPlay) {
+    if (i === cur) {
+      var vv = vids[i];
+      if (andPlay && vv && vv.paused) { arm(i, 'auto'); vv.muted = !sound; play(vv); startProg(); }
+      return;
+    }
+    if (cur >= 0) {
+      var ov = vids[cur];
+      if (ov) {
+        if (!ov.paused) ov.pause();
+        if (RESTART && ov.__gfArmed) { try { ov.currentTime = 0; } catch (e) {} }
+      }
+      reals[cur].classList.remove('gfvc-on', 'gfvc-loading');
+      setProg(cur, 0);
+    } else {
+      /* 1re activation : retire l'état actif pré-rendu */
+      for (var k = 0; k < N; k++) reals[k].classList.remove('gfvc-on');
+    }
+    cur = i;
+    reals[cur].classList.add('gfvc-on');
+    var v = vids[cur];
+    if (v) {
+      v.muted = !sound;
+      var mb = reals[cur].querySelector('[data-gfvc-mute]');
+      if (mb) mb.classList.toggle('gfvc-sound', sound);
+      if (andPlay) {
+        arm(cur, 'auto');
+        play(v);
+        startProg();
+        /* pré-buffer des DEUX voisines pendant la lecture (jamais en saveData)
+           → swipe instantané à droite COMME à gauche */
+        if (!saveData) {
+          var nx = cur + 1;
+          if (nx >= N && LOOP) nx = 0;
+          if (nx < N && nx !== cur) arm(nx, 'auto');
+          var pvx = cur - 1;
+          if (pvx < 0 && LOOP) pvx = N - 1;
+          if (pvx >= 0 && pvx !== cur && pvx !== nx) arm(pvx, 'auto');
+        }
+      }
+    }
+  }
+
+  /* ── Géométrie ── */
+  function measure() {
+    step = reals[0].offsetWidth + (parseFloat(getComputedStyle(rail).columnGap) || 14);
+  }
+  function centerOn(el) {
+    rail.style.scrollSnapType = 'none';
+    rail.style.scrollBehavior = 'auto';
+    rail.scrollLeft = el.offsetLeft - (rail.clientWidth - el.offsetWidth) / 2;
+    requestAnimationFrame(function () {
+      rail.style.scrollSnapType = 'x mandatory';
+      rail.style.scrollBehavior = '';
+    });
+  }
+  function closestCard() {
+    var center = rail.scrollLeft + rail.clientWidth / 2;
+    var best = null, bd = Infinity;
+    for (var i = 0; i < allCards.length; i++) {
+      var c = allCards[i];
+      var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - center);
+      if (d < bd) { bd = d; best = c; }
+    }
+    return best;
+  }
+
+  /* ── Activation AU POSÉ uniquement (fix autoplay) + téléport clones ── */
+  function onSettle() {
+    if (!started) return;
+    var el = closestCard();
+    if (!el) return;
+    var cl = el.getAttribute('data-gfvc-clone');
+    if (cl !== null) {
+      /* téléportation silencieuse clone → carte réelle */
+      var idx = parseInt(cl, 10);
+      var target = reals[idx];
+      var delta = (target.offsetLeft + target.offsetWidth / 2) - (el.offsetLeft + el.offsetWidth / 2);
+      rail.style.scrollSnapType = 'none';
+      rail.style.scrollBehavior = 'auto';
+      rail.scrollLeft += delta;
+      requestAnimationFrame(function () {
+        rail.style.scrollSnapType = 'x mandatory';
+        rail.style.scrollBehavior = '';
+      });
+      activate(idx, true);
+      return;
+    }
+    activate(parseInt(el.getAttribute('data-gfvc-card'), 10), true);
+  }
+  var settleT = 0;
+  rail.addEventListener('scroll', function () {
+    if (!started) return;
+    clearTimeout(settleT);
+    settleT = setTimeout(onSettle, 120);
+  }, { passive: true });
+  if ('onscrollend' in window) {
+    rail.addEventListener('scrollend', function () { clearTimeout(settleT); onSettle(); });
+  }
+  /* filet iOS : si des événements scroll sont avalés pendant l'inertie,
+     on garantit une activation peu après la fin du geste */
+  rail.addEventListener('touchend', function () {
+    unlockNeighbors(); /* geste → bénit les voisines pour la lecture sonore */
+    clearTimeout(settleT);
+    settleT = setTimeout(onSettle, 380);
+  }, { passive: true });
+
+  /* ── Navigation : un cran, l'infini est géré par les clones ── */
+  function nudge(dir) {
+    rail.scrollBy({ left: dir * step, behavior: reduced ? 'auto' : 'smooth' });
+  }
+  var pv = root.querySelector('[data-gfvc-prev]');
+  var nx2 = root.querySelector('[data-gfvc-next]');
+  if (pv)  pv.addEventListener('click', function () { nudge(-1); });
+  if (nx2) nx2.addEventListener('click', function () { nudge(1); });
+  rail.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft')  { nudge(-1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { nudge(1); e.preventDefault(); }
+  });
+
+  /* fin de vidéo → carte suivante (infini via clones) */
+  for (var ei = 0; ei < N; ei++) {
+    (function (i) {
+      var v = vids[i], card = reals[i];
+      if (!v) return;
+      v.addEventListener('loadeddata', function () { card.classList.add('gfvc-ready'); card.classList.remove('gfvc-loading'); });
+      v.addEventListener('playing',    function () { card.classList.add('gfvc-ready'); card.classList.remove('gfvc-loading'); });
+      v.addEventListener('waiting',    function () { if (card.classList.contains('gfvc-on')) card.classList.add('gfvc-loading'); });
+      v.addEventListener('ended', function () {
+        if (i !== cur) return;
+        if (i === N - 1 && !LOOP) { setProg(i, 1); return; }
+        nudge(1);
+      });
+      card.addEventListener('click', function (e) {
+        if (e.target.closest('[data-gfvc-mute]')) return;
+        if (i !== cur) { card.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', inline: 'center', block: 'nearest' }); return; }
+        if (v.__gfArmed) { if (v.paused) { play(v); startProg(); } else { v.pause(); } }
+        else { activate(i, true); }
+      });
+    })(ei);
+  }
+
+  /* tap sur un clone → sa carte réelle vient au centre (le settle téléporte) */
+  for (var ci = 0; ci < allCards.length; ci++) {
+    (function (c) {
+      if (c.getAttribute('data-gfvc-clone') === null) return;
+      c.addEventListener('click', function () {
+        c.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+      });
+    })(allCards[ci]);
+  }
+
+  /* son global persistant */
+  root.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-gfvc-mute]');
+    if (!btn) return;
+    e.stopPropagation();
+    sound = !sound;
+    for (var i = 0; i < N; i++) {
+      var mb = reals[i].querySelector('[data-gfvc-mute]');
+      if (mb) mb.classList.toggle('gfvc-sound', sound);
+    }
+    var v = vids[cur];
+    if (v) { arm(cur, 'auto'); v.muted = !sound; if (v.paused && started) { play(v); startProg(); } }
+    if (sound) unlockNeighbors(); /* le tap son est un geste → on en profite */
+  });
+
+  /* entrée/sortie d'écran + retour d'onglet */
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        railVisible = e.isIntersecting;
+        if (e.isIntersecting) {
+          if (!started) {
+            started = true;
+            measure();
+            onSettleInit();
+          } else {
+            var v = vids[cur];
+            if (v && v.paused && v.__gfArmed && canAuto) { play(v); startProg(); }
+          }
+        } else {
+          var vv = vids[cur];
+          if (vv && !vv.paused) vv.pause();
+          stopProg();
+        }
+      });
+    }, { threshold: 0.3 });
+    io.observe(rail);
+  } else {
+    started = true; railVisible = true;
+    measure();
+    onSettleInit();
+  }
+  function onSettleInit() {
+    var el = closestCard();
+    /* filet : si le centrage pré-rendu a été perdu (content-visibility), on re-centre */
+    if (el && el.getAttribute('data-gfvc-clone') !== null) { centerOn(reals[0]); el = reals[0]; }
+    var cl = el ? el.getAttribute('data-gfvc-card') : null;
+    var idx = cl !== null && cl !== undefined && cl !== '' ? parseInt(cl, 10) : 0;
+    if (isNaN(idx)) idx = 0;
+    activate(idx, canAuto);
+    if (!canAuto) arm(idx, 'metadata');
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden || !started || !railVisible) return;
+    var v = vids[cur];
+    if (v && v.paused && v.__gfArmed && canAuto) { play(v); startProg(); }
+  });
+
+  /* position initiale : première carte réelle centrée (avant peinture) */
+  measure();
+  centerOn(reals[0]);
+
+  /* resize : re-mesure + re-centre la carte active */
+  var rsT = 0;
+  window.addEventListener('resize', function () {
+    clearTimeout(rsT);
+    rsT = setTimeout(function () { measure(); centerOn(reals[Math.max(cur, 0)]); }, 200);
+  });
+
+  /* anim d'entrée */
+  if (ANIM && !reduced) {
+    root.classList.add('gfvc-anim');
+    if ('IntersectionObserver' in window) {
+      var ioA = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { root.classList.add('gfvc-in'); ioA.disconnect(); } });
+      }, { threshold: 0.1 });
+      ioA.observe(root);
+    } else { root.classList.add('gfvc-in'); }
+  }
+
+  /* éditeur : sélection d'un bloc → sa carte au centre */
+  if (typeof Shopify !== 'undefined' && Shopify.designMode) {
+    document.addEventListener('shopify:block:select', function (e) {
+      if (e.detail.sectionId !== {{ sid | json }}) return;
+      var idx = e.target.getAttribute && e.target.getAttribute('data-gfvc-card');
+      if (idx !== null && idx !== undefined) {
+        started = true;
+        reals[parseInt(idx, 10)].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    });
+  }
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "GF Vidéos clients",
+  "tag": "section",
+  "class": "gf-video-stories",
+  "max_blocks": 10,
+  "settings": [
+    { "type": "header", "content": "── Texte ──" },
+    { "type": "text", "id": "badge_text", "label": "Badge (vide = masqué)", "default": "Ils l'utilisent" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Ils ont testé" },
+    { "type": "text", "id": "heading_accent", "label": "Mot accentué (couleur accent)", "default": "GUMFORCE" },
+    { "type": "range", "id": "heading_size", "label": "Taille titre (px)", "min": 20, "max": 56, "step": 2, "default": 32, "unit": "px" },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Type de titre",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" }
+      ],
+      "default": "h2"
+    },
+    { "type": "text", "id": "subheading", "label": "Sous-titre", "default": "De vrais clients, de vrais résultats" },
+
+    { "type": "header", "content": "── Cartes ──" },
+    { "type": "select", "id": "ratio", "label": "Format vidéo", "options": [{"value":"4-5","label":"4:5 (recommandé)"},{"value":"9-16","label":"9:16 (story)"},{"value":"3-4","label":"3:4"}], "default": "4-5" },
+    { "type": "range", "id": "card_vw", "label": "Largeur carte (mobile, % écran)", "min": 60, "max": 88, "step": 2, "default": 76, "unit": "%" },
+    { "type": "range", "id": "card_w", "label": "Largeur carte (desktop)", "min": 200, "max": 360, "step": 10, "default": 270, "unit": "px" },
+    { "type": "range", "id": "card_gap", "label": "Espacement", "min": 8, "max": 28, "step": 2, "default": 14, "unit": "px" },
+    { "type": "range", "id": "player_radius", "label": "Arrondi des cartes", "min": 0, "max": 32, "step": 2, "default": 18, "unit": "px" },
+    { "type": "checkbox", "id": "autoplay", "label": "Lecture auto muette (carte centrée)", "default": true },
+    { "type": "checkbox", "id": "loop_all", "label": "Boucler (dernière → première)", "default": true },
+    { "type": "checkbox", "id": "restart_on_return", "label": "Recommencer la vidéo au retour", "default": true },
+
+    { "type": "header", "content": "── Apparence ──" },
+    { "type": "checkbox", "id": "transparent_bg", "label": "Fond transparent (laisse voir le dégradé)", "default": true },
+    { "type": "color", "id": "color_bg", "label": "Couleur de fond (si non transparent)", "default": "#ffffff" },
+    { "type": "color", "id": "color_heading", "label": "Couleur titre", "default": "#0e0e0e" },
+    { "type": "color", "id": "color_muted", "label": "Couleur texte secondaire", "default": "#6b6b6b" },
+    { "type": "color", "id": "accent_color", "label": "Couleur accent", "default": "#2AB5B4" },
+
+    { "type": "header", "content": "── Animation ──" },
+    { "type": "checkbox", "id": "enable_animation", "label": "Animation d'entrée au scroll", "default": true },
+
+    { "type": "header", "content": "── Espacement ──" },
+    { "type": "range", "id": "padding_top_mobile", "label": "Espace haut (mobile)", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Espace bas (mobile)", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_top", "label": "Espace haut (desktop)", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Espace bas (desktop)", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Vidéo client",
+      "settings": [
+        { "type": "video", "id": "video", "label": "Vidéo", "info": "Format vertical recommandé (4:5 ou 9:16), compressée (<5 Mo idéalement)." },
+        { "type": "text", "id": "name", "label": "Nom", "default": "Maxime, 24 ans" },
+        { "type": "text", "id": "role", "label": "Légende", "default": "3 semaines d'utilisation" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "GF Vidéos clients",
+      "category": "Social proof",
+      "blocks": [
+        { "type": "video" },
+        { "type": "video" },
+        { "type": "video" }
+      ]
+    }
+  ]
+}
+{% endschema %}

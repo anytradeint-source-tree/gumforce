@@ -1,0 +1,325 @@
+{%- doc -%}
+  Renders a product media component.
+
+  @param {object} media - The product media object.
+  @param {boolean} [preview_image_only] - Renders only the preview image without controls.
+  @param {string} [widths] - Image widths for responsive images.
+  @param {string} [sizes] - Image sizes for responsive images.
+  @param {string} [loading] - The loading attribute for the image.
+  @param {object} [block] - The block object.
+  @param {object} [selected_product] - The currently selected product.
+  @param {boolean} [first_3d_model] - Indicates if this is the first 3D model.
+  @param {boolean} [is_main_product_media] - Indicates if this is the main product image.
+  @param {string} [image_ref] - Optional ref attribute for the image element.
+  @param {string} [gf_video_mode] - GUMFORCE. 'smart' : vidéo Shopify rendue sans source, armée par la galerie dès que
+    la 1re photo est chargée (MP4 480p sur mobile/réseau lent, 720p sinon) puis lue automatiquement.
+    'poster' : aperçu + bouton lecture, vidéo chargée seulement au clic (utilisé dans le zoom). Absent : comportement Horizon.
+  @param {boolean} [gf_video_loop] - GUMFORCE. Boucle pour les modes ci-dessus (défaut : oui).
+
+  @example
+  {% render 'product-media', media: media, preview_image_only: false, loading: 'lazy' %}
+{%- enddoc -%}
+
+{% liquid
+  assign widths = widths | default: '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
+  assign ref_image_to_transition = ''
+  if settings.transition_to_main_product
+    assign ref_image_to_transition = 'imagesToTransition[]'
+  endif
+%}
+
+<div
+  class="product-media"
+  style="--ratio: {{ media.aspect_ratio }}"
+  data-media-id="{{ media.id }}"
+>
+  {% liquid
+    assign high_res_url = media.preview_image | image_url: width: 3840
+    assign fetch_priority = 'auto'
+    if is_main_product_media
+      assign fetch_priority = 'high'
+    endif
+    assign focal_point_style = '--focal-point: ' | append: media.presentation.focal_point | append: ';'
+  %}
+  {{
+    media.preview_image
+    | image_url: width: 3840
+    | image_tag:
+      widths: widths,
+      alt: media.alt,
+      sizes: sizes,
+      loading: loading,
+      class: 'product-media__image',
+      ref: ref_image_to_transition,
+      data_max_resolution: high_res_url,
+      fetchpriority: fetch_priority,
+      style: focal_point_style,
+      ref: image_ref
+  }}
+
+  {% unless preview_image_only %}
+    {%- case media.media_type -%}
+      {% when 'model' %}
+        <product-model
+          data-media-id="{{ media.id }}"
+        >
+          <button
+            class="button deferred-media__poster-button button-unstyled"
+            ref="deferredMediaPlayButton"
+            on:click="/showDeferredMedia"
+          >
+            {{
+              media.preview_image
+              | image_url: width: 3840
+              | image_tag:
+                widths: widths,
+                alt: media.alt,
+                sizes: sizes,
+                loading: loading,
+                class: 'deferred-media__poster-image'
+            }}
+            <span class="deferred-media__poster-icon">
+              <span class="visually-hidden">{{ 'accessibility.play_model' | t }}</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                focusable="false"
+                class="icon"
+                fill="none"
+                viewBox="0 0 18 21"
+              >
+                {% render 'icon', icon: '3d-model' %}
+              </svg>
+            </span>
+          </button>
+
+          <template>
+            {% # Should I be using media_tag here instead like on Dawn? 🤔 %}
+            {{ media | model_viewer_tag }}
+          </template>
+        </product-model>
+        <button
+          class="button button-secondary button-shopify-xr"
+          type="button"
+          data-shopify-xr
+          data-shopify-model3d-id="{{ media.id }}"
+          data-shopify-title="{{ selected_product.title | escape }}"
+          data-shopify-xr-hidden
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+            class="icon icon-default"
+            fill="none"
+            viewBox="0 0 18 21"
+          >
+            {% render 'icon', icon: '3d-model' %}
+          </svg>
+          {{ 'actions.view_in_your_space' | t }}
+        </button>
+
+        {%- if first_3d_model -%}
+          <script
+            type="application/json"
+            id="ProductModelJSON-{{ selected_product.id }}"
+          >
+            {{ selected_product.media | where: 'media_type', 'model' | json }}
+          </script>
+        {%- endif -%}
+      {% when 'video', 'external_video' %}
+        {%- if gf_video_mode == 'smart' and media.media_type == 'video' -%}
+          {%- comment -%}
+            GUMFORCE — vidéo « intelligente » : même structure que le snippet video.liquid
+            (deferred-media + bouton + template) pour que le CSS/JS Horizon s'appliquent,
+            mais la balise <video> visible n'a AUCUNE source : la galerie choisit le rendu
+            (HLS / 480p / 720p) et lance la lecture après les photos. Zéro octet avant ça.
+          {%- endcomment -%}
+          {%- liquid
+            assign gf_loop = gf_video_loop | default: true, allow_false: true
+            # rendus MP4 progressifs uniquement, choisis explicitement (les filtres where/sort
+            # ne sont pas fiables sur ces objets : en ligne, sd et hd pointaient tous deux
+            # vers le 720p). Pas de HLS : Safari démarre sur la 1re variante et doit
+            # télécharger un segment entier (2,4 Mo en 720p) avant la 1re image.
+            assign gf_sd_h = 100000
+            assign gf_hd_h = 0
+            for gf_src in media.sources
+              if gf_src.format != 'mp4'
+                continue
+              endif
+              if gf_src.height < gf_sd_h
+                assign gf_sd = gf_src
+                assign gf_sd_h = gf_src.height
+              endif
+              if gf_src.height > gf_hd_h
+                assign gf_hd = gf_src
+                assign gf_hd_h = gf_src.height
+              endif
+            endfor
+            assign gf_play_label = 'accessibility.play_video' | t
+            assign gf_pause_label = 'accessibility.pause_video' | t
+          -%}
+          <deferred-media class="gf-smart-media" autoplay data-gf-smart-video>
+            <button
+              class="button deferred-media__poster-button button-unstyled"
+              ref="deferredMediaPlayButton"
+              aria-label="{{ gf_play_label | escape }}"
+              type="button"
+              on:click="/showDeferredMedia"
+              style="--video-aspect-ratio: {{ media.aspect_ratio }}"
+            >
+              {{
+                media.preview_image
+                | image_url: width: 3840
+                | image_tag: widths: widths, sizes: sizes, loading: loading, class: 'deferred-media__poster-image'
+              }}
+              <span class="visually-hidden">{{ gf_play_label }}</span>
+            </button>
+            <button
+              class="button button-unstyled deferred-media__poster-button video-interaction-hint hidden"
+              ref="toggleMediaButton"
+              type="button"
+              on:click="/toggleMedia"
+            >
+              <span class="deferred-media__poster-icon icon-play hidden">
+                <span class="visually-hidden">{{ gf_play_label }}</span>
+                {{- 'icon-play.svg' | inline_asset_content -}}
+              </span>
+              <span class="deferred-media__poster-icon icon-pause hidden">
+                <span class="visually-hidden">{{ gf_pause_label }}</span>
+                {{- 'icon-pause.svg' | inline_asset_content -}}
+              </span>
+            </button>
+            <template>
+              {{ media | video_tag: image_size: '2500x', autoplay: true, loop: gf_loop, muted: true, controls: false }}
+            </template>
+            <video
+              class="gf-smart-video"
+              playsinline
+              muted
+              preload="none"
+              {% if gf_loop %}loop{% endif %}
+              width="{{ media.preview_image.width }}"
+              height="{{ media.preview_image.height }}"
+              aria-label="{{ media.alt | escape }}"
+              {% if gf_sd_h < 100000 %}data-gf-sd="{{ gf_sd.url }}" data-gf-sd-h="{{ gf_sd_h }}"{% endif %}
+              {% if gf_hd_h > 0 %}data-gf-hd="{{ gf_hd.url }}" data-gf-hd-h="{{ gf_hd_h }}"{% endif %}
+            ></video>
+          </deferred-media>
+        {%- elsif gf_video_mode == 'poster' and media.media_type == 'video' -%}
+          {%- comment -%} GUMFORCE — aperçu + lecture au clic (zoom) : rien n'est téléchargé avant le clic {%- endcomment -%}
+          {%- liquid
+            assign gf_loop = gf_video_loop | default: true, allow_false: true
+            assign gf_play_label = 'accessibility.play_video' | t
+          -%}
+          <deferred-media data-gf-poster-video>
+            <button
+              class="button deferred-media__poster-button button-unstyled"
+              ref="deferredMediaPlayButton"
+              aria-label="{{ gf_play_label | escape }}"
+              type="button"
+              on:click="/showDeferredMedia"
+              style="--video-aspect-ratio: {{ media.aspect_ratio }}"
+            >
+              {{
+                media.preview_image
+                | image_url: width: 3840
+                | image_tag: widths: widths, sizes: sizes, loading: loading, class: 'deferred-media__poster-image'
+              }}
+              <span class="deferred-media__poster-icon icon-play">
+                <span class="visually-hidden">{{ gf_play_label }}</span>
+                {{- 'icon-play.svg' | inline_asset_content -}}
+              </span>
+            </button>
+            <template>
+              {{ media | video_tag: image_size: '2500x', autoplay: true, loop: gf_loop, muted: true, controls: true }}
+            </template>
+          </deferred-media>
+        {%- else -%}
+          {%- render 'video',
+            video: media,
+            video_loop: block.settings.video_loop,
+            widths: widths,
+            sizes: sizes,
+            loading: loading,
+            disable_controls: true
+          -%}
+        {%- endif -%}
+    {% endcase %}
+  {% endunless %}
+</div>
+
+{% stylesheet %}
+  .product-media {
+    aspect-ratio: var(--gallery-aspect-ratio, var(--ratio));
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .product-media__image {
+    object-position: var(--focal-point, center center);
+  }
+
+  /*** Media border-radius feature ****/
+  @media screen and (min-width: 750px) {
+    .media-gallery--carousel slideshow-container,
+    .media-gallery--grid .product-media > * {
+      border-radius: var(--media-radius, 0);
+      overflow: hidden;
+    }
+
+    /* When the CAROUSEL is on the LEFT side */
+    .product-information:not(.product-information--media-right)
+      .media-gallery--carousel.media-gallery--extend
+      slideshow-container {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    /* When the CAROUSEL is on the RIGHT side */
+    .product-information.product-information--media-right
+      .media-gallery--carousel.media-gallery--extend
+      slideshow-container {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    /* When the GRID is on the LEFT side */
+    .product-information:not(.product-information--media-right) {
+      /* One column */
+      .media-gallery--grid.media-gallery--extend:not(.media-gallery--two-column) .product-media > *,
+      /* Two column, small first image */
+      .media-gallery--grid.media-gallery--extend.media-gallery--two-column:not(.media-gallery--large-first-image)
+        .product-media-container:nth-of-type(odd)
+        .product-media
+        > *,
+      /* Two column, large first image */
+      .media-gallery--grid.media-gallery--extend.media-gallery--two-column.media-gallery--large-first-image
+        .product-media-container:is(:first-of-type, :nth-of-type(even))
+        .product-media
+        > * {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+
+    /* When the GRID is on the RIGHT side */
+    .product-information.product-information--media-right {
+      /* One column */
+      .media-gallery--grid.media-gallery--extend:not(.media-gallery--two-column) .product-media > *,
+      /* Two column, small first image */
+      .media-gallery--grid.media-gallery--extend.media-gallery--two-column:not(.media-gallery--large-first-image)
+        .product-media-container:nth-of-type(even)
+        .product-media
+        > *,
+      /* Two column, large first image */
+      .media-gallery--grid.media-gallery--extend.media-gallery--two-column.media-gallery--large-first-image
+        .product-media-container:is(:first-of-type, :nth-of-type(odd))
+        .product-media
+        > * {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+  }
+{% endstylesheet %}
