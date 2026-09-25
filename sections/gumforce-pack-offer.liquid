@@ -852,6 +852,18 @@
     var vid = cur ? parseInt(cur.getAttribute('data-gfp-vid'), 10) : 0;
     if (!vid) { showErr('Aucune variante disponible.'); return; }
 
+    {%- if s.go_to_checkout and s.fast_checkout != false -%}
+    /* Checkout instantané : UNE navigation (Shopify crée le panier puis redirige
+       vers le checkout) au lieu de fetch add.js + redirection JS. Le navigateur
+       part immédiatement, et le panier est remplacé (jamais de pack accumulé). */
+    busy = true;
+    btn.setAttribute('aria-busy', 'true');
+    setLabel(txtRedirecting);
+    btn.classList.add('gfp-loading', 'gfp-success');
+    window.location.href = cartRoot + 'cart/' + vid + ':' + qty;
+    return;
+    {%- endif -%}
+
     busy = true;
     btn.setAttribute('aria-busy', 'true');
     setLabel(txtAdding);
@@ -1004,6 +1016,7 @@
     { "type": "range", "id": "cta_radius", "label": "Arrondi bouton (px)", "min": 0, "max": 30, "step": 1, "default": 12, "unit": "px" },
     { "type": "text", "id": "cta_link", "label": "Lien CTA (URL)", "info": "Vide = ajouter au panier." },
     { "type": "checkbox", "id": "go_to_checkout", "label": "Rediriger vers checkout", "default": true, "info": "Décoché = ouvre le cart drawer après ajout." },
+    { "type": "checkbox", "id": "fast_checkout", "label": "Checkout instantané (lien panier)", "default": true, "info": "Avec « Rediriger vers checkout » : une seule navigation vers /cart/variante:qté, Shopify crée le panier et ouvre le checkout (≈1 s de gagné sur mobile, le panier est remplacé). Décoché = ajout via API puis redirection." },
     { "type": "text", "id": "cta_adding_text", "label": "Texte loading", "default": "Ajout en cours…" },
     { "type": "text", "id": "cta_redirecting_text", "label": "Texte redirection", "default": "Redirection…" },
     { "type": "checkbox", "id": "show_cta_guarantee", "label": "Garantie dans le bouton", "default": false },
