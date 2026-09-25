@@ -1,11 +1,12 @@
 {% comment %}
   ============================================================================
-  GUMFORCE Sticky Add-to-Cart — barre flottante
+  GUMFORCE Sticky Add-to-Cart — barre pleine largeur (design « B2 »)
   ============================================================================
-  Apparaît quand l'offre (pack offer) est sortie de l'écran, disparaît près du
-  footer. Se synchronise avec l'offre sélectionnée (nom + prix) et, par défaut,
-  envoie directement au checkout via le lien panier /cart/variante:1
-  (une seule navigation, comme le bouton principal). Sinon : scroll vers l'offre.
+  Collée au bas de l'écran. À gauche : offre sélectionnée + réassurance, prix,
+  prix barré et remise. À droite : bouton COMMANDER. Le tout se synchronise
+  avec le pack offer (tier coché) et envoie directement au checkout via le
+  lien panier /cart/variante:1 (une seule navigation). Sinon : scroll vers l'offre.
+  Apparaît quand l'offre est sortie de l'écran, disparaît près du footer.
   ============================================================================
 {% endcomment %}
 
@@ -14,13 +15,15 @@
   assign s   = section.settings
 
   assign title        = s.product_title | default: 'GUMFORCE'
-  assign show_rating  = s.show_rating
-  assign rating_text  = s.rating_text | default: '4.8'
-  assign rating_img   = s.rating_image
-  assign rating_h     = s.rating_image_height | default: 14
-  assign rating_h_3x  = rating_h | times: 3
-  assign show_price   = s.show_price
-  assign prod         = s.price_product | default: product
+  assign show_image   = s.show_image
+  assign product_img  = s.product_image
+  assign img_size     = s.image_size | default: 44
+  assign img_size_3x  = img_size | times: 3
+  assign note_text    = s.note_text | default: 'Livraison gratuite'
+  assign cta_text     = s.cta_text | default: 'COMMANDER'
+  assign cta_action   = s.cta_action | default: 'checkout'
+
+  assign prod = s.price_product | default: product
   if s.price_text != blank
     assign price_text = s.price_text
   elsif prod != blank and prod.price != blank
@@ -36,60 +39,71 @@
   else
     assign price_text = ''
   endif
-  assign cta_text     = s.cta_text | default: 'COMMANDER'
-  assign cta_action   = s.cta_action | default: 'checkout'
 
-  assign show_image   = s.show_image
-  assign product_img  = s.product_image
-  assign img_size     = s.image_size | default: 44
-  assign img_size_3x  = img_size | times: 3
-
-  assign style        = s.style | default: 'noir'
-  assign is_glass     = false
-  assign border_color = 'rgba(255,255,255,0.08)'
+  assign style = s.style | default: 'noir'
   case style
     when 'vert'
-      assign bg_color = '#C5FE89'
-      assign bg_alpha = 1.0
-      assign text_color = '#0A0A0A'
+      assign bg = '#C5FE89'
+      assign ink = '#0A0A0A'
+      assign muted = 'rgba(10,10,10,0.62)'
+      assign strike = 'rgba(10,10,10,0.45)'
+      assign badge_bg = '#121212'
+      assign badge_ink = '#C5FE89'
+      assign line = 'rgba(0,0,0,0.10)'
       assign cta_bg = '#121212'
-      assign cta_txt = '#FFFFFF'
-      assign border_color = 'rgba(0,0,0,0.10)'
-    when 'glass'
-      assign bg_color = '#123630'
-      assign bg_alpha = 0.82
-      assign text_color = '#EAFFFB'
-      assign cta_bg = '#2AB5B4'
-      assign cta_txt = '#FFFFFF'
-      assign is_glass = true
-      assign border_color = 'rgba(42,181,180,0.40)'
+      assign cta_ink = '#FFFFFF'
     when 'clair'
-      assign bg_color = '#FFFFFF'
-      assign bg_alpha = 1.0
-      assign text_color = '#0A0A0A'
-      assign cta_bg = '#2AB5B4'
-      assign cta_txt = '#FFFFFF'
-      assign border_color = 'rgba(0,0,0,0.07)'
+      assign bg = '#FFFFFF'
+      assign ink = '#18181B'
+      assign muted = '#71717A'
+      assign strike = '#A1A1AA'
+      assign badge_bg = '#E3F7F6'
+      assign badge_ink = '#0A7C7B'
+      assign line = '#E7E7EA'
+      assign cta_bg = '#121212'
+      assign cta_ink = '#FFFFFF'
+    when 'menthe'
+      assign bg = '#E9FBF6'
+      assign ink = '#18181B'
+      assign muted = '#5D6B68'
+      assign strike = '#9AA5A2'
+      assign badge_bg = '#2AB5B4'
+      assign badge_ink = '#FFFFFF'
+      assign line = 'rgba(42,181,180,0.25)'
+      assign cta_bg = '#121212'
+      assign cta_ink = '#FFFFFF'
+    when 'noir-lime'
+      assign bg = '#121212'
+      assign ink = '#FFFFFF'
+      assign muted = '#A1A1AA'
+      assign strike = '#71717A'
+      assign badge_bg = 'rgba(255,255,255,0.10)'
+      assign badge_ink = '#FFFFFF'
+      assign line = 'rgba(255,255,255,0.08)'
+      assign cta_bg = '#C5FE89'
+      assign cta_ink = '#0A0A0A'
     when 'custom'
-      assign bg_color = s.bg_color | default: '#121212'
-      assign bg_alpha = s.bg_opacity | default: 92 | times: 0.01
-      assign text_color = s.text_color | default: '#F4F4F4'
-      assign cta_bg = s.cta_bg | default: '#F4F4F4'
-      assign cta_txt = s.cta_text_color | default: '#121212'
-      assign is_glass = true
+      assign bg = s.bg_color | default: '#121212'
+      assign ink = s.text_color | default: '#FFFFFF'
+      assign muted = s.text_color | default: '#FFFFFF' | color_modify: 'alpha', 0.65
+      assign strike = s.text_color | default: '#FFFFFF' | color_modify: 'alpha', 0.45
+      assign badge_bg = s.cta_bg | default: '#FFFFFF' | color_modify: 'alpha', 0.16
+      assign badge_ink = s.text_color | default: '#FFFFFF'
+      assign line = s.text_color | default: '#FFFFFF' | color_modify: 'alpha', 0.08
+      assign cta_bg = s.cta_bg | default: '#FFFFFF'
+      assign cta_ink = s.cta_text_color | default: '#121212'
     else
-      assign bg_color = '#161616'
-      assign bg_alpha = 1.0
-      assign text_color = '#F4F4F4'
+      assign bg = '#121212'
+      assign ink = '#FFFFFF'
+      assign muted = '#A1A1AA'
+      assign strike = '#71717A'
+      assign badge_bg = 'rgba(197,254,137,0.16)'
+      assign badge_ink = '#C5FE89'
+      assign line = 'rgba(255,255,255,0.08)'
       assign cta_bg = '#FFFFFF'
-      assign cta_txt = '#0A0A0A'
-      assign border_color = 'rgba(255,255,255,0.08)'
+      assign cta_ink = '#0A0A0A'
   endcase
-  assign bg_rgba      = bg_color | color_modify: 'alpha', bg_alpha
-
-  assign bar_radius   = s.bar_radius | default: 22
-  assign cta_radius   = s.cta_radius | default: 16
-  assign blur_px      = s.blur_strength | default: 20
+  assign cta_radius = s.cta_radius | default: 14
 -%}
 
 <style>
@@ -97,206 +111,135 @@
   section.gf-satc-section { height: 0; overflow: visible; margin: 0; padding: 0; border: none; }
 
   #gf-satc-{{ sid }} {
-    --satc-bg:         {{ bg_rgba }};
-    --satc-text:       {{ text_color }};
-    --satc-cta-bg:     {{ cta_bg }};
-    --satc-cta-text:   {{ cta_txt }};
-    --satc-blur:       {{ blur_px }}px;
-    --satc-radius:     {{ bar_radius }}px;
+    --satc-bg: {{ bg }};
+    --satc-ink: {{ ink }};
+    --satc-muted: {{ muted }};
+    --satc-strike: {{ strike }};
+    --satc-badge-bg: {{ badge_bg }};
+    --satc-badge-ink: {{ badge_ink }};
+    --satc-line: {{ line }};
+    --satc-cta-bg: {{ cta_bg }};
+    --satc-cta-ink: {{ cta_ink }};
     --satc-cta-radius: {{ cta_radius }}px;
 
     position: fixed;
-    bottom: calc(14px + env(safe-area-inset-bottom));
-    left: 50%;
+    left: 0; right: 0; bottom: 0;
     z-index: 9990;
-    width: min(calc(100% - 24px), 640px);
     background: var(--satc-bg);
-    {%- if is_glass %}
-    backdrop-filter: blur(var(--satc-blur)) saturate(1.5);
-    -webkit-backdrop-filter: blur(var(--satc-blur)) saturate(1.5);
-    {%- endif %}
-    border: 1px solid {{ border_color }};
-    border-radius: var(--satc-radius);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.18);
-    color: var(--satc-text);
+    color: var(--satc-ink);
+    border-top: 1px solid var(--satc-line);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.22);
     font-family: var(--font-body--family, 'Manrope', sans-serif);
+    -webkit-font-smoothing: antialiased;
 
     /* état caché */
-    opacity: 0;
-    pointer-events: none;
-    transform: translate(-50%, calc(100% + 28px));
-    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateY(calc(100% + 8px));
+    visibility: hidden;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.4s;
   }
   #gf-satc-{{ sid }}.is-visible {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translate(-50%, 0);
-  }
-  /* liseré lumineux en haut */
-  #gf-satc-{{ sid }}::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 14%; right: 14%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14) 40%, rgba(255,255,255,0.14) 60%, transparent);
-    pointer-events: none;
+    transform: translateY(0);
+    visibility: visible;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
   }
 
   .gf-satc__inner {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 8px 8px 12px;
-  }
-
-  .gf-satc__img {
-    width: {{ img_size }}px;
-    height: {{ img_size }}px;
-    border-radius: 12px;
-    object-fit: cover;
-    flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-  }
-
-  .gf-satc__text {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .gf-satc__title {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    line-height: 1.15;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .gf-satc__sub {
+    max-width: 1120px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    line-height: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    opacity: 0.8;
+    gap: 14px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
   }
-  .gf-satc__rating { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
-  .gf-satc__stars-img { height: {{ rating_h }}px; width: auto; display: block; flex-shrink: 0; }
-  .gf-satc__stars-fallback { color: #FFC857; font-size: 12px; line-height: 1; }
-  .gf-satc__rating-val { font-weight: 600; }
-  .gf-satc__dot { opacity: 0.45; }
-  .gf-satc__offer { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
-  .gf-satc__price { font-weight: 800; opacity: 1; }
-  .gf-satc__sub > [hidden] { display: none; }
 
+  /* Vignette + titre : desktop uniquement */
+  .gf-satc__prod { display: none; align-items: center; gap: 12px; min-width: 0; flex: 1 1 auto; }
+  .gf-satc__img { width: {{ img_size }}px; height: {{ img_size }}px; border-radius: 12px; object-fit: cover; flex-shrink: 0; background: rgba(255,255,255,0.06); }
+  .gf-satc__title { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Offre + prix */
+  .gf-satc__deal { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px; }
+  .gf-satc__offer { font-size: 12px; font-weight: 600; color: var(--satc-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+  .gf-satc__offer b { color: var(--satc-ink); font-weight: 700; }
+  .gf-satc__offer [hidden] { display: none; }
+  .gf-satc__prices { display: flex; align-items: baseline; gap: 8px; line-height: 1; }
+  .gf-satc__price { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .gf-satc__was { font-size: 12px; color: var(--satc-strike); text-decoration: line-through; text-decoration-thickness: 1px; }
+  .gf-satc__pct { font-size: 11px; font-weight: 800; color: var(--satc-badge-ink); background: var(--satc-badge-bg); border-radius: 6px; padding: 3px 6px; letter-spacing: 0.02em; }
+  .gf-satc__prices [hidden] { display: none; }
+
+  /* CTA : épais et net */
   .gf-satc__cta {
     position: relative;
+    flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    height: 44px;
-    padding: 0 22px;
+    height: 54px;
+    padding: 0 28px;
+    border: 0;
+    border-radius: var(--satc-cta-radius);
     background: var(--satc-cta-bg);
-    color: var(--satc-cta-text);
+    color: var(--satc-cta-ink);
     font-family: inherit;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 800;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     line-height: 1;
-    border: none;
-    border-radius: var(--satc-cta-radius);
-    cursor: pointer;
     white-space: nowrap;
-    flex-shrink: 0;
+    cursor: pointer;
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
     transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, opacity 0.2s ease;
   }
-  .gf-satc__cta-price { font-weight: 600; opacity: 0.7; letter-spacing: 0; }
-  .gf-satc__cta-price:empty { display: none; }
-  .gf-satc__cta::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: rgba(255, 255, 255, 0);
-    transition: background 0.2s ease;
-    pointer-events: none;
-  }
-  .gf-satc__cta:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22); }
-  .gf-satc__cta:hover::after { background: rgba(255, 255, 255, 0.08); }
-  .gf-satc__cta:active { transform: translateY(0) scale(0.97); box-shadow: none; transition-duration: 0.08s; }
+  .gf-satc__cta-price { font-weight: 700; opacity: 0.6; letter-spacing: 0; display: none; }
+  .gf-satc__cta::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0); transition: background 0.2s ease; pointer-events: none; }
+  .gf-satc__cta:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.26); }
+  .gf-satc__cta:hover::after { background: rgba(0, 0, 0, 0.05); }
+  .gf-satc__cta:active { transform: translateY(0) scale(0.98); box-shadow: none; transition-duration: 0.08s; }
   .gf-satc__cta:focus-visible { outline: 2px solid var(--satc-cta-bg); outline-offset: 3px; }
   .gf-satc__cta.is-busy { opacity: 0.75; pointer-events: none; }
   .gf-satc__cta.is-busy > span:first-child::before {
-    content: '';
-    width: 13px; height: 13px; margin-right: 8px;
+    content: ''; width: 14px; height: 14px; margin-right: 8px;
     border: 2px solid rgba(0,0,0,.25); border-top-color: currentColor; border-radius: 50%;
-    display: inline-block; vertical-align: -2px;
-    animation: gf-satc-rot .7s linear infinite;
+    display: inline-block; vertical-align: -2px; animation: gf-satc-rot .7s linear infinite;
   }
   @keyframes gf-satc-rot { to { transform: rotate(360deg); } }
 
-  @media (max-width: 749px) {
-    #gf-satc-{{ sid }} { width: calc(100% - 20px); bottom: calc(10px + env(safe-area-inset-bottom)); }
-    .gf-satc__inner { gap: 10px; padding: 7px 7px 7px 10px; }
-    .gf-satc__img { width: {{ img_size | minus: 4 }}px; height: {{ img_size | minus: 4 }}px; border-radius: 10px; }
-    .gf-satc__title { font-size: 12px; }
-    .gf-satc__sub { font-size: 11px; }
-    .gf-satc__cta { height: 42px; padding: 0 16px; font-size: 12px; }
-    .gf-satc__cta-price { display: none; }
-    .gf-satc__rating { display: none; }
+  @media (min-width: 750px) {
+    .gf-satc__inner { gap: 24px; padding: 12px 24px; }
+    .gf-satc__prod { display: flex; }
+    .gf-satc__deal { flex: 0 1 auto; align-items: flex-end; text-align: right; }
+    .gf-satc__price { font-size: 20px; }
+    .gf-satc__cta { height: 56px; padding: 0 34px; }
+    .gf-satc__cta-price { display: inline; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    #gf-satc-{{ sid }} { transition: opacity 0.15s ease; transform: translate(-50%, 0); }
+    #gf-satc-{{ sid }} { transition: visibility 0s; transform: none; }
     .gf-satc__cta { transition: none; }
-  }
-
-  @supports not (backdrop-filter: blur(1px)) {
-    #gf-satc-{{ sid }} { background: {{ bg_color | color_modify: 'alpha', 0.97 }}; }
   }
 </style>
 
 <div id="gf-satc-{{ sid }}" role="region" aria-label="Commander">
   <div class="gf-satc__inner">
 
-    {%- if show_image and product_img -%}
-      <img
-        class="gf-satc__img"
-        src="{{ product_img | image_url: width: img_size_3x }}"
-        alt=""
-        width="{{ img_size }}"
-        height="{{ img_size }}"
-        loading="lazy"
-        decoding="async">
-    {%- else -%}
-      <span></span>
-    {%- endif -%}
-
-    <div class="gf-satc__text">
+    <div class="gf-satc__prod">
+      {%- if show_image and product_img -%}
+        <img class="gf-satc__img" src="{{ product_img | image_url: width: img_size_3x }}" alt="" width="{{ img_size }}" height="{{ img_size }}" loading="lazy" decoding="async">
+      {%- endif -%}
       <span class="gf-satc__title">{{ title }}</span>
-      <span class="gf-satc__sub">
-        {%- if show_rating -%}
-          <span class="gf-satc__rating">
-          {%- if rating_img -%}
-            <img class="gf-satc__stars-img" src="{{ rating_img | image_url: height: rating_h_3x }}" alt="Note {{ rating_text }} sur 5" height="{{ rating_h }}" loading="lazy" decoding="async">
-          {%- else -%}
-            <span class="gf-satc__stars-fallback" aria-hidden="true">&#9733;</span>
-          {%- endif -%}
-          <span class="gf-satc__rating-val">{{ rating_text }}</span>
-          <span class="gf-satc__dot" aria-hidden="true">&middot;</span>
-          </span>
-        {%- endif -%}
-        <span class="gf-satc__offer" data-satc-offer hidden></span>
-        <span class="gf-satc__dot" data-satc-dot aria-hidden="true" hidden>&middot;</span>
-        <span class="gf-satc__price" data-satc-price{% unless show_price and price_text != blank %} hidden{% endunless %}>{{ price_text }}</span>
+    </div>
+
+    <div class="gf-satc__deal">
+      <span class="gf-satc__offer"><b data-satc-offer>{{ title }}</b><span data-satc-note-sep>{% if note_text != blank %} · {% endif %}</span><span data-satc-note>{{ note_text }}</span></span>
+      <span class="gf-satc__prices">
+        <span class="gf-satc__price" data-satc-price>{{ price_text }}</span>
+        <span class="gf-satc__was" data-satc-was hidden></span>
+        <span class="gf-satc__pct" data-satc-pct hidden></span>
       </span>
     </div>
 
@@ -313,7 +256,6 @@
   var bar = document.getElementById('gf-satc-{{ sid }}');
   if (!bar) return;
 
-  /* Wrapper hors du flux (la barre est fixed ; un wrapper vide créait un gap) */
   var wrap = bar.closest('[id^="shopify-block-"]');
   if (wrap) { wrap.style.cssText += ';position:absolute!important;width:0!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;'; }
 
@@ -321,35 +263,53 @@
     bar.classList.add('is-visible');
   {% endif %}
 
+  var cta = bar.querySelector('.gf-satc__cta');
+  var busy = false;
+  var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+
   /* ── Synchronisation avec l'offre sélectionnée (pack offer) ── */
   var elOffer = bar.querySelector('[data-satc-offer]');
-  var elDot   = bar.querySelector('[data-satc-dot]');
+  var elNote  = bar.querySelector('[data-satc-note]');
+  var elSep   = bar.querySelector('[data-satc-note-sep]');
   var elPrice = bar.querySelector('[data-satc-price]');
+  var elWas   = bar.querySelector('[data-satc-was]');
+  var elPct   = bar.querySelector('[data-satc-pct]');
   var elCtaP  = bar.querySelector('[data-satc-cta-price]');
+  var defaultNote = elNote ? elNote.textContent : '';
+
   function currentTier() {
     var inp = document.querySelector('input[name^="gfp-tier-"]:checked');
     var lab = inp ? inp.closest('.gfp-tier') : document.querySelector('.gfp-tier.gfp-sel');
     if (!lab || lab.getAttribute('data-gfp-avail') === 'false') return null;
     var name = lab.querySelector('.gfp-tname');
+    var ship = lab.querySelector('.gfp-tship');
+    var wasEl = lab.querySelector('.gfp-tsub s');
     return {
       vid:   parseInt(lab.getAttribute('data-gfp-vid'), 10) || 0,
+      cents: parseInt(lab.getAttribute('data-gfp-cents'), 10) || 0,
+      was:   parseInt(lab.getAttribute('data-gfp-was'), 10) || 0,
       total: lab.getAttribute('data-gfp-total') || '',
-      name:  name ? name.textContent.trim() : ''
+      wasText: wasEl ? wasEl.textContent.trim() : '',
+      name:  name ? name.textContent.trim() : '',
+      ship:  ship ? ship.textContent.trim() : ''
     };
   }
   function syncOffer() {
     var t = currentTier();
     if (!t) return;
-    if (elOffer && t.name) { elOffer.textContent = t.name; elOffer.hidden = false; }
-    if (elPrice && t.total) { elPrice.textContent = t.total; elPrice.hidden = false; }
-    if (elDot) elDot.hidden = !(elOffer && !elOffer.hidden && elPrice && !elPrice.hidden);
+    if (elOffer && t.name) elOffer.textContent = t.name;
+    if (elNote) { var note = t.ship || defaultNote; elNote.textContent = note; if (elSep) elSep.hidden = !note; }
+    if (elPrice && t.total) elPrice.textContent = t.total;
+    var hasWas = t.was > t.cents && t.cents > 0;
+    if (elWas) { elWas.hidden = !hasWas; if (hasWas) elWas.textContent = t.wasText || ''; if (!elWas.textContent) elWas.hidden = true; }
+    if (elPct) { elPct.hidden = !hasWas; if (hasWas) elPct.textContent = '-' + Math.round((1 - t.cents / t.was) * 100) + '%'; }
     if (elCtaP) elCtaP.textContent = t.total ? ('· ' + t.total) : '';
   }
   syncOffer();
   document.addEventListener('change', function (e) {
     if (e.target && e.target.name && e.target.name.indexOf('gfp-tier-') === 0) syncOffer();
   });
-  window.addEventListener('pageshow', function (e) { if (e.persisted) { cta.classList.remove('is-busy'); busy = false; syncOffer(); } });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) { busy = false; cta.classList.remove('is-busy'); syncOffer(); } });
 
   /* ── Affichage : après avoir scrollé sous l'offre, masqué près du footer ── */
   var scrolledPast = false, nearFooter = false;
@@ -397,9 +357,6 @@
   {% endunless %}
 
   /* ── CTA : checkout direct avec l'offre sélectionnée, sinon scroll vers l'offre ── */
-  var cta = bar.querySelector('.gf-satc__cta');
-  var busy = false;
-  var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
   cta.addEventListener('click', function (evt) {
     evt.preventDefault();
     if (busy) return;
@@ -432,55 +389,46 @@
     {
       "type": "select",
       "id": "style",
-      "label": "Style de la barre",
+      "label": "Couleurs",
       "default": "noir",
-      "info": "Style prêt à l'emploi, raccord avec la marque. « Personnalisé » utilise la section Couleurs plus bas.",
       "options": [
-        { "value": "noir", "label": "Noir mat (CTA blanc)" },
+        { "value": "noir", "label": "Noir mat, bouton blanc" },
+        { "value": "noir-lime", "label": "Noir mat, bouton lime" },
+        { "value": "clair", "label": "Blanc, bouton noir" },
+        { "value": "menthe", "label": "Menthe, bouton noir" },
         { "value": "vert", "label": "Vert signature" },
-        { "value": "glass", "label": "Verre teinté" },
-        { "value": "clair", "label": "Clair premium" },
         { "value": "custom", "label": "Personnalisé" }
       ]
     },
     { "type": "header", "content": "Contenu" },
-    { "type": "text", "id": "product_title", "label": "Titre", "default": "GUMFORCE" },
+    { "type": "text", "id": "product_title", "label": "Titre (desktop, et repli si pas d'offre)", "default": "GUMFORCE" },
+    { "type": "text", "id": "note_text", "label": "Réassurance à côté de l'offre", "default": "Livraison gratuite", "info": "Remplacée par le texte de livraison du tier sélectionné s'il en a un." },
     { "type": "text", "id": "cta_text", "label": "Texte du bouton", "default": "COMMANDER" },
     {
       "type": "select",
       "id": "cta_action",
       "label": "Action du bouton",
       "default": "checkout",
-      "info": "Checkout direct : envoie au paiement avec l'offre sélectionnée dans le pack offer (une seule navigation). Sinon, remonte vers l'offre.",
+      "info": "Checkout direct : envoie au paiement avec l'offre sélectionnée (une seule navigation). Sinon, remonte vers l'offre.",
       "options": [
         { "value": "checkout", "label": "Checkout direct (offre sélectionnée)" },
         { "value": "scroll", "label": "Remonter vers l'offre" }
       ]
     },
-    { "type": "header", "content": "Image produit" },
+    { "type": "header", "content": "Image produit (desktop)" },
     { "type": "checkbox", "id": "show_image", "label": "Afficher l'image", "default": true },
-    { "type": "image_picker", "id": "product_image", "label": "Image", "info": "Vignette carrée à gauche." },
+    { "type": "image_picker", "id": "product_image", "label": "Image" },
     { "type": "range", "id": "image_size", "label": "Taille de l'image", "min": 28, "max": 56, "step": 2, "unit": "px", "default": 44 },
-    { "type": "header", "content": "Note" },
-    { "type": "checkbox", "id": "show_rating", "label": "Afficher la note", "default": true },
-    { "type": "text", "id": "rating_text", "label": "Valeur", "default": "4.8" },
-    { "type": "image_picker", "id": "rating_image", "label": "Image étoiles", "info": "Vide = ★" },
-    { "type": "range", "id": "rating_image_height", "label": "Hauteur des étoiles", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 14 },
-    { "type": "header", "content": "Prix" },
-    { "type": "checkbox", "id": "show_price", "label": "Afficher le prix", "info": "Le prix de l'offre sélectionnée remplace automatiquement cette valeur quand un pack offer est présent.", "default": true },
+    { "type": "header", "content": "Prix (repli si pas de pack offer sur la page)" },
     { "type": "product", "id": "price_product", "label": "Produit (source du prix)", "info": "Vide = produit de la page." },
     { "type": "text", "id": "price_text", "label": "Prix manuel (optionnel)" },
-    { "type": "text", "id": "compare_price", "label": "Prix barré manuel (optionnel)", "info": "Non affiché dans cette version compacte, conservé pour compatibilité." },
     { "type": "header", "content": "Couleurs (mode Personnalisé uniquement)" },
     { "type": "color", "id": "bg_color", "label": "Fond de la barre", "default": "#121212" },
-    { "type": "range", "id": "bg_opacity", "label": "Opacité du fond", "min": 50, "max": 100, "step": 1, "unit": "%", "default": 92 },
-    { "type": "color", "id": "text_color", "label": "Texte", "default": "#F4F4F4" },
-    { "type": "color", "id": "cta_bg", "label": "Fond du bouton", "default": "#F4F4F4" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#FFFFFF" },
+    { "type": "color", "id": "cta_bg", "label": "Fond du bouton", "default": "#FFFFFF" },
     { "type": "color", "id": "cta_text_color", "label": "Texte du bouton", "default": "#121212" },
     { "type": "header", "content": "Forme" },
-    { "type": "range", "id": "bar_radius", "label": "Arrondi de la barre", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 22 },
-    { "type": "range", "id": "cta_radius", "label": "Arrondi du bouton", "min": 0, "max": 22, "step": 1, "unit": "px", "default": 16 },
-    { "type": "range", "id": "blur_strength", "label": "Flou (styles verre / personnalisé)", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 20 }
+    { "type": "range", "id": "cta_radius", "label": "Arrondi du bouton", "min": 0, "max": 28, "step": 1, "unit": "px", "default": 14 }
   ],
   "presets": [
     { "name": "GF Sticky ATC" }

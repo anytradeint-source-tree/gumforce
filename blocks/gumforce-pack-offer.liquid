@@ -523,7 +523,7 @@
       {%- assign t3_sel = false -%}{%- if default_tier == '3' -%}{%- assign t3_sel = true -%}{%- endif -%}
 
         {%- if show_t1 -%}
-        <label class="gfp-tier{% if t1_sel %} gfp-sel{% endif %}{% unless v1_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="1" data-gfp-avail="{{ v1_ok }}" data-gfp-vid="{{ v1.id }}" data-gfp-total="{{ v1_money | escape }}" data-gfp-cents="{{ v1.price }}" data-gfp-sach="{{ t1_sach }}">
+        <label class="gfp-tier{% if t1_sel %} gfp-sel{% endif %}{% unless v1_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="1" data-gfp-avail="{{ v1_ok }}" data-gfp-vid="{{ v1.id }}" data-gfp-total="{{ v1_money | escape }}" data-gfp-cents="{{ v1.price }}" data-gfp-was="{{ v1.compare_at_price | default: 0 }}" data-gfp-sach="{{ t1_sach }}">
           <input type="radio" name="gfp-tier-{{ gf_id }}" value="1"{% if t1_sel %} checked{% endif %}>
           {%- unless has_timg -%}<span class="gfp-radio"></span>{%- endunless -%}
           {%- if s.tier1_badge != blank -%}<span class="gfp-tbadge">{{ s.tier1_badge }}</span>{%- endif -%}
@@ -545,7 +545,7 @@
         {%- endif -%}
 
         {%- if show_t2 -%}
-        <label class="gfp-tier{% if t2_sel %} gfp-sel{% endif %}{% unless v2_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="2" data-gfp-avail="{{ v2_ok }}" data-gfp-vid="{{ v2.id }}" data-gfp-total="{{ v2_money | escape }}" data-gfp-cents="{{ v2.price }}" data-gfp-sach="{{ t2_sach }}">
+        <label class="gfp-tier{% if t2_sel %} gfp-sel{% endif %}{% unless v2_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="2" data-gfp-avail="{{ v2_ok }}" data-gfp-vid="{{ v2.id }}" data-gfp-total="{{ v2_money | escape }}" data-gfp-cents="{{ v2.price }}" data-gfp-was="{{ v2.compare_at_price | default: 0 }}" data-gfp-sach="{{ t2_sach }}">
           <input type="radio" name="gfp-tier-{{ gf_id }}" value="2"{% if t2_sel %} checked{% endif %}>
           {%- unless has_timg -%}<span class="gfp-radio"></span>{%- endunless -%}
           {%- if s.tier2_badge != blank -%}<span class="gfp-tbadge">{{ s.tier2_badge }}</span>{%- endif -%}
@@ -567,7 +567,7 @@
         {%- endif -%}
 
       {%- if show_t3 -%}
-        <label class="gfp-tier{% if t3_sel %} gfp-sel{% endif %}{% unless v3_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="3" data-gfp-avail="{{ v3_ok }}" data-gfp-vid="{{ v3.id }}" data-gfp-total="{{ v3_money | escape }}" data-gfp-cents="{{ v3.price }}" data-gfp-sach="{{ t3_sach }}">
+        <label class="gfp-tier{% if t3_sel %} gfp-sel{% endif %}{% unless v3_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="3" data-gfp-avail="{{ v3_ok }}" data-gfp-vid="{{ v3.id }}" data-gfp-total="{{ v3_money | escape }}" data-gfp-cents="{{ v3.price }}" data-gfp-was="{{ v3.compare_at_price | default: 0 }}" data-gfp-sach="{{ t3_sach }}">
           <input type="radio" name="gfp-tier-{{ gf_id }}" value="3"{% if t3_sel %} checked{% endif %}>
           {%- unless has_timg -%}<span class="gfp-radio"></span>{%- endunless -%}
           {%- if s.tier3_badge != blank -%}<span class="gfp-tbadge">{{ s.tier3_badge }}</span>{%- endif -%}
