@@ -25,6 +25,18 @@
   assign anim_on       = s.enable_animation | default: true, allow_false: true
   assign bw_on         = s.image_bw | default: true, allow_false: true
   assign fit           = s.image_fit | default: 'contain'
+  assign mratio        = s.image_ratio_mobile | default: '3-2'
+  case mratio
+    when '1-1'
+      assign mrow = '100cqi'
+      assign mrow_fb = 'calc(100vw - 32px)'
+    when '16-9'
+      assign mrow = 'calc(100cqi * 0.5625)'
+      assign mrow_fb = 'calc((100vw - 32px) * 0.5625)'
+    else
+      assign mrow = 'calc(100cqi * 0.667)'
+      assign mrow_fb = 'calc((100vw - 32px) * 0.667)'
+  endcase
 -%}
 
 <style>
@@ -103,10 +115,11 @@
     #gfsm-{{ sid }} { padding: {{ pad_top_m }}px 16px {{ pad_bottom_m }}px; --gfsm-radius: {{ radius_mobile }}px; }
     #gfsm-{{ sid }} .gfsm-grid {
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: calc(100vw - 32px) 190px 190px;
+      grid-template-rows: {{ mrow_fb }} 190px 190px;
       grid-template-areas: "a a" "b c" "d e";
     }
-    @supports (width: 1cqi) { #gfsm-{{ sid }} .gfsm-grid { grid-template-rows: 100cqi 190px 190px; } }
+    @supports (width: 1cqi) { #gfsm-{{ sid }} .gfsm-grid { grid-template-rows: {{ mrow }} 190px 190px; } }
+    {% if mratio != '1-1' %}#gfsm-{{ sid }} .gfsm-a img { object-fit: cover; object-position: 50% {{ s.image_focus_mobile | default: 40 }}%; }{% endif %}
     #gfsm-{{ sid }} .gfsm-cell { padding: 18px 16px; gap: 10px; }
     #gfsm-{{ sid }} .gfsm-big { font-size: 36px; letter-spacing: -.05em; }
     #gfsm-{{ sid }} .gfsm-sub { font-size: 12.5px; }
@@ -208,6 +221,8 @@
     { "type": "checkbox", "id": "image_bw", "label": "Passer en noir et blanc", "default": true },
     { "type": "select", "id": "image_fit", "label": "Cadrage", "options": [ { "value": "contain", "label": "Entière (fond derrière)" }, { "value": "cover", "label": "Remplir la case" } ], "default": "contain" },
     { "type": "color", "id": "image_bg", "label": "Fond derrière la photo", "default": "#000000" },
+    { "type": "select", "id": "image_ratio_mobile", "label": "Hauteur de la photo sur mobile", "options": [ { "value": "16-9", "label": "Bandeau (16:9)" }, { "value": "3-2", "label": "Paysage (3:2)" }, { "value": "1-1", "label": "Carré (photo entière)" } ], "default": "3-2", "info": "En paysage et bandeau, la photo est recadrée pour remplir la case." },
+    { "type": "range", "id": "image_focus_mobile", "label": "Point de recadrage mobile (haut → bas)", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 40 },
 
     { "type": "header", "content": "Forme" },
     { "type": "range", "id": "radius", "label": "Arrondi (desktop)", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 28 },
