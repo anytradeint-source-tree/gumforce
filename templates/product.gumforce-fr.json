@@ -633,7 +633,7 @@
         "image_bg": "#000000",
         "radius": 28,
         "radius_mobile": 20,
-        "content_max": 1380,
+        "content_max": 1180,
         "enable_animation": true,
         "aria_label": "GUMFORCE en chiffres",
         "padding_top": 48,
