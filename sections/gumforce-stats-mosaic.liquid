@@ -57,11 +57,13 @@
     grid-template-areas: "a a b b c c" "a a d d e e";
     border-radius: var(--gfsm-radius);
     overflow: hidden;
-    border: 1px solid rgba(0,0,0,.06);
-    box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 20px 56px rgba(0,0,0,.10);
     background: transparent;
     transform: translateZ(0);
   }
+  {% if s.shadow %}
+  #gfsm-{{ sid }} .gfsm-grid { box-shadow: 0 2px 6px rgba(0,0,0,0), 0 20px 56px rgba(0,0,0,0); transition: box-shadow .8s ease 1.2s; }
+  #gfsm-{{ sid }}.is-in .gfsm-grid { box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 20px 56px rgba(0,0,0,.10); }
+  {% endif %}
   /* hauteur des rangées = moitié de la largeur de la case photo (carré parfait) */
   @supports (width: 1cqi) {
     #gfsm-{{ sid }} { container-type: inline-size; }
@@ -229,6 +231,7 @@
     { "type": "range", "id": "radius_mobile", "label": "Arrondi (mobile)", "min": 0, "max": 32, "step": 2, "unit": "px", "default": 20 },
     { "type": "range", "id": "content_max", "label": "Largeur max", "min": 1000, "max": 1600, "step": 20, "unit": "px", "default": 1380 },
     { "type": "checkbox", "id": "enable_animation", "label": "Animations au scroll", "default": true },
+    { "type": "checkbox", "id": "shadow", "label": "Ombre portée (apparaît après l'animation)", "default": false },
     { "type": "text", "id": "aria_label", "label": "Libellé accessibilité", "default": "GUMFORCE en chiffres" },
 
     { "type": "header", "content": "Espacements" },
