@@ -1,0 +1,253 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Chiffres — MOSAÏQUE ÉDITORIALE
+  ----------------------------------------------------------------------------
+  Une photo carrée (noir et blanc) + 4 blocs de couleur pleins, un chiffre et
+  une ligne chacun. Conteneur arrondi comme la carte produit, cellules à
+  angles vifs à l'intérieur.
+  • Révélation au scroll : balayage net gauche→droite en cascade, léger zoom
+    arrière sur la photo, filets qui se tracent, compteurs qui montent.
+  • prefers-reduced-motion respecté (état final direct).
+  • Zéro dépendance, ~2 Ko de JS inline.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+
+  assign radius        = s.radius | default: 28
+  assign radius_mobile = s.radius_mobile | default: 20
+  assign pad_top       = s.padding_top | default: 48
+  assign pad_bottom    = s.padding_bottom | default: 8
+  assign pad_top_m     = s.padding_top_mobile | default: 32
+  assign pad_bottom_m  = s.padding_bottom_mobile | default: 0
+  assign anim_on       = s.enable_animation | default: true, allow_false: true
+  assign bw_on         = s.image_bw | default: true, allow_false: true
+  assign fit           = s.image_fit | default: 'contain'
+-%}
+
+<style>
+  #gfsm-{{ sid }} {
+    --gfsm-font: var(--font-body--family, 'Manrope', -apple-system, sans-serif);
+    --gfsm-radius: {{ radius }}px;
+    --gfsm-ease: cubic-bezier(.22,1,.36,1);
+    --gfsm-wipe: cubic-bezier(.77,0,.18,1);
+    font-family: var(--gfsm-font);
+    max-width: {{ s.content_max | default: 1380 }}px;
+    margin: 0 auto;
+    padding: {{ pad_top }}px 40px {{ pad_bottom }}px;
+  }
+  #gfsm-{{ sid }} .gfsm-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: 216px 216px;
+    grid-template-areas: "a a b b c c" "a a d d e e";
+    border-radius: var(--gfsm-radius);
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 20px 56px rgba(0,0,0,.10);
+    background: #000;
+    transform: translateZ(0);
+  }
+  /* hauteur des rangées = moitié de la largeur de la case photo (carré parfait) */
+  @supports (width: 1cqi) {
+    #gfsm-{{ sid }} { container-type: inline-size; }
+    #gfsm-{{ sid }} .gfsm-grid { grid-template-rows: max(210px, calc(100cqi / 6)) max(210px, calc(100cqi / 6)); }
+  }
+  #gfsm-{{ sid }} .gfsm-cell {
+    position: relative; overflow: hidden; min-width: 0;
+    padding: 26px 28px;
+    display: grid; grid-template-rows: auto auto 1fr; gap: 12px;
+    background: var(--bg); color: var(--fg);
+  }
+  #gfsm-{{ sid }} .gfsm-a { grid-area: a; padding: 0; background: {{ s.image_bg | default: '#000000' }}; }
+  #gfsm-{{ sid }} .gfsm-a img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: {{ fit }}; object-position: 50% 50%; display: block;
+    {% if bw_on %}filter: grayscale(1);{% endif %}
+  }
+  #gfsm-{{ sid }} .gfsm-b { grid-area: b; }
+  #gfsm-{{ sid }} .gfsm-c { grid-area: c; }
+  #gfsm-{{ sid }} .gfsm-d { grid-area: d; }
+  #gfsm-{{ sid }} .gfsm-e { grid-area: e; }
+
+  #gfsm-{{ sid }} .gfsm-big {
+    font-weight: 800; letter-spacing: -.045em; line-height: .92;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+    display: flex; align-items: baseline; gap: .06em;
+    font-size: 72px;
+    font-size: clamp(56px, 6.4cqi, 88px);
+    margin: 0;
+  }
+  #gfsm-{{ sid }} .gfsm-big small { font-size: .42em; font-weight: 700; letter-spacing: -.02em; }
+  #gfsm-{{ sid }} .gfsm-sub { margin: 0; font-size: 15px; line-height: 1.35; font-weight: 500; max-width: 26ch; }
+  #gfsm-{{ sid }} .gfsm-sub b { font-weight: 800; }
+  #gfsm-{{ sid }} .gfsm-rule { align-self: end; height: 1px; background: currentColor; opacity: .35; }
+
+  /* ── Animation ── */
+  {% if anim_on %}
+  @media (prefers-reduced-motion: no-preference) {
+    #gfsm-{{ sid }} .gfsm-cell { clip-path: inset(0 100% 0 0); transition: clip-path .85s var(--gfsm-wipe); transition-delay: calc(var(--i) * 110ms); }
+    #gfsm-{{ sid }}.is-in .gfsm-cell { clip-path: inset(0 0 0 0); }
+    #gfsm-{{ sid }} .gfsm-a img { transform: scale(1.12); transition: transform 1.8s var(--gfsm-ease); }
+    #gfsm-{{ sid }}.is-in .gfsm-a img { transform: scale(1); }
+    #gfsm-{{ sid }} .gfsm-rule { transform: scaleX(0); transform-origin: left; transition: transform .9s var(--gfsm-wipe); transition-delay: calc(var(--i) * 110ms + 500ms); }
+    #gfsm-{{ sid }}.is-in .gfsm-rule { transform: scaleX(1); }
+  }
+  {% endif %}
+
+  /* ── Mobile ── */
+  @media (max-width: 749px) {
+    #gfsm-{{ sid }} { padding: {{ pad_top_m }}px 16px {{ pad_bottom_m }}px; --gfsm-radius: {{ radius_mobile }}px; }
+    #gfsm-{{ sid }} .gfsm-grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: calc(100vw - 32px) 190px 190px;
+      grid-template-areas: "a a" "b c" "d e";
+    }
+    @supports (width: 1cqi) { #gfsm-{{ sid }} .gfsm-grid { grid-template-rows: 100cqi 190px 190px; } }
+    #gfsm-{{ sid }} .gfsm-cell { padding: 18px 16px; gap: 10px; }
+    #gfsm-{{ sid }} .gfsm-big { font-size: 36px; letter-spacing: -.05em; }
+    #gfsm-{{ sid }} .gfsm-sub { font-size: 12.5px; }
+  }
+</style>
+
+<div id="gfsm-{{ sid }}" class="gfsm" role="region" aria-label="{{ s.aria_label | default: 'GUMFORCE en chiffres' }}">
+  <div class="gfsm-grid">
+    <figure class="gfsm-cell gfsm-a" style="--i:0">
+      {%- liquid
+        assign alt_txt = s.image_alt | default: ''
+      -%}
+      {%- if s.image != blank -%}
+        {{ s.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '600, 900, 1200', sizes: '(max-width: 749px) 100vw, 460px', alt: alt_txt }}
+      {%- else -%}
+        <img src="{{ 'gumforce-stats-diptych.jpg' | asset_url }}" width="1200" height="1200" loading="lazy" alt="{{ s.image_alt | default: '' | escape }}">
+      {%- endif -%}
+    </figure>
+
+    {%- assign areas = 'b,c,d,e' | split: ',' -%}
+    {%- for block in section.blocks limit: 4 -%}
+      {%- liquid
+        assign area = areas[forloop.index0]
+        assign raw = block.settings.number | strip | replace: ' ', '' | replace: '.', '' | replace: ',', ''
+        assign len = raw | size
+        assign shown = raw
+        if len == 4
+          assign p1 = raw | slice: 0, 1
+          assign p2 = raw | slice: 1, 3
+          assign shown = p1 | append: ' ' | append: p2
+        elsif len == 5
+          assign p1 = raw | slice: 0, 2
+          assign p2 = raw | slice: 2, 3
+          assign shown = p1 | append: ' ' | append: p2
+        elsif len == 6
+          assign p1 = raw | slice: 0, 3
+          assign p2 = raw | slice: 3, 3
+          assign shown = p1 | append: ' ' | append: p2
+        endif
+      -%}
+      <div class="gfsm-cell gfsm-{{ area }}" style="--i:{{ forloop.index }};--bg:{{ block.settings.bg }};--fg:{{ block.settings.fg }}" {{ block.shopify_attributes }}>
+        <p class="gfsm-big">
+          <span data-count="{{ raw }}">{{ shown }}</span>{% if block.settings.suffix != blank %}{% if block.settings.suffix_small %}<small>{{ block.settings.suffix }}</small>{% else %}{{ block.settings.suffix }}{% endif %}{% endif %}
+        </p>
+        <p class="gfsm-sub">{% if block.settings.lead != blank %}<b>{{ block.settings.lead }}</b> {% endif %}{{ block.settings.text }}</p>
+        <div class="gfsm-rule" aria-hidden="true"></div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% if anim_on %}
+<script>
+  (function () {
+    var root = document.getElementById('gfsm-{{ sid }}');
+    if (!root) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var els = root.querySelectorAll('[data-count]');
+    function fmt(n) { return Math.round(n).toLocaleString('fr-FR').replace(/[  ]/g, ' '); }
+    function ease(p) { return 1 - Math.pow(1 - p, 4); }
+    function countUp(el, dur) {
+      var to = parseFloat(el.getAttribute('data-count')), t0 = null;
+      if (isNaN(to)) return;
+      function step(t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min(1, (t - t0) / dur);
+        el.textContent = fmt(to * ease(p));
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    if (reduce || !('IntersectionObserver' in window)) { root.classList.add('is-in'); return; }
+    Array.prototype.forEach.call(els, function (el) { if (!isNaN(parseFloat(el.getAttribute('data-count')))) el.textContent = '0'; });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        root.classList.add('is-in');
+        Array.prototype.forEach.call(els, function (el, i) {
+          var dur = parseFloat(el.getAttribute('data-count')) >= 1000 ? 1900 : 1500;
+          setTimeout(function () { countUp(el, dur); }, 380 + i * 140);
+        });
+        io.disconnect();
+      });
+    }, { threshold: 0.22 });
+    io.observe(root);
+  })();
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "GF Chiffres mosaïque",
+  "tag": "section",
+  "class": "gf-stats-mosaic",
+  "settings": [
+    { "type": "header", "content": "Photo" },
+    { "type": "image_picker", "id": "image", "label": "Photo (carrée de préférence)", "info": "Vide = diptyque par défaut du thème." },
+    { "type": "text", "id": "image_alt", "label": "Texte alternatif", "default": "" },
+    { "type": "checkbox", "id": "image_bw", "label": "Passer en noir et blanc", "default": true },
+    { "type": "select", "id": "image_fit", "label": "Cadrage", "options": [ { "value": "contain", "label": "Entière (fond derrière)" }, { "value": "cover", "label": "Remplir la case" } ], "default": "contain" },
+    { "type": "color", "id": "image_bg", "label": "Fond derrière la photo", "default": "#000000" },
+
+    { "type": "header", "content": "Forme" },
+    { "type": "range", "id": "radius", "label": "Arrondi (desktop)", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 28 },
+    { "type": "range", "id": "radius_mobile", "label": "Arrondi (mobile)", "min": 0, "max": 32, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "content_max", "label": "Largeur max", "min": 1000, "max": 1600, "step": 20, "unit": "px", "default": 1380 },
+    { "type": "checkbox", "id": "enable_animation", "label": "Animations au scroll", "default": true },
+    { "type": "text", "id": "aria_label", "label": "Libellé accessibilité", "default": "GUMFORCE en chiffres" },
+
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "label": "Haut (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "label": "Bas (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 8 },
+    { "type": "range", "id": "padding_top_mobile", "label": "Haut (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32 },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Bas (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 0 }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Chiffre",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "number", "label": "Chiffre (uniquement des chiffres)", "default": "10", "info": "Ex. 15000 → affiché 15 000 et animé." },
+        { "type": "text", "id": "suffix", "label": "Suffixe", "default": "x", "info": "x, min, +, jours…" },
+        { "type": "checkbox", "id": "suffix_small", "label": "Suffixe en petit", "default": false },
+        { "type": "text", "id": "lead", "label": "Début en gras", "default": "plus dur" },
+        { "type": "text", "id": "text", "label": "Suite de la ligne", "default": "qu'un chewing-gum normal : ton muscle force pour de vrai" },
+        { "type": "color", "id": "bg", "label": "Fond", "default": "#2AB5B4" },
+        { "type": "color", "id": "fg", "label": "Texte", "default": "#121212" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "GF Chiffres mosaïque",
+      "blocks": [
+        { "type": "stat", "settings": { "number": "10", "suffix": "x", "suffix_small": false, "lead": "plus dur", "text": "qu'un chewing-gum normal : ton muscle force pour de vrai", "bg": "#2AB5B4", "fg": "#121212" } },
+        { "type": "stat", "settings": { "number": "15", "suffix": "min", "suffix_small": true, "lead": "par jour", "text": "suffisent, pendant que tu fais autre chose", "bg": "#c8fa5f", "fg": "#121212" } },
+        { "type": "stat", "settings": { "number": "15000", "suffix": "+", "suffix_small": false, "lead": "mâchoires", "text": "déjà entraînées avec GUMFORCE", "bg": "#c8fa5f", "fg": "#121212" } },
+        { "type": "stat", "settings": { "number": "90", "suffix": "jours", "suffix_small": true, "lead": "pour tester.", "text": "Pas convaincu ? On te rembourse.", "bg": "#2AB5B4", "fg": "#121212" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
