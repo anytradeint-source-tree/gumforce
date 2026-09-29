@@ -203,7 +203,7 @@
   "settings": [
     { "type": "header", "content": "Photo" },
     { "type": "image_picker", "id": "image", "label": "Photo (carrée de préférence)", "info": "Vide = diptyque par défaut du thème." },
-    { "type": "text", "id": "image_alt", "label": "Texte alternatif", "default": "" },
+    { "type": "text", "id": "image_alt", "label": "Texte alternatif" },
     { "type": "checkbox", "id": "image_bw", "label": "Passer en noir et blanc", "default": true },
     { "type": "select", "id": "image_fit", "label": "Cadrage", "options": [ { "value": "contain", "label": "Entière (fond derrière)" }, { "value": "cover", "label": "Remplir la case" } ], "default": "contain" },
     { "type": "color", "id": "image_bg", "label": "Fond derrière la photo", "default": "#000000" },
@@ -225,7 +225,6 @@
     {
       "type": "stat",
       "name": "Chiffre",
-      "limit": 4,
       "settings": [
         { "type": "text", "id": "number", "label": "Chiffre (uniquement des chiffres)", "default": "10", "info": "Ex. 15000 → affiché 15 000 et animé." },
         { "type": "text", "id": "suffix", "label": "Suffixe", "default": "x", "info": "x, min, +, jours…" },
