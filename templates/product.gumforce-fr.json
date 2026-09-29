@@ -574,8 +574,9 @@
             "suffix_small": false,
             "lead": "plus dur",
             "text": "qu'un chewing-gum normal : ton muscle force pour de vrai",
-            "bg": "#2ab5b4",
-            "fg": "#121212"
+            "bg": "#c5fe89",
+            "fg": "#121212",
+            "grid": false
           }
         },
         "stat_Yz8NHB": {
@@ -586,8 +587,9 @@
             "suffix_small": true,
             "lead": "par jour",
             "text": "suffisent, pendant que tu fais autre chose",
-            "bg": "#c8fa5f",
-            "fg": "#121212"
+            "bg": "#121212",
+            "fg": "#f4f3ee",
+            "grid": false
           }
         },
         "stat_XkUHPD": {
@@ -598,8 +600,9 @@
             "suffix_small": false,
             "lead": "mâchoires",
             "text": "déjà entraînées avec GUMFORCE",
-            "bg": "#c8fa5f",
-            "fg": "#121212"
+            "bg": "#ffffff",
+            "fg": "#121212",
+            "grid": true
           }
         },
         "stat_8R8UJh": {
@@ -610,8 +613,9 @@
             "suffix_small": true,
             "lead": "pour tester.",
             "text": "Pas convaincu ? On te rembourse.",
-            "bg": "#2ab5b4",
-            "fg": "#121212"
+            "bg": "#c5fe89",
+            "fg": "#121212",
+            "grid": false
           }
         }
       },

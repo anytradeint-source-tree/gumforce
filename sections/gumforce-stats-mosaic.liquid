@@ -84,6 +84,7 @@
   #gfsm-{{ sid }} .gfsm-sub { margin: 0; font-size: 15px; line-height: 1.35; font-weight: 500; max-width: 26ch; }
   #gfsm-{{ sid }} .gfsm-sub b { font-weight: 800; }
   #gfsm-{{ sid }} .gfsm-rule { align-self: end; height: 1px; background: currentColor; opacity: .35; }
+  #gfsm-{{ sid }} .gfsm-grid-bg { background-image: linear-gradient(rgba(18,18,18,.14) 1px, transparent 1px), linear-gradient(90deg, rgba(18,18,18,.14) 1px, transparent 1px); background-size: 46px 46px; background-position: -1px -1px; }
 
   /* ── Animation ── */
   {% if anim_on %}
@@ -146,7 +147,7 @@
           assign shown = p1 | append: ' ' | append: p2
         endif
       -%}
-      <div class="gfsm-cell gfsm-{{ area }}" style="--i:{{ forloop.index }};--bg:{{ block.settings.bg }};--fg:{{ block.settings.fg }}" {{ block.shopify_attributes }}>
+      <div class="gfsm-cell gfsm-{{ area }}{% if block.settings.grid %} gfsm-grid-bg{% endif %}" style="--i:{{ forloop.index }};--bg:{{ block.settings.bg }};--fg:{{ block.settings.fg }}" {{ block.shopify_attributes }}>
         <p class="gfsm-big">
           <span data-count="{{ raw }}">{{ shown }}</span>{% if block.settings.suffix != blank %}{% if block.settings.suffix_small %}<small>{{ block.settings.suffix }}</small>{% else %}{{ block.settings.suffix }}{% endif %}{% endif %}
         </p>
@@ -231,8 +232,9 @@
         { "type": "checkbox", "id": "suffix_small", "label": "Suffixe en petit", "default": false },
         { "type": "text", "id": "lead", "label": "Début en gras", "default": "plus dur" },
         { "type": "text", "id": "text", "label": "Suite de la ligne", "default": "qu'un chewing-gum normal : ton muscle force pour de vrai" },
-        { "type": "color", "id": "bg", "label": "Fond", "default": "#2AB5B4" },
-        { "type": "color", "id": "fg", "label": "Texte", "default": "#121212" }
+        { "type": "color", "id": "bg", "label": "Fond", "default": "#c5fe89" },
+        { "type": "color", "id": "fg", "label": "Texte", "default": "#121212" },
+        { "type": "checkbox", "id": "grid", "label": "Quadrillage fin", "default": false }
       ]
     }
   ],
@@ -241,10 +243,10 @@
     {
       "name": "GF Chiffres mosaïque",
       "blocks": [
-        { "type": "stat", "settings": { "number": "10", "suffix": "x", "suffix_small": false, "lead": "plus dur", "text": "qu'un chewing-gum normal : ton muscle force pour de vrai", "bg": "#2AB5B4", "fg": "#121212" } },
-        { "type": "stat", "settings": { "number": "15", "suffix": "min", "suffix_small": true, "lead": "par jour", "text": "suffisent, pendant que tu fais autre chose", "bg": "#c8fa5f", "fg": "#121212" } },
-        { "type": "stat", "settings": { "number": "15000", "suffix": "+", "suffix_small": false, "lead": "mâchoires", "text": "déjà entraînées avec GUMFORCE", "bg": "#c8fa5f", "fg": "#121212" } },
-        { "type": "stat", "settings": { "number": "90", "suffix": "jours", "suffix_small": true, "lead": "pour tester.", "text": "Pas convaincu ? On te rembourse.", "bg": "#2AB5B4", "fg": "#121212" } }
+        { "type": "stat", "settings": { "number": "10", "suffix": "x", "suffix_small": false, "lead": "plus dur", "text": "qu'un chewing-gum normal : ton muscle force pour de vrai", "bg": "#c5fe89", "fg": "#121212", "grid": false } },
+        { "type": "stat", "settings": { "number": "15", "suffix": "min", "suffix_small": true, "lead": "par jour", "text": "suffisent, pendant que tu fais autre chose", "bg": "#121212", "fg": "#f4f3ee", "grid": false } },
+        { "type": "stat", "settings": { "number": "15000", "suffix": "+", "suffix_small": false, "lead": "mâchoires", "text": "déjà entraînées avec GUMFORCE", "bg": "#ffffff", "fg": "#121212", "grid": true } },
+        { "type": "stat", "settings": { "number": "90", "suffix": "jours", "suffix_small": true, "lead": "pour tester.", "text": "Pas convaincu ? On te rembourse.", "bg": "#c5fe89", "fg": "#121212", "grid": false } }
       ]
     }
   ]
