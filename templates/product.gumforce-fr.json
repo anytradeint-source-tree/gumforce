@@ -375,6 +375,7 @@
                 "cta_radius": 30,
                 "cta_link": "",
                 "go_to_checkout": true,
+                "fast_checkout": true,
                 "cta_adding_text": "Ajout en cours…",
                 "cta_redirecting_text": "Redirection…",
                 "show_cta_guarantee": true,
@@ -562,6 +563,81 @@
         "padding-block-end": 24
       }
     },
+    "gumforce_stats_mosaic_6HaQjW": {
+      "type": "gumforce-stats-mosaic",
+      "blocks": {
+        "stat_6bA3mG": {
+          "type": "stat",
+          "settings": {
+            "number": "10",
+            "suffix": "x",
+            "suffix_small": false,
+            "lead": "plus dur",
+            "text": "qu'un chewing-gum normal : ton muscle force pour de vrai",
+            "bg": "#2ab5b4",
+            "fg": "#121212"
+          }
+        },
+        "stat_Yz8NHB": {
+          "type": "stat",
+          "settings": {
+            "number": "15",
+            "suffix": "min",
+            "suffix_small": true,
+            "lead": "par jour",
+            "text": "suffisent, pendant que tu fais autre chose",
+            "bg": "#c8fa5f",
+            "fg": "#121212"
+          }
+        },
+        "stat_XkUHPD": {
+          "type": "stat",
+          "settings": {
+            "number": "15000",
+            "suffix": "+",
+            "suffix_small": false,
+            "lead": "mâchoires",
+            "text": "déjà entraînées avec GUMFORCE",
+            "bg": "#c8fa5f",
+            "fg": "#121212"
+          }
+        },
+        "stat_8R8UJh": {
+          "type": "stat",
+          "settings": {
+            "number": "90",
+            "suffix": "jours",
+            "suffix_small": true,
+            "lead": "pour tester.",
+            "text": "Pas convaincu ? On te rembourse.",
+            "bg": "#2ab5b4",
+            "fg": "#121212"
+          }
+        }
+      },
+      "block_order": [
+        "stat_6bA3mG",
+        "stat_Yz8NHB",
+        "stat_XkUHPD",
+        "stat_8R8UJh"
+      ],
+      "name": "GF Chiffres mosaïque",
+      "settings": {
+        "image_alt": "",
+        "image_bw": true,
+        "image_fit": "contain",
+        "image_bg": "#000000",
+        "radius": 28,
+        "radius_mobile": 20,
+        "content_max": 1380,
+        "enable_animation": true,
+        "aria_label": "GUMFORCE en chiffres",
+        "padding_top": 48,
+        "padding_bottom": 8,
+        "padding_top_mobile": 32,
+        "padding_bottom_mobile": 0
+      }
+    },
     "gumforce_video_stories_wNDBM4": {
       "type": "gumforce-video-stories",
       "blocks": {
@@ -665,26 +741,19 @@
       "settings": {
         "style": "noir",
         "product_title": "LE CHEWING GUM QUI MUSCLE TA MÂCHOIRE",
+        "note_text": "Livraison gratuite",
         "cta_text": "COMMANDER",
+        "cta_action": "checkout",
         "show_image": true,
         "product_image": "shopify://shop_images/Ontwerp_zonder_titel_82_7a99febc-00ea-4bce-bc77-f2ebbe7d44dc.png",
         "image_size": 42,
-        "show_rating": true,
-        "rating_text": "4.8",
-        "rating_image": "shopify://shop_images/trust_45_1.svg",
-        "rating_image_height": 14,
-        "show_price": false,
         "price_product": "",
         "price_text": "",
-        "compare_price": "",
         "bg_color": "#121212",
-        "bg_opacity": 86,
         "text_color": "#f4f4f4",
         "cta_bg": "#f4f4f4",
         "cta_text_color": "#121212",
-        "bar_radius": 24,
-        "cta_radius": 20,
-        "blur_strength": 20
+        "cta_radius": 20
       }
     },
     "gumforce_influencers_grid_WkeiRW": {
@@ -2102,85 +2171,11 @@
         "padding_bottom": 60,
         "enable_animations": true
       }
-    },
-    "gumforce_stats_mosaic_kQ7m2P": {
-      "type": "gumforce-stats-mosaic",
-      "blocks": {
-        "stat_a": {
-          "type": "stat",
-          "settings": {
-            "number": "10",
-            "suffix": "x",
-            "suffix_small": false,
-            "lead": "plus dur",
-            "text": "qu'un chewing-gum normal : ton muscle force pour de vrai",
-            "bg": "#2ab5b4",
-            "fg": "#121212"
-          }
-        },
-        "stat_b": {
-          "type": "stat",
-          "settings": {
-            "number": "15",
-            "suffix": "min",
-            "suffix_small": true,
-            "lead": "par jour",
-            "text": "suffisent, pendant que tu fais autre chose",
-            "bg": "#c8fa5f",
-            "fg": "#121212"
-          }
-        },
-        "stat_c": {
-          "type": "stat",
-          "settings": {
-            "number": "15000",
-            "suffix": "+",
-            "suffix_small": false,
-            "lead": "mâchoires",
-            "text": "déjà entraînées avec GUMFORCE",
-            "bg": "#c8fa5f",
-            "fg": "#121212"
-          }
-        },
-        "stat_d": {
-          "type": "stat",
-          "settings": {
-            "number": "90",
-            "suffix": "jours",
-            "suffix_small": true,
-            "lead": "pour tester.",
-            "text": "Pas convaincu ? On te rembourse.",
-            "bg": "#2ab5b4",
-            "fg": "#121212"
-          }
-        }
-      },
-      "block_order": [
-        "stat_a",
-        "stat_b",
-        "stat_c",
-        "stat_d"
-      ],
-      "settings": {
-        "image_alt": "Portrait en noir et blanc, de face et de profil",
-        "image_bw": true,
-        "image_fit": "contain",
-        "image_bg": "#000000",
-        "radius": 28,
-        "radius_mobile": 20,
-        "content_max": 1380,
-        "enable_animation": true,
-        "aria_label": "GUMFORCE en chiffres",
-        "padding_top": 48,
-        "padding_bottom": 8,
-        "padding_top_mobile": 32,
-        "padding_bottom_mobile": 0
-      }
     }
   },
   "order": [
     "main",
-    "gumforce_stats_mosaic_kQ7m2P",
+    "gumforce_stats_mosaic_6HaQjW",
     "gumforce_video_stories_wNDBM4",
     "gumforce_sticky_atc_9wJNA9",
     "gumforce_influencers_grid_WkeiRW",
