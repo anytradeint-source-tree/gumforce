@@ -15,7 +15,7 @@
   assign bg_color         = s.bg_color | default: '#0e0e0e'
   assign heading_text     = s.heading
   assign heading_color    = s.heading_color | default: '#f4f4f4'
-  assign heading_size     = s.heading_size | default: 34
+  assign heading_size     = s.heading_size | default: 32
   assign body_text        = s.body
   assign body_color       = s.body_color | default: '#999999'
   assign accent_color     = s.accent_color | default: '#2AB5B4'
@@ -243,7 +243,7 @@
     }
 
     #gfg-{{ sid }} .gfg-heading {
-      font-size: calc(var(--gfg-heading-size) * 0.76);
+      font-size: calc(var(--gfg-heading-size) * 0.78);
     }
 
     #gfg-{{ sid }} .gfg-body {

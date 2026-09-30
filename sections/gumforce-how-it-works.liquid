@@ -15,7 +15,7 @@
 
   assign heading_text    = s.heading
   assign heading_color   = s.heading_color | default: '#1a1a1a'
-  assign heading_size    = s.heading_size | default: 34
+  assign heading_size    = s.heading_size | default: 32
   assign subheading_color = s.subheading_color | default: '#666666'
   assign keyword_color   = s.keyword_color | default: '#000000'
   assign desc_color      = s.desc_color | default: '#999999'
@@ -119,7 +119,7 @@
   @media (max-width: 599px) {
     #gfhw-{{ sid }} { padding: {{ pad_top_mobile }}px 0 {{ pad_bot_mobile }}px; }
     #gfhw-{{ sid }} .gfhw-header { margin-bottom: 44px; }
-    #gfhw-{{ sid }} .gfhw-heading { font-size: calc(var(--gfhw-heading-size) * 0.74); }
+    #gfhw-{{ sid }} .gfhw-heading { font-size: calc(var(--gfhw-heading-size) * 0.78); }
     #gfhw-{{ sid }} .gfhw-subheading { font-size: 14px; }
     #gfhw-{{ sid }} .gfhw-cta-wrap { margin-top: 44px; }
     #gfhw-{{ sid }} .gfhw-cta { width: 100%; }

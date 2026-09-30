@@ -14,7 +14,7 @@
   assign bg_color       = s.bg_color | default: '#0e0e0e'
   assign heading_text   = s.heading
   assign heading_color  = s.heading_color | default: '#f4f4f4'
-  assign heading_size   = s.heading_size | default: 34
+  assign heading_size   = s.heading_size | default: 32
   assign subheading_text = s.subheading
   assign subheading_color = s.subheading_color | default: '#666666'
   assign keyword_color  = s.keyword_color | default: '#f4f4f4'
@@ -190,7 +190,7 @@
     }
 
     #gfcb-{{ sid }} .gfcb-heading {
-      font-size: calc(var(--gfcb-heading-size) * 0.74);
+      font-size: calc(var(--gfcb-heading-size) * 0.78);
     }
 
     {%- if mobile_layout == 'line' -%}
