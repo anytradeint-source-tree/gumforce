@@ -133,64 +133,6 @@
         "padding_bottom_mobile": 0
       }
     },
-    "gumforce_how_it_works_home": {
-      "type": "gumforce-how-it-works",
-      "blocks": {
-        "step_1": {
-          "type": "step",
-          "settings": {
-            "title": "Mâche 15 minutes par jour",
-            "text": "Un chewing-gum à la fois, sur les molaires, en alternant les côtés toutes les deux minutes. Dans la voiture, au bureau, avant le sport : ta mâchoire s'entraîne pendant que tu fais autre chose.",
-            "meta": "Sans sucre · menthe fraîche"
-          }
-        },
-        "step_2": {
-          "type": "step",
-          "settings": {
-            "title": "Ta mâchoire travaille vraiment",
-            "text": "La résistance 10x oblige les masséters, les muscles qui dessinent la mâchoire, à se contracter à chaque mâche. Comme une série à la salle, là où un chewing-gum classique ne fait rien.",
-            "meta": "10x plus dur"
-          }
-        },
-        "step_3": {
-          "type": "step",
-          "settings": {
-            "title": "Des résultats en 30 jours",
-            "text": "Mâchoire plus dessinée, moins de tension, et 500 mg de créatine monohydrate par chewing-gum pour soutenir le muscle. Pas convaincu ? On te rembourse.",
-            "meta": "Satisfait ou remboursé 90 jours"
-          }
-        }
-      },
-      "block_order": [
-        "step_1",
-        "step_2",
-        "step_3"
-      ],
-      "settings": {
-        "badge_text": "Comment ça marche",
-        "heading": "Comment muscler sa mâchoire avec GUMFORCE",
-        "heading_tag": "h2",
-        "heading_size": 32,
-        "text": "<p>GUMFORCE est un chewing-gum <strong>10x plus dur</strong> qu'un chewing-gum classique, conçu pour faire travailler les masséters, les muscles qui dessinent la mâchoire. Chaque chewing-gum contient <strong>500 mg de créatine monohydrate</strong>, sans sucre, goût menthe fraîche.</p><p>Quinze minutes par jour suffisent pour muscler sa mâchoire, obtenir une jawline plus marquée et réduire les tensions. Plus de 15 000 mâchoires s'entraînent déjà avec GUMFORCE.</p>",
-        "cta_text": "Commander GUMFORCE",
-        "cta_link": "shopify://products/gumforce",
-        "product": "gumforce",
-        "accent_color": "#2ab5b4",
-        "card_bg": "#ffffff",
-        "heading_color": "#0e0e0e",
-        "text_color": "#4a4d4c",
-        "cta_bg": "#121212",
-        "cta_color": "#ffffff",
-        "radius": 28,
-        "radius_mobile": 20,
-        "content_max": 1380,
-        "enable_animation": true,
-        "padding_top": 40,
-        "padding_bottom": 24,
-        "padding_top_mobile": 24,
-        "padding_bottom_mobile": 16
-      }
-    },
     "gumforce_before_after_home": {
       "type": "gumforce-before-after",
       "settings": {
@@ -1367,7 +1309,6 @@
     "gumforce_hero_VXkr7T",
     "gumforce_fond_degrade_section_MUPgXF",
     "gumforce_stats_mosaic_home",
-    "gumforce_how_it_works_home",
     "gumforce_before_after_home",
     "gumforce_video_stories_home",
     "gumforce_creatine_benefits_TcT3rz",
