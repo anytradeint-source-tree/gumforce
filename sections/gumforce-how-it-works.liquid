@@ -15,10 +15,13 @@
   assign h_tag = s.heading_tag | default: 'h2'
 -%}
 
-{%- if s.product != blank -%}
+{%- if s.product_handle != blank -%}
+  {%- assign ld_product = all_products[s.product_handle] -%}
+  {%- if ld_product != blank -%}
 <script type="application/ld+json">
-  {{ s.product | structured_data }}
+  {{ ld_product | structured_data }}
 </script>
+  {%- endif -%}
 {%- endif -%}
 
 <style>
@@ -166,7 +169,7 @@
     { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>GUMFORCE est un chewing-gum <strong>10x plus dur</strong> qu'un chewing-gum classique, conçu pour faire travailler les masséters, les muscles qui dessinent la mâchoire.</p>" },
     { "type": "text", "id": "cta_text", "label": "Bouton", "default": "Commander GUMFORCE" },
     { "type": "url", "id": "cta_link", "label": "Lien du bouton" },
-    { "type": "product", "id": "product", "label": "Produit (données structurées)", "info": "Ajoute le balisage Product (prix, disponibilité, avis) à la page. Utile sur la home." },
+    { "type": "text", "id": "product_handle", "label": "Handle du produit (données structurées)", "info": "Ex. gumforce. Ajoute le balisage Product (prix, disponibilité) à la page. Utile sur la home." },
 
     { "type": "header", "content": "Style" },
     { "type": "color", "id": "accent_color", "label": "Accent", "default": "#2AB5B4" },
