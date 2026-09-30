@@ -24,7 +24,7 @@
         "heading": "Le chewing-gum qui muscle ta mâchoire",
         "heading_tag": "h1",
         "heading_size_desktop": 52,
-        "heading_size_mobile": 24,
+        "heading_size_mobile": 30,
         "heading_weight": "500",
         "heading_tracking": -2,
         "subheading_size_desktop": 13,
@@ -41,7 +41,8 @@
         "content_align": "flex-start",
         "content_position": "center",
         "content_align_mobile": "center",
-        "content_position_mobile": "bottom"
+        "content_position_mobile": "bottom",
+        "heading_max_width": 560
       }
     },
     "gumforce_fond_degrade_section_MUPgXF": {

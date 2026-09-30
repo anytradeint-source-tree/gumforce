@@ -206,7 +206,13 @@
     letter-spacing: var(--gfh-heading-ls);
     line-height: 1.05;
     margin: 0;
+    {%- if section.settings.heading_max_width > 0 %}
+    white-space: normal;
+    max-width: {{ section.settings.heading_max_width }}px;
+    text-wrap: balance;
+    {%- else %}
     white-space: nowrap;
+    {%- endif %}
   }
 
   /* ── CTA ── */
@@ -344,7 +350,7 @@
       {%- endcase %}
     }
 
-    .gfh-heading  { font-size: var(--gfh-heading-m); }
+    .gfh-heading  { font-size: var(--gfh-heading-m); white-space: normal; max-width: 100%; text-wrap: balance; }
     .gfh-subheading { font-size: var(--gfh-sub-m); }
 
     .gfh-content {
@@ -609,11 +615,26 @@
       "id": "desktop_format",
       "label": "Format de l'image (desktop)",
       "options": [
-        { "value": "16/9", "label": "16:9" },
-        { "value": "21/9", "label": "21:9 (cinéma)" },
-        { "value": "3/2", "label": "3:2" },
-        { "value": "4/3", "label": "4:3" },
-        { "value": "screen", "label": "Plein écran (hauteur de l'écran)" }
+        {
+          "value": "16/9",
+          "label": "16:9"
+        },
+        {
+          "value": "21/9",
+          "label": "21:9 (cinéma)"
+        },
+        {
+          "value": "3/2",
+          "label": "3:2"
+        },
+        {
+          "value": "4/3",
+          "label": "4:3"
+        },
+        {
+          "value": "screen",
+          "label": "Plein écran (hauteur de l'écran)"
+        }
       ],
       "default": "16/9"
     },
@@ -629,14 +650,38 @@
       "label": "Format de l'image (mobile)",
       "info": "Plein écran = hauteur de l'écran du téléphone, soit ≈ 9:16 à 9:19,5 selon le modèle : une image 4:5 y perd un tiers de sa largeur. Choisis un ratio fixe pour que la boîte suive exactement ton image.",
       "options": [
-        { "value": "screen100", "label": "Plein écran (100 % de l'écran)" },
-        { "value": "screen90", "label": "90 % de l'écran" },
-        { "value": "screen85", "label": "85 % de l'écran" },
-        { "value": "screen80", "label": "80 % de l'écran" },
-        { "value": "9/16", "label": "9:16 (story)" },
-        { "value": "4/5", "label": "4:5 (portrait)" },
-        { "value": "3/4", "label": "3:4" },
-        { "value": "1/1", "label": "1:1 (carré)" }
+        {
+          "value": "screen100",
+          "label": "Plein écran (100 % de l'écran)"
+        },
+        {
+          "value": "screen90",
+          "label": "90 % de l'écran"
+        },
+        {
+          "value": "screen85",
+          "label": "85 % de l'écran"
+        },
+        {
+          "value": "screen80",
+          "label": "80 % de l'écran"
+        },
+        {
+          "value": "9/16",
+          "label": "9:16 (story)"
+        },
+        {
+          "value": "4/5",
+          "label": "4:5 (portrait)"
+        },
+        {
+          "value": "3/4",
+          "label": "3:4"
+        },
+        {
+          "value": "1/1",
+          "label": "1:1 (carré)"
+        }
       ],
       "default": "screen100"
     },
@@ -695,9 +740,18 @@
       "id": "heading_tag",
       "label": "Heading HTML tag",
       "options": [
-        { "value": "h1", "label": "H1" },
-        { "value": "h2", "label": "H2" },
-        { "value": "p", "label": "P" }
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "p",
+          "label": "P"
+        }
       ],
       "default": "h1"
     },
@@ -717,6 +771,17 @@
     },
     {
       "type": "range",
+      "id": "heading_max_width",
+      "label": "Largeur max du titre (desktop)",
+      "info": "0 = sur une seule ligne. Sinon le titre revient à la ligne pour rester dans la zone vide de la photo.",
+      "min": 0,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
       "id": "heading_size_mobile",
       "label": "Heading size (mobile)",
       "min": 20,
@@ -730,11 +795,26 @@
       "id": "heading_weight",
       "label": "Heading weight",
       "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
       ],
       "default": "500"
     },
@@ -805,9 +885,18 @@
       "id": "cta_style",
       "label": "Button style",
       "options": [
-        { "value": "outline", "label": "Outline" },
-        { "value": "filled", "label": "Filled" },
-        { "value": "underline", "label": "Underline" }
+        {
+          "value": "outline",
+          "label": "Outline"
+        },
+        {
+          "value": "filled",
+          "label": "Filled"
+        },
+        {
+          "value": "underline",
+          "label": "Underline"
+        }
       ],
       "default": "outline"
     },
@@ -850,9 +939,18 @@
       "id": "content_align",
       "label": "Alignement horizontal (desktop)",
       "options": [
-        { "value": "flex-start", "label": "Gauche" },
-        { "value": "center", "label": "Centre" },
-        { "value": "flex-end", "label": "Droite" }
+        {
+          "value": "flex-start",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "flex-end",
+          "label": "Droite"
+        }
       ],
       "default": "center"
     },
@@ -861,9 +959,18 @@
       "id": "content_position",
       "label": "Position verticale (desktop)",
       "options": [
-        { "value": "bottom", "label": "Bas" },
-        { "value": "center", "label": "Centre" },
-        { "value": "top", "label": "Haut (sous le header)" }
+        {
+          "value": "bottom",
+          "label": "Bas"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "top",
+          "label": "Haut (sous le header)"
+        }
       ],
       "default": "bottom"
     },
@@ -872,10 +979,22 @@
       "id": "content_align_mobile",
       "label": "Alignement horizontal (mobile)",
       "options": [
-        { "value": "inherit", "label": "Comme desktop" },
-        { "value": "flex-start", "label": "Gauche" },
-        { "value": "center", "label": "Centre" },
-        { "value": "flex-end", "label": "Droite" }
+        {
+          "value": "inherit",
+          "label": "Comme desktop"
+        },
+        {
+          "value": "flex-start",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "flex-end",
+          "label": "Droite"
+        }
       ],
       "default": "inherit"
     },
@@ -884,10 +1003,22 @@
       "id": "content_position_mobile",
       "label": "Position verticale (mobile)",
       "options": [
-        { "value": "inherit", "label": "Comme desktop" },
-        { "value": "bottom", "label": "Bas" },
-        { "value": "center", "label": "Centre" },
-        { "value": "top", "label": "Haut (sous le header)" }
+        {
+          "value": "inherit",
+          "label": "Comme desktop"
+        },
+        {
+          "value": "bottom",
+          "label": "Bas"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "top",
+          "label": "Haut (sous le header)"
+        }
       ],
       "default": "inherit"
     }
