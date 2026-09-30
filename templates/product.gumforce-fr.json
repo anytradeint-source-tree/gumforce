@@ -187,7 +187,7 @@
                   "type": "text",
                   "name": "Product title",
                   "settings": {
-                    "text": "<h1>GUMFORCE - LE CHEWING-GUM QUI MUSCLE TA MÂCHOIRE</h1>",
+                    "text": "<h1>GUMFORCE - LE CHEWING‑GUM QUI MUSCLE TA MÂCHOIRE</h1>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
