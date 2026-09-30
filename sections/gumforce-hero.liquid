@@ -215,8 +215,6 @@
     {%- endif %}
   }
 
-  .gfh-nw { white-space: nowrap; }
-
   /* ── CTA ── */
   .gfh-cta {
     display: inline-flex;
@@ -466,8 +464,7 @@
       {%- endif -%}
 
       {%- if heading != blank -%}
-        {%- assign gfh_words = heading | split: ' ' -%}
-        <{{ heading_tag }} class="gfh-heading">{%- for w in gfh_words -%}{% if w contains '-' %}<span class="gfh-nw">{{ w }}</span>{% else %}{{ w }}{% endif %}{% unless forloop.last %} {% endunless %}{%- endfor -%}</{{ heading_tag }}>
+        <{{ heading_tag }} class="gfh-heading">{{ heading }}</{{ heading_tag }}>
       {%- endif -%}
 
       {%- if cta_text != blank -%}
