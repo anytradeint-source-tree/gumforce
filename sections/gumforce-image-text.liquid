@@ -230,11 +230,17 @@
   }
 
   /* ── CTA (same as social-proof) ── */
+  /* le bloc bouton prend la largeur du bouton ; la ligne garantie est centrée dessous */
   #gfit-{{ sid }} .gfit-cta-wrap {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    {% if text_align == 'center' %}align-items: center;{% elsif text_align == 'right' %}align-items: flex-end;{% else %}align-items: flex-start;{% endif %}
+    align-items: center;
+    {%- if cta_width != 'full' %}
+    width: fit-content;
+    max-width: 100%;
+    {% if text_align == 'center' %}align-self: center;{% elsif text_align == 'right' %}align-self: flex-end;{% else %}align-self: flex-start;{% endif %}
+    {%- endif %}
   }
 
   #gfit-{{ sid }} .gfit-cta {
@@ -392,6 +398,7 @@
     #gfit-{{ sid }} .gfit-cta {
       width: 100%;
     }
+    #gfit-{{ sid }} .gfit-cta-wrap { width: 100%; align-self: stretch; }
   }
 </style>
 
