@@ -20,7 +20,11 @@
   #MainContent::before {
     content: '';
     position: fixed;
-    inset: 0;
+    /* hauteur « grand viewport » : couvre aussi la zone sous les barres de Safari iOS,
+       sinon le fond de <html> apparaît en bande sous la barre d'outils */
+    top: 0; left: 0; right: 0;
+    height: 100vh;
+    height: 100lvh;
     z-index: -1;
     pointer-events: none;
     transform: translateZ(0);
