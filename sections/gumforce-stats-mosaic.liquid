@@ -46,6 +46,7 @@
     --gfsm-ease: cubic-bezier(.22,1,.36,1);
     --gfsm-wipe: cubic-bezier(.77,0,.18,1);
     font-family: var(--gfsm-font);
+    box-sizing: content-box; /* largeur = contenu, comme la grille produit (marges de page en plus) */
     max-width: {{ s.content_max | default: 1380 }}px;
     margin: 0 auto;
     padding: {{ pad_top }}px 40px {{ pad_bottom }}px;
