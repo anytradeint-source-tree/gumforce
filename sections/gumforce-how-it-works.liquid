@@ -1,0 +1,212 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Comment ça marche — 3 ÉTAPES + TEXTE SEO
+  ----------------------------------------------------------------------------
+  Carte blanche arrondie (même style que la carte produit) : titre H2, texte
+  d'introduction, 3 étapes numérotées, bouton. Optionnel : données structurées
+  Product (JSON-LD) du produit choisi, pour la home.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id
+  assign s   = section.settings
+  assign anim_on = s.enable_animation | default: true, allow_false: true
+  assign h_tag = s.heading_tag | default: 'h2'
+-%}
+
+{%- if s.product != blank -%}
+<script type="application/ld+json">
+  {{ s.product | structured_data }}
+</script>
+{%- endif -%}
+
+<style>
+  #gfhw-{{ sid }} {
+    --gfhw-font: var(--font-body--family, 'Manrope', -apple-system, sans-serif);
+    --gfhw-head: var(--font-heading--family, 'Oswald', sans-serif);
+    --gfhw-accent: {{ s.accent_color | default: '#2AB5B4' }};
+    --gfhw-ease: cubic-bezier(.22,1,.36,1);
+    font-family: var(--gfhw-font);
+    box-sizing: content-box;
+    max-width: {{ s.content_max | default: 1380 }}px;
+    margin: 0 auto;
+    padding: {{ s.padding_top | default: 40 }}px 40px {{ s.padding_bottom | default: 40 }}px;
+    color: {{ s.text_color | default: '#4a4d4c' }};
+  }
+  #gfhw-{{ sid }} .gfhw-card {
+    background: {{ s.card_bg | default: '#ffffff' }};
+    border: 1px solid rgba(0,0,0,.06);
+    border-radius: {{ s.radius | default: 28 }}px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 20px 56px rgba(0,0,0,.10);
+    padding: clamp(32px, 4vw, 56px);
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(28px, 4vw, 64px);
+    align-items: start;
+  }
+  #gfhw-{{ sid }} .gfhw-intro { display: grid; gap: 16px; }
+  #gfhw-{{ sid }} .gfhw-badge {
+    display: inline-flex; align-items: center; gap: 6px; width: max-content;
+    background: color-mix(in srgb, var(--gfhw-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--gfhw-accent) 25%, transparent);
+    color: var(--gfhw-accent); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
+    padding: 6px 14px; border-radius: 100px; line-height: 1;
+  }
+  #gfhw-{{ sid }} .gfhw-heading {
+    font-family: var(--gfhw-head); font-weight: 700; text-transform: uppercase; letter-spacing: -.02em; line-height: 1.1;
+    font-size: clamp(24px, calc({{ s.heading_size | default: 32 }}px * .8), {{ s.heading_size | default: 32 }}px);
+    color: {{ s.heading_color | default: '#0e0e0e' }}; margin: 0; text-wrap: balance;
+  }
+  #gfhw-{{ sid }} .gfhw-heading em { font-style: normal; color: var(--gfhw-accent); }
+  #gfhw-{{ sid }} .gfhw-text { font-size: 15px; line-height: 1.6; margin: 0; max-width: 46ch; }
+  #gfhw-{{ sid }} .gfhw-text p { margin: 0 0 10px; }
+  #gfhw-{{ sid }} .gfhw-text p:last-child { margin-bottom: 0; }
+  #gfhw-{{ sid }} .gfhw-text strong { color: {{ s.heading_color | default: '#0e0e0e' }}; font-weight: 800; }
+  #gfhw-{{ sid }} .gfhw-cta {
+    display: inline-flex; align-items: center; justify-content: center; width: max-content;
+    background: {{ s.cta_bg | default: '#121212' }}; color: {{ s.cta_color | default: '#ffffff' }};
+    font-weight: 800; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; text-decoration: none;
+    padding: 16px 28px; border-radius: 100px; margin-top: 6px;
+    transition: transform .25s var(--gfhw-ease), box-shadow .25s var(--gfhw-ease);
+  }
+  #gfhw-{{ sid }} .gfhw-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.14); }
+  #gfhw-{{ sid }} .gfhw-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: gfhw; }
+  #gfhw-{{ sid }} .gfhw-step {
+    display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: start;
+    padding: 22px 24px; border-radius: 20px; border: 1px solid #e6e9e8; background: #fff;
+    transition: transform .3s var(--gfhw-ease), box-shadow .3s var(--gfhw-ease), border-color .3s ease;
+  }
+  @media (hover: hover) {
+    #gfhw-{{ sid }} .gfhw-step:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,.08), 0 8px 30px color-mix(in srgb, var(--gfhw-accent) 18%, transparent); border-color: color-mix(in srgb, var(--gfhw-accent) 40%, #e6e9e8); }
+  }
+  #gfhw-{{ sid }} .gfhw-num {
+    width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+    background: color-mix(in srgb, var(--gfhw-accent) 12%, transparent); color: var(--gfhw-accent);
+    font-family: var(--gfhw-head); font-weight: 700; font-size: 22px;
+  }
+  #gfhw-{{ sid }} .gfhw-step h3 { margin: 0 0 6px; font-family: var(--gfhw-head); font-weight: 700; text-transform: uppercase; font-size: 18px; letter-spacing: 0; color: {{ s.heading_color | default: '#0e0e0e' }}; }
+  #gfhw-{{ sid }} .gfhw-step p { margin: 0; font-size: 14px; line-height: 1.5; }
+  #gfhw-{{ sid }} .gfhw-step .gfhw-meta { display: inline-block; margin-top: 10px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gfhw-accent); }
+
+  {% if anim_on %}
+  @media (prefers-reduced-motion: no-preference) {
+    #gfhw-{{ sid }} .gfhw-step { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .8s var(--gfhw-ease); transition-delay: calc(var(--i) * 120ms); }
+    #gfhw-{{ sid }}.is-in .gfhw-step { opacity: 1; transform: none; }
+    #gfhw-{{ sid }} .gfhw-intro > * { opacity: 0; transform: translateY(12px); transition: opacity .7s ease, transform .8s var(--gfhw-ease); }
+    #gfhw-{{ sid }}.is-in .gfhw-intro > * { opacity: 1; transform: none; }
+    #gfhw-{{ sid }}.is-in .gfhw-intro > *:nth-child(2) { transition-delay: 80ms; }
+    #gfhw-{{ sid }}.is-in .gfhw-intro > *:nth-child(3) { transition-delay: 160ms; }
+    #gfhw-{{ sid }}.is-in .gfhw-intro > *:nth-child(4) { transition-delay: 240ms; }
+  }
+  {% endif %}
+
+  @media (max-width: 749px) {
+    #gfhw-{{ sid }} { padding: {{ s.padding_top_mobile | default: 32 }}px 16px {{ s.padding_bottom_mobile | default: 32 }}px; }
+    #gfhw-{{ sid }} .gfhw-card { grid-template-columns: 1fr; padding: 24px 18px; border-radius: {{ s.radius_mobile | default: 20 }}px; gap: 22px; }
+    #gfhw-{{ sid }} .gfhw-text { font-size: 14px; }
+    #gfhw-{{ sid }} .gfhw-step { grid-template-columns: 44px 1fr; gap: 14px; padding: 18px 16px; }
+    #gfhw-{{ sid }} .gfhw-num { width: 44px; height: 44px; font-size: 18px; }
+    #gfhw-{{ sid }} .gfhw-step h3 { font-size: 16px; }
+    #gfhw-{{ sid }} .gfhw-cta { width: 100%; }
+  }
+</style>
+
+<div id="gfhw-{{ sid }}" class="gfhw">
+  <div class="gfhw-card">
+    <div class="gfhw-intro">
+      {%- if s.badge_text != blank -%}<span class="gfhw-badge">{{ s.badge_text }}</span>{%- endif -%}
+      <{{ h_tag }} class="gfhw-heading">{{ s.heading }}</{{ h_tag }}>
+      {%- if s.text != blank -%}<div class="gfhw-text">{{ s.text }}</div>{%- endif -%}
+      {%- if s.cta_text != blank and s.cta_link != blank -%}
+        <a class="gfhw-cta" href="{{ s.cta_link }}">{{ s.cta_text }}</a>
+      {%- endif -%}
+    </div>
+    <ol class="gfhw-steps">
+      {%- for block in section.blocks -%}
+        <li class="gfhw-step" style="--i:{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          <span class="gfhw-num" aria-hidden="true">{{ forloop.index }}</span>
+          <div>
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+            {%- if block.settings.meta != blank -%}<span class="gfhw-meta">{{ block.settings.meta }}</span>{%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</div>
+
+{% if anim_on %}
+<script>
+  (function () {
+    var root = document.getElementById('gfhw-{{ sid }}');
+    if (!root) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) { root.classList.add('is-in'); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { root.classList.add('is-in'); io.disconnect(); } });
+    }, { threshold: 0.2 });
+    io.observe(root);
+  })();
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "GF Comment ça marche",
+  "tag": "section",
+  "class": "gf-how-it-works",
+  "settings": [
+    { "type": "header", "content": "Contenu" },
+    { "type": "text", "id": "badge_text", "label": "Badge", "default": "Comment ça marche" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Comment muscler sa mâchoire avec GUMFORCE" },
+    { "type": "select", "id": "heading_tag", "label": "Balise du titre", "options": [ { "value": "h1", "label": "H1" }, { "value": "h2", "label": "H2" }, { "value": "h3", "label": "H3" } ], "default": "h2" },
+    { "type": "range", "id": "heading_size", "label": "Taille du titre", "min": 22, "max": 48, "step": 1, "unit": "px", "default": 32 },
+    { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>GUMFORCE est un chewing-gum <strong>10x plus dur</strong> qu'un chewing-gum classique, conçu pour faire travailler les masséters, les muscles qui dessinent la mâchoire.</p>" },
+    { "type": "text", "id": "cta_text", "label": "Bouton", "default": "Commander GUMFORCE" },
+    { "type": "url", "id": "cta_link", "label": "Lien du bouton" },
+    { "type": "product", "id": "product", "label": "Produit (données structurées)", "info": "Ajoute le balisage Product (prix, disponibilité, avis) à la page. Utile sur la home." },
+
+    { "type": "header", "content": "Style" },
+    { "type": "color", "id": "accent_color", "label": "Accent", "default": "#2AB5B4" },
+    { "type": "color", "id": "card_bg", "label": "Fond de la carte", "default": "#ffffff" },
+    { "type": "color", "id": "heading_color", "label": "Titres", "default": "#0e0e0e" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#4a4d4c" },
+    { "type": "color", "id": "cta_bg", "label": "Fond du bouton", "default": "#121212" },
+    { "type": "color", "id": "cta_color", "label": "Texte du bouton", "default": "#ffffff" },
+    { "type": "range", "id": "radius", "label": "Arrondi (desktop)", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 28 },
+    { "type": "range", "id": "radius_mobile", "label": "Arrondi (mobile)", "min": 0, "max": 32, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "content_max", "label": "Largeur max", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1380 },
+    { "type": "checkbox", "id": "enable_animation", "label": "Animations au scroll", "default": true },
+
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "label": "Haut (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Bas (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_top_mobile", "label": "Haut (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32 },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Bas (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32 }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Étape",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre", "default": "Mâche 15 minutes par jour" },
+        { "type": "textarea", "id": "text", "label": "Texte", "default": "Un chewing-gum à la fois, sur les molaires, en alternant les côtés." },
+        { "type": "text", "id": "meta", "label": "Petite ligne (optionnel)", "default": "" }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "GF Comment ça marche",
+      "blocks": [
+        { "type": "step", "settings": { "title": "Mâche 15 minutes par jour", "text": "Un chewing-gum à la fois, sur les molaires, en alternant les côtés toutes les deux minutes. Dans la voiture, au bureau, avant le sport.", "meta": "Sans sucre · menthe fraîche" } },
+        { "type": "step", "settings": { "title": "Ta mâchoire travaille vraiment", "text": "La résistance 10x oblige les masséters à se contracter à chaque mâche, comme une série à la salle. Un chewing-gum classique ne fait rien.", "meta": "10x plus dur" } },
+        { "type": "step", "settings": { "title": "Des résultats en 30 jours", "text": "Mâchoire plus dessinée, moins de tension, et 500 mg de créatine monohydrate par chewing-gum pour soutenir le muscle.", "meta": "Satisfait ou remboursé 90 jours" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

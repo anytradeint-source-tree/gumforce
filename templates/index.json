@@ -11,7 +11,6 @@
   "sections": {
     "gumforce_hero_VXkr7T": {
       "type": "gumforce-hero",
-      "name": "GF Hero",
       "settings": {
         "image_desktop": "shopify://shop_images/Ontwerp_zonder_titel_91_1.jpg",
         "desktop_format": "16/9",
@@ -21,8 +20,8 @@
         "overlay_opacity": 0,
         "scrim_intensity": 60,
         "enable_parallax": false,
-        "subheading": "3 CHEWING-GUMS PAR JOUR",
-        "heading": "Transforme ton visage",
+        "subheading": "10X PLUS DUR · 500 MG DE CRÉATINE · 15 MIN PAR JOUR",
+        "heading": "Le chewing-gum qui muscle ta mâchoire",
         "heading_tag": "h1",
         "heading_size_desktop": 52,
         "heading_size_mobile": 24,
@@ -31,7 +30,7 @@
         "subheading_size_desktop": 13,
         "subheading_size_mobile": 11,
         "subheading_tracking": 3,
-        "cta_text": "SHOP",
+        "cta_text": "DÉCOUVRIR GUMFORCE",
         "cta_link": "shopify://products/gumforce",
         "cta_scroll_to_bundle": false,
         "cta_style": "outline",
@@ -47,7 +46,6 @@
     },
     "gumforce_fond_degrade_section_MUPgXF": {
       "type": "gumforce-fond-degrade-section",
-      "name": "GF Fond dégradé",
       "settings": {
         "color_safe": "#121212",
         "safe_end": 12,
@@ -55,6 +53,270 @@
         "color_mid": "#f0faf7",
         "color_bottom": "#e3e7ea",
         "mid_position": 55
+      }
+    },
+    "gumforce_stats_mosaic_home": {
+      "type": "gumforce-stats-mosaic",
+      "blocks": {
+        "stat_6bA3mG": {
+          "type": "stat",
+          "settings": {
+            "number": "10",
+            "suffix": "x",
+            "suffix_small": false,
+            "lead": "plus dur",
+            "text": "qu'un chewing-gum normal, ta mâchoire bosse vraiment",
+            "bg": "#c5fe89",
+            "fg": "#121212",
+            "grid": false
+          }
+        },
+        "stat_Yz8NHB": {
+          "type": "stat",
+          "settings": {
+            "number": "15",
+            "suffix": "min",
+            "suffix_small": true,
+            "lead": "par jour",
+            "text": "suffisent, pendant que tu fais autre chose",
+            "bg": "#121212",
+            "fg": "#f4f3ee",
+            "grid": false
+          }
+        },
+        "stat_XkUHPD": {
+          "type": "stat",
+          "settings": {
+            "number": "15000",
+            "suffix": "+",
+            "suffix_small": false,
+            "lead": "mâchoires",
+            "text": "déjà entraînées avec GUMFORCE",
+            "bg": "#ffffff",
+            "fg": "#121212",
+            "grid": true
+          }
+        },
+        "stat_8R8UJh": {
+          "type": "stat",
+          "settings": {
+            "number": "90",
+            "suffix": "jours",
+            "suffix_small": true,
+            "lead": "pour tester.",
+            "text": "Pas convaincu ? On te rembourse.",
+            "bg": "#c5fe89",
+            "fg": "#121212",
+            "grid": false
+          }
+        }
+      },
+      "block_order": [
+        "stat_6bA3mG",
+        "stat_Yz8NHB",
+        "stat_XkUHPD",
+        "stat_8R8UJh"
+      ],
+      "settings": {
+        "image_alt": "",
+        "image_bw": true,
+        "image_fit": "contain",
+        "image_bg": "#000000",
+        "radius": 28,
+        "radius_mobile": 20,
+        "content_max": 1380,
+        "enable_animation": true,
+        "aria_label": "GUMFORCE en chiffres",
+        "padding_top": 56,
+        "padding_bottom": 8,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 0
+      }
+    },
+    "gumforce_how_it_works_home": {
+      "type": "gumforce-how-it-works",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "title": "Mâche 15 minutes par jour",
+            "text": "Un chewing-gum à la fois, sur les molaires, en alternant les côtés toutes les deux minutes. Dans la voiture, au bureau, avant le sport : ta mâchoire s'entraîne pendant que tu fais autre chose.",
+            "meta": "Sans sucre · menthe fraîche"
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "title": "Ta mâchoire travaille vraiment",
+            "text": "La résistance 10x oblige les masséters, les muscles qui dessinent la mâchoire, à se contracter à chaque mâche. Comme une série à la salle, là où un chewing-gum classique ne fait rien.",
+            "meta": "10x plus dur"
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "title": "Des résultats en 30 jours",
+            "text": "Mâchoire plus dessinée, moins de tension, et 500 mg de créatine monohydrate par chewing-gum pour soutenir le muscle. Pas convaincu ? On te rembourse.",
+            "meta": "Satisfait ou remboursé 90 jours"
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3"
+      ],
+      "settings": {
+        "badge_text": "Comment ça marche",
+        "heading": "Comment muscler sa mâchoire avec GUMFORCE",
+        "heading_tag": "h2",
+        "heading_size": 32,
+        "text": "<p>GUMFORCE est un chewing-gum <strong>10x plus dur</strong> qu'un chewing-gum classique, conçu pour faire travailler les masséters, les muscles qui dessinent la mâchoire. Chaque chewing-gum contient <strong>500 mg de créatine monohydrate</strong>, sans sucre, goût menthe fraîche.</p><p>Quinze minutes par jour suffisent pour muscler sa mâchoire, obtenir une jawline plus marquée et réduire les tensions. Plus de 15 000 mâchoires s'entraînent déjà avec GUMFORCE.</p>",
+        "cta_text": "Commander GUMFORCE",
+        "cta_link": "shopify://products/gumforce",
+        "product": "gumforce",
+        "accent_color": "#2ab5b4",
+        "card_bg": "#ffffff",
+        "heading_color": "#0e0e0e",
+        "text_color": "#4a4d4c",
+        "cta_bg": "#121212",
+        "cta_color": "#ffffff",
+        "radius": 28,
+        "radius_mobile": 20,
+        "content_max": 1380,
+        "enable_animation": true,
+        "padding_top": 40,
+        "padding_bottom": 24,
+        "padding_top_mobile": 24,
+        "padding_bottom_mobile": 16
+      }
+    },
+    "gumforce_before_after_home": {
+      "type": "gumforce-before-after",
+      "settings": {
+        "badge_text": "",
+        "heading": "Résultats après 30 jours d'entraînement de la mâchoire",
+        "subheading": "<p>Trois chewing-gums GUMFORCE par jour, rien d'autre.</p>",
+        "heading_tag": "h2",
+        "text_align_desktop": "center",
+        "heading_size": 32,
+        "body_size": 15,
+        "before_image": "shopify://shop_images/hf_20260906_213047_bcda17a3-210d-4134-ac03-67e5cd1d590a.jpg",
+        "after_image": "shopify://shop_images/hf_20260906_210709_4710dcf2-0ffe-4b33-bd87-87079d93098c.jpg",
+        "before_label": "Jour 1",
+        "after_label": "Jour 30",
+        "show_arrow": true,
+        "info_name": "",
+        "info_duration": "",
+        "bg_color": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "text_color": "#6b6b6b",
+        "text_muted": "#888888",
+        "accent_color": "#2ab5b4",
+        "image_gap": 4,
+        "card_radius": 16,
+        "enable_animation": true,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "use_theme_font": true
+      }
+    },
+    "gumforce_video_stories_home": {
+      "type": "gumforce-video-stories",
+      "blocks": {
+        "video_nKaAfL": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/RO2.mp4",
+            "name": "Elio, 27 ans",
+            "role": "3 semaines d'utilisation"
+          }
+        },
+        "video_D3Hpc9": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/YA7.mp4",
+            "name": "Yann, 26 ans",
+            "role": "3 semaines d'utilisation"
+          }
+        },
+        "video_9Jq3GL": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/0722(1).mp4",
+            "name": "Fanny, 32 ans",
+            "role": "1 mois d'utilisation"
+          }
+        },
+        "video_4AtHWX": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/JULIEN1.mp4",
+            "name": "Julien, 31 ans",
+            "role": "3 mois d'utilisation"
+          }
+        },
+        "video_gt3efb": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/EL5.mp4",
+            "name": "Ethan, 25 ans",
+            "role": "1 mois d'utilisation"
+          }
+        },
+        "video_LXRVPL": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/LUCAS5.mp4",
+            "name": "Lucas, 26 ans",
+            "role": "2 mois d'utilisation"
+          }
+        },
+        "video_ck9ziC": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/0721-copy.mp4",
+            "name": "Quan, 25 ans",
+            "role": "1 mois d'utilisation"
+          }
+        }
+      },
+      "block_order": [
+        "video_nKaAfL",
+        "video_D3Hpc9",
+        "video_9Jq3GL",
+        "video_4AtHWX",
+        "video_gt3efb",
+        "video_LXRVPL",
+        "video_ck9ziC"
+      ],
+      "settings": {
+        "badge_text": "",
+        "heading": "Ils ont testé",
+        "heading_accent": "GUMFORCE",
+        "heading_size": 32,
+        "heading_tag": "h2",
+        "subheading": "Et senti l'effet dès la première mâche.",
+        "ratio": "9-16",
+        "card_vw": 76,
+        "card_w": 270,
+        "card_gap": 14,
+        "player_radius": 22,
+        "autoplay": true,
+        "loop_all": true,
+        "restart_on_return": true,
+        "transparent_bg": true,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_muted": "#7c8388",
+        "accent_color": "#2ab5b4",
+        "enable_animation": true,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 40
       }
     },
     "gumforce_creatine_benefits_TcT3rz": {
@@ -99,10 +361,9 @@
         "benefit_gMk4VK",
         "benefit_DDWtwL"
       ],
-      "name": "Creatine Benefits",
       "settings": {
-        "heading": "POURQUOI ON AIME LA CRÉATINE",
-        "subheading": "",
+        "heading": "Créatine et mâchoire : pourquoi 500 mg par chewing-gum",
+        "subheading": "La créatine monohydrate est le complément le plus étudié au monde. Mâchée, elle est absorbée par les muqueuses de la bouche puis par l'estomac.",
         "bg_color": "#ffffff",
         "heading_color": "#1a1a1a",
         "subheading_color": "#666666",
@@ -113,10 +374,939 @@
         "icon_size": 34,
         "heading_size": 34,
         "mobile_layout": "grid",
-        "padding_top": 80,
-        "padding_bottom": 80,
+        "padding_top": 56,
+        "padding_bottom": 56,
         "padding_top_mobile": 48,
         "padding_bottom_mobile": 48,
+        "enable_animations": true
+      }
+    },
+    "gumforce_image_text_home": {
+      "type": "gumforce-image-text",
+      "settings": {
+        "image": "shopify://shop_images/Ontwerp_zonder_titel_82_1.jpg",
+        "image_ratio": "1:1",
+        "image_radius": 24,
+        "image_shadow": true,
+        "heading": "<p>GUMFORCE, le chewing-gum 10x plus dur</p>",
+        "heading_tag": "h2",
+        "heading_size": 32,
+        "body_text": "<p>35 chewing-gums par sachet, 500 mg de créatine monohydrate par pièce, sans sucre, goût menthe fraîche. Fabriqué pour entraîner les masséters, pas pour rafraîchir l'haleine.</p><p>Livraison en 48h en France et en Belgique. 2 achetés = 2 offerts aujourd'hui.</p>",
+        "body_size": 16,
+        "cta_text": "VOIR LE PRODUIT",
+        "cta_scroll_to_bundle": false,
+        "cta_link": "shopify://products/gumforce",
+        "cta_bg_color": "#121212",
+        "cta_text_color": "#ffffff",
+        "cta_radius": 30,
+        "cta_style": "filled",
+        "cta_width": "auto",
+        "guarantee_text": "Satisfait ou remboursé 90 jours",
+        "guarantee_icon_size": 18,
+        "guarantee_font_size": 13,
+        "text_align": "left",
+        "mobile_layout": "image_text",
+        "image_side": "right",
+        "column_split": "50/50",
+        "vertical_align": "center",
+        "content_gap": 48,
+        "text_gap": 16,
+        "heading_color": "#111111",
+        "text_color": "#262626",
+        "text_muted": "#6b6b6b",
+        "padding_top_mobile": 24,
+        "padding_bottom_mobile": 24,
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "enable_animations": true
+      }
+    },
+    "gumforce_influencers_grid_home": {
+      "type": "gumforce-influencers-grid",
+      "blocks": {
+        "card_JANfz3": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/Remove_Margins_1_1.jpg",
+            "name": "Igor Leroy",
+            "role": "Modèle à la Fashion Week de Paris 2026"
+          }
+        },
+        "card_ciMprA": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_08_35_2cdd4133-7bff-4783-95db-cc8bee46d6a1.jpg",
+            "name": "Edgar Icon",
+            "role": "Fondateur de Elwood"
+          }
+        },
+        "card_tcWqe8": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_43_21.jpg",
+            "name": "Sebastian Vale",
+            "role": "Athlète Hyrox"
+          }
+        },
+        "card_bdnyPL": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_20_33.jpg",
+            "name": "Aurélien Delmas",
+            "role": "Acteur et modèle"
+          }
+        }
+      },
+      "block_order": [
+        "card_JANfz3",
+        "card_ciMprA",
+        "card_tcWqe8",
+        "card_bdnyPL"
+      ],
+      "settings": {
+        "badge_text": "",
+        "heading": "Adopté par les meilleurs",
+        "subheading": "Rejoins la communauté GUMFORCE",
+        "heading_size": 32,
+        "heading_tag": "h2",
+        "cols_desktop": 4,
+        "cols_mobile": "2",
+        "card_ratio": "portrait",
+        "grid_gap": 12,
+        "card_radius": 16,
+        "show_limit": true,
+        "limit_mobile": 6,
+        "more_text": "Voir plus",
+        "transparent_bg": true,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#0e0e0e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "color_card": "#e9e9ec",
+        "enable_animation": true,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 60
+      }
+    },
+    "gumforce_reviews_home": {
+      "type": "gumforce-reviews",
+      "blocks": {
+        "review_wkVVWF": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Alex M.",
+            "review_date": "02/04/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Franchement surpris par la qualité. La résistance est vraiment plus forte qu’un chewing-gum classique, on sent direct que ça travaille la mâchoire. Livraison en 7 jours à Paris.",
+            "highlight_text": "Franchement surpris par la qualité.",
+            "review_image": "shopify://shop_images/2214ac48-e356-4524-8382-2a1d08f5a479.png",
+            "item_type": ""
+          }
+        },
+        "review_NjjFaf": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Jordan K.",
+            "review_date": "28/03/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Le meilleur chewing-gum pour la mâchoire que j'ai essayé. La créatine est un vrai plus et le goût menthe est puissant. Je recommande.",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_25_19.png",
+            "item_type": "Menthe Fraîche"
+          }
+        },
+        "review_AkYUmi": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Simon T.",
+            "review_date": "25/03/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Le packaging est super propre et premium. Reçu avec un petit code promo pour Décathlon, ça fait plaisir.",
+            "highlight_text": "Le packaging est super propre et premium.",
+            "review_image": "shopify://shop_images/IMG_2012_2.jpg",
+            "item_type": "Menthe Fraîche"
+          }
+        },
+        "review_U6rT78": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Timothée R.",
+            "review_date": "22/03/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Je recommande surtout pour ceux qui veulent entraîner leur mâchoire discrètement au quotidien. Perso je mâche pendant le travail ou à la salle. Livraison rapide sur Grenoble.",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/IMG_2008_2.jpg",
+            "item_type": ""
+          }
+        },
+        "review_UeFqWe": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Chris B.",
+            "review_date": "20/03/2026",
+            "rating": 4,
+            "verified": false,
+            "review_text": "Très bon produit. C’est intense au début, puis on s’y habitue rapidement. On sent vraiment les muscles travailler. J’aimerais juste voir plus de goûts dispo.",
+            "highlight_text": "On sent vraiment les muscles travailler.",
+            "review_image": "shopify://shop_images/IMG_1189.jpg",
+            "item_type": ""
+          }
+        },
+        "review_JfpWGX": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "David L.",
+            "review_date": "18/03/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Je l’utilise tous les matins avant le sport. Ça réveille direct les muscles de la mâchoire.",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/IMG_1185.jpg",
+            "item_type": "Menthe Fraîche"
+          }
+        },
+        "review_dznbpe": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Nathan W.",
+            "review_date": "15/03/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "J’étais sceptique au début mais le produit est vraiment efficace. La texture reste ferme longtemps contrairement aux chewing-gums normaux.",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/Untitled_design_18_copie_2702648f-ae04-4897-826b-981bcaa0803d.png",
+            "item_type": ""
+          }
+        },
+        "review_CVmLjj": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Rayan H.",
+            "review_date": "12/03/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "J’adore l’ajout de créatine. Pouvoir prendre ma créatine tout en travaillant ma mâchoire, c’est franchement malin. Et le goût est top aussi. Livraison en 8 jours à Bruxelles.",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_22_38.png",
+            "item_type": ""
+          }
+        },
+        "review_YDjrmq": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Jake P.",
+            "review_date": "10/03/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "J’étais sceptique au début, mais le produit tient vraiment ses promesses. Bien plus résistant que tous les autres chewing-gums que j’ai testés. Après 10 minutes, tu sens clairement les masséters travailler.",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_40_31.png",
+            "item_type": ""
+          }
+        },
+        "review_bwYNPD": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ethan C.",
+            "review_date": "08/03/2026",
+            "rating": 4,
+            "verified": false,
+            "review_text": "Bon produit. Le chewing-gum est vraiment résistant. Je mets 4 étoiles seulement parce que j’aimerais que le goût menthe dure un peu plus longtemps, mais niveau résistance, c’est incomparable.",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/IMG_1188.jpg",
+            "item_type": ""
+          }
+        },
+        "review_dLyiTx": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ben D.",
+            "review_date": "05/03/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "J'adore. J'ai déjà commandé un deuxième sachet.",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/Untitled_design_18_copie_7.png",
+            "item_type": "Menthe Fraîche"
+          }
+        },
+        "review_XeneQF": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Oscar F.",
+            "review_date": "03/03/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Enfin un chewing-gum vraiment résistant. Les chewing-gums classiques paraissent fades après avoir testé GUMFORCE. Et les 500 mg de créatine par chewing-gum, c’est un vrai plus.",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/IMG_1186.jpg",
+            "item_type": ""
+          }
+        },
+        "review_AYaBCy": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Kai S.",
+            "review_date": "01/03/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Le packaging est propre, le goût est bon, et le chewing-gum offre une vraie résistance. Franchement, que demander de plus ?",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_jnMyjV": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Adrian V.",
+            "review_date": "27/02/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Je travaille ma mâchoire tous les jours maintenant. C’est devenu une habitude, comme aller à la salle. Après 6 semaines, mon visage paraît déjà plus dessiné.",
+            "highlight_text": "Après 6 semaines, mon visage paraît plus dessiné.",
+            "item_type": ""
+          }
+        },
+        "review_bWFAj7": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Daniel G.",
+            "review_date": "25/02/2026",
+            "rating": 4,
+            "verified": false,
+            "review_text": "Très bon chewing-gum. Ultra résistant, bon goût. Mon seul reproche, c’est que je termine les sachets assez vite avec 3 à 4 chewing-gums par jour.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_z6jRiL": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Leo N.",
+            "review_date": "22/02/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Mes amis n'arrêtent pas de me demander ce que je fais de différent. C'est le chewing-gum. Aussi simple que ça.",
+            "highlight_text": "Mes amis n'arrêtent pas de me demander ce que je fais de différent.",
+            "review_image": "shopify://shop_images/Untitled_design_18.png",
+            "item_type": "Menthe Fraîche"
+          }
+        },
+        "review_taQjb3": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Mason R.",
+            "review_date": "20/02/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Sans sucre et riche en créatine! Et puis la dureté est réelle. 10/10.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_bHMQph": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Brandon J.",
+            "review_date": "18/02/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Ordered on Monday, arrived Thursday. Popped a piece and immediately felt the difference from regular gum. My masseter was tired after 20 min.",
+            "highlight_text": "immediately felt the difference from regular gum.",
+            "item_type": ""
+          }
+        },
+        "review_Qa8Ppy": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Sam E.",
+            "review_date": "15/02/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Commandé le lundi, arrivé le jeudi. J'ai mâché un morceau et j'ai immédiatement senti la différence par rapport à un chewing-gum ordinaire. Mon masséter était fatigué après 20 minutes.",
+            "highlight_text": "j'ai immédiatement senti la différence par rapport au chewing-gum ordinaire.",
+            "item_type": ""
+          }
+        },
+        "review_npk34D": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Connor A.",
+            "review_date": "12/02/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "La saveur menthe est en fait très bonne. Elle n'a pas du tout un goût artificiel. Et la résistance est parfaite pour l'entraînement de la mâchoire.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_gG4iKG": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Will T.",
+            "review_date": "10/02/2026",
+            "rating": 4,
+            "verified": true,
+            "review_text": "J'ai essayé la gomme de mastic, la gomme Falim et les exerciseurs de mâchoire. C'est mieux que tous ces produits combinés. Pratique, efficace et bon goût.",
+            "highlight_text": "",
+            "item_type": "Menthe Fraîche"
+          }
+        },
+        "review_9NTpFX": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Noah Z.",
+            "review_date": "08/02/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Vraiment satisfait de ce produit. La dureté est exactement ce que je voulais. La saveur pourrait être légèrement plus prononcée, mais c'est un détail. Excellent produit dans l'ensemble.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_WxaUCW": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Jaden M.",
+            "review_date": "05/02/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Révolutionnaire. Je mâche un morceau pendant chaque trajet. Ma mâchoire est visiblement plus définie après 3 semaines. La créatine est la cerise sur le gâteau.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_MGrjAj": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Evan K.",
+            "review_date": "02/02/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Des ingrédients propres, des résultats réels. Ce n'est pas un artifice. Ma mâchoire travaille vraiment à chaque fois que je mâche.",
+            "highlight_text": "",
+            "item_type": "3-Pack Bundle"
+          }
+        },
+        "review_JbkBAj": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Mike L.",
+            "review_date": "30/01/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Deuxième mois d'utilisation de GumForce. Ma mâchoire est visiblement plus nette. Les gens le remarquent. Ça vaut chaque centime.",
+            "highlight_text": "Ma mâchoire est visiblement plus nette.",
+            "item_type": ""
+          }
+        },
+        "review_KXKePK": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Derek H.",
+            "review_date": "28/01/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Sans hésiter le meilleur produit d'entraînement de la mâchoire du marché. Le format chewing-gum est tellement plus facile à utiliser que les jouets à mâcher en silicone. Et il a vraiment bon goût.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_KRRiFG": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Caleb O.",
+            "review_date": "25/01/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J'ai commandé le pack de 3 et j'en ai donné un à mon frère. Nous sommes tous les deux accros. On sent littéralement les muscles de la mâchoire se mettre en marche après quelques minutes.",
+            "highlight_text": "Sentez vos muscles de la mâchoire s'activer",
+            "item_type": ""
+          }
+        },
+        "review_K6nWYL": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Trevor P.",
+            "review_date": "23/01/2026",
+            "rating": 4,
+            "verified": true,
+            "review_text": "Ça a vraiment bon goût et la résistance est constante du début à la fin. En plus la créatine. C'est évident.",
+            "highlight_text": "That means it's working.",
+            "item_type": ""
+          }
+        },
+        "review_p7MRGL": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Austin W.",
+            "review_date": "20/01/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Chewing gum vraiment dur. J'ai eu des courbatures les deux premiers jours, mais maintenant ça devient plus facile. Ça veut dire que ça marche. Bon produit.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_hcaWjX": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Bryce F.",
+            "review_date": "18/01/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Je mâche depuis 6 semaines maintenant. On me complimente sur ma mâchoire. C'est vraiment efficace.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_Fx9EG4": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Dante R.",
+            "review_date": "15/01/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je dépensais 30 $ pour du chewing-gum de mastic qui avait le goût d'écorce d'arbre. C'est le même entraînement avec un vrai goût de menthe et de la créatine. J'ai changé pour de bon.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_ykgrJn": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Kevin Y.",
+            "review_date": "12/01/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "La dureté est parfaite. Pas trop dure pour ne pas faire mal, mais assez pour sentir la mâchoire travailler. Très bon équilibre.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_rmzbGa": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Zach S.",
+            "review_date": "10/01/2026",
+            "rating": 4,
+            "verified": true,
+            "review_text": "Mon visage était rond. Après 2 mois de mastication quotidienne, ma mâchoire est beaucoup plus dessinée.",
+            "highlight_text": "",
+            "item_type": "Fresh Mint"
+          }
+        },
+        "review_yiTiHq": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Grant B.",
+            "review_date": "08/01/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Impressionné par la qualité. L'emballage est premium, le chewing gum est vraiment dur, et la menthe est parfaite. J'aimerais juste qu'ils aient plus de saveurs.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_PkNnCw": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Dominic A.",
+            "review_date": "05/01/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je fais du MMA et la force de ma mâchoire est importante. Ce chewing-gum fait maintenant partie de ma routine quotidienne. Morsure plus forte, mâchoire plus nette. Gagnant-gagnant.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_UTGKpY": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Patrick M.",
+            "review_date": "03/01/2026",
+            "rating": 5,
+            "verified": false,
+            "review_text": "J'ai vu ça sur TikTok et je me suis dit que j'allais essayer. Cela fait 3 semaines et j'en suis déjà à mon deuxième paquet. La différence est notable.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_9Trz3e": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ricky J.",
+            "review_date": "01/01/2026",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Le meilleur investissement que j'aie fait pour mon apparence. Moins cher que les produits de comblement et vraiment naturel. Il suffit de mâcher tous les jours et de laisser agir.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_67Yeg9": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Shane D.",
+            "review_date": "28/12/2025",
+            "rating": 4,
+            "verified": true,
+            "review_text": "Nouvelle année, nouvelle mâchoire. J'ai commencé le 1er janvier et je vois déjà des résultats à la fin du mois. Le coup de pouce de la créatine est un avantage appréciable.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_dtbAwz": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Victor C.",
+            "review_date": "25/12/2025",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Difficile comme annoncé. Le premier morceau m'a surpris. Ma mâchoire était fatiguée après 15 minutes. La saveur a duré plus longtemps que prévu aussi.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_FLp7Bk": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Blake N.",
+            "review_date": "22/12/2025",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je l'ai reçu comme cadeau de Noël. Honnêtement, le meilleur cadeau que j'aie jamais reçu. Je l'utilise quotidiennement et ma mâchoire est déjà plus ferme.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_DT93mt": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Trent G.",
+            "review_date": "20/12/2025",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je fais un travail de bureau et je mâche ça toute la journée. Un entraînement efficace de la mâchoire sans même y penser. Un produit absolument génial.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_gaqGaG": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ian Q.",
+            "review_date": "18/12/2025",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Quatrième commande. La transformation de ma mâchoire est incroyable. Les photos avant/après ne mentent pas. GumForce, c'est la vérité.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_J6kNJW": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Chase E.",
+            "review_date": "15/12/2025",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je faisais des exercices pour la mâchoire avec ces trucs en silicone, mais ça a l'air ridicule. Là, c'est juste de la gomme. Personne ne sait que tu t'entraînes. Tellement mieux.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_DjTHnU": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Reid L.",
+            "review_date": "12/12/2025",
+            "rating": 4,
+            "verified": true,
+            "review_text": "C'est vraiment dur. Ma jawline se développe visiblement.",
+            "highlight_text": "",
+            "item_type": "Fresh Mint"
+          }
+        },
+        "review_CFNAiJ": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Hugo T.",
+            "review_date": "10/12/2025",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Super chewing-gum. Résistante, mentholée et efficace. L'absorption de créatine par la mastication est une approche astucieuse. J'en rachèterais.",
+            "highlight_text": "She asked if I'd been working out more.",
+            "item_type": ""
+          }
+        },
+        "review_qnqjVJ": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Max V.",
+            "review_date": "07/12/2025",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Ma copine a remarqué la différence avant moi. Un menton plus acéré, une mâchoire plus définie. Elle m'a demandé si je faisais plus de sport. Non, je mâche, c'est tout.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_bhJBbw": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Aaron U.",
+            "review_date": "05/12/2025",
+            "rating": 5,
+            "verified": true,
+            "review_text": "C'est top, rien à redire.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_Fx9RjL": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Finn W.",
+            "review_date": "02/12/2025",
+            "rating": 5,
+            "verified": false,
+            "review_text": "Je suis entraîneur personnel et je le recommande à tous mes clients qui souhaitent améliorer l'esthétique de leur visage. Rien d'autre sur le marché ne s'en approche.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        },
+        "review_tFmYmY": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Miles B.",
+            "review_date": "30/11/2025",
+            "rating": 4,
+            "verified": true,
+            "review_text": "Commandé à l'international et arrivé en 5 jours. La qualité est excellente. Le chewing-gum reste dur pendant toute la mastication, contrairement aux alternatives bon marché.",
+            "highlight_text": "the gains are visible.",
+            "item_type": "Fresh Mint"
+          }
+        },
+        "review_tak9Lf": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Theo K.",
+            "review_date": "28/11/2025",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Un entraînement de mâchoire solide. Livre en 7 jours à Paris.",
+            "highlight_text": "",
+            "item_type": ""
+          }
+        }
+      },
+      "block_order": [
+        "review_wkVVWF",
+        "review_NjjFaf",
+        "review_AkYUmi",
+        "review_U6rT78",
+        "review_UeFqWe",
+        "review_JfpWGX",
+        "review_dznbpe",
+        "review_CVmLjj",
+        "review_YDjrmq",
+        "review_bwYNPD",
+        "review_dLyiTx",
+        "review_XeneQF",
+        "review_AYaBCy",
+        "review_jnMyjV",
+        "review_bWFAj7",
+        "review_z6jRiL",
+        "review_taQjb3",
+        "review_bHMQph",
+        "review_Qa8Ppy",
+        "review_npk34D",
+        "review_gG4iKG",
+        "review_9NTpFX",
+        "review_WxaUCW",
+        "review_MGrjAj",
+        "review_JbkBAj",
+        "review_KXKePK",
+        "review_KRRiFG",
+        "review_K6nWYL",
+        "review_p7MRGL",
+        "review_hcaWjX",
+        "review_Fx9EG4",
+        "review_ykgrJn",
+        "review_rmzbGa",
+        "review_yiTiHq",
+        "review_PkNnCw",
+        "review_UTGKpY",
+        "review_9Trz3e",
+        "review_67Yeg9",
+        "review_dtbAwz",
+        "review_FLp7Bk",
+        "review_DT93mt",
+        "review_gaqGaG",
+        "review_J6kNJW",
+        "review_DjTHnU",
+        "review_CFNAiJ",
+        "review_qnqjVJ",
+        "review_bhJBbw",
+        "review_Fx9RjL",
+        "review_tFmYmY",
+        "review_tak9Lf"
+      ],
+      "settings": {
+        "show_header": true,
+        "heading_text": "Ils en parlent mieux que nous",
+        "header_rating": "4.8",
+        "header_count": "849 Avis",
+        "stars_img_5": "shopify://shop_images/trust5_1.svg",
+        "stars_img_4_5": "shopify://shop_images/trust_45_1.svg",
+        "stars_img_4": "shopify://shop_images/trust4_1.svg",
+        "stars_header_height": 16,
+        "stars_card_height": 13,
+        "verified_badge_image": "shopify://shop_images/a_1.png",
+        "verified_badge_url": "",
+        "verified_badge_height": 14,
+        "initial_count": 8,
+        "load_more_text": "Voir plus",
+        "columns_desktop": 4,
+        "columns_tablet": 3,
+        "columns_mobile": 2,
+        "column_gap": 14,
+        "card_gap": 14,
+        "bg_color": "#ffffff",
+        "card_bg": "#ffffff",
+        "card_border": "#2a2a2a",
+        "card_radius": 24,
+        "star_color": "#3d9f78",
+        "name_color": "#1a1a1a",
+        "date_color": "#888888",
+        "text_color": "#1a1a1a",
+        "verified_color": "#47b1b4",
+        "highlight_bg": "#c5fe89",
+        "highlight_text_color": "#1a1a1a",
+        "meta_color": "#777777",
+        "header_color": "#1a1a1a",
+        "btn_bg": "#1a1a1a",
+        "btn_text_color": "#ffffff",
+        "btn_radius": 30,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "enable_animations": true
+      }
+    },
+    "gumforce_blog_grid_home": {
+      "type": "gumforce-blog-grid",
+      "settings": {
+        "blog": "news",
+        "badge_text": "Guides",
+        "heading": "Muscler sa mâchoire : nos guides",
+        "subheading": "Masséter, mewing, créatine, double menton : ce que dit la science, sans blabla.",
+        "heading_size": 32,
+        "heading_tag": "h2",
+        "per_page": 6,
+        "cols_desktop": 3,
+        "cols_mobile": "1",
+        "img_ratio": "card",
+        "grid_gap": 16,
+        "card_radius": 16,
+        "show_tag": true,
+        "show_date": true,
+        "show_readtime": true,
+        "show_excerpt": true,
+        "read_text": "Lire l'article",
+        "transparent_bg": true,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#0e0e0e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2AB5B4",
+        "color_card": "#ffffff",
+        "enable_animation": true,
+        "padding_top": 48,
+        "padding_bottom": 24
+      }
+    },
+    "gumforce_faq_home": {
+      "type": "gumforce-faq",
+      "blocks": {
+        "faq_EUhDEd": {
+          "type": "faq",
+          "settings": {
+            "question": "Comment l'utiliser ?",
+            "answer": "<p>Mâche un chewing-gum à la fois en utilisant tes molaires. Alterne les côtés toutes les quelques minutes pour travailler les deux côtés de façon équilibrée. Chaque session doit durer entre 10 et 15 minutes maximum. Nous recommandons 3 à 4 chewing-gums maximum répartis dans la journée.</p><p>N’en fais pas trop. Ta mâchoire est un muscle comme un autre. Si tu ressens une douleur ou un inconfort, arrête et repose-toi. Augmente progressivement, surtout pendant la première semaine.</p>"
+          }
+        },
+        "faq_dgrBAD": {
+          "type": "faq",
+          "settings": {
+            "question": "Est-ce que ça marche vraiment ?",
+            "answer": "<p>GUMFORCE est 10× plus résistant qu’un chewing-gum classique. Cela permet de vraiment solliciter les muscles masséters — les principaux muscles responsables d’une mâchoire plus définie. Comme tous les muscles, ils réagissent à un entraînement régulier et progressif.</p><p>Chaque chewing-gum contient également 500 mg de créatine monohydrate, l’un des compléments sportifs les plus étudiés au monde.</p><p>Les résultats viennent avant tout de la régularité, associés à une bonne condition physique et à un faible taux de masse grasse pour une définition visible.</p>"
+          }
+        },
+        "faq_gnbWhW": {
+          "type": "faq",
+          "settings": {
+            "question": "Qu'est-ce qu'il y a dedans ?",
+            "answer": "<p>Chaque chewing-gum contient 500 mg de créatine monohydrate. Pas d’ingrédients inutiles, pas de sous-dosage, pas de mauvaise surprise.</p><p>Sans sucre. Des chewing-gums blancs, denses et ultra résistants. Tu sens la différence dès les premières secondes.</p><p>Sachet refermable de 100 g. Convient aux végans.</p>"
+          }
+        },
+        "faq_k3U3zJ": {
+          "type": "faq",
+          "settings": {
+            "question": "Dans combien de temps verrai-je des résultats ?",
+            "answer": "<p>La plupart des clients sentent leurs mâchoires travailler dès la première utilisation. Une mâchoire plus définie apparaît généralement après 2 à 6 semaines d’utilisation quotidienne, selon ton point de départ, ton taux de masse grasse et ta régularité.</p>"
+          }
+        },
+        "faq_gMMnPE": {
+          "type": "faq",
+          "settings": {
+            "question": "La créatine est-elle efficace en étant mâchée ?",
+            "answer": "<p>Oui. La créatine monohydrate est absorbée à la fois par les muqueuses buccales et par la digestion classique une fois avalée avec la salive. Chaque chewing-gum délivre une dose complète de 500 mg.</p>"
+          }
+        },
+        "faq_hTKgm3": {
+          "type": "faq",
+          "settings": {
+            "question": "Livraison et retours",
+            "answer": "<p>Nous livrons dans le monde entier. Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement 48h pour la France & Belgique. 7-10 jours pour le reste du monde. Suivi inclus avec chaque commande.</p><p>Garantie satisfait ou remboursé pendant 90 jours. Pas satisfait ? Contacte-nous et nous trouverons une solution.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_EUhDEd",
+        "faq_dgrBAD",
+        "faq_gnbWhW",
+        "faq_k3U3zJ",
+        "faq_gMMnPE",
+        "faq_hTKgm3"
+      ],
+      "settings": {
+        "heading": "Questions fréquentes sur GUMFORCE",
+        "subheading": "",
+        "open_first": false,
+        "one_at_a_time": true,
+        "icon_style": "plus",
+        "bg_color": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "subheading_color": "#666666",
+        "title_color": "#1a1a1a",
+        "body_color": "#999999",
+        "border_color": "#1e1e1e",
+        "icon_color": "#2ab5b4",
+        "heading_size": 34,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 40,
         "enable_animations": true
       }
     },
@@ -147,7 +1337,6 @@
         "detail_aGxDbJ",
         "detail_inxnTX"
       ],
-      "name": "GF Guarantee",
       "settings": {
         "layout_centered": true,
         "badge_image": "shopify://shop_images/Ontwerp_zonder_titel_79.png",
@@ -172,695 +1361,21 @@
         "padding_bottom": 64,
         "enable_animations": true
       }
-    },
-    "gumforce_social_proof_8HtMRh": {
-      "type": "gumforce-social-proof",
-      "blocks": {
-        "benefit_y4gx4p": {
-          "type": "benefit",
-          "settings": {
-            "title": "10x Harder Than Regular Gum",
-            "description": "Real resistance. Real results."
-          }
-        },
-        "benefit_xYzP37": {
-          "type": "benefit",
-          "settings": {
-            "title": "500mg Creatine Per Piece",
-            "description": "The world's most proven supplement."
-          }
-        },
-        "benefit_FLtg6X": {
-          "type": "benefit",
-          "settings": {
-            "title": "First & Only Jawline Gum With Creatine",
-            "description": "No other gum does this."
-          }
-        },
-        "benefit_HQYiPL": {
-          "type": "benefit",
-          "settings": {
-            "title": "Train Your Jaw. Anywhere. Anytime.",
-            "description": "Commute. Desk. Gym. Date night."
-          }
-        },
-        "benefit_wQ9yxc": {
-          "type": "benefit",
-          "settings": {
-            "title": "Flavor That Doesn't Quit",
-            "description": "No bland gum. No flavor fade."
-          }
-        },
-        "benefit_LAUFUz": {
-          "type": "benefit",
-          "settings": {
-            "title": "Looks Like Regular Gum",
-            "description": "No one knows you're training."
-          }
-        },
-        "trust_badge_EpU6D4": {
-          "type": "trust_badge",
-          "settings": {
-            "icon": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
-            "text": "90-Day Money Back Guarantee"
-          }
-        }
-      },
-      "block_order": [
-        "benefit_y4gx4p",
-        "benefit_xYzP37",
-        "benefit_FLtg6X",
-        "benefit_HQYiPL",
-        "benefit_wQ9yxc",
-        "benefit_LAUFUz",
-        "trust_badge_EpU6D4"
-      ],
-      "disabled": true,
-      "name": "GUMFORCE Social Proof",
-      "settings": {
-        "bg_color": "#121212",
-        "column_split": "60/40",
-        "content_valign": "center",
-        "content_gap": 16,
-        "text_alignment": "center",
-        "headline_number": "350,000+",
-        "headline_number_tag": "h1",
-        "headline_number_size": 60,
-        "headline_number_color": "#00b5b4",
-        "show_badge": false,
-        "headline_text": "<p>have already chosen GUMFORCE</p>",
-        "headline_text_tag": "h2",
-        "headline_text_size": 28,
-        "headline_text_color": "#f4f4f4",
-        "subtitle": "<p>The World's First Jawline Gum with Creatine Monohydrate</p>",
-        "subtitle_size": 16,
-        "subtitle_color": "#c0c0c0",
-        "benefit_title_tag": "h6",
-        "benefit_desc_tag": "p",
-        "benefit_title_size": 15,
-        "benefit_title_color": "#f4f4f4",
-        "benefit_desc_size": 13,
-        "benefit_desc_color": "#a0a0a0",
-        "benefit_icon_size": 28,
-        "benefits_gap": 24,
-        "cta_text": "SHOP NOW",
-        "cta_scroll_to_bundle": false,
-        "cta_link": "shopify://products/gumforce1",
-        "cta_bg_color": "#f4f4f4",
-        "cta_text_color": "#121212",
-        "cta_radius": 30,
-        "cta_style": "filled",
-        "cta_width": "auto",
-        "trust_text_color": "#a0a0a0",
-        "trust_icon_size": 18,
-        "trust_full_image_height": 36,
-        "accent_color": "#2ab5b4",
-        "hero_image": "shopify://shop_images/Ontwerp_zonder_titel_69_2.jpg",
-        "hero_aspect": "1:1",
-        "hero_position": "center",
-        "hero_radius": 12,
-        "hero_overlay_color": "#000000",
-        "hero_overlay_opacity": 0,
-        "show_hero_mobile": true,
-        "padding_top": 56,
-        "padding_bottom": 56,
-        "padding_top_mobile": 36,
-        "padding_bottom_mobile": 36,
-        "enable_animations": true
-      }
-    },
-    "media_with_content_RVymQU": {
-      "type": "media-with-content",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image": "shopify://shop_images/hf_20260417_141216_4ffc13e2-663c-4ef7-9413-6f10872b866a_1.jpg",
-            "link": "",
-            "video_loop": true,
-            "video_autoplay": false,
-            "image_position": "cover",
-            "video_position": "cover"
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "flex-end",
-            "gap": 24
-          },
-          "blocks": {
-            "text_H46yFc": {
-              "type": "text",
-              "name": "t:names.heading",
-              "settings": {
-                "text": "<p>Transform Your Jawline with Every Chew</p>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h3",
-                "font": "var(--font-heading--family)",
-                "font_size": "2rem",
-                "line_height": "tight",
-                "letter_spacing": "tight",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground-heading)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 40
-              },
-              "blocks": {}
-            },
-            "text_V3cHwr": {
-              "type": "text",
-              "name": "t:names.text",
-              "settings": {
-                "text": "<p>Unleash your true potential</p>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h5",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "button_G8VDwn": {
-              "type": "button",
-              "name": "t:names.button",
-              "settings": {
-                "label": "SHOP NOW",
-                "link": "shopify://products/gumforce1",
-                "open_in_new_tab": false,
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "text_H46yFc",
-            "text_V3cHwr",
-            "button_G8VDwn"
-          ]
-        }
-      },
-      "disabled": true,
-      "name": "t:names.editorial",
-      "settings": {
-        "media_position": "right",
-        "media_width": "wide",
-        "media_height": "60svh",
-        "section_width": "full-width",
-        "extend_media": false,
-        "color_scheme": "scheme-4",
-        "padding-block-start": 0,
-        "padding-block-end": 48
-      }
-    },
-    "product_list_themegen": {
-      "type": "product-list",
-      "blocks": {
-        "static-header": {
-          "type": "_product-list-content",
-          "name": "t:names.header",
-          "disabled": true,
-          "static": true,
-          "settings": {
-            "content_direction": "row",
-            "vertical_on_mobile": false,
-            "horizontal_alignment": "center",
-            "vertical_alignment": "center",
-            "align_baseline": true,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 12,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_list_text_Bd9pVh": {
-              "type": "_product-list-text",
-              "name": "t:names.collection_title",
-              "settings": {
-                "text": "<h3>Featured products</h3>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_list_text_Bd9pVh"
-          ]
-        },
-        "static-product-card": {
-          "type": "_product-card",
-          "name": "t:names.product_card",
-          "static": true,
-          "settings": {
-            "product_card_gap": 8,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_card_gallery_PhczVC": {
-              "type": "_product-card-gallery",
-              "name": "t:names.product_card_media",
-              "settings": {
-                "image_ratio": "square",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "group_McqFAT": {
-              "type": "_product-card-group",
-              "name": "t:names.group",
-              "settings": {
-                "content_direction": "column",
-                "vertical_on_mobile": true,
-                "horizontal_alignment": "flex-start",
-                "vertical_alignment": "center",
-                "align_baseline": false,
-                "horizontal_alignment_flex_direction_column": "flex-start",
-                "vertical_alignment_flex_direction_column": "center",
-                "gap": 0,
-                "width": "fill",
-                "custom_width": 100,
-                "width_mobile": "fill",
-                "custom_width_mobile": 100,
-                "height": "fit",
-                "custom_height": 100,
-                "inherit_color_scheme": true,
-                "color_scheme": "",
-                "background_media": "none",
-                "video_position": "cover",
-                "background_image_position": "cover",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "toggle_overlay": false,
-                "overlay_color": "#00000026",
-                "overlay_style": "solid",
-                "gradient_direction": "to top",
-                "link": "",
-                "open_in_new_tab": false,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {
-                "text_MEKzFi": {
-                  "type": "text",
-                  "name": "t:names.text",
-                  "settings": {
-                    "text": "<h5><strong>{{ closest.product.title }}</strong></h5>",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "left",
-                    "type_preset": "custom",
-                    "font": "var(--font-heading--family)",
-                    "font_size": "1.5rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "price_37riDf": {
-                  "type": "price",
-                  "name": "t:names.product_price",
-                  "settings": {
-                    "show_sale_price_first": true,
-                    "show_installments": false,
-                    "show_tax_info": false,
-                    "type_preset": "paragraph",
-                    "width": "100%",
-                    "alignment": "left",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "color": "var(--color-foreground)",
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "swatches_87VJC8": {
-                  "type": "swatches",
-                  "name": "t:names.swatches",
-                  "settings": {
-                    "product_swatches_alignment": "flex-start",
-                    "product_swatches_alignment_mobile": "flex-start",
-                    "hide_padding": false,
-                    "product_swatches_padding_top": 4,
-                    "product_swatches_padding_bottom": 0,
-                    "product_swatches_padding_left": 0,
-                    "product_swatches_padding_right": 0
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "text_MEKzFi",
-                "price_37riDf",
-                "swatches_87VJC8"
-              ]
-            }
-          },
-          "block_order": [
-            "product_card_gallery_PhczVC",
-            "group_McqFAT"
-          ]
-        }
-      },
-      "disabled": true,
-      "name": "t:names.products_grid",
-      "settings": {
-        "collection": "vitamins-and-supplements-example-products",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "max_products": 4,
-        "columns": 4,
-        "mobile_columns": "1",
-        "mobile_card_size": "60cqw",
-        "columns_gap": 40,
-        "rows_gap": 60,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "horizontal_alignment": "flex-start",
-        "gap": 28,
-        "color_scheme": "scheme-4",
-        "padding-block-start": 0,
-        "padding-block-end": 60
-      }
-    },
-    "section_UpjyCL": {
-      "type": "section",
-      "blocks": {
-        "group_Q3JCUr": {
-          "type": "group",
-          "settings": {
-            "content_direction": "column",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "flex-start",
-            "vertical_alignment": "center",
-            "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "center",
-            "vertical_alignment_flex_direction_column": "space-between",
-            "gap": 16,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fill",
-            "custom_height": 100,
-            "inherit_color_scheme": false,
-            "color_scheme": "scheme-2",
-            "background_media": "image",
-            "video_position": "cover",
-            "background_image": "shopify://shop_images/vitamins-supplements-minimal-3.jpg",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "toggle_overlay": true,
-            "overlay_color": "#00000094",
-            "overlay_style": "gradient",
-            "gradient_direction": "to bottom",
-            "link": "",
-            "open_in_new_tab": false,
-            "placeholder": "",
-            "padding-block-start": 40,
-            "padding-block-end": 40,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "text_B96CeQ": {
-              "type": "text",
-              "settings": {
-                "text": "<h2>Enhanced jawline definition</h2>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "center",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "button_tBGzW4": {
-              "type": "button",
-              "settings": {
-                "label": "Shop now",
-                "link": "shopify://collections/all",
-                "open_in_new_tab": false,
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "text_B96CeQ",
-            "button_tBGzW4"
-          ]
-        },
-        "group_bJKmfz": {
-          "type": "group",
-          "settings": {
-            "content_direction": "column",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "flex-start",
-            "vertical_alignment": "center",
-            "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "center",
-            "vertical_alignment_flex_direction_column": "space-between",
-            "gap": 16,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fill",
-            "custom_height": 100,
-            "inherit_color_scheme": false,
-            "color_scheme": "scheme-2",
-            "background_media": "image",
-            "video_position": "cover",
-            "background_image": "shopify://shop_images/vitamins-supplements-minimal-2.jpg",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "toggle_overlay": true,
-            "overlay_color": "#00000099",
-            "overlay_style": "gradient",
-            "gradient_direction": "to bottom",
-            "link": "",
-            "open_in_new_tab": false,
-            "placeholder": "",
-            "padding-block-start": 40,
-            "padding-block-end": 40,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "text_NHBb9V": {
-              "type": "text",
-              "settings": {
-                "text": "<h2>Vitality on the go</h2>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "center",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "button_yRN4A4": {
-              "type": "button",
-              "settings": {
-                "label": "Shop now",
-                "link": "shopify://collections/all",
-                "open_in_new_tab": false,
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "text_NHBb9V",
-            "button_yRN4A4"
-          ]
-        }
-      },
-      "block_order": [
-        "group_Q3JCUr",
-        "group_bJKmfz"
-      ],
-      "disabled": true,
-      "name": "t:names.split_showcase",
-      "settings": {
-        "content_direction": "row",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 0,
-        "section_width": "full-width",
-        "section_height": "large",
-        "section_height_custom": 50,
-        "color_scheme": "",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
     }
   },
   "order": [
     "gumforce_hero_VXkr7T",
     "gumforce_fond_degrade_section_MUPgXF",
+    "gumforce_stats_mosaic_home",
+    "gumforce_how_it_works_home",
+    "gumforce_before_after_home",
+    "gumforce_video_stories_home",
     "gumforce_creatine_benefits_TcT3rz",
-    "gumforce_guarantee_FRjGTc",
-    "gumforce_social_proof_8HtMRh",
-    "media_with_content_RVymQU",
-    "product_list_themegen",
-    "section_UpjyCL"
+    "gumforce_image_text_home",
+    "gumforce_influencers_grid_home",
+    "gumforce_reviews_home",
+    "gumforce_blog_grid_home",
+    "gumforce_faq_home",
+    "gumforce_guarantee_FRjGTc"
   ]
 }
