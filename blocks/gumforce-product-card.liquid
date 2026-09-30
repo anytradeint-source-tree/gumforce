@@ -55,6 +55,8 @@
 
   /* ===== DESKTOP : mise en page façon Lemme ===== */
   @media (min-width: 750px) {
+    /* l'ombre de la carte (56px de flou) était coupée par overflow-x: clip du thème */
+    .product-information, .product-information__grid { overflow-x: visible !important; }
     .product-information__grid {
       width: 100% !important;
       max-width: {{ s.content_max | default: 1380 }}px !important;

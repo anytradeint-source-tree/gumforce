@@ -18,7 +18,7 @@
 
   assign radius        = s.radius | default: 28
   assign radius_mobile = s.radius_mobile | default: 20
-  assign pad_top       = s.padding_top | default: 48
+  assign pad_top       = s.padding_top | default: 44
   assign pad_bottom    = s.padding_bottom | default: 8
   assign pad_top_m     = s.padding_top_mobile | default: 32
   assign pad_bottom_m  = s.padding_bottom_mobile | default: 0
@@ -52,9 +52,9 @@
   }
   #gfsm-{{ sid }} .gfsm-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: 190px 190px;
-    grid-template-areas: "a a b b c c" "a a d d e e";
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: 170px 170px;
+    grid-template-areas: "a a b b b c c c" "a a d d d e e e";
     border-radius: var(--gfsm-radius);
     overflow: hidden;
     background: transparent;
@@ -67,7 +67,7 @@
   /* hauteur des rangées = moitié de la largeur de la case photo (carré parfait) */
   @supports (width: 1cqi) {
     #gfsm-{{ sid }} { container-type: inline-size; }
-    #gfsm-{{ sid }} .gfsm-grid { grid-template-rows: max(180px, calc(100cqi / 6)) max(180px, calc(100cqi / 6)); }
+    #gfsm-{{ sid }} .gfsm-grid { grid-template-rows: max(168px, calc(100cqi / 8)) max(168px, calc(100cqi / 8)); }
   }
   #gfsm-{{ sid }} .gfsm-cell {
     position: relative; overflow: hidden; min-width: 0;
@@ -91,7 +91,7 @@
     font-variant-numeric: tabular-nums; white-space: nowrap;
     display: flex; align-items: baseline; gap: .06em;
     font-size: 56px;
-    font-size: clamp(44px, 4.4cqi, 60px);
+    font-size: clamp(44px, 3.6cqi, 56px);
     margin: 0;
   }
   #gfsm-{{ sid }} .gfsm-big small { font-size: .42em; font-weight: 700; letter-spacing: -.02em; }
@@ -229,13 +229,13 @@
     { "type": "header", "content": "Forme" },
     { "type": "range", "id": "radius", "label": "Arrondi (desktop)", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 28 },
     { "type": "range", "id": "radius_mobile", "label": "Arrondi (mobile)", "min": 0, "max": 32, "step": 2, "unit": "px", "default": 20 },
-    { "type": "range", "id": "content_max", "label": "Largeur max", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1180 },
+    { "type": "range", "id": "content_max", "label": "Largeur max", "min": 900, "max": 1600, "step": 20, "unit": "px", "default": 1380, "info": "1380 = alignée sur la grille produit." },
     { "type": "checkbox", "id": "enable_animation", "label": "Animations au scroll", "default": true },
     { "type": "checkbox", "id": "shadow", "label": "Ombre portée (apparaît après l'animation)", "default": false },
     { "type": "text", "id": "aria_label", "label": "Libellé accessibilité", "default": "GUMFORCE en chiffres" },
 
     { "type": "header", "content": "Espacements" },
-    { "type": "range", "id": "padding_top", "label": "Haut (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_top", "label": "Haut (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 44 },
     { "type": "range", "id": "padding_bottom", "label": "Bas (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 8 },
     { "type": "range", "id": "padding_top_mobile", "label": "Haut (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 32 },
     { "type": "range", "id": "padding_bottom_mobile", "label": "Bas (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 0 }
