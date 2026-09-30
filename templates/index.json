@@ -1149,7 +1149,7 @@
       "type": "gumforce-blog-grid",
       "settings": {
         "blog": "news",
-        "badge_text": "Guides",
+        "badge_text": "",
         "heading": "Muscler sa mâchoire : nos guides",
         "subheading": "Masséter, mewing, créatine, double menton : ce que dit la science, sans blabla.",
         "heading_size": 32,
@@ -1174,7 +1174,8 @@
         "color_card": "#ffffff",
         "enable_animation": true,
         "padding_top": 48,
-        "padding_bottom": 24
+        "padding_bottom": 24,
+        "show_pagination": false
       }
     },
     "gumforce_faq_home": {
