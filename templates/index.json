@@ -165,102 +165,6 @@
         "use_theme_font": true
       }
     },
-    "gumforce_video_stories_home": {
-      "type": "gumforce-video-stories",
-      "blocks": {
-        "video_nKaAfL": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/RO2.mp4",
-            "name": "Elio, 27 ans",
-            "role": "3 semaines d'utilisation"
-          }
-        },
-        "video_D3Hpc9": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/YA7.mp4",
-            "name": "Yann, 26 ans",
-            "role": "3 semaines d'utilisation"
-          }
-        },
-        "video_9Jq3GL": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/0722(1).mp4",
-            "name": "Fanny, 32 ans",
-            "role": "1 mois d'utilisation"
-          }
-        },
-        "video_4AtHWX": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/JULIEN1.mp4",
-            "name": "Julien, 31 ans",
-            "role": "3 mois d'utilisation"
-          }
-        },
-        "video_gt3efb": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/EL5.mp4",
-            "name": "Ethan, 25 ans",
-            "role": "1 mois d'utilisation"
-          }
-        },
-        "video_LXRVPL": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/LUCAS5.mp4",
-            "name": "Lucas, 26 ans",
-            "role": "2 mois d'utilisation"
-          }
-        },
-        "video_ck9ziC": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/0721-copy.mp4",
-            "name": "Quan, 25 ans",
-            "role": "1 mois d'utilisation"
-          }
-        }
-      },
-      "block_order": [
-        "video_nKaAfL",
-        "video_D3Hpc9",
-        "video_9Jq3GL",
-        "video_4AtHWX",
-        "video_gt3efb",
-        "video_LXRVPL",
-        "video_ck9ziC"
-      ],
-      "settings": {
-        "badge_text": "",
-        "heading": "Ils ont testé",
-        "heading_accent": "GUMFORCE",
-        "heading_size": 32,
-        "heading_tag": "h2",
-        "subheading": "Et senti l'effet dès la première mâche.",
-        "ratio": "9-16",
-        "card_vw": 76,
-        "card_w": 270,
-        "card_gap": 14,
-        "player_radius": 22,
-        "autoplay": true,
-        "loop_all": true,
-        "restart_on_return": true,
-        "transparent_bg": true,
-        "color_bg": "#ffffff",
-        "color_heading": "#0e0e0e",
-        "color_muted": "#7c8388",
-        "accent_color": "#2ab5b4",
-        "enable_animation": true,
-        "padding_top_mobile": 60,
-        "padding_bottom_mobile": 40,
-        "padding_top": 60,
-        "padding_bottom": 40
-      }
-    },
     "gumforce_creatine_benefits_TcT3rz": {
       "type": "gumforce-creatine-benefits",
       "blocks": {
@@ -1145,39 +1049,6 @@
         "enable_animations": true
       }
     },
-    "gumforce_blog_grid_home": {
-      "type": "gumforce-blog-grid",
-      "settings": {
-        "blog": "news",
-        "badge_text": "",
-        "heading": "Muscler sa mâchoire : nos guides",
-        "subheading": "Masséter, mewing, créatine, double menton : ce que dit la science, sans blabla.",
-        "heading_size": 32,
-        "heading_tag": "h2",
-        "per_page": 6,
-        "cols_desktop": 3,
-        "cols_mobile": "1",
-        "img_ratio": "card",
-        "grid_gap": 16,
-        "card_radius": 16,
-        "show_tag": true,
-        "show_date": true,
-        "show_readtime": true,
-        "show_excerpt": true,
-        "read_text": "Lire l'article",
-        "transparent_bg": true,
-        "color_bg": "#ffffff",
-        "color_heading": "#0e0e0e",
-        "color_text": "#0e0e0e",
-        "color_muted": "#6b6b6b",
-        "accent_color": "#2AB5B4",
-        "color_card": "#ffffff",
-        "enable_animation": true,
-        "padding_top": 48,
-        "padding_bottom": 24,
-        "show_pagination": false
-      }
-    },
     "gumforce_faq_home": {
       "type": "gumforce-faq",
       "blocks": {
@@ -1369,12 +1240,10 @@
     "gumforce_stats_mosaic_home",
     "gumforce_how_it_works_home",
     "gumforce_before_after_home",
-    "gumforce_video_stories_home",
     "gumforce_creatine_benefits_TcT3rz",
     "gumforce_image_text_home",
     "gumforce_influencers_grid_home",
     "gumforce_reviews_home",
-    "gumforce_blog_grid_home",
     "gumforce_faq_home",
     "gumforce_guarantee_FRjGTc"
   ]
