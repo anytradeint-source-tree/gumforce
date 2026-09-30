@@ -38,7 +38,7 @@
      html (racine/canvas) = couleur du BAS du dégradé : remplit la zone derrière la
      barre Safari iPhone (sinon barre blanche) et matche le bas du dégradé fixe. */
   body { background: transparent !important; }
-  html { background: {{ s.color_safe | default: '#121212' }} !important; }
+  html { background: {{ s.color_bottom | default: '#d4f0ea' }} !important; }
   #MainContent .shopify-section,
   #MainContent section,
   #MainContent .color-scheme-1,
@@ -51,7 +51,7 @@
 <script>
   /* iOS Safari : teinte la barre du navigateur avec la couleur du bas du dégradé */
   (function () {
-    var c = '{{ s.color_safe | default: '#121212' }}';
+    var c = '{{ s.color_bottom | default: '#d4f0ea' }}';
     var m = document.querySelector('meta[name="theme-color"]');
     if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
     m.setAttribute('content', c);
