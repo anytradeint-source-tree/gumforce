@@ -10,6 +10,12 @@
     <style>
       html { background-color: #c5fff7; }
       #header-group .shopify-section { isolation: isolate; }
+      /* Desktop : un peu plus d'air entre les sections (home + fiche produit).
+         Une seule marge par jonction : la barre sticky (hauteur 0) est exclue,
+         les sections masquées (fond dégradé) ne comptent pas. */
+      @media (min-width: 750px) {
+        #MainContent > .shopify-section + .shopify-section:not(.gf-satc-section) { margin-top: 24px; }
+      }
     </style>
 
 
