@@ -1,0 +1,12 @@
+{% comment %}
+  GF — PRÉCOMMANDE : sort la date d'expédition (texte brut, ex. « 15 octobre »)
+  quand le mode précommande s'applique à ce produit, sinon rien.
+  Réglages du thème › Précommande. Seule la fiche du produit « gumforce » est
+  concernée ; sans date, le mode reste inactif (jamais de texte « à partir du . »).
+
+  Usage : capture gf_po_date / render 'gf-preorder-date', product: product / endcapture
+          puis « if gf_po_date != blank » = mode actif. Échapper à l'usage (escape / json).
+{% endcomment %}
+{%- if settings.gf_preorder_active and product.handle == 'gumforce' -%}
+  {{- settings.gf_preorder_date | strip -}}
+{%- endif -%}

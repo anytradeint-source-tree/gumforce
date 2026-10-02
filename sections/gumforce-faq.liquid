@@ -10,6 +10,12 @@
 
 {%- liquid
   assign sid = section.id
+
+  # PRÉCOMMANDE (Réglages du thème › Précommande) : sur la fiche gumforce, la
+  # promesse 48 h des réponses est remplacée (texte visible + données FAQ Google)
+  capture gf_po_date
+    render 'gf-preorder-date', product: product
+  endcapture
   assign s   = section.settings
 
   assign bg_color        = s.bg_color | default: '#0e0e0e'
@@ -303,7 +309,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {%- for block in section.blocks -%}
-{"@type":"Question","name":{{ block.settings.question | strip_html | strip | json }},"acceptedAnswer":{"@type":"Answer","text":{{ block.settings.answer | strip_html | strip | json }}}}{%- unless forloop.last -%},{%- endunless -%}
+{"@type":"Question","name":{{ block.settings.question | strip_html | strip | json }},"acceptedAnswer":{"@type":"Answer","text":{% if gf_po_date != blank %}{% capture gf_po_a %}{% render 'gf-preorder-text', text: block.settings.answer, date: gf_po_date %}{% endcapture %}{{ gf_po_a | strip_html | strip | json }}{% else %}{{ block.settings.answer | strip_html | strip | json }}{% endif %}}}{%- unless forloop.last -%},{%- endunless -%}
 {%- endfor -%}
 ]}
 </script>
@@ -326,7 +332,7 @@
     <ul class="gffaq-list">
       {%- for block in section.blocks -%}
         {%- assign q = block.settings.question -%}
-        {%- assign a = block.settings.answer -%}
+        {%- assign a = block.settings.answer -%}{%- if gf_po_date != blank -%}{%- capture a -%}{%- render 'gf-preorder-text', text: a, date: gf_po_date -%}{%- endcapture -%}{%- endif -%}
         {%- if q != blank and a != blank -%}
           {%- assign answer_html = a | newline_to_br | replace: '<br /><br />', '</p><p>' | prepend: '<p>' | append: '</p>' -%}
           {%- assign is_open = false -%}

@@ -17,6 +17,12 @@
   assign can_add_to_cart = false
   assign add_to_cart_text = 'products.product.unavailable' | t
 
+  # GUMFORCE précommande (Réglages du thème › Précommande) : bouton « Précommander »
+  # et propriété « Précommande » sur l'article
+  capture gf_po_date
+    render 'gf-preorder-date', product: product
+  endcapture
+
   if variant
     if variant.quantity_rule.min > variant.inventory_quantity and inventory_managed and inventory_policy == 'deny'
       assign quantity_rule_soldout = true
@@ -25,6 +31,9 @@
     if variant.available
       assign can_add_to_cart = true
       assign add_to_cart_text = 'products.product.add_to_cart' | t
+      if gf_po_date != blank
+        assign add_to_cart_text = 'Précommander'
+      endif
     elsif inventory_managed and inventory_quantity <= 0 and inventory_policy == 'deny' or quantity_rule_soldout
       assign can_add_to_cart = false
       assign add_to_cart_text = 'products.product.sold_out' | t
@@ -62,7 +71,7 @@
           name="id"
           ref="variantId"
           value="{{ product.selected_or_first_available_variant.id }}"
-        >
+        >{% if gf_po_date != blank %}<input type="hidden" name="properties[Précommande]" value="{{ 'expédition à partir du ' | append: gf_po_date | escape }}">{% endif %}
         {%- if block_settings.gift_card_form and product.gift_card? -%}
           {%- render 'gift-card-recipient-form', product: product, form: form, section: section, block: block -%}
           <span class="buy-buttons-block__bar">

@@ -169,6 +169,39 @@
   endfor
   assign sorted_media = gf_visible_media
 
+  comment
+    GUMFORCE — PRÉCOMMANDE (Réglages du thème › Précommande › Images à masquer) :
+    les images listées par leur numéro dans la galerie affichée (« 3, 5 ») sont
+    retirées côté serveur, comme #checkout. Si une image de remplacement est
+    choisie, la première image masquée garde sa place et s'affiche avec cette
+    image (slide, miniature, zoom). Jamais de galerie vide.
+  endcomment
+  capture gf_po_date
+    render 'gf-preorder-date', product: selected_product
+  endcapture
+  assign gf_po_swap_id = 0
+  if gf_po_date != blank and settings.gf_preorder_hide_media != blank
+    assign gf_po_hide = settings.gf_preorder_hide_media | replace: ' ', '' | replace: ';', ',' | split: ','
+    assign gf_po_media = '' | split: ','
+    for media in sorted_media
+      assign gf_po_pos = forloop.index | append: ''
+      if gf_po_hide contains gf_po_pos
+        if gf_po_swap_id == 0 and settings.gf_preorder_media_swap and media.media_type == 'image'
+          assign gf_po_swap_id = media.id
+        else
+          continue
+        endif
+      endif
+      assign gf_found = sorted_media | where: 'id', media.id
+      assign gf_po_media = gf_po_media | concat: gf_found
+    endfor
+    if gf_po_media.size > 0
+      assign sorted_media = gf_po_media
+    else
+      assign gf_po_swap_id = 0
+    endif
+  endif
+
   assign has_image_drop = sorted_media | has: 'media_type', 'image'
 
   # Determine if we're in single column mode (carousel or grid with one column)
@@ -421,14 +454,18 @@
               else
                 assign media_sizes = sizes
               endif
+              assign gf_swap = false
+              if media.id == gf_po_swap_id
+                assign gf_swap = settings.gf_preorder_media_swap
+              endif
           -%}
           {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
             <div
               class="product-media-constraint-wrapper">
-              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop -%}
+              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop, gf_swap_image: gf_swap -%}
             </div>
           {% else %}
-            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop -%}
+            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop, gf_swap_image: gf_swap -%}
           {% endif %}
         {% endcapture %}
         {% capture class %}
@@ -436,7 +473,7 @@
         {% endcapture %}
         {% if block_settings.aspect_ratio == 'adapt' %}
           {% capture style %}
-            --media-preview-ratio: {{ media.preview_image.aspect_ratio | default: 1.0 }};
+            --media-preview-ratio: {% if gf_swap %}{{ gf_swap.aspect_ratio | default: 1.0 }}{% else %}{{ media.preview_image.aspect_ratio | default: 1.0 }}{% endif %};
           {% endcapture %}
         {% endif %}
         {% if block_settings.zoom and media.media_type == 'model' %}
@@ -464,6 +501,8 @@
             style: slideshow_controls_style,
             item_count: sorted_media.size,
             thumbnails: sorted_media,
+            gf_swap_id: gf_po_swap_id,
+            gf_swap_image: settings.gf_preorder_media_swap,
             controls_on_media: controls_on_media,
             pagination_position: pagination_position,
             aspect_ratio: block_settings.aspect_ratio,
@@ -477,6 +516,8 @@
             style: block_settings.slideshow_mobile_controls_style,
             item_count: sorted_media.size,
             thumbnails: sorted_media,
+            gf_swap_id: gf_po_swap_id,
+            gf_swap_image: settings.gf_preorder_media_swap,
             controls_on_media: mobile_controls_on_media,
             pagination_position: 'center',
             aspect_ratio: block_settings.aspect_ratio,
@@ -537,13 +578,17 @@
               else
                 assign media_sizes = sizes
               endif
+              assign gf_swap = false
+              if media.id == gf_po_swap_id
+                assign gf_swap = settings.gf_preorder_media_swap
+              endif
             -%}
             {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
               <div class="product-media-constraint-wrapper">
-                {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop -%}
+                {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop, gf_swap_image: gf_swap -%}
               </div>
             {% else %}
-              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop -%}
+              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop, gf_swap_image: gf_swap -%}
             {% endif %}
           </li>
         {% endfor %}
@@ -578,9 +623,15 @@
               {% if sorted_media.size > 1 %}
                 {%- for media in sorted_media -%}
                   {% liquid
+                    assign gf_zimg = media.preview_image
+                    assign gf_zalt = media.alt
+                    if media.id == gf_po_swap_id
+                      assign gf_zimg = settings.gf_preorder_media_swap
+                      assign gf_zalt = settings.gf_preorder_media_swap.alt
+                    endif
                     assign aspect_ratio = block_settings.aspect_ratio
                     if block_settings.aspect_ratio == 'adapt'
-                      assign aspect_ratio = media.preview_image.aspect_ratio | default: 1.0
+                      assign aspect_ratio = gf_zimg.aspect_ratio | default: 1.0
                     endif
                   %}
                   <button
@@ -601,13 +652,13 @@
                       endif
                     %}
                     {{
-                      media.preview_image
+                      gf_zimg
                       | image_url: width: 1024
                       | image_tag:
                         loading: 'lazy',
                         sizes: 'auto, 110, (min-width: 750px) 160',
                         widths: '240, 352, 832, 1200',
-                        alt: media.alt,
+                        alt: gf_zalt,
                         style: focal_point_style
                       | escape
                     }}
@@ -623,7 +674,7 @@
               <li
                 id="product-{{ media.id}}-{{ forloop.index }}"
                 class="{{ product_media_container_class | remove: 'media-fit-cover' }} product-media-container--{{ media.media_type }}{% if media.media_type == 'image' %} product-media-container--zoomable{% endif %}"
-                style="{% if block_settings.aspect_ratio == 'adapt' %} --media-preview-ratio: {{ media.preview_image.aspect_ratio | default: 1.0 }};{% endif %}"
+                style="{% if block_settings.aspect_ratio == 'adapt' %} --media-preview-ratio: {% if media.id == gf_po_swap_id %}{{ settings.gf_preorder_media_swap.aspect_ratio | default: 1.0 }}{% else %}{{ media.preview_image.aspect_ratio | default: 1.0 }}{% endif %};{% endif %}"
                 ref="media[]"
                 {% if media.media_type == 'image' %}
                   on:click="/close"
@@ -631,6 +682,16 @@
               >
                 {% if media.media_type == 'image' %}
                   <drag-zoom-wrapper class="product-media__drag-zoom-wrapper">
+                    {%- if media.id == gf_po_swap_id -%}
+                      {%- render 'product-media',
+                        media: media,
+                        sizes: '100vw',
+                        loading: 'lazy',
+                        is_main_product_media: forloop.first,
+                        image_ref: 'image',
+                        gf_swap_image: settings.gf_preorder_media_swap
+                      -%}
+                    {%- else -%}
                     {%- render 'product-media',
                       media: media,
                       sizes: '100vw',
@@ -638,6 +699,7 @@
                       is_main_product_media: forloop.first,
                       image_ref: 'image'
                     -%}
+                    {%- endif -%}
                   </drag-zoom-wrapper>
                 {% else %}
                   {%- render 'product-media',

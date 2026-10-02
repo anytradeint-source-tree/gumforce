@@ -15,6 +15,7 @@
     la 1re photo est chargée (MP4 480p sur mobile/réseau lent, 720p sinon) puis lue automatiquement.
     'poster' : aperçu + bouton lecture, vidéo chargée seulement au clic (utilisé dans le zoom). Absent : comportement Horizon.
   @param {boolean} [gf_video_loop] - GUMFORCE. Boucle pour les modes ci-dessus (défaut : oui).
+  @param {object} [gf_swap_image] - GUMFORCE précommande. Image affichée à la place de celle du média (image de remplacement).
 
   @example
   {% render 'product-media', media: media, preview_image_only: false, loading: 'lazy' %}
@@ -22,6 +23,14 @@
 
 {% liquid
   assign widths = widths | default: '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
+  assign gf_img = media.preview_image
+  assign gf_alt = media.alt
+  assign gf_ratio = media.aspect_ratio
+  if gf_swap_image
+    assign gf_img = gf_swap_image
+    assign gf_alt = gf_swap_image.alt
+    assign gf_ratio = gf_swap_image.aspect_ratio
+  endif
   assign ref_image_to_transition = ''
   if settings.transition_to_main_product
     assign ref_image_to_transition = 'imagesToTransition[]'
@@ -30,11 +39,11 @@
 
 <div
   class="product-media"
-  style="--ratio: {{ media.aspect_ratio }}"
+  style="--ratio: {{ gf_ratio }}"
   data-media-id="{{ media.id }}"
 >
   {% liquid
-    assign high_res_url = media.preview_image | image_url: width: 3840
+    assign high_res_url = gf_img | image_url: width: 3840
     assign fetch_priority = 'auto'
     if is_main_product_media
       assign fetch_priority = 'high'
@@ -42,11 +51,11 @@
     assign focal_point_style = '--focal-point: ' | append: media.presentation.focal_point | append: ';'
   %}
   {{
-    media.preview_image
+    gf_img
     | image_url: width: 3840
     | image_tag:
       widths: widths,
-      alt: media.alt,
+      alt: gf_alt,
       sizes: sizes,
       loading: loading,
       class: 'product-media__image',

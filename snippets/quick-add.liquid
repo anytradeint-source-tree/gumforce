@@ -57,7 +57,7 @@
         {% if variant.available == false %}
           disabled
         {% endif %}
-      >
+      >{% capture gf_po_date %}{% render 'gf-preorder-date', product: product %}{% endcapture %}{% if gf_po_date != blank %}<input type="hidden" name="properties[Précommande]" value="{{ 'expédition à partir du ' | append: gf_po_date | escape }}">{% endif %}
       <input
         type="hidden"
         name="quantity"

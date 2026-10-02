@@ -104,6 +104,16 @@
       assign cta_ink = '#0A0A0A'
   endcase
   assign cta_radius = s.cta_radius | default: 14
+
+  # PRÉCOMMANDE (Réglages du thème › Précommande) : bouton « Précommander » et
+  # propriété « Précommande » sur l'article. Le lien /cart/variante:1 ne transporte
+  # pas de propriété → panier vidé puis ajout AJAX, puis checkout.
+  capture gf_po_date
+    render 'gf-preorder-date', product: product
+  endcapture
+  if gf_po_date != blank
+    assign cta_text = 'Précommander'
+  endif
 -%}
 
 <style>
@@ -365,7 +375,20 @@
     if (t && t.vid) {
       busy = true;
       cta.classList.add('is-busy');
-      window.location.href = root + 'cart/' + t.vid + ':1';
+      {% if gf_po_date != blank %}fetch(root + 'cart/clear.js', { method: 'POST', headers: { 'Accept': 'application/json' } })
+        .then(function () {
+          return fetch(root + 'cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ items: [{ id: t.vid, quantity: 1, properties: { 'Précommande': {{ 'expédition à partir du ' | append: gf_po_date | json }} } }] })
+          });
+        })
+        .then(function (r) { if (!r.ok) throw new Error('add'); window.location.href = root + 'checkout'; })
+        .catch(function () {
+          /* échec (stock, réseau) : on rend la main et on remonte vers l'offre, qui affiche l'erreur au clic */
+          busy = false; cta.classList.remove('is-busy');
+          var off = findOffer(false); if (off) off.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });{% else %}window.location.href = root + 'cart/' + t.vid + ':1';{% endif %}
       return;
     }
     {%- endif -%}

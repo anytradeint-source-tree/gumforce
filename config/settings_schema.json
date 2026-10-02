@@ -8,6 +8,44 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Précommande",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Fiche produit GUMFORCE uniquement (/products/gumforce). Case décochée = site exactement comme avant."
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_preorder_active",
+        "label": "Mode précommande actif",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "gf_preorder_date",
+        "label": "Date d'expédition",
+        "default": "15 octobre",
+        "info": "Écrite ici une seule fois, reprise partout (texte sous le bouton, bandeau, panier, checkout, e-mail de confirmation). Exemple : 15 octobre. Sans date, le mode reste inactif."
+      },
+      {
+        "type": "header",
+        "content": "Galerie en mode précommande"
+      },
+      {
+        "type": "text",
+        "id": "gf_preorder_hide_media",
+        "label": "Images à masquer",
+        "info": "Numéros des images dans la galerie, séparés par des virgules (1 = première image affichée). Exemple : 3, 5. Vide = aucune image masquée."
+      },
+      {
+        "type": "image_picker",
+        "id": "gf_preorder_media_swap",
+        "label": "Image de remplacement (facultatif)",
+        "info": "Prend la place de la première image masquée."
+      }
+    ]
+  },
+  {
     "name": "t:names.logo_and_favicon",
     "settings": [
       {

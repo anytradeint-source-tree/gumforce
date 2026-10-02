@@ -239,6 +239,21 @@
   if s.tier1_image != blank or s.tier2_image != blank or s.tier3_image != blank
     assign has_timg = true
   endif
+
+  comment — PRÉCOMMANDE (Réglages du thème › Précommande) : bouton « Précommander »,
+    texte d'expédition sous le bouton à la place de l'urgence « livraison le … »,
+    propriété « Précommande » sur chaque article ajouté. Le lien /cart/variante:qté
+    ne transporte pas de propriété → panier vidé puis ajout AJAX (même résultat :
+    le panier ne contient que ce pack). Mode coupé : rendu inchangé.
+  endcomment
+  capture gf_po_date
+    render 'gf-preorder-date', product: pr
+  endcapture
+  assign gf_po_prop = 'expédition à partir du ' | append: gf_po_date
+  assign gf_po_clear = false
+  if gf_po_date != blank and s.go_to_checkout and s.fast_checkout != false
+    assign gf_po_clear = true
+  endif
 -%}
 
 {%- comment -%} (gate visibility retiré : polices préchargées, plus de texte caché puis révélé) {%- endcomment -%}
@@ -637,7 +652,7 @@
       {%- endif -%}
 
       <button class="gfp-cta" id="gfp-cta-{{ gf_id }}">
-        <span class="gfp-cta-main"><span data-gfp-ctalabel>{{ s.cta_text | default: 'Ajouter au panier' }}</span><span class="gfp-ctaprice" data-gfp-ctaprice></span></span>
+        <span class="gfp-cta-main"><span data-gfp-ctalabel>{% if gf_po_date != blank %}Précommander{% else %}{{ s.cta_text | default: 'Ajouter au panier' }}{% endif %}</span><span class="gfp-ctaprice" data-gfp-ctaprice></span></span>
         {%- if s.show_cta_guarantee -%}
           <span class="gfp-cta-guar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>{{ s.cta_guarantee_text | default: 'Satisfait ou remboursé · 90 jours' | escape }}</span>
         {%- endif -%}
@@ -661,7 +676,7 @@
           {%- when 'bolt' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8Z"/></svg>
           {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
         {%- endcase -%}
-        <span data-gfp-deliv></span>
+        <span data-gfp-deliv>{% if gf_po_date != blank %}En précommande&nbsp;: ta commande part de notre entrepôt à partir du <b>{{ gf_po_date | escape }}</b>. Tu paies aujourd'hui. Tu reçois le suivi par e-mail dès que ton colis part.{% endif %}</span>
       </div>
 
       {%- if s.show_reassure -%}
@@ -812,7 +827,7 @@
   var tiers   = root.querySelectorAll('[data-gfp-tier]');
   var elLabel = root.querySelector('[data-gfp-ctalabel]');
   var elPrice = root.querySelector('[data-gfp-ctaprice]');
-  var CTA     = {{ s.cta_text | default: 'Ajouter au panier' | json }};
+  var CTA     = {% if gf_po_date != blank %}"Précommander"{% else %}{{ s.cta_text | default: 'Ajouter au panier' | json }}{% endif %};
   var sel     = {{ default_tier | json }};
 
   /* quantité (optionnelle) */
@@ -966,7 +981,7 @@
   /* ── URGENCE : « Commande dans les Xh XXmin pour une livraison le … » ──
      Compte à rebours jusqu'à l'heure limite (minuit par défaut), mis à jour
      toutes les 30 s ; passé l'heure limite, tout bascule sur demain. */
-  var elDeliv = root.querySelector('[data-gfp-deliv]');
+  var elDeliv = {% if gf_po_date != blank %}null{% else %}root.querySelector('[data-gfp-deliv]'){% endif %};
   if (elDeliv) {
     var OFFSET   = {{ s.delivery_offset | default: 2 }};
     var SKIP_SUN = {{ skip_sun | json }};
@@ -1034,7 +1049,7 @@
     var vid = cur ? parseInt(cur.getAttribute('data-gfp-vid'), 10) : 0;
     if (!vid) { showErr('Aucune variante disponible.'); return; }
 
-    {%- if s.go_to_checkout and s.fast_checkout != false -%}
+    {%- if s.go_to_checkout and s.fast_checkout != false and gf_po_date == blank -%}
     /* Checkout instantané : UNE navigation (Shopify crée le panier puis redirige
        vers le checkout) au lieu de fetch add.js + redirection JS. Le navigateur
        part immédiatement, et le panier est remplacé (jamais de pack accumulé). */
@@ -1052,11 +1067,11 @@
     btn.classList.add('gfp-loading');
     if (errEl) errEl.style.display = 'none';
 
-    fetch(cartRoot + 'cart/add.js', {
+    {% if gf_po_clear %}fetch(cartRoot + 'cart/clear.js', { method: 'POST', headers: { 'Accept': 'application/json' } }).then(function(){ return {% endif %}fetch(cartRoot + 'cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ items: [{ id: vid, quantity: qty }] })
-    })
+      body: JSON.stringify({ items: [{ id: vid, quantity: qty{% if gf_po_date != blank %}, properties: { 'Précommande': {{ gf_po_prop | json }} }{% endif %} }] })
+    }){% if gf_po_clear %}; }){% endif %}
     .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
     .then(function(res){
       if (!res.ok) { throw new Error(res.data.description || res.data.message || "Impossible d'ajouter au panier."); }

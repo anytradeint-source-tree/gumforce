@@ -2,6 +2,12 @@
   assign gf_id = block.id
   assign s     = block.settings
 
+  # PRÉCOMMANDE (Réglages du thème › Précommande) : la mention 48 h est retirée
+  # des puces, le reste du texte est gardé
+  capture gf_po_date
+    render 'gf-preorder-date', product: closest.product
+  endcapture
+
   assign b1 = s.bullet_1
   assign b2 = s.bullet_2
   assign b3 = s.bullet_3
@@ -75,7 +81,7 @@
   <ul>
     {%- for i in (1..8) -%}
       {%- assign bkey = 'bullet_' | append: i -%}
-      {%- assign bval = s[bkey] -%}
+      {%- assign bval = s[bkey] -%}{%- if gf_po_date != blank -%}{%- capture bval -%}{%- render 'gf-preorder-text', text: bval, date: gf_po_date -%}{%- endcapture -%}{%- endif -%}
       {%- if bval != blank -%}
         <li>
           <span class="gfbl-icon" aria-hidden="true">
