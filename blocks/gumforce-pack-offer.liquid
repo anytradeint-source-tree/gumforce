@@ -251,7 +251,7 @@
   endcapture
   assign gf_po_cta = settings.gf_preorder_cta | strip
   assign gf_po_date_b = gf_po_date | escape | prepend: '<b>' | append: '</b>'
-  assign gf_po_note = settings.gf_preorder_note | strip | escape | replace: ' :', '&nbsp;:' | replace: '[date]', gf_po_date_b
+  assign gf_po_note = settings.gf_preorder_note | strip | escape | replace: ' :', '&nbsp;:' | replace: '[date]', gf_po_date_b | newline_to_br
   assign gf_po_pname = settings.gf_preorder_prop_name | strip
   assign gf_po_pval = settings.gf_preorder_prop_value | replace: '[date]', gf_po_date | strip
   assign gf_po_props = false

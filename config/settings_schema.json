@@ -46,8 +46,8 @@
         "type": "textarea",
         "id": "gf_preorder_note",
         "label": "Texte sous le bouton",
-        "default": "En précommande : ta commande part de notre entrepôt à partir du [date]. Tu paies aujourd'hui. Tu reçois le suivi par e-mail dès que ton colis part.",
-        "info": "La date s'affiche en gras. Vide = rien sous le bouton."
+        "default": "Précommande : expédiée à partir du [date].\nExpédition à partir du [date].",
+        "info": "La date s'affiche en gras. Un retour à la ligne ici = un retour à la ligne sur la page. Vide = rien sous le bouton."
       },
       {
         "type": "text",
