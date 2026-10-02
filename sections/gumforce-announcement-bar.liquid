@@ -11,18 +11,25 @@
 {%- assign s = section.settings -%}
 {%- assign uid = section.id | handleize -%}
 {%- liquid
-  # PRÉCOMMANDE (Réglages du thème › Précommande) : sur la fiche gumforce, un
-  # message de livraison en 48 h devient « Expédié à partir du [date] »
+  # PRÉCOMMANDE (Réglages du thème › Précommande › Bandeau du haut) : sur la fiche
+  # gumforce, un message de livraison en 48 h est remplacé par ce texte
   capture gf_po_date
     render 'gf-preorder-date', product: product
   endcapture
+  assign gf_po_banner = settings.gf_preorder_banner | replace: '[date]', gf_po_date | strip
   assign raw = ''
   for i in (1..6)
     assign key = 'message_' | append: i
     assign m = s[key]
     if m != blank
       if gf_po_date != blank and m contains '48'
-        assign m = 'Expédié à partir du ' | append: gf_po_date | escape
+        if gf_po_banner != blank
+          assign m = gf_po_banner | escape
+        else
+          capture m
+            render 'gf-preorder-text', text: m, date: gf_po_date
+          endcapture
+        endif
       endif
       assign raw = raw | append: m | append: '|||'
     endif

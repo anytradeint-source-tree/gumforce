@@ -240,18 +240,26 @@
     assign has_timg = true
   endif
 
-  comment — PRÉCOMMANDE (Réglages du thème › Précommande) : bouton « Précommander »,
-    texte d'expédition sous le bouton à la place de l'urgence « livraison le … »,
-    propriété « Précommande » sur chaque article ajouté. Le lien /cart/variante:qté
+  comment — PRÉCOMMANDE (Réglages du thème › Précommande, tous les textes y sont) :
+    texte du bouton, texte sous le bouton à la place de l'urgence « livraison le … »,
+    mention (propriété) sur chaque article ajouté. Le lien /cart/variante:qté
     ne transporte pas de propriété → panier vidé puis ajout AJAX (même résultat :
     le panier ne contient que ce pack). Mode coupé : rendu inchangé.
   endcomment
   capture gf_po_date
     render 'gf-preorder-date', product: pr
   endcapture
-  assign gf_po_prop = 'expédition à partir du ' | append: gf_po_date
+  assign gf_po_cta = settings.gf_preorder_cta | strip
+  assign gf_po_date_b = gf_po_date | escape | prepend: '<b>' | append: '</b>'
+  assign gf_po_note = settings.gf_preorder_note | strip | escape | replace: ' :', '&nbsp;:' | replace: '[date]', gf_po_date_b
+  assign gf_po_pname = settings.gf_preorder_prop_name | strip
+  assign gf_po_pval = settings.gf_preorder_prop_value | replace: '[date]', gf_po_date | strip
+  assign gf_po_props = false
+  if gf_po_date != blank and gf_po_pname != blank and gf_po_pval != blank
+    assign gf_po_props = true
+  endif
   assign gf_po_clear = false
-  if gf_po_date != blank and s.go_to_checkout and s.fast_checkout != false
+  if gf_po_props and s.go_to_checkout and s.fast_checkout != false
     assign gf_po_clear = true
   endif
 -%}
@@ -652,7 +660,7 @@
       {%- endif -%}
 
       <button class="gfp-cta" id="gfp-cta-{{ gf_id }}">
-        <span class="gfp-cta-main"><span data-gfp-ctalabel>{% if gf_po_date != blank %}Précommander{% else %}{{ s.cta_text | default: 'Ajouter au panier' }}{% endif %}</span><span class="gfp-ctaprice" data-gfp-ctaprice></span></span>
+        <span class="gfp-cta-main"><span data-gfp-ctalabel>{% if gf_po_date != blank and gf_po_cta != blank %}{{ gf_po_cta | escape }}{% else %}{{ s.cta_text | default: 'Ajouter au panier' }}{% endif %}</span><span class="gfp-ctaprice" data-gfp-ctaprice></span></span>
         {%- if s.show_cta_guarantee -%}
           <span class="gfp-cta-guar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>{{ s.cta_guarantee_text | default: 'Satisfait ou remboursé · 90 jours' | escape }}</span>
         {%- endif -%}
@@ -667,7 +675,7 @@
       </div>
 
       {%- comment -%} Urgence sous le bouton : « Commande dans les Xh XXmin pour une livraison le … » {%- endcomment -%}
-      <div class="gfp-urgency">
+      <div class="gfp-urgency"{% if gf_po_date != blank and gf_po_note == blank %} hidden{% endif %}>
         {%- case s.delivery_icon -%}
           {%- when 'none' -%}
           {%- when 'truck' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
@@ -676,7 +684,7 @@
           {%- when 'bolt' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8Z"/></svg>
           {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
         {%- endcase -%}
-        <span data-gfp-deliv>{% if gf_po_date != blank %}En précommande&nbsp;: ta commande part de notre entrepôt à partir du <b>{{ gf_po_date | escape }}</b>. Tu paies aujourd'hui. Tu reçois le suivi par e-mail dès que ton colis part.{% endif %}</span>
+        <span data-gfp-deliv>{% if gf_po_date != blank %}{{ gf_po_note }}{% endif %}</span>
       </div>
 
       {%- if s.show_reassure -%}
@@ -827,7 +835,7 @@
   var tiers   = root.querySelectorAll('[data-gfp-tier]');
   var elLabel = root.querySelector('[data-gfp-ctalabel]');
   var elPrice = root.querySelector('[data-gfp-ctaprice]');
-  var CTA     = {% if gf_po_date != blank %}"Précommander"{% else %}{{ s.cta_text | default: 'Ajouter au panier' | json }}{% endif %};
+  var CTA     = {% if gf_po_date != blank and gf_po_cta != blank %}{{ gf_po_cta | json }}{% else %}{{ s.cta_text | default: 'Ajouter au panier' | json }}{% endif %};
   var sel     = {{ default_tier | json }};
 
   /* quantité (optionnelle) */
@@ -1049,7 +1057,7 @@
     var vid = cur ? parseInt(cur.getAttribute('data-gfp-vid'), 10) : 0;
     if (!vid) { showErr('Aucune variante disponible.'); return; }
 
-    {%- if s.go_to_checkout and s.fast_checkout != false and gf_po_date == blank -%}
+    {%- if s.go_to_checkout and s.fast_checkout != false and gf_po_props == false -%}
     /* Checkout instantané : UNE navigation (Shopify crée le panier puis redirige
        vers le checkout) au lieu de fetch add.js + redirection JS. Le navigateur
        part immédiatement, et le panier est remplacé (jamais de pack accumulé). */
@@ -1070,7 +1078,7 @@
     {% if gf_po_clear %}fetch(cartRoot + 'cart/clear.js', { method: 'POST', headers: { 'Accept': 'application/json' } }).then(function(){ return {% endif %}fetch(cartRoot + 'cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ items: [{ id: vid, quantity: qty{% if gf_po_date != blank %}, properties: { 'Précommande': {{ gf_po_prop | json }} }{% endif %} }] })
+      body: JSON.stringify({ items: [{ id: vid, quantity: qty{% if gf_po_props %}, properties: { {{ gf_po_pname | json }}: {{ gf_po_pval | json }} }{% endif %} }] })
     }){% if gf_po_clear %}; }){% endif %}
     .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, data: d }; }); })
     .then(function(res){

@@ -1,7 +1,7 @@
 {%- comment -%}
   GF — PRÉCOMMANDE : retire les promesses de livraison en 48 h d'un texte.
-  1. FAQ « Livraison et retours » : la phrase d'expédition (1 à 2 jours ouvrés +
-     48h France & Belgique) est remplacée par la date d'expédition.
+  1. FAQ : la phrase « FAQ : phrase à remplacer » devient « FAQ : remplacée par »
+     (Réglages du thème › Précommande, [date] = date d'expédition).
   2. Partout ailleurs : seule la mention 48 h disparaît, le reste du texte reste
      (« Livraison 48h en France & Belgique » → « Livraison en France & Belgique »).
 
@@ -10,9 +10,12 @@
 {%- endcomment -%}
 {%- liquid
   assign t = text
-  assign gf_new = 'En précommande, les commandes partent de notre entrepôt à partir du ' | append: date | append: '. La livraison prend ensuite 7-10 jours pour le reste du monde.'
-  assign t = t | replace: 'Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement 48h pour la France & Belgique. 7-10 jours pour le reste du monde.', gf_new
-  assign t = t | replace: 'Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement 48h pour la France &amp; Belgique. 7-10 jours pour le reste du monde.', gf_new
+  assign gf_from = settings.gf_preorder_faq_from | strip
+  if gf_from != blank
+    assign gf_to = settings.gf_preorder_faq_to | replace: '[date]', date | strip
+    assign gf_from_amp = gf_from | replace: '&', '&amp;'
+    assign t = t | replace: gf_from, gf_to | replace: gf_from_amp, gf_to
+  endif
   assign t = t | replace: ' en 48 heures', '' | replace: ' sous 48 heures', '' | replace: ' 48 heures', ''
   assign t = t | replace: ' en 48h', '' | replace: ' en 48 h', '' | replace: ' sous 48h', '' | replace: ' sous 48 h', ''
   assign t = t | replace: ' EN 48H', '' | replace: ' EN 48 H', '' | replace: ' en 48H', ''

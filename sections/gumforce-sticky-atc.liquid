@@ -105,14 +105,21 @@
   endcase
   assign cta_radius = s.cta_radius | default: 14
 
-  # PRÉCOMMANDE (Réglages du thème › Précommande) : bouton « Précommander » et
-  # propriété « Précommande » sur l'article. Le lien /cart/variante:1 ne transporte
+  # PRÉCOMMANDE (Réglages du thème › Précommande, tous les textes y sont) : texte du
+  # bouton et mention (propriété) sur l'article. Le lien /cart/variante:1 ne transporte
   # pas de propriété → panier vidé puis ajout AJAX, puis checkout.
   capture gf_po_date
     render 'gf-preorder-date', product: product
   endcapture
-  if gf_po_date != blank
-    assign cta_text = 'Précommander'
+  assign gf_po_cta = settings.gf_preorder_cta | strip
+  if gf_po_date != blank and gf_po_cta != blank
+    assign cta_text = gf_po_cta
+  endif
+  assign gf_po_pname = settings.gf_preorder_prop_name | strip
+  assign gf_po_pval = settings.gf_preorder_prop_value | replace: '[date]', gf_po_date | strip
+  assign gf_po_props = false
+  if gf_po_date != blank and gf_po_pname != blank and gf_po_pval != blank
+    assign gf_po_props = true
   endif
 -%}
 
@@ -375,12 +382,12 @@
     if (t && t.vid) {
       busy = true;
       cta.classList.add('is-busy');
-      {% if gf_po_date != blank %}fetch(root + 'cart/clear.js', { method: 'POST', headers: { 'Accept': 'application/json' } })
+      {% if gf_po_props %}fetch(root + 'cart/clear.js', { method: 'POST', headers: { 'Accept': 'application/json' } })
         .then(function () {
           return fetch(root + 'cart/add.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ items: [{ id: t.vid, quantity: 1, properties: { 'Précommande': {{ 'expédition à partir du ' | append: gf_po_date | json }} } }] })
+            body: JSON.stringify({ items: [{ id: t.vid, quantity: 1, properties: { {{ gf_po_pname | json }}: {{ gf_po_pval | json }} } }] })
           });
         })
         .then(function (r) { if (!r.ok) throw new Error('add'); window.location.href = root + 'checkout'; })

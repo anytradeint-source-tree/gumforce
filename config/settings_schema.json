@@ -25,7 +25,62 @@
         "id": "gf_preorder_date",
         "label": "Date d'expédition",
         "default": "15 octobre",
-        "info": "Écrite ici une seule fois, reprise partout (texte sous le bouton, bandeau, panier, checkout, e-mail de confirmation). Exemple : 15 octobre. Sans date, le mode reste inactif."
+        "info": "Écrite ici une seule fois, reprise partout où les textes ci-dessous contiennent [date]. Exemple : 15 octobre. Sans date, le mode reste inactif."
+      },
+      {
+        "type": "header",
+        "content": "Textes"
+      },
+      {
+        "type": "paragraph",
+        "content": "Écris [date] là où la date d'expédition doit apparaître."
+      },
+      {
+        "type": "text",
+        "id": "gf_preorder_cta",
+        "label": "Bouton d'achat et barre collante",
+        "default": "Précommander",
+        "info": "Vide = texte habituel du bouton."
+      },
+      {
+        "type": "textarea",
+        "id": "gf_preorder_note",
+        "label": "Texte sous le bouton",
+        "default": "En précommande : ta commande part de notre entrepôt à partir du [date]. Tu paies aujourd'hui. Tu reçois le suivi par e-mail dès que ton colis part.",
+        "info": "La date s'affiche en gras. Vide = rien sous le bouton."
+      },
+      {
+        "type": "text",
+        "id": "gf_preorder_banner",
+        "label": "Bandeau du haut",
+        "default": "Expédié à partir du [date]",
+        "info": "Remplace le message de livraison 48h du bandeau. Vide = la mention 48h est simplement retirée."
+      },
+      {
+        "type": "text",
+        "id": "gf_preorder_prop_name",
+        "label": "Mention sur l'article : nom",
+        "default": "Précommande",
+        "info": "Affichée sous l'article dans le panier, le checkout, l'e-mail de confirmation et l'admin. Ne pas commencer par _ (la mention serait masquée). Vide = aucune mention."
+      },
+      {
+        "type": "text",
+        "id": "gf_preorder_prop_value",
+        "label": "Mention sur l'article : texte",
+        "default": "expédition à partir du [date]"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_preorder_faq_from",
+        "label": "FAQ : phrase à remplacer",
+        "default": "Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement 48h pour la France & Belgique. 7-10 jours pour le reste du monde.",
+        "info": "Copie exacte de la phrase de la FAQ à remplacer en mode précommande. Les autres mentions 48h de la page sont retirées automatiquement."
+      },
+      {
+        "type": "textarea",
+        "id": "gf_preorder_faq_to",
+        "label": "FAQ : remplacée par",
+        "default": "En précommande, les commandes partent de notre entrepôt à partir du [date]. La livraison prend ensuite 7-10 jours pour le reste du monde."
       },
       {
         "type": "header",
