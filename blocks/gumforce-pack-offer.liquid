@@ -251,7 +251,8 @@
   endcapture
   assign gf_po_cta = settings.gf_preorder_cta | strip
   assign gf_po_date_b = gf_po_date | escape | prepend: '<b>' | append: '</b>'
-  assign gf_po_note = settings.gf_preorder_note | strip | escape | replace: ' :', '&nbsp;:' | replace: '[date]', gf_po_date_b | newline_to_br
+  assign gf_po_note = settings.gf_preorder_note | strip
+  assign gf_po_lines = gf_po_note | newline_to_br | split: '<br />'
   assign gf_po_pname = settings.gf_preorder_prop_name | strip
   assign gf_po_pval = settings.gf_preorder_prop_value | replace: '[date]', gf_po_date | strip
   assign gf_po_props = false
@@ -391,7 +392,10 @@
   #gfp-{{ gf_id }} .gfp-urgency { display:block; text-align:center; margin-top:12px; padding:0 8px; font-size:12.5px; font-weight:500; color:var(--gfp-muted); line-height:1.5; }
   #gfp-{{ gf_id }} .gfp-urgency svg { display:inline-block; vertical-align:-2.5px; width:14px; height:14px; margin-right:4px; color:var(--gfp-accent); }
   #gfp-{{ gf_id }} .gfp-urgency b { color:var(--gfp-ink); font-weight:800; white-space:nowrap; }
-  #gfp-{{ gf_id }} .gfp-urg-br { display:block; height:1px; }
+  #gfp-{{ gf_id }} .gfp-urg-br { display:block; height:1px; }{% if gf_po_date != blank %}
+  #gfp-{{ gf_id }} .gfp-po-line { display:block; text-wrap:balance; }
+  #gfp-{{ gf_id }} .gfp-po-line + .gfp-po-line { margin-top:3px; }
+  #gfp-{{ gf_id }} .gfp-po-line--status { color:var(--gfp-ink); font-weight:700; }{% endif %}
   @container (min-width:560px) {
     #gfp-{{ gf_id }} .gfp-urg-br { display:inline; height:auto; }
   }
@@ -676,15 +680,15 @@
 
       {%- comment -%} Urgence sous le bouton : « Commande dans les Xh XXmin pour une livraison le … » {%- endcomment -%}
       <div class="gfp-urgency"{% if gf_po_date != blank and gf_po_note == blank %} hidden{% endif %}>
-        {%- case s.delivery_icon -%}
+        {%- capture gfp_ic -%}{%- case s.delivery_icon -%}
           {%- when 'none' -%}
           {%- when 'truck' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
           {%- when 'clock' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
           {%- when 'package' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8Z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
           {%- when 'bolt' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8Z"/></svg>
           {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-        {%- endcase -%}
-        <span data-gfp-deliv>{% if gf_po_date != blank %}{{ gf_po_note }}{% endif %}</span>
+        {%- endcase -%}{%- endcapture -%}{%- if gf_po_date == blank -%}{{ gfp_ic }}{%- endif -%}
+        <span data-gfp-deliv>{% if gf_po_date != blank %}{% for gf_l in gf_po_lines %}{% assign gf_lr = gf_l | strip %}{% if gf_lr != blank %}{% if gf_lr contains '[date]' %}<span class="gfp-po-line">{{ gfp_ic }}{{ gf_lr | escape | replace: ' :', '&nbsp;:' | replace: '[date]', gf_po_date_b }}</span>{% else %}<span class="gfp-po-line gfp-po-line--status">{{ gf_lr | escape | replace: ' :', '&nbsp;:' }}</span>{% endif %}{% endif %}{% endfor %}{% endif %}</span>
       </div>
 
       {%- if s.show_reassure -%}

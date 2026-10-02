@@ -37,6 +37,13 @@
       },
       {
         "type": "text",
+        "id": "gf_preorder_badge",
+        "label": "Badge sous le titre",
+        "default": "Précommande exclusive · Rupture de stock",
+        "info": "Pastille au-dessus des badges produit. Vide = pas de pastille."
+      },
+      {
+        "type": "text",
         "id": "gf_preorder_cta",
         "label": "Bouton d'achat et barre collante",
         "default": "Précommander",
@@ -47,7 +54,7 @@
         "id": "gf_preorder_note",
         "label": "Texte sous le bouton",
         "default": "En rupture de stock.\nPrécommande : expédiée à partir du [date].",
-        "info": "La date s'affiche en gras. Un retour à la ligne ici = un retour à la ligne sur la page. Vide = rien sous le bouton."
+        "info": "Une ligne par retour à la ligne. La ligne qui contient [date] reçoit l'icône camion et la date en gras ; les autres lignes s'affichent en gras, sans icône. Vide = rien sous le bouton."
       },
       {
         "type": "text",
