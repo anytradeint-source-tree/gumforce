@@ -1,4 +1,4 @@
-{% comment %}
+{%- comment -%}
   GF — PRÉCOMMANDE : retire les promesses de livraison en 48 h d'un texte.
   1. FAQ « Livraison et retours » : la phrase d'expédition (1 à 2 jours ouvrés +
      48h France & Belgique) est remplacée par la date d'expédition.
@@ -7,7 +7,7 @@
 
   @param {string} text - texte d'origine (HTML accepté)
   @param {string} date - date d'expédition (Réglages du thème › Précommande)
-{% endcomment %}
+{%- endcomment -%}
 {%- liquid
   assign t = text
   assign gf_new = 'En précommande, les commandes partent de notre entrepôt à partir du ' | append: date | append: '. La livraison prend ensuite 7-10 jours pour le reste du monde.'
