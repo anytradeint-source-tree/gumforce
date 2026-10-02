@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "gf_preorder_active": true,
     "logo": "shopify://shop_images/logo_no_bg_cut.svg",
     "logo_height": 60,
     "logo_height_mobile": 40,
