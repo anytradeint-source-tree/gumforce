@@ -777,7 +777,7 @@
         "card_ciMprA": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_08_35_2cdd4133-7bff-4783-95db-cc8bee46d6a1.jpg",
+            "image": "shopify://shop_images/gumforce-visuel-129.jpg",
             "name": "Edgar Icon",
             "role": "Fondateur de Elwood"
           }
@@ -785,7 +785,7 @@
         "card_tcWqe8": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_43_21.jpg",
+            "image": "shopify://shop_images/gumforce-visuel-128.jpg",
             "name": "Sebastian Vale",
             "role": "Athlète Hyrox"
           }
@@ -793,7 +793,7 @@
         "card_bdnyPL": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_20_33.jpg",
+            "image": "shopify://shop_images/gumforce-visuel-127.jpg",
             "name": "Aurélien Delmas",
             "role": "Acteur et modèle"
           }
@@ -848,7 +848,6 @@
         "card_QjiXfp": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_59_13.png",
             "name": "Edgar Icon",
             "role": "Fondateur de Elwood"
           }
@@ -856,7 +855,6 @@
         "card_YEMwcx": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_43_21.png",
             "name": "Sebastian Vale",
             "role": "Athlète Hyrox"
           }
@@ -909,8 +907,6 @@
         "text_align_desktop": "center",
         "heading_size": 32,
         "body_size": 15,
-        "before_image": "shopify://shop_images/hf_20260906_213047_bcda17a3-210d-4134-ac03-67e5cd1d590a.jpg",
-        "after_image": "shopify://shop_images/hf_20260906_210709_4710dcf2-0ffe-4b33-bd87-87079d93098c.jpg",
         "before_label": "Jour 1",
         "after_label": "Jour 30",
         "show_arrow": true,
@@ -1362,7 +1358,6 @@
             "verified": false,
             "review_text": "Le meilleur chewing-gum pour la mâchoire que j'ai essayé. La créatine est un vrai plus et le goût menthe est puissant. Je recommande.",
             "highlight_text": "",
-            "review_image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_25_19.png",
             "item_type": "Menthe Fraîche"
           }
         },
@@ -1440,7 +1435,6 @@
             "verified": false,
             "review_text": "J’adore l’ajout de créatine. Pouvoir prendre ma créatine tout en travaillant ma mâchoire, c’est franchement malin. Et le goût est top aussi. Livraison en 8 jours à Bruxelles.",
             "highlight_text": "",
-            "review_image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_22_38.png",
             "item_type": ""
           }
         },
@@ -1453,7 +1447,6 @@
             "verified": false,
             "review_text": "J’étais sceptique au début, mais le produit tient vraiment ses promesses. Bien plus résistant que tous les autres chewing-gums que j’ai testés. Après 10 minutes, tu sens clairement les masséters travailler.",
             "highlight_text": "",
-            "review_image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_40_31.png",
             "item_type": ""
           }
         },
