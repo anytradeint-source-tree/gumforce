@@ -421,14 +421,20 @@
               else
                 assign media_sizes = sizes
               endif
+              # GUMFORCE perf : seule la 1re diapo est chargée d'office ; les suivantes à l'approche
+              # (sinon ~600 Ko d'images partent en même temps que la photo principale)
+              assign gf_loading = nil
+              unless forloop.first
+                assign gf_loading = 'lazy'
+              endunless
           -%}
           {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
             <div
               class="product-media-constraint-wrapper">
-              {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop -%}
+              {%- render 'product-media', media: media, sizes: media_sizes, loading: gf_loading, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop -%}
             </div>
           {% else %}
-            {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop -%}
+            {%- render 'product-media', media: media, sizes: media_sizes, loading: gf_loading, is_main_product_media: forloop.first, gf_video_mode: gf_vmode, gf_video_loop: block_settings.video_loop -%}
           {% endif %}
         {% endcapture %}
         {% capture class %}
@@ -710,8 +716,9 @@
      Safari devait télécharger un segment entier avant la 1re image → longue attente).
      arm() : poster = l'image d'aperçu déjà affichée (même fichier, déjà en cache) et
      même cadrage → aucun changement visible jusqu'à la 1re image de la vidéo ; puis
-     source + lecture (muet, boucle). Armée dès que la 1re photo de la galerie est
-     chargée (le LCP reste prioritaire), ou dès que la diapo devient visible. ── */
+     source + lecture (muet, boucle). Armée seulement quand la diapo devient visible :
+     avant, elle partait juste après la 1re photo et occupait la connexion pour une
+     diapo que personne ne regardait. ── */
   function pick(v) {
     var sd = v.getAttribute('data-gf-sd'), hd = v.getAttribute('data-gf-hd');
     var c = navigator.connection || {};
@@ -724,6 +731,15 @@
     var src = pick(v);
     if (!src) return;
     v.setAttribute('data-gf-armed', '1');
+    /* 480p déduit du nom du fichier 720p (Shopify ne l'expose pas en Liquid) :
+       s'il n'existe pas, retour au fichier d'origine */
+    var hd = v.getAttribute('data-gf-hd');
+    if (hd && src !== hd) {
+      v.addEventListener('error', function () {
+        v.src = hd;
+        var p = v.play(); if (p && p.catch) p.catch(function(){});
+      }, { once: true });
+    }
     var pm = v.closest('.product-media');
     var preview = pm ? pm.querySelector('img.product-media__image') : null;
     if (preview) {
@@ -742,19 +758,6 @@
     var p = v.play();
     if (p && p.catch) p.catch(function(){});
   }
-  function armAll() {
-    g.querySelectorAll('video.gf-smart-video').forEach(playSmart);
-  }
-  /* dès que la 1re photo (LCP) est chargée — sinon filet 2,5 s après le DOM */
-  (function () {
-    var done = false;
-    function go() { if (done) return; done = true; armAll(); }
-    var first = g.querySelector('img.product-media__image');
-    if (first && first.complete && first.naturalWidth) { requestAnimationFrame(go); }
-    else if (first) { first.addEventListener('load', go, { once: true }); first.addEventListener('error', go, { once: true }); }
-    setTimeout(go, 2500);
-  })();
-
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if (!e.isIntersecting) return;

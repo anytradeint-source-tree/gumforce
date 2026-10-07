@@ -109,7 +109,8 @@
        none), lecture muette uniquement quand la vidéo est à l'écran (>60%),
        pause dès qu'elle en sort. ── */
     function gfRestore(v) {
-      if (v.__gfRestored) return; v.__gfRestored = true;
+      /* vidéo « smart » : source posée par la galerie ; un load() ici relançait son téléchargement */
+      if (v.__gfRestored || v.classList.contains('gf-smart-video')) return; v.__gfRestored = true;
       if (v.dataset.gfSrc) v.setAttribute('src', v.dataset.gfSrc);
       v.querySelectorAll('source').forEach(function (s2) {
         if (s2.dataset.gfSrc) s2.setAttribute('src', s2.dataset.gfSrc);

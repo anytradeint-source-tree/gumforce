@@ -290,7 +290,7 @@
           {%- if v != blank -%}
             {%- if vc >= cstart -%}
               {%- assign vposter = v.preview_image | image_url: width: 560 -%}
-              <div class="gfvc-card gfvc-clone" data-gfvc-clone="{{ vc }}" aria-hidden="true"{% if vposter != blank %} style="background-image:url('{{ vposter }}')"{% endif %}>
+              <div class="gfvc-card gfvc-clone" data-gfvc-clone="{{ vc }}" aria-hidden="true"{% if vposter != blank %} data-gfvc-bg="{{ vposter }}"{% endif %}>
                 {%- if block.settings.name != blank or block.settings.role != blank -%}
                   <div class="gfvc-ov">
                     {%- if block.settings.name != blank -%}<div class="gfvc-name">{{ block.settings.name }}</div>{%- endif -%}
@@ -329,15 +329,27 @@
             if vsrc == '' and v.sources.size > 0
               assign vsrc = v.sources.first.url
             endif
+            # Liquid n'expose que le plus gros MP4 (1080p, 7 Mb/s, jusqu'à 54 Mo) alors que Shopify
+            # génère aussi « SD-480p-1.5Mbps » sous le même nom → on le sert (4 à 5 fois plus léger) ;
+            # le JS retombe sur le fichier d'origine s'il n'existe pas
+            assign vsrc_sd = vsrc
+            assign vparts = vsrc | split: '.HD-'
+            if vparts.size == 2
+              assign vtail = vparts.last | split: '-'
+              if vtail.size == 3
+                assign vsrc_sd = vparts.first | append: '.SD-480p-1.5Mbps-' | append: vtail.last
+              endif
+            endif
             assign vposter = v.preview_image | image_url: width: 560
           -%}
           <div class="gfvc-card{% if vi == 0 %} gfvc-on{% endif %}"
                data-gfvc-card="{{ vi }}"
-               data-gfvc-src="{{ vsrc | escape }}"
-               {%- if vposter != blank %} style="background-image:url('{{ vposter }}')"{% endif %}
+               data-gfvc-src="{{ vsrc_sd | escape }}"
+               {%- if vsrc_sd != vsrc %} data-gfvc-src-hd="{{ vsrc | escape }}"{% endif %}
+               {%- if vposter != blank %} data-gfvc-bg="{{ vposter }}"{% endif %}
                {{ block.shopify_attributes }}>
             <video playsinline webkit-playsinline muted preload="none"
-                   {%- if vposter != blank %} poster="{{ vposter }}"{% endif %}
+                   {%- if vposter != blank %} data-gfvc-poster="{{ vposter }}"{% endif %}
                    aria-label="{{ block.settings.name | default: 'Vidéo client' | escape }}"></video>
             <span class="gfvc-spin" aria-hidden="true"></span>
             {%- if block.settings.name != blank or block.settings.role != blank -%}
@@ -364,7 +376,7 @@
           {%- if v != blank -%}
             {%- if vc < nclone -%}
               {%- assign vposter = v.preview_image | image_url: width: 560 -%}
-              <div class="gfvc-card gfvc-clone" data-gfvc-clone="{{ vc }}" aria-hidden="true"{% if vposter != blank %} style="background-image:url('{{ vposter }}')"{% endif %}>
+              <div class="gfvc-card gfvc-clone" data-gfvc-clone="{{ vc }}" aria-hidden="true"{% if vposter != blank %} data-gfvc-bg="{{ vposter }}"{% endif %}>
                 {%- if block.settings.name != blank or block.settings.role != blank -%}
                   <div class="gfvc-ov">
                     {%- if block.settings.name != blank -%}<div class="gfvc-name">{{ block.settings.name }}</div>{%- endif -%}
@@ -448,10 +460,66 @@
     if (v.__gfArmed) { if (preloadMode === 'auto' && v.preload !== 'auto') v.preload = 'auto'; return; }
     var src = reals[i].getAttribute('data-gfvc-src');
     if (!src) return;
+    if (!v.__gfErrBound) {
+      v.__gfErrBound = true;
+      /* 480p déduit du nom du fichier : s'il n'existe pas, retour au fichier d'origine */
+      v.addEventListener('error', function () {
+        var hd = reals[i].getAttribute('data-gfvc-src-hd');
+        if (!hd || !v.getAttribute('src')) return;
+        reals[i].setAttribute('data-gfvc-src', hd);
+        reals[i].removeAttribute('data-gfvc-src-hd');
+        v.src = hd;
+        try { v.load(); } catch (e) {}
+        if (i === cur && railVisible) play(v);
+      });
+    }
     v.__gfArmed = true;
     v.preload = preloadMode || 'metadata';
     v.src = src;
     try { v.load(); } catch (e) {}
+  }
+  /* coupe le téléchargement d'une vidéo (retour à l'aperçu) ; elle sera ré-armée au besoin */
+  function disarm(i) {
+    var v = vids[i];
+    if (!v || !v.__gfArmed) return;
+    if (!v.paused) v.pause();
+    v.removeAttribute('src');
+    v.preload = 'none';
+    try { v.load(); } catch (e) {}
+    v.__gfArmed = false;
+    v.__gfUnlocked = false;
+    reals[i].classList.remove('gfvc-ready', 'gfvc-loading');
+  }
+  function disarmOthers() {
+    for (var k = 0; k < N; k++) { if (k !== cur) disarm(k); }
+  }
+
+  /* voisines : seulement le début (metadata), jamais sur connexion lente → la carte
+     affichée garde toute la bande passante */
+  function preloadNeighbors() {
+    if (slowNet || cur < 0) return;
+    var nx = cur + 1;
+    if (nx >= N && LOOP) nx = 0;
+    if (nx < N && nx !== cur) arm(nx, 'metadata');
+    var pvx = cur - 1;
+    if (pvx < 0 && LOOP) pvx = N - 1;
+    if (pvx >= 0 && pvx !== cur && pvx !== nx) arm(pvx, 'metadata');
+  }
+
+  /* connexion lente, mesurée sur la lecture elle-même (iPhone n'expose pas
+     navigator.connection) : 1re image > 3 s ou 2 coupures → plus de préchargement */
+  var slowNet = !!saveData, slowT = 0, stalls = 0;
+  function goSlow() {
+    if (slowNet) return;
+    slowNet = true;
+    disarmOthers();
+  }
+  function watchStart(v) {
+    clearTimeout(slowT);
+    if (slowNet || v.__gfPlayed) return;
+    slowT = setTimeout(function () {
+      if (v === vids[cur] && railVisible && !v.paused && v.readyState < 3) goSlow();
+    }, 3000);
   }
 
   /* iOS : un play() AVEC SON doit naître d'un geste utilisateur. À chaque
@@ -459,7 +527,7 @@
      déjà pré-buffées : jouées muettes un instant puis remises à zéro →
      iOS les marque autorisées, leur lecture sonore programmatique passe. */
   function unlockNeighbors() {
-    if (!sound || saveData) return;
+    if (!sound || slowNet) return;
     var nx = cur + 1; if (nx >= N && LOOP) nx = 0;
     var pvx = cur - 1; if (pvx < 0 && LOOP) pvx = N - 1;
     var idxs = [];
@@ -518,17 +586,9 @@
       if (andPlay) {
         arm(cur, 'auto');
         play(v);
+        watchStart(v);
         startProg();
-        /* pré-buffer des DEUX voisines pendant la lecture (jamais en saveData)
-           → swipe instantané à droite COMME à gauche */
-        if (!saveData) {
-          var nx = cur + 1;
-          if (nx >= N && LOOP) nx = 0;
-          if (nx < N && nx !== cur) arm(nx, 'auto');
-          var pvx = cur - 1;
-          if (pvx < 0 && LOOP) pvx = N - 1;
-          if (pvx >= 0 && pvx !== cur && pvx !== nx) arm(pvx, 'metadata'); /* GF: la précédente n'est plus bufferisée en entier (données mobiles) */
-        }
+        preloadNeighbors();
       }
     }
   }
@@ -616,8 +676,12 @@
       var v = vids[i], card = reals[i];
       if (!v) return;
       v.addEventListener('loadeddata', function () { card.classList.add('gfvc-ready'); card.classList.remove('gfvc-loading'); });
-      v.addEventListener('playing',    function () { card.classList.add('gfvc-ready'); card.classList.remove('gfvc-loading'); });
-      v.addEventListener('waiting',    function () { if (card.classList.contains('gfvc-on')) card.classList.add('gfvc-loading'); });
+      v.addEventListener('playing',    function () { v.__gfPlayed = true; card.classList.add('gfvc-ready'); card.classList.remove('gfvc-loading'); });
+      v.addEventListener('waiting',    function () {
+        if (card.classList.contains('gfvc-on')) card.classList.add('gfvc-loading');
+        /* coupure en pleine lecture (pas le démarrage) → compte pour la détection de connexion lente */
+        if (v.__gfPlayed && i === cur && railVisible && ++stalls >= 2) goSlow();
+      });
       v.addEventListener('ended', function () {
         if (i !== cur) return;
         if (i === N - 1 && !LOOP) { setProg(i, 1); return; }
@@ -669,12 +733,15 @@
             onSettleInit();
           } else {
             var v = vids[cur];
-            if (v && v.paused && v.__gfArmed && canAuto) { play(v); startProg(); }
+            if (v && v.paused && v.__gfArmed && canAuto) { play(v); startProg(); preloadNeighbors(); }
           }
         } else {
           var vv = vids[cur];
           if (vv && !vv.paused) vv.pause();
           stopProg();
+          clearTimeout(slowT);
+          /* section quittée : on coupe les voisines (la carte en cours reste prête pour le retour) */
+          disarmOthers();
         }
       });
     }, { threshold: 0.3 });
@@ -699,6 +766,25 @@
     var v = vids[cur];
     if (v && v.paused && v.__gfArmed && canAuto) { play(v); startProg(); }
   });
+
+  /* aperçus posés à l'approche de la section (en fond CSS ils partaient tous au
+     chargement de la page, ~400 Ko, même sans jamais descendre jusqu'ici) */
+  function applyPosters() {
+    root.querySelectorAll('[data-gfvc-bg]').forEach(function (el) {
+      el.style.backgroundImage = 'url("' + el.getAttribute('data-gfvc-bg') + '")';
+      el.removeAttribute('data-gfvc-bg');
+    });
+    root.querySelectorAll('video[data-gfvc-poster]').forEach(function (v) {
+      v.poster = v.getAttribute('data-gfvc-poster');
+      v.removeAttribute('data-gfvc-poster');
+    });
+  }
+  if ('IntersectionObserver' in window && !(typeof Shopify !== 'undefined' && Shopify.designMode)) {
+    var ioP = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { ioP.disconnect(); applyPosters(); }
+    }, { rootMargin: '1200px 0px' });
+    ioP.observe(root);
+  } else { applyPosters(); }
 
   /* position initiale : première carte réelle centrée (avant peinture) */
   measure();

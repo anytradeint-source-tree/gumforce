@@ -172,7 +172,9 @@
       });
       mo.observe(g, { subtree: true, attributes: true, attributeFilter: ['aria-hidden'] });
     }
-    if (document.readyState !== 'loading') init(); else document.addEventListener('DOMContentLoaded', init);
+    /* la galerie est déjà dans le HTML au-dessus : pose immédiate (attendre DOMContentLoaded
+       = attendre tous les scripts du thème, jusqu'à 40 s sur réseau lent) */
+    if (document.readyState !== 'loading' || gallery()) init(); else document.addEventListener('DOMContentLoaded', init);
     window.addEventListener('load', function () { place(); fitText(); });
   })();
 </script>

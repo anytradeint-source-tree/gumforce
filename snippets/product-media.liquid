@@ -156,6 +156,20 @@
                 assign gf_hd_h = gf_src.height
               endif
             endfor
+            assign gf_sd_url = gf_sd.url
+            # Liquid n'expose que le plus gros MP4 (en ligne : sd = hd = 720p) alors que Shopify
+            # génère aussi « SD-480p-1.5Mbps » sous le même nom → on le déduit (la galerie
+            # retombe sur le fichier d'origine s'il n'existe pas)
+            if gf_hd_h > 0 and gf_sd_h >= gf_hd_h
+              assign gf_hd_parts = gf_hd.url | split: '.HD-'
+              if gf_hd_parts.size == 2
+                assign gf_hd_tail = gf_hd_parts.last | split: '-'
+                if gf_hd_tail.size == 3
+                  assign gf_sd_url = gf_hd_parts.first | append: '.SD-480p-1.5Mbps-' | append: gf_hd_tail.last
+                  assign gf_sd_h = 480
+                endif
+              endif
+            endif
             assign gf_play_label = 'accessibility.play_video' | t
             assign gf_pause_label = 'accessibility.pause_video' | t
           -%}
@@ -202,7 +216,7 @@
               width="{{ media.preview_image.width }}"
               height="{{ media.preview_image.height }}"
               aria-label="{{ media.alt | escape }}"
-              {% if gf_sd_h < 100000 %}data-gf-sd="{{ gf_sd.url }}" data-gf-sd-h="{{ gf_sd_h }}"{% endif %}
+              {% if gf_sd_h < 100000 %}data-gf-sd="{{ gf_sd_url }}" data-gf-sd-h="{{ gf_sd_h }}"{% endif %}
               {% if gf_hd_h > 0 %}data-gf-hd="{{ gf_hd.url }}" data-gf-hd-h="{{ gf_hd_h }}"{% endif %}
             ></video>
           </deferred-media>
