@@ -876,6 +876,8 @@
 
   /* Initial layout + stagger fade */
   layout();
+  /* boot pendant le chargement : les hauteurs changent quand les polices arrivent */
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ layout(); });
   placed.forEach(function(card, i){
     setTimeout(function(){ card.classList.add('gfrev-visible'); }, i * 50);
   });
@@ -1016,8 +1018,11 @@
   {%- endif %}
   }
   /* Mise en page immédiate (la section est sous la ligne de flottaison : aucun saut visible),
-     au lieu d'attendre l'approche à 1500 px, qui faisait sauter FAQ + bouton de 0,5 CLS au scroll rapide. */
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _boot); else _boot();
+     au lieu d'attendre l'approche à 1500 px, qui faisait sauter FAQ + bouton de 0,5 CLS au scroll rapide.
+     Pas d'attente de DOMContentLoaded : le HTML de la section est déjà là, et DOMContentLoaded attend
+     tous les scripts du thème (avis invisibles jusqu'à 40 s sur réseau lent ; les avis masqués restaient
+     dans la page et pouvaient charger leurs photos). */
+  _boot();
 })();
 </script>
 
