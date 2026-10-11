@@ -28,16 +28,40 @@
       },
       {
         "type": "text",
-        "id": "gfc_total_label",
-        "label": "Libellé du total",
-        "default": "Total"
+        "id": "gfc_discount_label",
+        "label": "Ligne des réductions",
+        "default": "Réductions",
+        "info": "Montant = prix barrés + codes promo et remises Shopify. Vide = ligne masquée."
       },
       {
         "type": "text",
-        "id": "gfc_savings_text",
-        "label": "Ligne d'économie",
-        "default": "Tu économises [montant]",
-        "info": "[montant] = prix barrés + remises du panier. Vide = ligne masquée."
+        "id": "gfc_shipping_label",
+        "label": "Ligne de livraison",
+        "default": "Livraison"
+      },
+      {
+        "type": "text",
+        "id": "gfc_shipping_free",
+        "label": "Livraison : texte quand elle est gratuite",
+        "default": "Gratuite",
+        "info": "La ligne n'apparaît que quand la livraison est gratuite (sinon son prix dépend du pays). Vide = ligne jamais affichée."
+      },
+      {
+        "type": "range",
+        "id": "gfc_ship_free_min",
+        "label": "Livraison gratuite à partir de",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "€",
+        "default": 40,
+        "info": "Montant des articles hors pastèque. Règle relevée dans Shopify le 11/10/2026 : 1 sachet = payante, 2 sachets, 2 + 2 et 4 + 4 = gratuite en point relais (France, Belgique, Suisse, Allemagne, Espagne, Italie, Pays-Bas, Royaume-Uni, États-Unis, Canada) ; la pastèque ne compte pas. 0 = ligne jamais affichée."
+      },
+      {
+        "type": "text",
+        "id": "gfc_total_label",
+        "label": "Libellé du total",
+        "default": "Total"
       },
       {
         "type": "text",
@@ -46,11 +70,11 @@
         "default": "Commander"
       },
       {
-        "type": "text",
-        "id": "gfc_note",
-        "label": "Petite ligne dans le bouton",
-        "default": "Paiement sécurisé · Satisfait ou remboursé 90 jours",
-        "info": "Vide = masquée."
+        "type": "checkbox",
+        "id": "gfc_express",
+        "label": "Boutons de paiement rapide sous le bouton",
+        "default": true,
+        "info": "Apple Pay, Google Pay, Shop Pay, PayPal… selon ce qui est activé dans Paramètres › Paiements."
       },
       {
         "type": "text",

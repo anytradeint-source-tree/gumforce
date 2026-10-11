@@ -11,8 +11,11 @@
     ligne du panier (après les autres articles, même plafond) et la carte
     disparaît ; elle revient s'il est retiré. Carte photo (image d'ambiance en
     fond) ou compacte (vignette). Carte masquée sans autre article au panier.
-  • Total, économie et prix des lignes recalculés au tap (centimes en data-*),
-    puis remplacés par la réponse du serveur.
+  • Pied : lignes Réductions (prix barrés + remises) et Livraison « Gratuite »
+    (dès que les articles hors upsell atteignent le seuil réglé, comme la règle
+    Shopify), Total, bouton Commander → et boutons de paiement rapide.
+  • Total, réductions, livraison et prix des lignes recalculés au tap (centimes
+    en data-*), puis remplacés par la réponse du serveur.
   • Tout est rendu même panier vide (masqué) : le bloc d'offre peut ouvrir le
     panier AVANT la réponse du serveur (rendu optimiste), puis la réponse
     /cart/update.js (avec sections) remplace par la vérité serveur.
@@ -27,8 +30,9 @@
   assign gfc_empty_url = settings.empty_cart_button_link | default: routes.all_products_collection_url
   assign gfc_total_lbl = settings.gfc_total_label | default: 'Total'
   assign gfc_cta       = settings.gfc_cta | default: 'Commander'
-  assign gfc_note      = settings.gfc_note | strip
-  assign gfc_save_tpl  = settings.gfc_savings_text | strip
+  assign gfc_disc_lbl  = settings.gfc_discount_label | strip
+  assign gfc_ship_lbl  = settings.gfc_shipping_label | strip
+  assign gfc_ship_free = settings.gfc_shipping_free | strip
 
   comment — devise du visiteur ≠ devise boutique → total avec code ISO (comme le bloc d'offre)
   endcomment
@@ -111,6 +115,25 @@
     assign up_head = settings.gfc_up_heading
   endif
 
+  comment — livraison gratuite : articles hors upsell ≥ seuil (même règle que les
+    tarifs Shopify, où la pastèque ne compte pas). Devise étrangère : pas de ligne.
+  endcomment
+  assign gfc_ship_min = 0
+  if gfc_cc == false and gfc_ship_lbl != blank and gfc_ship_free != blank
+    assign gfc_ship_min = settings.gfc_ship_free_min | default: 0 | times: 100
+  endif
+  assign gfc_ship_base = 0
+  for item in cart.items
+    if up_on and item.variant_id == up_v.id
+      continue
+    endif
+    assign gfc_ship_base = gfc_ship_base | plus: item.final_line_price
+  endfor
+  assign gfc_ship_ok = false
+  if gfc_ship_min > 0 and gfc_ship_base >= gfc_ship_min
+    assign gfc_ship_ok = true
+  endif
+
   assign gfc_count = cart.item_count
 -%}
 <script src="{{ 'component-cart-items.js' | asset_url }}" type="module" fetchpriority="low"></script>
@@ -140,13 +163,17 @@
   .gfc__lines { list-style:none; margin:0; padding:0; }
 
   /* article */
-  .gfc-line { display:flex; gap:12px; padding:14px 0; border-bottom:1px solid var(--gfc-hair); transition:opacity .2s ease; }
+  .gfc-line { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--gfc-hair); transition:opacity .2s ease; }
   .gfc-line:last-child { border-bottom:none; }
   .gfc-line.is-gone { opacity:.35; pointer-events:none; }
   .gfc-line__img { width:64px; height:64px; flex-shrink:0; border-radius:12px; background:#f4f4f5; overflow:hidden; display:block; }
   .gfc-line__img img { width:100%; height:100%; object-fit:contain; display:block; }
-  .gfc-line__main { flex:1; min-width:0; display:flex; flex-direction:column; gap:10px; }
-  .gfc-line__top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+  /* texte à gauche ; prix puis sélecteur empilés à droite (ligne plus basse) */
+  .gfc-line__main { flex:1; min-width:0; display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"txt price" "txt qty"; column-gap:10px; row-gap:6px; align-items:start; }
+  .gfc-line__top { display:contents; }
+  .gfc-line__txt { grid-area:txt; }
+  .gfc-line__price { grid-area:price; }
+  .gfc-line__main > .gfc-qty { grid-area:qty; justify-self:end; }
   .gfc-line__txt { min-width:0; }
   .gfc-line__name { font-family:var(--gfc-head); font-size:15px; font-weight:700; line-height:1.2; text-transform:uppercase; letter-spacing:.02em; }
   .gfc-line__opt { margin-top:2px !important; font-size:12.5px; font-weight:500; line-height:1.35; color:var(--gfc-muted); }
@@ -170,7 +197,7 @@
   .gfc-line.is-one .gfc-ic-trash { display:block; }
 
   /* upsell : carte compacte (vignette) par défaut, carte photo avec .gfc-up--photo */
-  .gfc-up { margin-top:18px; --gfc-lime:#C5FE89; }
+  .gfc-up { margin-top:14px; --gfc-lime:#C5FE89; }
   .gfc-up__card { position:relative; display:flex; flex-direction:column; gap:10px; padding:14px; border:1.5px solid var(--gfc-line); border-radius:16px; background:#fff; transition:border-color .16s ease, background .16s ease, box-shadow .16s ease; }
   .gfc-up__top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .gfc-up__top:empty { display:none; }
@@ -202,7 +229,7 @@
   .gfc-up__add:active { transform:scale(.97); }
 
   /* carte photo : l'image d'ambiance remplit la carte, le texte se lit sur un voile en bas */
-  .gfc-up--photo .gfc-up__card { min-height:272px; padding:12px 14px 14px; border:none; background:#0d4a4a; color:#fff; overflow:hidden; box-shadow:0 10px 28px rgba(0,0,0,.14); }
+  .gfc-up--photo .gfc-up__card { min-height:236px; padding:12px 14px 14px; border:none; background:#0d4a4a; color:#fff; overflow:hidden; box-shadow:0 10px 28px rgba(0,0,0,.14); }
   .gfc-up__bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
   .gfc-up--photo .gfc-up__card::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 34%, rgba(0,0,0,.6) 60%, rgba(0,0,0,.86) 100%); }
   .gfc-up--photo .gfc-up__top, .gfc-up--photo .gfc-up__main, .gfc-up--photo .gfc-up__act { position:relative; z-index:1; }
@@ -223,18 +250,29 @@
   .gfc-up--photo .gfc-up__add { background:var(--gfc-lime); color:#111; }
 
   /* pied fixe */
-  .gfc__foot { flex-shrink:0; padding:12px 16px calc(14px + env(safe-area-inset-bottom)); border-top:1px solid var(--gfc-hair); background:#fff; }
+  .gfc__foot { flex-shrink:0; padding:10px 16px calc(12px + env(safe-area-inset-bottom)); border-top:1px solid var(--gfc-hair); background:#fff; }
+  .gfc-sum { display:flex; flex-direction:column; gap:4px; }
+  .gfc-sum__row { display:flex; align-items:baseline; justify-content:space-between; gap:12px; font-size:13.5px; font-weight:500; line-height:1.3; color:var(--gfc-muted); }
+  .gfc-sum__row b { font-weight:700; color:var(--gfc-green); font-variant-numeric:tabular-nums; }
   .gfc-tot { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
-  .gfc-tot__lbl { font-size:14px; font-weight:700; }
+  .gfc-sum:has(.gfc-sum__row:not([hidden])) .gfc-tot { margin-top:2px; padding-top:6px; border-top:1px solid var(--gfc-hair); }
+  .gfc-tot__lbl { font-size:15px; font-weight:800; }
   .gfc-tot__amt { font-size:20px; font-weight:800; letter-spacing:-.01em; font-variant-numeric:tabular-nums; }
-  .gfc-save { margin-top:1px !important; text-align:right; font-size:12.5px; font-weight:700; color:var(--gfc-green); }
-  .gfc--cc.is-busy .gfc-tot__amt, .gfc--cc.is-busy .gfc-save, .gfc.is-busy.is-approx .gfc-tot__amt, .gfc.is-busy.is-approx .gfc-save { animation:gfc-shim .8s ease-in-out infinite alternate; }
+  .gfc--cc.is-busy .gfc-tot__amt, .gfc--cc.is-busy .gfc-sum__row b, .gfc.is-busy.is-approx .gfc-tot__amt, .gfc.is-busy.is-approx .gfc-sum__row b { animation:gfc-shim .8s ease-in-out infinite alternate; }
   @keyframes gfc-shim { from { opacity:1; } to { opacity:.35; } }
-  .gfc-go-form { margin:12px 0 0; }
-  .gfc-go { width:100%; padding:16px; border:none; border-radius:30px; background:var(--gfc-ink); color:#fff; font-family:var(--gfc-font); font-size:16px; font-weight:700; line-height:1.3; letter-spacing:.01em; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; text-decoration:none; box-shadow:0 1px 3px rgba(0,0,0,.1); -webkit-appearance:none; appearance:none; }
-  .gfc-go__main { display:inline-flex; align-items:center; justify-content:center; }
-  .gfc-go__sub { display:flex; align-items:center; justify-content:center; gap:5px; margin-top:2px; font-size:10.5px; font-weight:400; line-height:1.2; letter-spacing:.01em; opacity:.75; }
-  .gfc-go__sub svg { width:12px; height:12px; flex-shrink:0; color:var(--gfc-accent); }
+  .gfc-go-form { margin:10px 0 0; }
+  .gfc-go { width:100%; padding:14px; border:none; border-radius:30px; background:var(--gfc-ink); color:#fff; font-family:var(--gfc-font); font-size:16px; font-weight:700; line-height:1.3; letter-spacing:.01em; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; text-decoration:none; box-shadow:0 1px 3px rgba(0,0,0,.1); -webkit-appearance:none; appearance:none; }
+  .gfc-go__main { display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+  .gfc-go__arrow { width:18px; height:18px; flex-shrink:0; transition:transform .2s ease; }
+  .gfc-go:hover .gfc-go__arrow { transform:translateX(3px); }
+  /* paiement rapide (Apple Pay, Google Pay, Shop Pay… selon Paramètres › Paiements) */
+  .gfc-express { margin-top:8px; }
+  .gfc-express shopify-accelerated-checkout-cart {
+    --shopify-accelerated-checkout-button-block-size:42px;
+    --shopify-accelerated-checkout-button-border-radius:30px;
+    --shopify-accelerated-checkout-inline-alignment:center;
+    --shopify-accelerated-checkout-row-gap:8px;
+  }
   .gfc-go.is-loading { opacity:.8; pointer-events:none; }
   .gfc-go.is-loading .gfc-go__main::before { content:''; width:14px; height:14px; margin-right:9px; flex-shrink:0; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; border-radius:50%; animation:gfc-rot .7s linear infinite; }
   @keyframes gfc-rot { to { transform:rotate(360deg); } }
@@ -261,14 +299,13 @@
     .gfc-up__price b, .gfc-up--photo .gfc-up__price b { font-size:17px; }
     .gfc-up--photo .gfc-up__title { font-size:21px; }
     .gfc-go { padding:14px 12px; }
-    .gfc-go__sub { font-size:10px; }
   }
   @media (prefers-reduced-motion:reduce) {
-    .gfc-tot__amt, .gfc-save { animation:none !important; }
+    .gfc-tot__amt, .gfc-sum__row b { animation:none !important; }
   }
 </style>
 
-<div class="gfc{% if gfc_cc %} gfc--cc{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}">
+<div class="gfc{% if gfc_cc %} gfc--cc{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}">
   <div class="gfc__head">
     <h2 class="gfc__title" id="gfc-title">{{ gfc_title | escape }} <span class="gfc__count" data-gfc-count{% if gfc_count == 0 %} hidden{% endif %}>({{ gfc_count }})</span></h2>
     <button type="button" ref="closeButton" on:click="cart-drawer-component/close" class="gfc__close" aria-label="{{ 'actions.close_dialog' | t }}">
@@ -392,21 +429,26 @@
   </div>
 
   <div class="gfc__foot" data-gfc-foot{% if cart.empty? %} hidden{% endif %}>
-    <div class="gfc-tot">
-      <span class="gfc-tot__lbl">{{ gfc_total_lbl | escape }}</span>
-      <span class="gfc-tot__amt" data-gfc-total>{% if gfc_cc %}{{ cart.total_price | money_with_currency }}{% else %}{{ cart.total_price | money }}{% endif %}</span>
+    <div class="gfc-sum">
+      {%- if gfc_disc_lbl != blank -%}
+        <p class="gfc-sum__row" data-gfc-save{% if gfc_save <= 0 %} hidden{% endif %}><span>{{ gfc_disc_lbl | escape }}</span><b data-gfc-save-v>-{{ gfc_save_money }}</b></p>
+      {%- endif -%}
+      {%- if gfc_ship_lbl != blank and gfc_ship_free != blank -%}
+        <p class="gfc-sum__row" data-gfc-ship{% unless gfc_ship_ok %} hidden{% endunless %}><span>{{ gfc_ship_lbl | escape }}</span><b>{{ gfc_ship_free | escape }}</b></p>
+      {%- endif -%}
+      <p class="gfc-tot">
+        <span class="gfc-tot__lbl">{{ gfc_total_lbl | escape }}</span>
+        <span class="gfc-tot__amt" data-gfc-total>{% if gfc_cc %}{{ cart.total_price | money_with_currency }}{% else %}{{ cart.total_price | money }}{% endif %}</span>
+      </p>
     </div>
-    {%- if gfc_save_tpl != blank -%}
-      <p class="gfc-save" data-gfc-save data-tpl="{{ gfc_save_tpl | escape }}"{% if gfc_save <= 0 %} hidden{% endif %}>{{ gfc_save_tpl | escape | replace: '[montant]', gfc_save_money }}</p>
-    {%- endif -%}
     <form class="gfc-go-form" action="{{ routes.cart_url }}" method="post">
       <button type="submit" name="checkout" class="gfc-go" data-gfc-go>
-        <span class="gfc-go__main">{{ gfc_cta | escape }}</span>
-        {%- if gfc_note != blank -%}
-          <span class="gfc-go__sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>{{ gfc_note | escape }}</span>
-        {%- endif -%}
+        <span class="gfc-go__main">{{ gfc_cta | escape }}<svg class="gfc-go__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </button>
     </form>
+    {%- if settings.gfc_express and additional_checkout_buttons -%}
+      <div class="gfc-express">{{ content_for_additional_checkout_buttons }}</div>
+    {%- endif -%}
   </div>
 
   {%- comment -%} Gabarit d'article pour l'ouverture instantanée (rendu optimiste) {%- endcomment -%}
@@ -591,7 +633,21 @@
       r.setAttribute('data-save', s);
       var te = q('[data-gfc-total]', r); if (te) te.textContent = fmt(t);
       var se = q('[data-gfc-save]', r);
-      if (se) { se.hidden = s <= 0; se.textContent = (se.getAttribute('data-tpl') || '').replace('[montant]', fmt(s)); }
+      if (se) { se.hidden = s <= 0; var sv = q('[data-gfc-save-v]', se); if (sv) sv.textContent = '-' + fmt(s); }
+      ship();
+    }
+    /* « Livraison gratuite » : articles hors upsell (pastèque) ≥ seuil, comme Shopify */
+    function ship() {
+      var r = root(), row = r && q('[data-gfc-ship]', r);
+      if (!row) return;
+      var min = cents(r, 'data-ship-min');
+      if (!min) { row.hidden = true; return; }
+      var up = q('[data-gfc-up]', r), upv = up ? up.getAttribute('data-vid') : '', base = 0;
+      qa('[data-gfc-line]', r).forEach(function (l) {
+        if (l.classList.contains('is-gone') || l.getAttribute('data-vid') === upv) return;
+        base += cents(l, 'data-qty') * cents(l, 'data-unit');
+      });
+      row.hidden = base < min;
     }
     function cents(el, attr) { return parseInt(el.getAttribute(attr), 10) || 0; }
 
