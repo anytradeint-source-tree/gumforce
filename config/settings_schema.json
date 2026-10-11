@@ -104,7 +104,7 @@
         "id": "gfc_up_handle",
         "label": "Produit (identifiant de l'URL)",
         "default": "gumforce-pasteque",
-        "info": "La fin de l'adresse du produit (gumforce.co/products/gumforce-pasteque → gumforce-pasteque). Le produit doit être disponible sur le canal Boutique en ligne. Prix et prix barré viennent de Shopify. Produit introuvable ou épuisé = pas d'upsell."
+        "info": "La fin de l'adresse du produit (gumforce.co/products/gumforce-pasteque → gumforce-pasteque). Le produit doit être disponible sur le canal Boutique en ligne. Son prix Shopify est le prix barré, la remise ci-dessous donne le prix de l'offre. Produit introuvable ou épuisé = pas d'upsell."
       },
       {
         "type": "checkbox",
@@ -112,6 +112,17 @@
         "label": "Seulement avec une offre GUMFORCE",
         "default": true,
         "info": "Si l'offre est retirée du panier, la pastèque part avec ; restée seule au panier (ex. offre retirée sur la page /cart), elle est retirée au chargement suivant. Sa page produit renvoie vers le lien du bouton « panier vide » (Panier › Lien du bouton panier vide)."
+      },
+      {
+        "type": "range",
+        "id": "gfc_up_discount",
+        "label": "Remise de l'offre upsell",
+        "min": 0,
+        "max": 90,
+        "step": 5,
+        "unit": "%",
+        "default": 55,
+        "info": "Doit être le même pourcentage que la réduction automatique Shopify « Achetez X, obtenez Y » (achète GUMFORCE, obtiens la pastèque à -55 %, 4 max). La carte affiche le prix remisé barré au prix du produit (30 € → 13,50 €). Si le produit a un prix barré, il est affiché tel quel et ce réglage est ignoré."
       },
       {
         "type": "image_picker",

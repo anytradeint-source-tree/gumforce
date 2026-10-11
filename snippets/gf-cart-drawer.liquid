@@ -100,16 +100,26 @@
       endif
     endunless
     assign up_focus = settings.gfc_up_bg_focus | default: 75
+    comment — prix de l'offre : le produit est à son vrai prix (30 €) et la remise
+      upsell vient d'une réduction automatique Shopify « Achetez X, obtenez Y »
+      (même % que le réglage). La carte affiche donc prix − remise, barré au
+      vrai prix. Si le produit a déjà un prix barré, on l'affiche tel quel.
+    endcomment
+    assign up_off = settings.gfc_up_discount | default: 0
+    assign up_unit = up_v.price
     assign up_was = up_v.price
     if up_v.compare_at_price > up_v.price
       assign up_was = up_v.compare_at_price
+    elsif up_off > 0
+      assign up_keep = 100 | minus: up_off
+      assign up_unit = up_v.price | times: up_keep | divided_by: 100.0 | round
     endif
     assign up_line_img = up_v.image | default: up_p.featured_image
-    assign up_price_money = up_v.price | money
+    assign up_price_money = up_unit | money
     assign up_add_tpl = settings.gfc_up_add_text | default: 'Ajouter · [prix]'
     assign up_pct = ''
-    if up_v.compare_at_price > up_v.price
-      assign up_pct = up_v.compare_at_price | minus: up_v.price | times: 100.0 | divided_by: up_v.compare_at_price | round | prepend: '-' | append: '%'
+    if up_was > up_unit
+      assign up_pct = up_was | minus: up_unit | times: 100.0 | divided_by: up_was | round | prepend: '-' | append: '%'
     endif
     assign up_max_s = up_max | append: ''
     assign up_badge = settings.gfc_up_badge | replace: '[remise]', up_pct | strip
@@ -371,9 +381,11 @@
                   {%- assign p_first = p.first | slice: 0 -%}
                   {%- if p.last != blank and p_first != '_' -%}<p class="gfc-line__prop">{{ p.first | escape }} : {{ p.last | escape }}</p>{%- endif -%}
                 {%- endfor -%}
-                {%- for a in item.line_level_discount_allocations -%}
-                  <p class="gfc-line__disc">{{ a.discount_application.title | escape }} (-{{ a.amount | money }})</p>
-                {%- endfor -%}
+                {%- unless l_up -%}
+                  {%- for a in item.line_level_discount_allocations -%}
+                    <p class="gfc-line__disc">{{ a.discount_application.title | escape }} (-{{ a.amount | money }})</p>
+                  {%- endfor -%}
+                {%- endunless -%}
               </div>
               <p class="gfc-line__price"><b>{{ item.final_line_price | money }}</b>{% if l_was > item.final_line_price %}<s>{{ l_was | money }}</s>{% endif %}</p>
             </div>
@@ -394,7 +406,7 @@
     </ul>
 
     {%- if up_on -%}
-      <div class="gfc-up{% if up_bg %} gfc-up--photo{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-max="{{ up_max }}" data-pick="1" data-price="{{ up_v.price }}" data-was="{{ up_was }}" data-name="{{ up_short | escape }}" data-img="{% if up_line_img %}{{ up_line_img | image_url: width: 160 }}{% endif %}"{% unless show_up %} hidden{% endunless %}>
+      <div class="gfc-up{% if up_bg %} gfc-up--photo{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-max="{{ up_max }}" data-pick="1" data-price="{{ up_unit }}" data-was="{{ up_was }}" data-name="{{ up_short | escape }}" data-img="{% if up_line_img %}{{ up_line_img | image_url: width: 160 }}{% endif %}"{% unless show_up %} hidden{% endunless %}>
         <div class="gfc-up__card{% if up_badge != blank %} gfc-up__card--badge{% endif %}">
           {%- if up_bg -%}
             <img class="gfc-up__bg" src="{{ up_bg | image_url: width: 800 }}" srcset="{{ up_bg | image_url: width: 600 }} 600w, {{ up_bg | image_url: width: 800 }} 800w, {{ up_bg | image_url: width: 1000 }} 1000w" sizes="(min-width: 750px) 370px, calc(100vw - 32px)" alt="" width="800" height="800" loading="lazy" style="object-position:50% {{ up_focus }}%">
@@ -410,7 +422,7 @@
             <div class="gfc-up__txt">
               <p class="gfc-up__title">{% if up_head != blank %}{{ up_head }}{% else %}{{ up_name | escape }}{% endif %}</p>
               {%- if up_sub != blank -%}<p class="gfc-up__sub">{{ up_sub | escape }}</p>{%- endif -%}
-              <p class="gfc-up__price"><b>{{ up_price_money }}</b>{% if up_was > up_v.price %}<s>{{ up_was | money }}</s>{% endif %}</p>
+              <p class="gfc-up__price"><b>{{ up_price_money }}</b>{% if up_was > up_unit %}<s>{{ up_was | money }}</s>{% endif %}</p>
             </div>
           </div>
           <div class="gfc-up__act">
