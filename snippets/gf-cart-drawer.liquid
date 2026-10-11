@@ -6,11 +6,11 @@
 
   • Articles compacts : vignette, nom court (avant « - »), options, prix barré,
     stepper − n + (− devient corbeille à 1).
-  • Upsell : un produit (handle en réglage), quantité choisie en un tap
-    (1 · 2 · 3 · 4, plafond par personne ; re-tap = retirer). Carte photo
-    (image d'ambiance en fond, titre et boutons par-dessus) ou compacte
-    (vignette) sans photo. Tant que la carte est affichée, l'article n'est pas
-    répété dans la liste. Carte masquée sans autre article dans le panier.
+  • Upsell : un produit (handle en réglage), sélecteur − 1 + (plafond par
+    personne) et bouton « Ajouter · prix ». Une fois ajouté, il devient une
+    ligne du panier (après les autres articles, même plafond) et la carte
+    disparaît ; elle revient s'il est retiré. Carte photo (image d'ambiance en
+    fond) ou compacte (vignette). Carte masquée sans autre article au panier.
   • Total, économie et prix des lignes recalculés au tap (centimes en data-*),
     puis remplacés par la réponse du serveur.
   • Tout est rendu même panier vide (masqué) : le bloc d'offre peut ouvrir le
@@ -62,7 +62,7 @@
     endif
   endfor
   assign show_up = false
-  if up_on and has_main
+  if up_on and has_main and up_qty == 0
     assign show_up = true
   endif
 
@@ -93,14 +93,14 @@
         assign up_bg = up_p.images[1]
       endif
     endunless
-    assign up_focus = settings.gfc_up_bg_focus | default: 50
-    assign up_sel = up_qty | at_most: up_max
+    assign up_focus = settings.gfc_up_bg_focus | default: 75
     assign up_was = up_v.price
     if up_v.compare_at_price > up_v.price
       assign up_was = up_v.compare_at_price
     endif
-    assign up_added = settings.gfc_up_added_text | strip
-    assign up_remove = settings.gfc_up_remove_text | default: 'Retirer'
+    assign up_line_img = up_v.image | default: up_p.featured_image
+    assign up_price_money = up_v.price | money
+    assign up_add_tpl = settings.gfc_up_add_text | default: 'Ajouter · [prix]'
     assign up_pct = ''
     if up_v.compare_at_price > up_v.price
       assign up_pct = up_v.compare_at_price | minus: up_v.price | times: 100.0 | divided_by: up_v.compare_at_price | round | prepend: '-' | append: '%'
@@ -172,7 +172,6 @@
   /* upsell : carte compacte (vignette) par défaut, carte photo avec .gfc-up--photo */
   .gfc-up { margin-top:18px; --gfc-lime:#C5FE89; }
   .gfc-up__card { position:relative; display:flex; flex-direction:column; gap:10px; padding:14px; border:1.5px solid var(--gfc-line); border-radius:16px; background:#fff; transition:border-color .16s ease, background .16s ease, box-shadow .16s ease; }
-  .gfc-up.is-on .gfc-up__card { border-color:var(--gfc-accent); background:var(--gfc-accent-soft); box-shadow:0 0 0 3px var(--gfc-accent-ring); }
   .gfc-up__top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .gfc-up__top:empty { display:none; }
   .gfc-up__badge { font-size:10px; font-weight:800; color:#fff; background:var(--gfc-accent); padding:3px 10px; border-radius:100px; letter-spacing:.04em; white-space:nowrap; text-transform:uppercase; line-height:1.3; }
@@ -191,26 +190,22 @@
   .gfc-up__txt { min-width:0; }
   .gfc-up__title { font-family:var(--gfc-head); font-size:17px; font-weight:700; line-height:1.15; text-transform:uppercase; letter-spacing:.02em; text-wrap:balance; }
   .gfc-up__title em { font-style:normal; color:var(--gfc-accent); }
-  .gfc-up__sub, .gfc-up__ok { margin-top:3px !important; font-size:12px; font-weight:500; line-height:1.35; color:var(--gfc-muted); }
-  .gfc-up__ok { display:flex; align-items:center; gap:4px; font-weight:700; color:var(--gfc-green); }
-  .gfc-up__ok svg { width:13px; height:13px; flex-shrink:0; }
-  .gfc-up__ok button { border:none; background:none; padding:0 0 0 2px; font-size:inherit; font-weight:600; color:var(--gfc-muted); text-decoration:underline; text-underline-offset:2px; cursor:pointer; }
-  .gfc-up:not(.is-on) .gfc-up__ok, .gfc-up.is-on .gfc-up__sub { display:none; }
-  .gfc-up__row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-  .gfc-up__price { display:flex; align-items:baseline; gap:6px; white-space:nowrap; line-height:1.2; }
+  .gfc-up__sub { margin-top:3px !important; font-size:12px; font-weight:500; line-height:1.35; color:var(--gfc-muted); }
+  .gfc-up__price { margin-top:6px !important; display:flex; align-items:baseline; gap:6px; white-space:nowrap; line-height:1.2; }
   .gfc-up__price b { font-size:18px; font-weight:800; letter-spacing:-.01em; }
   .gfc-up__price s { font-size:12.5px; font-weight:500; color:var(--gfc-faint); }
-  .gfc-up__qty { display:flex; gap:6px; flex-shrink:0; }
-  .gfc-up__qty button { width:40px; height:40px; padding:0; border-radius:12px; border:1.5px solid var(--gfc-line); background:#fff; color:var(--gfc-ink); font-size:15px; font-weight:800; font-variant-numeric:tabular-nums; cursor:pointer; transition:background .15s ease, border-color .15s ease, color .15s ease, transform .1s ease; }
-  .gfc-up__qty button:active { transform:scale(.93); }
-  .gfc-up__qty button[aria-pressed="true"] { background:var(--gfc-ink); border-color:var(--gfc-ink); color:#fff; }
+  .gfc-up__act { display:flex; align-items:center; gap:8px; }
+  .gfc-up__act .gfc-qty { align-self:auto; }
+  .gfc-up__act .gfc-qty button { width:38px; height:40px; }
+  .gfc-up__act .gfc-qty span { min-width:20px; font-size:15px; }
+  .gfc-up__add { flex:1; min-width:0; height:43px; padding:0 14px; border:none; border-radius:30px; background:var(--gfc-ink); color:#fff; font-family:var(--gfc-font); font-size:15px; font-weight:700; letter-spacing:.01em; white-space:nowrap; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.1); transition:transform .12s ease; }
+  .gfc-up__add:active { transform:scale(.97); }
 
   /* carte photo : l'image d'ambiance remplit la carte, le texte se lit sur un voile en bas */
   .gfc-up--photo .gfc-up__card { min-height:272px; padding:12px 14px 14px; border:none; background:#0d4a4a; color:#fff; overflow:hidden; box-shadow:0 10px 28px rgba(0,0,0,.14); }
-  .gfc-up--photo.is-on .gfc-up__card { background:#0d4a4a; box-shadow:0 0 0 3px var(--gfc-lime), 0 10px 28px rgba(0,0,0,.14); }
   .gfc-up__bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
   .gfc-up--photo .gfc-up__card::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 34%, rgba(0,0,0,.6) 60%, rgba(0,0,0,.86) 100%); }
-  .gfc-up--photo .gfc-up__top, .gfc-up--photo .gfc-up__main, .gfc-up--photo .gfc-up__row { position:relative; z-index:1; }
+  .gfc-up--photo .gfc-up__top, .gfc-up--photo .gfc-up__main, .gfc-up--photo .gfc-up__act { position:relative; z-index:1; }
   .gfc-up--photo .gfc-up__badge { background:var(--gfc-lime); color:#111; font-size:10.5px; }
   .gfc-up--photo .gfc-up__timer { padding:4px 9px; border-radius:8px; background:rgba(17,17,17,.74); color:#fff; }
   .gfc-up--photo .gfc-up__timer svg { color:var(--gfc-lime); }
@@ -219,12 +214,13 @@
   .gfc-up--photo .gfc-up__title { font-size:23px; line-height:1.08; color:#fff; text-shadow:0 1px 14px rgba(0,0,0,.35); }
   .gfc-up--photo .gfc-up__title em { color:var(--gfc-lime); }
   .gfc-up--photo .gfc-up__sub { color:rgba(255,255,255,.88); }
-  .gfc-up--photo .gfc-up__ok { color:var(--gfc-lime); }
-  .gfc-up--photo .gfc-up__ok button { color:rgba(255,255,255,.88); }
   .gfc-up--photo .gfc-up__price b { font-size:20px; color:#fff; }
   .gfc-up--photo .gfc-up__price s { color:rgba(255,255,255,.66); }
-  .gfc-up--photo .gfc-up__qty button { background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.62); color:#fff; }
-  .gfc-up--photo .gfc-up__qty button[aria-pressed="true"] { background:var(--gfc-lime); border-color:var(--gfc-lime); color:#111; }
+  .gfc-up--photo .gfc-qty { background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.62); }
+  .gfc-up--photo .gfc-qty button { color:#fff; }
+  .gfc-up--photo .gfc-qty button:disabled { color:rgba(255,255,255,.35); }
+  .gfc-up--photo .gfc-qty span { color:#fff; }
+  .gfc-up--photo .gfc-up__add { background:var(--gfc-lime); color:#111; }
 
   /* pied fixe */
   .gfc__foot { flex-shrink:0; padding:12px 16px calc(14px + env(safe-area-inset-bottom)); border-top:1px solid var(--gfc-hair); background:#fff; }
@@ -259,9 +255,9 @@
     .gfc__body { padding:0 12px 16px; }
     .gfc__foot { padding-left:12px; padding-right:12px; }
     .gfc-up__card { padding:12px; }
-    .gfc-up__qty { gap:4px; }
-    .gfc-up__qty button { width:34px; height:38px; border-radius:10px; }
-    .gfc-up__price { gap:4px; }
+    .gfc-up__act { gap:6px; }
+    .gfc-up__act .gfc-qty button { width:32px; }
+    .gfc-up__add { padding:0 10px; font-size:14px; }
     .gfc-up__price b, .gfc-up--photo .gfc-up__price b { font-size:17px; }
     .gfc-up--photo .gfc-up__title { font-size:21px; }
     .gfc-go { padding:14px 12px; }
@@ -287,8 +283,16 @@
     </div>
 
     <ul class="gfc__lines" data-gfc-lines>
+      {%- for pass in (1..2) -%}
       {%- for item in cart.items -%}
-        {%- if show_up and item.variant_id == up_v.id -%}{%- continue -%}{%- endif -%}
+        {%- liquid
+          assign l_up = false
+          if up_on and item.variant_id == up_v.id
+            assign l_up = true
+          endif
+        -%}
+        {%- if pass == 1 and l_up -%}{%- continue -%}{%- endif -%}
+        {%- if pass == 2 and l_up == false -%}{%- continue -%}{%- endif -%}
         {%- liquid
           assign l_name = item.product.title | split: ' - ' | first | strip
           assign l_opts = ''
@@ -311,7 +315,7 @@
             assign l_unit_was = item.variant.compare_at_price
           endif
           assign l_max = 0
-          if up_on and item.variant_id == up_v.id
+          if l_up
             assign l_max = up_max
           endif
         -%}
@@ -347,10 +351,11 @@
           </div>
         </li>
       {%- endfor -%}
+      {%- endfor -%}
     </ul>
 
     {%- if up_on -%}
-      <div class="gfc-up{% if up_bg %} gfc-up--photo{% endif %}{% if up_qty > 0 %} is-on{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-qty="{{ up_qty }}" data-max="{{ up_max }}" data-price="{{ up_v.price }}" data-was="{{ up_was }}"{% unless show_up %} hidden{% endunless %}>
+      <div class="gfc-up{% if up_bg %} gfc-up--photo{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-max="{{ up_max }}" data-pick="1" data-price="{{ up_v.price }}" data-was="{{ up_was }}" data-name="{{ up_short | escape }}" data-img="{% if up_line_img %}{{ up_line_img | image_url: width: 160 }}{% endif %}"{% unless show_up %} hidden{% endunless %}>
         <div class="gfc-up__card{% if up_badge != blank %} gfc-up__card--badge{% endif %}">
           {%- if up_bg -%}
             <img class="gfc-up__bg" src="{{ up_bg | image_url: width: 800 }}" srcset="{{ up_bg | image_url: width: 600 }} 600w, {{ up_bg | image_url: width: 800 }} 800w, {{ up_bg | image_url: width: 1000 }} 1000w" sizes="(min-width: 750px) 370px, calc(100vw - 32px)" alt="" width="800" height="800" loading="lazy" style="object-position:50% {{ up_focus }}%">
@@ -366,18 +371,20 @@
             <div class="gfc-up__txt">
               <p class="gfc-up__title">{% if up_head != blank %}{{ up_head }}{% else %}{{ up_name | escape }}{% endif %}</p>
               {%- if up_sub != blank -%}<p class="gfc-up__sub">{{ up_sub | escape }}</p>{%- endif -%}
-              {%- if up_added != blank -%}
-                <p class="gfc-up__ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>{{ up_added | escape }} ·<button type="button" data-gfc-up-set="0">{{ up_remove | escape }}</button></p>
-              {%- endif -%}
+              <p class="gfc-up__price"><b>{{ up_price_money }}</b>{% if up_was > up_v.price %}<s>{{ up_was | money }}</s>{% endif %}</p>
             </div>
           </div>
-          <div class="gfc-up__row">
-            <p class="gfc-up__price"><b>{{ up_v.price | money }}</b>{% if up_was > up_v.price %}<s>{{ up_was | money }}</s>{% endif %}</p>
-            <div class="gfc-up__qty" role="group" aria-label="{{ 'accessibility.quantity' | t }} : {{ up_name | escape }}">
-              {%- for i in (1..up_max) -%}
-                <button type="button" data-gfc-up-set="{{ i }}" aria-pressed="{% if i == up_sel %}true{% else %}false{% endif %}" aria-label="{{ 'accessibility.quantity' | t }} {{ i }}">{{ i }}</button>
-              {%- endfor -%}
+          <div class="gfc-up__act">
+            <div class="gfc-qty" role="group" aria-label="{{ 'accessibility.quantity' | t }} : {{ up_name | escape }}">
+              <button type="button" data-gfc-pick="-1" aria-label="{{ 'accessibility.decrease_quantity' | t }}" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+              </button>
+              <span data-gfc-pick-n>1</span>
+              <button type="button" data-gfc-pick="1" aria-label="{{ 'accessibility.increase_quantity' | t }}"{% if up_max <= 1 %} disabled{% endif %}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
             </div>
+            <button type="button" class="gfc-up__add" data-gfc-up-add><span data-gfc-up-label data-tpl="{{ up_add_tpl | escape }}">{{ up_add_tpl | escape | replace: '[prix]', up_price_money }}</span></button>
           </div>
         </div>
       </div>
@@ -592,31 +599,63 @@
       var r = root(); if (!r) return;
       var n = 0;
       qa('[data-gfc-line]', r).forEach(function (l) { if (!l.classList.contains('is-gone')) n += parseInt(l.getAttribute('data-qty'), 10) || 0; });
-      var up = q('[data-gfc-up]', r);
-      if (up && !up.hidden) n += parseInt(up.getAttribute('data-qty'), 10) || 0;
       var c = q('[data-gfc-count]', r);
       if (c) { c.textContent = '(' + n + ')'; c.hidden = n === 0; }
     }
 
-    /* ── Upsell : un tap sur 1…max = cette quantité au panier ; 0 = retirée ── */
-    function upSet(n) {
-      var card = q('[data-gfc-up]');
-      if (!card) return;
+    function makeLine(vid, qty, d, max) {
+      var r = root(), tpl = q('[data-gfc-tpl]', r);
+      var li = tpl.content.firstElementChild.cloneNode(true);
+      li.setAttribute('data-vid', vid);
+      li.setAttribute('data-qty', qty);
+      li.setAttribute('data-max', max || 0);
+      li.classList.toggle('is-one', qty === 1);
+      q('[data-gfc-n]', li).textContent = qty;
+      if (!d) { li.classList.add('is-ghost'); r.classList.add('is-approx'); return li; }
+      if (d.img) q('img', li).src = d.img;
+      q('.gfc-line__name', li).textContent = d.name;
+      var opt = q('.gfc-line__opt', li);
+      if (d.opt) opt.textContent = d.opt; else opt.remove();
+      li.setAttribute('data-unit', d.cents);
+      li.setAttribute('data-unit-was', d.was_cents);
+      var cc = r.classList.contains('gfc--cc');
+      q('.gfc-line__price b', li).textContent = cc ? (qty === 1 ? d.price : '') : fmt(d.cents * qty);
+      q('.gfc-line__price s', li).textContent = cc ? (qty === 1 ? d.was : '') : (d.was_cents > d.cents ? fmt(d.was_cents * qty) : '');
+      return li;
+    }
+
+    /* ── Upsell : sélecteur − 1 + (local), puis « Ajouter » = ligne du panier ── */
+    function upPick(card, n) {
       var max = cents(card, 'data-max') || 4;
-      n = Math.max(0, Math.min(max, n));
-      var prev = cents(card, 'data-qty');
-      if (n === prev) return;
-      card.setAttribute('data-qty', n);
-      card.classList.toggle('is-on', n > 0);
-      qa('.gfc-up__qty [data-gfc-up-set]', card).forEach(function (b) { b.setAttribute('aria-pressed', String(cents(b, 'data-gfc-up-set') === n)); });
+      n = Math.max(1, Math.min(max, n));
+      card.setAttribute('data-pick', n);
+      var out = q('[data-gfc-pick-n]', card); if (out) out.textContent = n;
+      var dec = q('[data-gfc-pick="-1"]', card); if (dec) dec.disabled = n <= 1;
+      var inc = q('[data-gfc-pick="1"]', card); if (inc) inc.disabled = n >= max;
+      var lab = q('[data-gfc-up-label]', card);
+      if (lab && !root().classList.contains('gfc--cc')) lab.textContent = (lab.getAttribute('data-tpl') || '').replace('[prix]', fmt(cents(card, 'data-price') * n));
+    }
+    function upAdd(card) {
+      var r = root(), list = q('[data-gfc-lines]', r);
+      if (!list) return;
+      var vid = card.getAttribute('data-vid'), n = cents(card, 'data-pick') || 1;
       var unit = cents(card, 'data-price'), was = cents(card, 'data-was') || unit;
-      addMoney((n - prev) * unit, (n - prev) * Math.max(0, was - unit));
-      updateCount();
-      var vid = card.getAttribute('data-vid');
-      schedule('up', function () {
-        var u = {}; u[vid] = cents(q('[data-gfc-up]') || card, 'data-qty');
-        return request('cart/update.js', { updates: u });
+      /* une suppression de cette ligne encore en attente ne doit pas passer après l'ajout */
+      qa('[data-gfc-line][data-vid="' + vid + '"]', list).forEach(function (l) {
+        var k = 'l:' + l.getAttribute('data-key');
+        if (waiting[k]) { clearTimeout(waiting[k].t); delete waiting[k]; }
+        l.remove();
       });
+      var pb = q('.gfc-up__price b', card), ps = q('.gfc-up__price s', card);
+      list.appendChild(makeLine(vid, n, {
+        img: card.getAttribute('data-img'), name: card.getAttribute('data-name'), opt: '',
+        cents: unit, was_cents: was, price: pb ? pb.textContent : '', was: ps ? ps.textContent : ''
+      }, cents(card, 'data-max')));
+      card.hidden = true;
+      addMoney(n * unit, n * Math.max(0, was - unit));
+      updateCount();
+      var u = {}; u[vid] = n;
+      request('cart/update.js', { updates: u }).catch(function () {});
     }
 
     /* ── Article : − n + (corbeille à 1) ── */
@@ -636,6 +675,9 @@
       line.classList.toggle('is-gone', n === 0);
       var out = q('[data-gfc-n]', line); if (out) out.textContent = n;
       var inc = q('[data-gfc-inc]', line); if (inc) inc.disabled = !!max && n >= max;
+      /* upsell retiré : la carte revient tout de suite */
+      var card = q('[data-gfc-up]');
+      if (n === 0 && card && card.getAttribute('data-vid') === line.getAttribute('data-vid')) { upPick(card, 1); card.hidden = false; }
       updateCount();
       var key = line.getAttribute('data-key');
       schedule('l:' + key, function () { return request('cart/change.js', { id: key, quantity: n }); });
@@ -645,7 +687,7 @@
       var t = e.target;
       if (!t || !t.closest) return;
       var r = root();
-      var b = t.closest('[data-gfc-up-set],[data-gfc-inc],[data-gfc-dec],[data-gfc-go]');
+      var b = t.closest('[data-gfc-pick],[data-gfc-up-add],[data-gfc-inc],[data-gfc-dec],[data-gfc-go]');
       if (!b || !r || !r.contains(b) || b.disabled) return;
       if (b.hasAttribute('data-gfc-go')) {
         b.classList.add('is-loading');
@@ -653,13 +695,9 @@
         return;
       }
       e.preventDefault();
-      if (b.hasAttribute('data-gfc-up-set')) {
-        var want = cents(b, 'data-gfc-up-set');
-        var card = b.closest('[data-gfc-up]');
-        if (want > 0 && card && want === cents(card, 'data-qty')) want = 0;  /* re-tap = retirer */
-        upSet(want);
-        return;
-      }
+      var card = b.closest('[data-gfc-up]');
+      if (card && b.hasAttribute('data-gfc-pick')) { upPick(card, cents(card, 'data-pick') + cents(b, 'data-gfc-pick')); return; }
+      if (card && b.hasAttribute('data-gfc-up-add')) { upAdd(card); return; }
       var line = b.closest('[data-gfc-line]');
       if (!line || !line.getAttribute('data-key')) return;
       var n = parseInt(line.getAttribute('data-qty'), 10) || 0;
@@ -678,8 +716,8 @@
     }
     function optimistic(vid, qty, family) {
       var r = root(); if (!r) return;
-      var list = q('[data-gfc-lines]', r), tpl = q('[data-gfc-tpl]', r);
-      if (!list || !tpl) return;
+      var list = q('[data-gfc-lines]', r);
+      if (!list || !q('[data-gfc-tpl]', r)) return;
       var dT = 0, dS = 0;
       qa('[data-gfc-line]', list).forEach(function (l) {
         var v = parseInt(l.getAttribute('data-vid'), 10);
@@ -690,31 +728,13 @@
         }
       });
       var d = data()[vid];
-      var li = tpl.content.firstElementChild.cloneNode(true);
-      li.setAttribute('data-vid', vid);
-      li.setAttribute('data-qty', qty);
-      li.classList.toggle('is-one', qty === 1);
-      q('[data-gfc-n]', li).textContent = qty;
-      if (d) {
-        q('img', li).src = d.img || q('img', li).src;
-        q('.gfc-line__name', li).textContent = d.name;
-        var opt = q('.gfc-line__opt', li);
-        if (d.opt) opt.textContent = d.opt; else opt.remove();
-        li.setAttribute('data-unit', d.cents);
-        li.setAttribute('data-unit-was', d.was_cents);
-        var cc = r.classList.contains('gfc--cc');
-        q('.gfc-line__price b', li).textContent = cc ? (qty === 1 ? d.price : '') : fmt(d.cents * qty);
-        q('.gfc-line__price s', li).textContent = cc ? (qty === 1 ? d.was : '') : (d.was_cents > d.cents ? fmt(d.was_cents * qty) : '');
-        dT += d.cents * qty; dS += Math.max(0, d.was_cents - d.cents) * qty;
-        addMoney(dT, dS);
-      } else {
-        li.classList.add('is-ghost');
-        r.classList.add('is-approx');
-      }
+      var li = makeLine(vid, qty, d, 0);
+      if (d) { dT += d.cents * qty; dS += Math.max(0, d.was_cents - d.cents) * qty; addMoney(dT, dS); }
       list.insertBefore(li, list.firstChild);
       var empty = q('[data-gfc-empty]', r); if (empty) empty.hidden = true;
       var foot = q('[data-gfc-foot]', r); if (foot) foot.hidden = false;
-      var up = q('[data-gfc-up]', r); if (up) up.hidden = false;
+      var up = q('[data-gfc-up]', r);
+      if (up) up.hidden = !!q('[data-gfc-line][data-vid="' + up.getAttribute('data-vid') + '"]:not(.is-gone)', list);
       updateCount();
       tick();
     }

@@ -96,7 +96,7 @@
         "max": 100,
         "step": 5,
         "unit": "%",
-        "default": 50,
+        "default": 75,
         "info": "0 % = haut de la photo, 100 % = bas."
       },
       {
@@ -130,26 +130,19 @@
         "id": "gfc_up_sub",
         "label": "Ligne sous le titre",
         "default": "Édition limitée · [max] max par personne",
-        "info": "[max] = quantité maximum ci-dessous."
+        "info": "[max] = quantité maximum ci-dessous. Vide = pas de ligne."
       },
       {
         "type": "text",
-        "id": "gfc_up_added_text",
-        "label": "Ligne sous le titre, une fois ajouté",
-        "default": "Ajouté à ta commande",
-        "info": "Remplace la ligne ci-dessus dès qu'une quantité est choisie. Vide = pas de ligne."
-      },
-      {
-        "type": "text",
-        "id": "gfc_up_remove_text",
-        "label": "Lien pour retirer",
-        "default": "Retirer",
-        "info": "À côté de la ligne « ajouté ». Toucher à nouveau la quantité choisie la retire aussi."
+        "id": "gfc_up_add_text",
+        "label": "Bouton d'ajout",
+        "default": "Ajouter · [prix]",
+        "info": "[prix] = prix pour la quantité choisie. Une fois ajouté, le produit apparaît dans le panier comme les autres articles et la carte disparaît (elle revient s'il est retiré)."
       },
       {
         "type": "range",
         "id": "gfc_up_max",
-        "label": "Quantité maximum par personne (boutons 1 à N)",
+        "label": "Quantité maximum par personne",
         "min": 1,
         "max": 6,
         "step": 1,
