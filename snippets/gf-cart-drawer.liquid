@@ -100,10 +100,9 @@
       endif
     endunless
     assign up_focus = settings.gfc_up_bg_focus | default: 75
-    comment — prix de l'offre : le produit est à son vrai prix (30 €) et la remise
-      upsell vient d'une réduction automatique Shopify « Achetez X, obtenez Y »
-      (même % que le réglage). La carte affiche donc prix − remise, barré au
-      vrai prix. Si le produit a déjà un prix barré, on l'affiche tel quel.
+    comment — prix de l'offre : prix et prix barré Shopify (13,50 € barré 29,99 €).
+      Sans prix barré, le réglage « Remise de l'offre upsell » (0 % par défaut)
+      calcule un prix remisé, pour le cas d'une réduction Shopify au panier.
     endcomment
     assign up_off = settings.gfc_up_discount | default: 0
     assign up_unit = up_v.price
