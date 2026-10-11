@@ -8,6 +8,154 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Panier GUMFORCE",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Panier coulissant qui s'ouvre après « Ajouter au panier » (bloc d'offre avec « Rediriger vers checkout » décoché). Case décochée = panier Horizon d'origine."
+      },
+      {
+        "type": "checkbox",
+        "id": "gfc_enabled",
+        "label": "Panier GUMFORCE",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "gfc_title",
+        "label": "Titre",
+        "default": "Ton panier"
+      },
+      {
+        "type": "text",
+        "id": "gfc_total_label",
+        "label": "Libellé du total",
+        "default": "Total"
+      },
+      {
+        "type": "text",
+        "id": "gfc_savings_text",
+        "label": "Ligne d'économie",
+        "default": "Tu économises [montant]",
+        "info": "[montant] = prix barrés + remises du panier. Vide = ligne masquée."
+      },
+      {
+        "type": "text",
+        "id": "gfc_cta",
+        "label": "Bouton de paiement",
+        "default": "Commander"
+      },
+      {
+        "type": "text",
+        "id": "gfc_note",
+        "label": "Petite ligne dans le bouton",
+        "default": "Paiement sécurisé · Satisfait ou remboursé 90 jours",
+        "info": "Vide = masquée."
+      },
+      {
+        "type": "text",
+        "id": "gfc_empty_text",
+        "label": "Panier vide : texte",
+        "default": "Ton panier est vide."
+      },
+      {
+        "type": "text",
+        "id": "gfc_empty_cta",
+        "label": "Panier vide : bouton",
+        "default": "Découvrir GUMFORCE",
+        "info": "Lien : réglage « Panier › Lien du bouton panier vide »."
+      },
+      {
+        "type": "header",
+        "content": "Upsell"
+      },
+      {
+        "type": "checkbox",
+        "id": "gfc_up_enabled",
+        "label": "Afficher l'upsell",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "gfc_up_handle",
+        "label": "Produit (identifiant de l'URL)",
+        "info": "La fin de l'adresse du produit, ex. gumforce-pasteque. Le produit doit être disponible sur le canal Boutique en ligne. Prix et prix barré viennent de Shopify. Produit introuvable ou épuisé = pas d'upsell."
+      },
+      {
+        "type": "image_picker",
+        "id": "gfc_up_image",
+        "label": "Image",
+        "info": "Vide = image du produit."
+      },
+      {
+        "type": "inline_richtext",
+        "id": "gfc_up_heading",
+        "label": "Titre au-dessus de la carte",
+        "default": "Ajoute le goût <em>pastèque</em>",
+        "info": "Le mot en italique s'affiche en turquoise. Vide = pas de titre."
+      },
+      {
+        "type": "text",
+        "id": "gfc_up_name",
+        "label": "Nom affiché",
+        "info": "Vide = nom du produit dans Shopify."
+      },
+      {
+        "type": "text",
+        "id": "gfc_up_badge",
+        "label": "Badge",
+        "default": "Offre exclusive [remise]",
+        "info": "[remise] = réduction calculée depuis le prix barré (ex. -55%). Vide = pas de badge."
+      },
+      {
+        "type": "text",
+        "id": "gfc_up_sub",
+        "label": "Sous le nom",
+        "default": "Édition limitée · [max] max par personne",
+        "info": "[max] = quantité maximum ci-dessous."
+      },
+      {
+        "type": "text",
+        "id": "gfc_up_max_text",
+        "label": "Sous le nom, quand le maximum est pris",
+        "default": "Maximum atteint : [max] par personne"
+      },
+      {
+        "type": "range",
+        "id": "gfc_up_max",
+        "label": "Quantité maximum par personne",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "checkbox",
+        "id": "gfc_up_timer",
+        "label": "Compte à rebours",
+        "default": true,
+        "info": "Démarre la première fois que la carte est vue et ne repart pas à zéro à chaque ouverture (même onglet). À zéro, la ligne disparaît ; le prix ne change pas."
+      },
+      {
+        "type": "range",
+        "id": "gfc_up_timer_min",
+        "label": "Durée du compte à rebours",
+        "min": 2,
+        "max": 30,
+        "step": 1,
+        "unit": "min",
+        "default": 10
+      },
+      {
+        "type": "text",
+        "id": "gfc_up_timer_text",
+        "label": "Texte du compte à rebours",
+        "default": "Offre réservée pendant [temps]",
+        "info": "[temps] = minutes:secondes restantes."
+      }
+    ]
+  },
+  {
     "name": "t:names.logo_and_favicon",
     "settings": [
       {

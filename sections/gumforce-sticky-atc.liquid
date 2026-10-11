@@ -5,7 +5,9 @@
   Collée au bas de l'écran. À gauche : offre sélectionnée + réassurance, prix,
   prix barré et remise. À droite : bouton COMMANDER. Le tout se synchronise
   avec le pack offer (tier coché) et envoie directement au checkout via le
-  lien panier /cart/variante:1 (une seule navigation). Sinon : scroll vers l'offre.
+  lien panier /cart/variante:1 (une seule navigation), ou déclenche le bouton
+  du bloc d'offre (action « panier » : même ajout, même panier coulissant).
+  Sinon : scroll vers l'offre.
   Apparaît quand l'offre est sortie de l'écran, disparaît près du footer.
   ============================================================================
 {% endcomment %}
@@ -360,6 +362,11 @@
   cta.addEventListener('click', function (evt) {
     evt.preventDefault();
     if (busy) return;
+    {%- if cta_action == 'cart' -%}
+    /* même chemin que le bouton du bloc d'offre : tier, quantité, rupture, panier */
+    var po = document.querySelector('[id^="gfp-cta-"]');
+    if (po && !po.disabled) { po.click(); return; }
+    {%- endif -%}
     {%- if cta_action == 'checkout' -%}
     var t = currentTier();
     if (t && t.vid) {
@@ -409,9 +416,10 @@
       "id": "cta_action",
       "label": "Action du bouton",
       "default": "checkout",
-      "info": "Checkout direct : envoie au paiement avec l'offre sélectionnée (une seule navigation). Sinon, remonte vers l'offre.",
+      "info": "Checkout direct : envoie au paiement avec l'offre sélectionnée (une seule navigation). Panier : même action que le bouton du bloc d'offre (ouvre le panier coulissant). Sinon, remonte vers l'offre.",
       "options": [
         { "value": "checkout", "label": "Checkout direct (offre sélectionnée)" },
+        { "value": "cart", "label": "Ajouter au panier (comme le bloc d'offre)" },
         { "value": "scroll", "label": "Remonter vers l'offre" }
       ]
     },

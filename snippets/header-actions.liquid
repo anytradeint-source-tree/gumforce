@@ -177,9 +177,9 @@
 
       <dialog
         ref="dialog"
-        class="cart-drawer__dialog dialog-modal dialog-drawer color-{{ settings.drawer_color_scheme }}{% if cart.empty? %} cart-drawer--empty{%endif%}"
+        class="cart-drawer__dialog dialog-modal dialog-drawer color-{{ settings.drawer_color_scheme }}{% if cart.empty? %} cart-drawer--empty{%endif%}{% if settings.gfc_enabled %} gfc-dialog{% endif %}"
         data-testid="cart-drawer-dialog"
-        aria-labelledby="{% if cart.empty? %}cart-drawer-heading-empty{% else %}cart-drawer-heading{% endif %}"
+        aria-labelledby="{% if settings.gfc_enabled %}gfc-title{% elsif cart.empty? %}cart-drawer-heading-empty{% else %}cart-drawer-heading{% endif %}"
         scroll-lock
         cart-summary-sticky="true"
       >
@@ -193,7 +193,10 @@
           data-hydration-key="cart-drawer-inner"
         >
           {% capture cart_items_children %}
-            {%- if cart.empty? -%}
+            {%- if settings.gfc_enabled -%}
+              {%- comment -%} Panier GUMFORCE + upsell (Réglages du thème › Panier GUMFORCE) {%- endcomment -%}
+              {% render 'gf-cart-drawer' %}
+            {%- elsif cart.empty? -%}
               {{ empty_cart_drawer_content }}
             {%- else -%}
               <div

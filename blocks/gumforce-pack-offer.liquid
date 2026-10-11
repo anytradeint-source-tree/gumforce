@@ -1017,6 +1017,9 @@
   }
   function setLabel(txt){ if (elLabel) elLabel.textContent = txt; if (elPrice) elPrice.textContent = ''; }
 
+  /* variantes du produit de l'offre : une offre ajoutée remplace celle déjà au panier */
+  var FAMILY = {{ pr.variants | map: 'id' | json }}.concat([{{ v1.id | default: 0 }}, {{ v2.id | default: 0 }}, {{ v3.id | default: 0 }}]);
+
   /* Anti double-ajout : le bouton reste verrouillé jusqu'à ce que le checkout
      ait réellement pris le relais (un 2e tap pendant la redirection ajoutait un
      2e pack). Retour depuis le checkout (bfcache) → pageshow remet tout à zéro. */
@@ -1033,6 +1036,23 @@
     if (!applySoldOut(cur)) { applyTier(); return; }
     var vid = cur ? parseInt(cur.getAttribute('data-gfp-vid'), 10) : 0;
     if (!vid) { showErr('Aucune variante disponible.'); return; }
+
+    {%- unless s.go_to_checkout -%}
+    /* Panier GUMFORCE (Réglages du thème) : le panier s'ouvre aussitôt avec
+       l'offre choisie (rendu optimiste), qui remplace l'offre déjà au panier ;
+       l'upsell déjà ajouté reste. Sans lui : ajout AJAX + panier Horizon ci-dessous. */
+    if (window.gfCart) {
+      busy = true;
+      btn.setAttribute('aria-busy', 'true');
+      setLabel(txtAdding);
+      btn.classList.add('gfp-loading');
+      if (errEl) errEl.style.display = 'none';
+      window.gfCart.setMain({ vid: vid, qty: qty, variants: FAMILY })
+        .then(function(){ unlock(); applyTier(); })
+        .catch(function(err){ unlock(); applyTier(); showErr(err.message || 'Une erreur est survenue.'); });
+      return;
+    }
+    {%- endunless -%}
 
     {%- if s.go_to_checkout and s.fast_checkout != false -%}
     /* Checkout instantané : UNE navigation (Shopify crée le panier puis redirige

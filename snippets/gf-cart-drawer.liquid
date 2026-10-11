@@ -1,0 +1,693 @@
+{%- comment -%}
+  GUMFORCE — contenu du panier coulissant (Réglages du thème › Panier GUMFORCE).
+  Rendu dans le <dialog> du cart-drawer-component d'Horizon (header-actions) :
+  Horizon garde l'ouverture / fermeture, le verrouillage du scroll, le retour
+  arrière mobile et le re-rendu (morph) à chaque événement cart:update.
+
+  • Articles compacts : vignette, nom court (avant « - »), options, prix barré,
+    stepper − n + (− devient corbeille à 1).
+  • Upsell : un produit (handle en réglage), bouton + puis stepper plafonné à
+    N par personne. Tant que la carte est affichée, l'article n'est pas répété
+    dans la liste. Carte masquée sans autre article dans le panier.
+  • Tout est rendu même panier vide (masqué) : le bloc d'offre peut ouvrir le
+    panier AVANT la réponse du serveur (rendu optimiste), puis la réponse
+    /cart/update.js (avec sections) remplace par la vérité serveur.
+  • JS : window.gfCart (setMain pour le bloc d'offre) + délégation des clics,
+    une seule file de requêtes, re-rendu seulement quand plus rien n'est en
+    attente (pas de retour en arrière visuel pendant les taps rapides).
+{%- endcomment -%}
+{%- liquid
+  assign gfc_title     = settings.gfc_title | default: 'Ton panier'
+  assign gfc_empty     = settings.gfc_empty_text | default: 'Ton panier est vide.'
+  assign gfc_empty_cta = settings.gfc_empty_cta | default: 'Découvrir GUMFORCE'
+  assign gfc_empty_url = settings.empty_cart_button_link | default: routes.all_products_collection_url
+  assign gfc_total_lbl = settings.gfc_total_label | default: 'Total'
+  assign gfc_cta       = settings.gfc_cta | default: 'Commander'
+  assign gfc_note      = settings.gfc_note | strip
+  assign gfc_save_tpl  = settings.gfc_savings_text | strip
+
+  comment — devise du visiteur ≠ devise boutique → total avec code ISO (comme le bloc d'offre)
+  endcomment
+  assign gfc_cc = false
+  assign gfc_loc = localization.country.currency.iso_code | default: cart.currency.iso_code
+  if gfc_loc != shop.currency
+    assign gfc_cc = true
+  endif
+
+  comment — UPSELL : produit introuvable (pas sur la boutique en ligne), épuisé ou case décochée → rien
+  endcomment
+  assign up_on = false
+  assign up_handle = settings.gfc_up_handle | strip
+  if settings.gfc_up_enabled and up_handle != blank
+    assign up_p = all_products[up_handle]
+    if up_p != blank
+      assign up_v = up_p.selected_or_first_available_variant
+      if up_v != blank and up_v.available
+        assign up_on = true
+      endif
+    endif
+  endif
+  assign up_max = settings.gfc_up_max | default: 4
+  assign up_qty = 0
+  assign has_main = false
+  for item in cart.items
+    if up_on and item.variant_id == up_v.id
+      assign up_qty = up_qty | plus: item.quantity
+    else
+      assign has_main = true
+    endif
+  endfor
+  assign show_up = false
+  if up_on and has_main
+    assign show_up = true
+  endif
+
+  comment — économie totale = prix barrés (compare_at) + remises Shopify
+  endcomment
+  assign gfc_save = cart.original_total_price | minus: cart.total_price
+  for item in cart.items
+    if item.variant.compare_at_price > item.original_price
+      assign gfc_d = item.variant.compare_at_price | minus: item.original_price | times: item.quantity
+      assign gfc_save = gfc_save | plus: gfc_d
+    endif
+  endfor
+  if gfc_cc
+    assign gfc_save_money = gfc_save | money_with_currency
+  else
+    assign gfc_save_money = gfc_save | money
+  endif
+
+  if up_on
+    assign up_name = settings.gfc_up_name | default: up_p.title
+    assign up_img = settings.gfc_up_image | default: up_v.image | default: up_p.featured_image
+    assign up_pct = ''
+    if up_v.compare_at_price > up_v.price
+      assign up_pct = up_v.compare_at_price | minus: up_v.price | times: 100.0 | divided_by: up_v.compare_at_price | round | prepend: '-' | append: '%'
+    endif
+    assign up_max_s = up_max | append: ''
+    assign up_badge = settings.gfc_up_badge | replace: '[remise]', up_pct | strip
+    assign up_sub = settings.gfc_up_sub | replace: '[max]', up_max_s | strip
+    assign up_maxed = settings.gfc_up_max_text | replace: '[max]', up_max_s | strip
+    assign up_head = settings.gfc_up_heading
+  endif
+
+  assign gfc_count = cart.item_count
+-%}
+<script src="{{ 'component-cart-items.js' | asset_url }}" type="module" fetchpriority="low"></script>
+<style>
+  .gfc-dialog { background:#fff; color:#111; }
+  .gfc, .gfc *, .gfc *::before, .gfc *::after { box-sizing:border-box; }
+  .gfc {
+    --gfc-ink:#111111; --gfc-muted:#6b6b6b; --gfc-faint:#a1a1aa; --gfc-line:#e7e7ea; --gfc-hair:rgba(0,0,0,.06);
+    --gfc-accent:#2AB5B4; --gfc-accent-soft:rgba(42,181,180,.07); --gfc-accent-ring:rgba(42,181,180,.10); --gfc-green:#16A34A;
+    --gfc-font:var(--font-body--family, 'Manrope', sans-serif); --gfc-head:var(--font-heading--family, 'Oswald', sans-serif);
+    display:flex; flex-direction:column; height:100%; min-height:0; width:100%;
+    font-family:var(--gfc-font); color:var(--gfc-ink); background:#fff; -webkit-font-smoothing:antialiased;
+  }
+  .gfc p { margin:0; }
+  .gfc button { font-family:inherit; -webkit-tap-highlight-color:transparent; }
+  .gfc [hidden] { display:none !important; }
+
+  /* en-tête */
+  .gfc__head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 8px 12px 16px; border-bottom:1px solid var(--gfc-hair); flex-shrink:0; }
+  .gfc__title { margin:0; font-family:var(--gfc-head); font-size:20px; font-weight:700; line-height:1.2; text-transform:uppercase; letter-spacing:.02em; color:var(--gfc-ink); }
+  .gfc__count { color:var(--gfc-muted); font-weight:500; }
+  .gfc__close { width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:none; background:none; color:var(--gfc-ink); cursor:pointer; padding:0; border-radius:50%; }
+  .gfc__close svg { width:20px; height:20px; }
+
+  /* corps défilant */
+  .gfc__body { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; padding:0 16px 20px; }
+  .gfc__lines { list-style:none; margin:0; padding:0; }
+
+  /* article */
+  .gfc-line { display:flex; gap:12px; padding:14px 0; border-bottom:1px solid var(--gfc-hair); transition:opacity .2s ease; }
+  .gfc-line:last-child { border-bottom:none; }
+  .gfc-line.is-gone { opacity:.35; pointer-events:none; }
+  .gfc-line__img { width:64px; height:64px; flex-shrink:0; border-radius:12px; background:#f4f4f5; overflow:hidden; display:block; }
+  .gfc-line__img img { width:100%; height:100%; object-fit:contain; display:block; }
+  .gfc-line__main { flex:1; min-width:0; display:flex; flex-direction:column; gap:10px; }
+  .gfc-line__top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+  .gfc-line__txt { min-width:0; }
+  .gfc-line__name { font-family:var(--gfc-head); font-size:15px; font-weight:700; line-height:1.2; text-transform:uppercase; letter-spacing:.02em; }
+  .gfc-line__opt { margin-top:2px !important; font-size:12.5px; font-weight:500; line-height:1.35; color:var(--gfc-muted); }
+  .gfc-line__prop { margin-top:2px !important; font-size:12px; line-height:1.35; color:var(--gfc-muted); }
+  .gfc-line__disc { margin-top:2px !important; font-size:12px; font-weight:700; line-height:1.35; color:var(--gfc-green); }
+  .gfc-line__price { display:flex; flex-direction:column; align-items:flex-end; flex-shrink:0; white-space:nowrap; line-height:1.2; }
+  .gfc-line__price b { font-size:15px; font-weight:800; letter-spacing:-.01em; }
+  .gfc-line__price s { font-size:12px; font-weight:500; color:var(--gfc-faint); margin-top:2px; }
+  .gfc-line.is-ghost .gfc-line__name, .gfc-line.is-ghost .gfc-line__opt { min-height:12px; border-radius:6px; background:#f0f0f1; }
+  .gfc-line.is-ghost .gfc-line__name { width:110px; }
+  .gfc-line.is-ghost .gfc-line__opt { width:160px; }
+
+  /* stepper (même recette que la quantité du bloc d'offre) */
+  .gfc-qty { display:inline-flex; align-items:center; align-self:flex-start; border:1.5px solid var(--gfc-line); border-radius:30px; background:#fff; overflow:hidden; flex-shrink:0; }
+  .gfc-qty button { width:34px; height:32px; border:none; background:transparent; color:var(--gfc-ink); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+  .gfc-qty button:disabled { color:#d4d4d8; cursor:not-allowed; }
+  .gfc-qty button svg { width:14px; height:14px; }
+  .gfc-qty span { min-width:22px; text-align:center; font-size:13.5px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .gfc-qty .gfc-ic-trash { display:none; }
+  .gfc-line.is-one .gfc-ic-minus { display:none; }
+  .gfc-line.is-one .gfc-ic-trash { display:block; }
+
+  /* upsell */
+  .gfc-up { margin-top:18px; }
+  .gfc-up__title { font-family:var(--gfc-head); font-size:16px; font-weight:700; line-height:1.25; text-transform:uppercase; letter-spacing:.02em; }
+  .gfc-up__title em { font-style:normal; color:var(--gfc-accent); }
+  .gfc-up__timer { margin-top:4px !important; display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:500; line-height:1.35; color:var(--gfc-muted); }
+  .gfc-up__timer svg { width:14px; height:14px; flex-shrink:0; color:var(--gfc-accent); }
+  .gfc-up__timer b { color:var(--gfc-ink); font-weight:800; font-variant-numeric:tabular-nums; }
+  .gfc-up__card { position:relative; display:flex; align-items:flex-start; gap:12px; margin-top:12px; padding:14px; border:1.5px solid var(--gfc-line); border-radius:16px; background:#fff; transition:border-color .16s ease, background .16s ease, box-shadow .16s ease; }
+  .gfc-up__card--badge { margin-top:20px; padding-top:17px; }
+  .gfc-up.is-on .gfc-up__card { border-color:var(--gfc-accent); background:var(--gfc-accent-soft); box-shadow:0 0 0 3px var(--gfc-accent-ring); }
+  .gfc-up__badge { position:absolute; top:-9px; left:14px; z-index:2; font-size:10px; font-weight:800; color:#fff; background:var(--gfc-accent); padding:3px 10px; border-radius:100px; letter-spacing:.04em; white-space:nowrap; text-transform:uppercase; line-height:1.3; box-shadow:0 3px 8px rgba(42,181,180,.35); }
+  .gfc-up__img { width:60px; height:60px; flex-shrink:0; border-radius:12px; overflow:hidden; }
+  .gfc-up__img img { width:100%; height:100%; object-fit:contain; display:block; }
+  .gfc-up__info { flex:1; min-width:0; }
+  .gfc-up__name { font-size:15px; font-weight:700; line-height:1.25; }
+  .gfc-up__sub { margin-top:2px !important; font-size:12px; font-weight:500; line-height:1.35; color:var(--gfc-muted); }
+  .gfc-up__maxed { color:var(--gfc-ink); font-weight:700; }
+  .gfc-up:not(.is-max) .gfc-up__maxed, .gfc-up.is-max .gfc-up__lim { display:none; }
+  .gfc-up__row { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:42px; margin-top:4px; }
+  .gfc-up__price { display:flex; align-items:baseline; gap:6px; white-space:nowrap; line-height:1.2; }
+  .gfc-up__price b { font-size:17px; font-weight:800; letter-spacing:-.01em; }
+  .gfc-up__price s { font-size:12.5px; font-weight:500; color:var(--gfc-faint); }
+  .gfc-up__ctrl { flex-shrink:0; display:flex; align-items:center; }
+  .gfc-up__add { position:relative; width:42px; height:42px; border-radius:50%; border:none; background:var(--gfc-ink); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; box-shadow:0 1px 3px rgba(0,0,0,.1); transition:transform .12s ease; }
+  .gfc-up__add svg { width:18px; height:18px; }
+  .gfc-up__add:active { transform:scale(.92); }
+  .gfc-up__add::after { content:''; position:absolute; inset:0; border-radius:50%; pointer-events:none; }
+  .gfc-dialog[open] .gfc-up:not(.is-on) .gfc-up__add::after { animation:gfc-ring 1.6s ease-out .5s 2; }
+  @keyframes gfc-ring { 0% { box-shadow:0 0 0 0 rgba(42,181,180,.55); } 100% { box-shadow:0 0 0 12px rgba(42,181,180,0); } }
+  .gfc-up .gfc-qty { border-color:var(--gfc-accent); }
+  .gfc-up .gfc-qty button { width:38px; height:38px; }
+  .gfc-up:not(.is-on) .gfc-qty, .gfc-up.is-on .gfc-up__add { display:none; }
+
+  /* pied fixe */
+  .gfc__foot { flex-shrink:0; padding:12px 16px calc(14px + env(safe-area-inset-bottom)); border-top:1px solid var(--gfc-hair); background:#fff; }
+  .gfc-tot { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  .gfc-tot__lbl { font-size:14px; font-weight:700; }
+  .gfc-tot__amt { font-size:20px; font-weight:800; letter-spacing:-.01em; font-variant-numeric:tabular-nums; }
+  .gfc-save { margin-top:1px !important; text-align:right; font-size:12.5px; font-weight:700; color:var(--gfc-green); }
+  .gfc.is-busy .gfc-tot__amt, .gfc.is-busy .gfc-save, .gfc.is-busy .gfc-line__price { animation:gfc-shim .8s ease-in-out infinite alternate; }
+  @keyframes gfc-shim { from { opacity:1; } to { opacity:.35; } }
+  .gfc-go-form { margin:12px 0 0; }
+  .gfc-go { width:100%; padding:16px; border:none; border-radius:30px; background:var(--gfc-ink); color:#fff; font-family:var(--gfc-font); font-size:16px; font-weight:700; line-height:1.3; letter-spacing:.01em; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; text-decoration:none; box-shadow:0 1px 3px rgba(0,0,0,.1); -webkit-appearance:none; appearance:none; }
+  .gfc-go__main { display:inline-flex; align-items:center; justify-content:center; }
+  .gfc-go__sub { display:flex; align-items:center; justify-content:center; gap:5px; margin-top:2px; font-size:10.5px; font-weight:400; line-height:1.2; letter-spacing:.01em; opacity:.75; }
+  .gfc-go__sub svg { width:12px; height:12px; flex-shrink:0; color:var(--gfc-accent); }
+  .gfc-go.is-loading { opacity:.8; pointer-events:none; }
+  .gfc-go.is-loading .gfc-go__main::before { content:''; width:14px; height:14px; margin-right:9px; flex-shrink:0; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; border-radius:50%; animation:gfc-rot .7s linear infinite; }
+  @keyframes gfc-rot { to { transform:rotate(360deg); } }
+
+  /* panier vide */
+  .gfc__empty { padding:48px 8px 24px; text-align:center; }
+  .gfc__empty-txt { font-size:15px; font-weight:500; color:var(--gfc-muted); }
+  .gfc__empty .gfc-go { display:inline-flex; width:auto; margin-top:18px; padding:15px 32px; }
+
+  /* petits écrans (iPhone SE 1re génération) */
+  @media (max-width:374px) {
+    .gfc__title { font-size:18px; }
+    .gfc__body { padding:0 12px 16px; }
+    .gfc__foot { padding-left:12px; padding-right:12px; }
+    .gfc-up__card { padding:12px; gap:10px; }
+    .gfc-up__img { width:50px; height:50px; }
+    .gfc-go { padding:14px 12px; }
+    .gfc-go__sub { font-size:10px; }
+  }
+  @media (prefers-reduced-motion:reduce) {
+    .gfc-dialog[open] .gfc-up:not(.is-on) .gfc-up__add::after, .gfc.is-busy .gfc-tot__amt, .gfc.is-busy .gfc-save, .gfc.is-busy .gfc-line__price { animation:none; }
+  }
+</style>
+
+<div class="gfc" id="gfc" data-gfc>
+  <div class="gfc__head">
+    <h2 class="gfc__title" id="gfc-title">{{ gfc_title | escape }} <span class="gfc__count" data-gfc-count{% if gfc_count == 0 %} hidden{% endif %}>({{ gfc_count }})</span></h2>
+    <button type="button" ref="closeButton" on:click="cart-drawer-component/close" class="gfc__close" aria-label="{{ 'actions.close_dialog' | t }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <div class="gfc__body">
+    <div class="gfc__empty" data-gfc-empty{% unless cart.empty? %} hidden{% endunless %}>
+      <p class="gfc__empty-txt">{{ gfc_empty | escape }}</p>
+      <a class="gfc-go" href="{{ gfc_empty_url }}">{{ gfc_empty_cta | escape }}</a>
+    </div>
+
+    <ul class="gfc__lines" data-gfc-lines>
+      {%- for item in cart.items -%}
+        {%- if show_up and item.variant_id == up_v.id -%}{%- continue -%}{%- endif -%}
+        {%- liquid
+          assign l_name = item.product.title | split: ' - ' | first | strip
+          assign l_opts = ''
+          unless item.product.has_only_default_variant
+            for o in item.options_with_values
+              if l_opts != ''
+                assign l_opts = l_opts | append: ' · '
+              endif
+              assign l_opts = l_opts | append: o.value
+            endfor
+          endunless
+          assign l_was = 0
+          if item.variant.compare_at_price > item.original_price
+            assign l_was = item.variant.compare_at_price | times: item.quantity
+          elsif item.original_line_price > item.final_line_price
+            assign l_was = item.original_line_price
+          endif
+          assign l_max = 0
+          if up_on and item.variant_id == up_v.id
+            assign l_max = up_max
+          endif
+        -%}
+        <li class="gfc-line{% if item.quantity == 1 %} is-one{% endif %}" data-gfc-line data-key="{{ item.key }}" data-vid="{{ item.variant_id }}" data-qty="{{ item.quantity }}" data-max="{{ l_max }}">
+          <a class="gfc-line__img" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+            {%- if item.image -%}<img src="{{ item.image | image_url: width: 160 }}" alt="" width="64" height="64" loading="lazy">{%- endif -%}
+          </a>
+          <div class="gfc-line__main">
+            <div class="gfc-line__top">
+              <div class="gfc-line__txt">
+                <p class="gfc-line__name">{{ l_name | escape }}</p>
+                {%- if l_opts != blank -%}<p class="gfc-line__opt">{{ l_opts | escape }}</p>{%- endif -%}
+                {%- for p in item.properties -%}
+                  {%- assign p_first = p.first | slice: 0 -%}
+                  {%- if p.last != blank and p_first != '_' -%}<p class="gfc-line__prop">{{ p.first | escape }} : {{ p.last | escape }}</p>{%- endif -%}
+                {%- endfor -%}
+                {%- for a in item.line_level_discount_allocations -%}
+                  <p class="gfc-line__disc">{{ a.discount_application.title | escape }} (-{{ a.amount | money }})</p>
+                {%- endfor -%}
+              </div>
+              <p class="gfc-line__price"><b>{{ item.final_line_price | money }}</b>{% if l_was > item.final_line_price %}<s>{{ l_was | money }}</s>{% endif %}</p>
+            </div>
+            <div class="gfc-qty">
+              <button type="button" data-gfc-dec aria-label="{{ 'accessibility.decrease_quantity' | t }}">
+                <svg class="gfc-ic-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+                <svg class="gfc-ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>
+              </button>
+              <span data-gfc-n>{{ item.quantity }}</span>
+              <button type="button" data-gfc-inc aria-label="{{ 'accessibility.increase_quantity' | t }}"{% if l_max > 0 and item.quantity >= l_max %} disabled{% endif %}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </div>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    {%- if up_on -%}
+      <div class="gfc-up{% if up_qty > 0 %} is-on{% endif %}{% if up_qty >= up_max %} is-max{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-qty="{{ up_qty }}" data-max="{{ up_max }}"{% unless show_up %} hidden{% endunless %}>
+        {%- if up_head != blank -%}<p class="gfc-up__title">{{ up_head }}</p>{%- endif -%}
+        {%- if settings.gfc_up_timer and settings.gfc_up_timer_text != blank -%}
+          <div data-skip-subtree-update><p class="gfc-up__timer" data-gfc-timer data-min="{{ settings.gfc_up_timer_min | default: 10 }}" data-tpl="{{ settings.gfc_up_timer_text | escape }}" hidden></p></div>
+        {%- endif -%}
+        <div class="gfc-up__card{% if up_badge != blank %} gfc-up__card--badge{% endif %}">
+          {%- if up_badge != blank -%}<span class="gfc-up__badge">{{ up_badge | escape }}</span>{%- endif -%}
+          {%- if up_img -%}<div class="gfc-up__img"><img src="{{ up_img | image_url: width: 160 }}" alt="" width="60" height="60" loading="lazy"></div>{%- endif -%}
+          <div class="gfc-up__info">
+            <p class="gfc-up__name">{{ up_name | escape }}</p>
+            {%- if up_sub != blank or up_maxed != blank -%}
+              <p class="gfc-up__sub">{%- if up_sub != blank -%}<span class="gfc-up__lim">{{ up_sub | escape }}</span>{%- endif -%}{%- if up_maxed != blank -%}<span class="gfc-up__maxed">{{ up_maxed | escape }}</span>{%- endif -%}</p>
+            {%- endif -%}
+            <div class="gfc-up__row">
+              <p class="gfc-up__price"><b>{{ up_v.price | money }}</b>{% if up_v.compare_at_price > up_v.price %}<s>{{ up_v.compare_at_price | money }}</s>{% endif %}</p>
+              <div class="gfc-up__ctrl">
+                <button type="button" class="gfc-up__add" data-gfc-up-inc aria-label="{{ 'actions.add_to_cart' | t }} : {{ up_name | escape }}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+                <div class="gfc-qty">
+                  <button type="button" data-gfc-up-dec aria-label="{{ 'accessibility.decrease_quantity' | t }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+                  </button>
+                  <span data-gfc-up-n>{{ up_qty }}</span>
+                  <button type="button" data-gfc-up-inc aria-label="{{ 'accessibility.increase_quantity' | t }}"{% if up_qty >= up_max %} disabled{% endif %}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="gfc__foot" data-gfc-foot{% if cart.empty? %} hidden{% endif %}>
+    <div class="gfc-tot">
+      <span class="gfc-tot__lbl">{{ gfc_total_lbl | escape }}</span>
+      <span class="gfc-tot__amt" data-gfc-total>{% if gfc_cc %}{{ cart.total_price | money_with_currency }}{% else %}{{ cart.total_price | money }}{% endif %}</span>
+    </div>
+    {%- if gfc_save > 0 and gfc_save_tpl != blank -%}
+      <p class="gfc-save">{{ gfc_save_tpl | escape | replace: '[montant]', gfc_save_money }}</p>
+    {%- endif -%}
+    <form class="gfc-go-form" action="{{ routes.cart_url }}" method="post">
+      <button type="submit" name="checkout" class="gfc-go" data-gfc-go>
+        <span class="gfc-go__main">{{ gfc_cta | escape }}</span>
+        {%- if gfc_note != blank -%}
+          <span class="gfc-go__sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>{{ gfc_note | escape }}</span>
+        {%- endif -%}
+      </button>
+    </form>
+  </div>
+
+  {%- comment -%} Gabarit d'article pour l'ouverture instantanée (rendu optimiste) {%- endcomment -%}
+  <template data-gfc-tpl>
+    <li class="gfc-line is-one" data-gfc-line data-key="" data-vid="" data-qty="1" data-max="0">
+      <span class="gfc-line__img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" width="64" height="64"></span>
+      <div class="gfc-line__main">
+        <div class="gfc-line__top">
+          <div class="gfc-line__txt"><p class="gfc-line__name"></p><p class="gfc-line__opt"></p></div>
+          <p class="gfc-line__price"><b></b><s></s></p>
+        </div>
+        <div class="gfc-qty">
+          <button type="button" disabled aria-hidden="true"><svg class="gfc-ic-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg><svg class="gfc-ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button>
+          <span data-gfc-n>1</span>
+          <button type="button" disabled aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
+      </div>
+    </li>
+  </template>
+
+  {%- comment -%} Données des variantes de la page produit, pour dessiner l'article avant la réponse du serveur {%- endcomment -%}
+  <script type="application/json" data-gfc-data>
+    {
+    {%- if product != blank -%}
+      {%- assign d_name = product.title | split: ' - ' | first | strip -%}
+      {%- for v in product.variants -%}
+        {%- liquid
+          assign d_img = v.image | default: product.featured_image
+          assign d_opt = ''
+          unless product.has_only_default_variant
+            assign d_opt = v.options | join: ' · '
+          endunless
+          assign d_was = ''
+          if v.compare_at_price > v.price
+            assign d_was = v.compare_at_price | money
+          endif
+        -%}
+        "{{ v.id }}": { "name": {{ d_name | json }}, "opt": {{ d_opt | json }}, "img": {% if d_img %}{{ d_img | image_url: width: 160 | json }}{% else %}""{% endif %}, "price": {{ v.price | money | json }}, "was": {{ d_was | json }} }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    {%- endif -%}
+    }
+  </script>
+</div>
+
+<script>
+  (function () {
+    if (window.gfCart) return;
+    var ROOT = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+    var chain = Promise.resolve();
+    var pending = 0;   /* requêtes envoyées sans réponse */
+    var waiting = {};  /* taps en attente d'envoi (anti-rebond), par contrôle */
+    var opening = false; /* ouverture demandée par le bloc d'offre, pas encore effective */
+    var DEBOUNCE = 250;
+
+    function q(sel, el) { return (el || document).querySelector(sel); }
+    function qa(sel, el) { return Array.prototype.slice.call((el || document).querySelectorAll(sel)); }
+    function root() { return q('[data-gfc]'); }
+    function drawer() { return q('cart-drawer-component'); }
+    function sectionId() { var c = q('cart-items-component[data-drawer]'); return c ? c.getAttribute('data-section-id') : ''; }
+    function idle() { return pending === 0 && Object.keys(waiting).length === 0; }
+    function setBusy() { var r = root(); if (r) r.classList.toggle('is-busy', !idle()); }
+    function defined(name, ms) {
+      if (customElements.get(name)) return Promise.resolve(true);
+      return Promise.race([
+        customElements.whenDefined(name).then(function () { return true; }),
+        new Promise(function (res) { setTimeout(function () { res(!!customElements.get(name)); }, ms); })
+      ]);
+    }
+
+    function open() {
+      var d = drawer();
+      if (!d) return Promise.resolve(false);
+      return defined('cart-drawer-component', 4000).then(function (ok) {
+        if (ok && typeof d.open === 'function') d.open();
+        return ok;
+      });
+    }
+
+    /* ── Rendu serveur : même événement que les formulaires d'Horizon (cart:update
+       + sections) → cart-items-component fait le morph, l'icône du header suit. ── */
+    function render(cart) {
+      var sid = sectionId();
+      var html = cart && cart.sections && sid ? cart.sections[sid] : null;
+      return defined('cart-items-component', 3000).then(function (ok) {
+        if (ok) {
+          /* panier fermé entre-temps (ou retour du checkout) : Horizon le
+             rouvrirait (auto-open) à chaque cart:update → mise à jour silencieuse */
+          var d = drawer(), dlg = d && q('dialog', d);
+          var quiet = !!(d && dlg && !dlg.open && !opening && d.hasAttribute('auto-open'));
+          var sections = cart.sections || {};
+          if (quiet) {
+            d.removeAttribute('auto-open');
+            if (html) { sections = {}; sections[sid] = html.replace(/(<cart-drawer-component\b[^>]*?)\sauto-open\b/, '$1'); }
+          }
+          document.dispatchEvent(new CustomEvent('cart:update', {
+            bubbles: true,
+            detail: { resource: cart, sourceId: 'gf-cart', data: { source: 'gf-cart', itemCount: cart.item_count, sections: sections } }
+          }));
+          if (quiet) d.setAttribute('auto-open', '');
+        } else if (html) {
+          var fresh = new DOMParser().parseFromString(html, 'text/html').querySelector('[data-gfc]');
+          var cur = root();
+          if (fresh && cur) cur.replaceWith(fresh);
+        }
+        setBusy();
+        tick();
+        warm();
+      });
+    }
+
+    function post(path, body) {
+      var sid = sectionId();
+      if (sid) { body.sections = sid; body.sections_url = window.location.pathname; }
+      return fetch(ROOT + path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(body)
+      }).then(function (res) {
+        return res.json().then(function (data) {
+          if (!res.ok) throw new Error(data.description || data.message || res.status);
+          return data;
+        });
+      });
+    }
+
+    /* File unique : les requêtes partent l'une après l'autre ; seule la dernière
+       réponse (plus rien en attente) redessine le panier. */
+    function request(path, body) {
+      pending++;
+      setBusy();
+      var p = chain.then(function () { return post(path, body); });
+      chain = p.catch(function () {});
+      return p.then(function (cart) {
+        pending--;
+        if (idle()) return render(cart).then(function () { return cart; });
+        return cart;
+      }, function (err) {
+        pending--;
+        if (idle()) refresh();
+        throw err;
+      });
+    }
+    function refresh() { return post('cart/update.js', { updates: {} }).then(render).catch(function () {}); }
+
+    function schedule(key, fn) {
+      if (waiting[key]) clearTimeout(waiting[key].t);
+      waiting[key] = { fn: fn, t: setTimeout(function () { fire(key); }, DEBOUNCE) };
+      setBusy();
+    }
+    function fire(key) {
+      var w = waiting[key];
+      if (!w) return;
+      clearTimeout(w.t);
+      delete waiting[key];
+      w.fn().catch(function () {});
+    }
+    function flush() {
+      Object.keys(waiting).forEach(fire);
+      return chain;
+    }
+
+    function updateCount() {
+      var r = root(); if (!r) return;
+      var n = 0;
+      qa('[data-gfc-line]', r).forEach(function (l) { if (!l.classList.contains('is-gone')) n += parseInt(l.getAttribute('data-qty'), 10) || 0; });
+      var up = q('[data-gfc-up]', r);
+      if (up && !up.hidden) n += parseInt(up.getAttribute('data-qty'), 10) || 0;
+      var c = q('[data-gfc-count]', r);
+      if (c) { c.textContent = '(' + n + ')'; c.hidden = n === 0; }
+    }
+
+    /* ── Upsell : + puis − n +, plafonné ── */
+    function upSet(n) {
+      var card = q('[data-gfc-up]');
+      if (!card) return;
+      var max = parseInt(card.getAttribute('data-max'), 10) || 4;
+      n = Math.max(0, Math.min(max, n));
+      card.setAttribute('data-qty', n);
+      card.classList.toggle('is-on', n > 0);
+      card.classList.toggle('is-max', n >= max);
+      var out = q('[data-gfc-up-n]', card); if (out) out.textContent = n;
+      qa('[data-gfc-up-inc]', card).forEach(function (b) { b.disabled = n >= max; });
+      updateCount();
+      var vid = card.getAttribute('data-vid');
+      schedule('up', function () {
+        var u = {}; u[vid] = parseInt((q('[data-gfc-up]') || card).getAttribute('data-qty'), 10) || 0;
+        return request('cart/update.js', { updates: u });
+      });
+    }
+
+    /* ── Article : − n + (corbeille à 1) ── */
+    function lineSet(line, n) {
+      var max = parseInt(line.getAttribute('data-max'), 10) || 0;
+      if (max && n > max) n = max;
+      if (n < 0) n = 0;
+      line.setAttribute('data-qty', n);
+      line.classList.toggle('is-one', n === 1);
+      line.classList.toggle('is-gone', n === 0);
+      var out = q('[data-gfc-n]', line); if (out) out.textContent = n;
+      var inc = q('[data-gfc-inc]', line); if (inc) inc.disabled = !!max && n >= max;
+      updateCount();
+      var key = line.getAttribute('data-key');
+      schedule('l:' + key, function () { return request('cart/change.js', { id: key, quantity: n }); });
+    }
+
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;
+      var r = root();
+      var b = t.closest('[data-gfc-up-inc],[data-gfc-up-dec],[data-gfc-inc],[data-gfc-dec],[data-gfc-go]');
+      if (!b || !r || !r.contains(b) || b.disabled) return;
+      if (b.hasAttribute('data-gfc-go')) {
+        b.classList.add('is-loading');
+        if (!idle()) { e.preventDefault(); flush().then(function () { window.location.href = ROOT + 'checkout'; }); }
+        return;
+      }
+      e.preventDefault();
+      if (b.hasAttribute('data-gfc-up-inc') || b.hasAttribute('data-gfc-up-dec')) {
+        var card = b.closest('[data-gfc-up]');
+        var cur = parseInt(card.getAttribute('data-qty'), 10) || 0;
+        upSet(cur + (b.hasAttribute('data-gfc-up-inc') ? 1 : -1));
+        return;
+      }
+      var line = b.closest('[data-gfc-line]');
+      if (!line || !line.getAttribute('data-key')) return;
+      var n = parseInt(line.getAttribute('data-qty'), 10) || 0;
+      lineSet(line, n + (b.hasAttribute('data-gfc-inc') ? 1 : -1));
+    });
+    /* retour depuis le checkout (bfcache) : bouton débloqué, panier relu */
+    window.addEventListener('pageshow', function (e) {
+      if (!e.persisted) return;
+      qa('[data-gfc-go].is-loading').forEach(function (b) { b.classList.remove('is-loading'); });
+      refresh();
+    });
+
+    /* ── Rendu optimiste de l'offre choisie : le panier s'ouvre tout de suite ── */
+    function data() {
+      try { return JSON.parse((q('[data-gfc-data]') || {}).textContent || '{}'); } catch (err) { return {}; }
+    }
+    function optimistic(vid, qty, family) {
+      var r = root(); if (!r) return;
+      var list = q('[data-gfc-lines]', r), tpl = q('[data-gfc-tpl]', r);
+      if (!list || !tpl) return;
+      qa('[data-gfc-line]', list).forEach(function (l) {
+        var v = parseInt(l.getAttribute('data-vid'), 10);
+        if (v === vid || family.indexOf(v) > -1) l.remove();
+      });
+      var d = data()[vid];
+      var li = tpl.content.firstElementChild.cloneNode(true);
+      li.setAttribute('data-vid', vid);
+      li.setAttribute('data-qty', qty);
+      li.classList.toggle('is-one', qty === 1);
+      q('[data-gfc-n]', li).textContent = qty;
+      if (d) {
+        q('img', li).src = d.img || q('img', li).src;
+        q('.gfc-line__name', li).textContent = d.name;
+        var opt = q('.gfc-line__opt', li);
+        if (d.opt) opt.textContent = d.opt; else opt.remove();
+        if (qty === 1) { q('.gfc-line__price b', li).textContent = d.price; q('.gfc-line__price s', li).textContent = d.was; }
+      } else {
+        li.classList.add('is-ghost');
+      }
+      list.insertBefore(li, list.firstChild);
+      var empty = q('[data-gfc-empty]', r);
+      if (empty && !empty.hidden && d && qty === 1) { var tot = q('[data-gfc-total]', r); if (tot) tot.textContent = d.price; }
+      if (empty) empty.hidden = true;
+      var foot = q('[data-gfc-foot]', r); if (foot) foot.hidden = false;
+      var up = q('[data-gfc-up]', r); if (up) up.hidden = false;
+      updateCount();
+      tick();
+    }
+
+    /* API du bloc d'offre : remplace l'offre déjà au panier (variantes du même
+       produit) par celle choisie, garde l'upsell, ouvre le panier aussitôt. */
+    function setMain(o) {
+      var vid = parseInt(o.vid, 10), qty = parseInt(o.qty, 10) || 1;
+      var family = (o.variants || []).map(function (x) { return parseInt(x, 10); });
+      var r = root();
+      if (!r || !vid) return Promise.reject(new Error('gf-cart'));
+      var updates = {};
+      qa('[data-gfc-line]', r).forEach(function (l) {
+        var v = parseInt(l.getAttribute('data-vid'), 10);
+        if (v !== vid && family.indexOf(v) > -1) updates[v] = 0;
+      });
+      updates[vid] = qty;
+      /* le header se ré-hydrate une fois au repos après le chargement (Horizon) :
+         inutile maintenant, notre réponse apporte le panier à jour */
+      var sec = r.closest('.shopify-section'); if (sec) sec.setAttribute('data-hydrated', 'true');
+      optimistic(vid, qty, family);
+      opening = true;
+      var opened = open();
+      opened.then(function () { requestAnimationFrame(function () { requestAnimationFrame(function () { opening = false; }); }); });
+      return request('cart/update.js', { updates: updates }).then(function (cart) {
+        return opened.then(function (ok) {
+          /* panier pas encore prêt (réseau très lent) : on file au checkout, le panier est déjà à jour */
+          if (!ok) window.location.href = ROOT + 'checkout';
+          return cart;
+        });
+      }, function (err) {
+        var d = drawer(); if (d && typeof d.close === 'function') d.close();
+        throw err;
+      });
+    }
+
+    /* ── Compte à rebours de l'upsell : démarre à la 1re vue de la carte, ne
+       repart pas à zéro à chaque ouverture (onglet), disparaît à zéro. ── */
+    var CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function tick() {
+      var el = q('[data-gfc-timer]');
+      var dlg = el && el.closest('dialog');
+      if (!el || !dlg || !dlg.open) return;
+      var card = el.closest('[data-gfc-up]');
+      if (!card || card.hidden) return;
+      var min = parseFloat(el.getAttribute('data-min')) || 10, t0 = 0;
+      try { t0 = parseInt(sessionStorage.getItem('gfc_t0'), 10) || 0; } catch (err) {}
+      if (!t0) { t0 = Date.now(); try { sessionStorage.setItem('gfc_t0', t0); } catch (err) {} }
+      var left = Math.ceil((t0 + min * 60000 - Date.now()) / 1000);
+      if (left <= 0) { el.hidden = true; return; }
+      var m = Math.floor(left / 60), s = left % 60;
+      var t = '<b>' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s + '</b>';
+      el.innerHTML = CLOCK + '<span>' + esc(el.getAttribute('data-tpl') || '').replace('[temps]', t) + '</span>';
+      el.hidden = false;
+    }
+    setInterval(tick, 1000);
+    var dc = drawer();
+    if (dc) dc.addEventListener('dialog:open', tick);
+
+    /* Images du panier préchargées après le chargement de la page : à
+       l'ouverture, tout est déjà en cache (une image lazy dans un dialog
+       fermé ne se charge qu'à l'ouverture). */
+    var warmed = false;
+    function warm() {
+      var r = root(); if (!r) return;
+      qa('img[loading="lazy"]', r).forEach(function (img) { img.loading = 'eager'; });
+      if (warmed) return;
+      warmed = true;
+      var d = data();
+      Object.keys(d).forEach(function (k) { if (d[k].img) { var i = new Image(); i.src = d[k].img; } });
+    }
+    function later() { (window.requestIdleCallback || function (f) { setTimeout(f, 1); })(function () { setTimeout(warm, 1200); }); }
+    if (document.readyState === 'complete') later(); else window.addEventListener('load', later);
+
+    window.gfCart = { setMain: setMain, open: open, refresh: refresh };
+  })();
+</script>
