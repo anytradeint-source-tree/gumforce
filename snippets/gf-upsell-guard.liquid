@@ -1,0 +1,67 @@
+{%- comment -%}
+  GUMFORCE — l'upsell (pastèque) ne s'achète qu'avec une offre GUMFORCE
+  (Réglages du thème › Panier GUMFORCE › « Seulement avec une offre GUMFORCE »).
+  Rendu en tête de page (layout/theme.liquid), il ne sort rien dans le cas normal.
+  • Page produit de l'upsell : renvoi immédiat vers la page de l'offre (lien du
+    bouton « panier vide »), et noindex.
+  • Upsell resté seul au panier (offre retirée sur /cart, ancien panier…) :
+    retiré au chargement, puis panier coulissant rafraîchi (ou page /cart
+    rechargée). Dans le panier coulissant, il part déjà avec l'offre.
+{%- endcomment -%}
+{%- liquid
+  assign g_on = false
+  assign g_handle = settings.gfc_up_handle | strip
+  if settings.gfc_up_enabled and settings.gfc_up_only_with and g_handle != blank
+    unless request.design_mode
+      assign g_on = true
+    endunless
+  endif
+  assign g_redirect = false
+  assign g_orphan = false
+  if g_on
+    assign g_target = settings.empty_cart_button_link | default: routes.root_url
+    if template.name == 'product' and product.handle == g_handle
+      unless g_target contains g_handle
+        assign g_redirect = true
+      endunless
+    endif
+    assign g_up = 0
+    assign g_other = 0
+    assign g_vid = 0
+    for item in cart.items
+      if item.product.handle == g_handle
+        assign g_up = g_up | plus: item.quantity
+        assign g_vid = item.variant_id
+      else
+        assign g_other = g_other | plus: item.quantity
+      endif
+    endfor
+    if g_up > 0 and g_other == 0
+      assign g_orphan = true
+    endif
+  endif
+-%}
+{%- if g_redirect -%}
+  <meta name="robots" content="noindex">
+  <script>window.location.replace({{ g_target | json }});</script>
+{%- endif -%}
+{%- if g_orphan -%}
+  <script>
+    (function () {
+      var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+      var u = {}; u[{{ g_vid | json }}] = 0;
+      fetch(root + 'cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ updates: u })
+      }).then(function () {
+        {%- if template.name == 'cart' %}
+        window.location.reload();
+        {%- else %}
+        function done() { if (window.gfCart) window.gfCart.refresh(); }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', done); else done();
+        {%- endif %}
+      });
+    })();
+  </script>
+{%- endif -%}

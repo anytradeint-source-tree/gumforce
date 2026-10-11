@@ -107,6 +107,13 @@
         "info": "La fin de l'adresse du produit (gumforce.co/products/gumforce-pasteque → gumforce-pasteque). Le produit doit être disponible sur le canal Boutique en ligne. Prix et prix barré viennent de Shopify. Produit introuvable ou épuisé = pas d'upsell."
       },
       {
+        "type": "checkbox",
+        "id": "gfc_up_only_with",
+        "label": "Seulement avec une offre GUMFORCE",
+        "default": true,
+        "info": "Si l'offre est retirée du panier, la pastèque part avec ; restée seule au panier (ex. offre retirée sur la page /cart), elle est retirée au chargement suivant. Sa page produit renvoie vers le lien du bouton « panier vide » (Panier › Lien du bouton panier vide)."
+      },
+      {
         "type": "image_picker",
         "id": "gfc_up_bg",
         "label": "Photo de fond de la carte",

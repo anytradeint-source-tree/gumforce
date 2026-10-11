@@ -11,6 +11,8 @@
     ligne du panier (après les autres articles, même plafond) et la carte
     disparaît ; elle revient s'il est retiré. Carte photo (image d'ambiance en
     fond) ou compacte (vignette). Carte masquée sans autre article au panier.
+  • Upsell seulement : si l'offre GUMFORCE est retirée, la pastèque part avec
+    (réglage « Seulement avec une offre GUMFORCE » ; voir aussi gf-upsell-guard).
   • Pied : lignes Réductions (prix barrés + remises) et Livraison « Gratuite »
     (dès que les articles hors upsell atteignent le seuil réglé, comme la règle
     Shopify), Total, bouton Commander → et boutons de paiement rapide.
@@ -305,7 +307,7 @@
   }
 </style>
 
-<div class="gfc{% if gfc_cc %} gfc--cc{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}">
+<div class="gfc{% if gfc_cc %} gfc--cc{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}" data-up-only="{% if settings.gfc_up_only_with %}1{% endif %}">
   <div class="gfc__head">
     <h2 class="gfc__title" id="gfc-title">{{ gfc_title | escape }} <span class="gfc__count" data-gfc-count{% if gfc_count == 0 %} hidden{% endif %}>({{ gfc_count }})</span></h2>
     <button type="button" ref="closeButton" on:click="cart-drawer-component/close" class="gfc__close" aria-label="{{ 'actions.close_dialog' | t }}">
@@ -697,6 +699,7 @@
       var vid = card.getAttribute('data-vid'), n = cents(card, 'data-pick') || 1;
       var unit = cents(card, 'data-price'), was = cents(card, 'data-was') || unit;
       /* une suppression de cette ligne encore en attente ne doit pas passer après l'ajout */
+      if (waiting.purge) { clearTimeout(waiting.purge.t); delete waiting.purge; }
       qa('[data-gfc-line][data-vid="' + vid + '"]', list).forEach(function (l) {
         var k = 'l:' + l.getAttribute('data-key');
         if (waiting[k]) { clearTimeout(waiting[k].t); delete waiting[k]; }
@@ -731,12 +734,44 @@
       line.classList.toggle('is-gone', n === 0);
       var out = q('[data-gfc-n]', line); if (out) out.textContent = n;
       var inc = q('[data-gfc-inc]', line); if (inc) inc.disabled = !!max && n >= max;
-      /* upsell retiré : la carte revient tout de suite */
-      var card = q('[data-gfc-up]');
-      if (n === 0 && card && card.getAttribute('data-vid') === line.getAttribute('data-vid')) { upPick(card, 1); card.hidden = false; }
-      updateCount();
       var key = line.getAttribute('data-key');
       schedule('l:' + key, function () { return request('cart/change.js', { id: key, quantity: n }); });
+      if (n === 0) afterRemove(line);
+      updateCount();
+    }
+
+    /* Après un retrait : pastèque retirée → la carte revient (s'il reste une offre) ;
+       plus aucune offre → la carte se cache et la pastèque part avec (upsell seulement) ;
+       plus rien → panier vide tout de suite. */
+    function mains(r, upv) {
+      return qa('[data-gfc-line]', r).filter(function (l) { return !l.classList.contains('is-gone') && l.getAttribute('data-vid') !== upv; });
+    }
+    function afterRemove(line) {
+      var r = root(), card = q('[data-gfc-up]', r), upv = card ? card.getAttribute('data-vid') : '';
+      if (card) {
+        if (line.getAttribute('data-vid') === upv) {
+          if (mains(r, upv).length) { upPick(card, 1); card.hidden = false; }
+        } else if (!mains(r, upv).length) {
+          card.hidden = true;
+          var ups = qa('[data-gfc-line][data-vid="' + upv + '"]', r).filter(function (l) { return !l.classList.contains('is-gone'); });
+          if (ups.length && r.getAttribute('data-up-only') === '1') {
+            ups.forEach(function (l) {
+              var k = 'l:' + l.getAttribute('data-key');
+              if (waiting[k]) { clearTimeout(waiting[k].t); delete waiting[k]; }
+              var n0 = cents(l, 'data-qty'), u0 = cents(l, 'data-unit'), w0 = cents(l, 'data-unit-was') || u0;
+              addMoney(-n0 * u0, -n0 * Math.max(0, w0 - u0));
+              l.setAttribute('data-qty', 0);
+              l.classList.add('is-gone');
+            });
+            schedule('purge', function () { var u = {}; u[upv] = 0; return request('cart/update.js', { updates: u }); });
+          }
+        }
+      }
+      if (!qa('[data-gfc-line]', r).some(function (l) { return !l.classList.contains('is-gone'); })) {
+        var empty = q('[data-gfc-empty]', r); if (empty) empty.hidden = false;
+        var foot = q('[data-gfc-foot]', r); if (foot) foot.hidden = true;
+        if (card) card.hidden = true;
+      }
     }
 
     document.addEventListener('click', function (e) {

@@ -6,6 +6,7 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
+    {%- render 'gf-upsell-guard' -%}
     <meta name="theme-color" content="#c5fff7">
     <style>
       html { background-color: #c5fff7; }
