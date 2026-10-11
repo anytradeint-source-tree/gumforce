@@ -79,7 +79,8 @@
         "type": "text",
         "id": "gfc_up_handle",
         "label": "Produit (identifiant de l'URL)",
-        "info": "La fin de l'adresse du produit, ex. gumforce-pasteque. Le produit doit être disponible sur le canal Boutique en ligne. Prix et prix barré viennent de Shopify. Produit introuvable ou épuisé = pas d'upsell."
+        "default": "gumforce-pasteque",
+        "info": "La fin de l'adresse du produit (gumforce.co/products/gumforce-pasteque → gumforce-pasteque). Le produit doit être disponible sur le canal Boutique en ligne. Prix et prix barré viennent de Shopify. Produit introuvable ou épuisé = pas d'upsell."
       },
       {
         "type": "image_picker",
@@ -98,7 +99,7 @@
         "type": "text",
         "id": "gfc_up_name",
         "label": "Nom affiché",
-        "info": "Vide = nom du produit dans Shopify."
+        "info": "Vide = nom du produit dans Shopify, coupé avant « - » (ex. GUMFORCE (Pastèque))."
       },
       {
         "type": "text",

@@ -78,7 +78,8 @@
   endif
 
   if up_on
-    assign up_name = settings.gfc_up_name | default: up_p.title
+    assign up_short = up_p.title | split: ' - ' | first | strip
+    assign up_name = settings.gfc_up_name | default: up_short
     assign up_img = settings.gfc_up_image | default: up_v.image | default: up_p.featured_image
     assign up_pct = ''
     if up_v.compare_at_price > up_v.price
