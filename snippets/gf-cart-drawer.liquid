@@ -474,9 +474,9 @@
           <p class="gfc-line__price"><b></b><s></s></p>
         </div>
         <div class="gfc-qty">
-          <button type="button" disabled aria-hidden="true"><svg class="gfc-ic-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg><svg class="gfc-ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button>
+          <button type="button" data-gfc-dec aria-label="{{ 'accessibility.decrease_quantity' | t }}"><svg class="gfc-ic-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg><svg class="gfc-ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button>
           <span data-gfc-n>1</span>
-          <button type="button" disabled aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button type="button" data-gfc-inc aria-label="{{ 'accessibility.increase_quantity' | t }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
         </div>
       </div>
     </li>
@@ -676,10 +676,12 @@
       var r = root(), tpl = q('[data-gfc-tpl]', r);
       var li = tpl.content.firstElementChild.cloneNode(true);
       li.setAttribute('data-vid', vid);
+      li.setAttribute('data-key', String(vid));
       li.setAttribute('data-qty', qty);
       li.setAttribute('data-max', max || 0);
       li.classList.toggle('is-one', qty === 1);
       q('[data-gfc-n]', li).textContent = qty;
+      var inc = q('[data-gfc-inc]', li); if (inc && max && qty >= max) inc.disabled = true;
       if (!d) { li.classList.add('is-ghost'); r.classList.add('is-approx'); return li; }
       if (d.img) q('img', li).src = d.img;
       q('.gfc-line__name', li).textContent = d.name;
@@ -709,11 +711,9 @@
       if (!list) return;
       var vid = card.getAttribute('data-vid'), n = cents(card, 'data-pick') || 1;
       var unit = cents(card, 'data-price'), was = cents(card, 'data-was') || unit;
-      /* une suppression de cette ligne encore en attente ne doit pas passer après l'ajout */
-      if (waiting.purge) { clearTimeout(waiting.purge.t); delete waiting.purge; }
+      /* un changement de quantité de cette ligne encore en attente ne doit pas passer après l'ajout */
       qa('[data-gfc-line][data-vid="' + vid + '"]', list).forEach(function (l) {
-        var k = 'l:' + l.getAttribute('data-key');
-        if (waiting[k]) { clearTimeout(waiting[k].t); delete waiting[k]; }
+        cancel('l:' + l.getAttribute('data-key'));
         l.remove();
       });
       var pb = q('.gfc-up__price b', card), ps = q('.gfc-up__price s', card);
@@ -746,10 +746,19 @@
       var out = q('[data-gfc-n]', line); if (out) out.textContent = n;
       var inc = q('[data-gfc-inc]', line); if (inc) inc.disabled = !!max && n >= max;
       var key = line.getAttribute('data-key');
-      schedule('l:' + key, function () { return request('cart/change.js', { id: key, quantity: n }); });
-      if (n === 0) afterRemove(line);
+      if (n > 0) {
+        schedule('l:' + key, function () { return request('cart/change.js', { id: key, quantity: n }); });
+      } else {
+        /* retrait : rien à regrouper, la requête part tout de suite ; si c'était la
+           dernière offre, la pastèque part dans la même requête */
+        cancel('l:' + key);
+        var updates = {}; updates[key] = 0;
+        afterRemove(line, updates);
+        request('cart/update.js', { updates: updates }).catch(function () {});
+      }
       updateCount();
     }
+    function cancel(k) { if (waiting[k]) { clearTimeout(waiting[k].t); delete waiting[k]; setBusy(); } }
 
     /* Après un retrait : pastèque retirée → la carte revient (s'il reste une offre) ;
        plus aucune offre → la carte se cache et la pastèque part avec (upsell seulement) ;
@@ -757,7 +766,7 @@
     function mains(r, upv) {
       return qa('[data-gfc-line]', r).filter(function (l) { return !l.classList.contains('is-gone') && l.getAttribute('data-vid') !== upv; });
     }
-    function afterRemove(line) {
+    function afterRemove(line, updates) {
       var r = root(), card = q('[data-gfc-up]', r), upv = card ? card.getAttribute('data-vid') : '';
       if (card) {
         if (line.getAttribute('data-vid') === upv) {
@@ -767,14 +776,14 @@
           var ups = qa('[data-gfc-line][data-vid="' + upv + '"]', r).filter(function (l) { return !l.classList.contains('is-gone'); });
           if (ups.length && r.getAttribute('data-up-only') === '1') {
             ups.forEach(function (l) {
-              var k = 'l:' + l.getAttribute('data-key');
-              if (waiting[k]) { clearTimeout(waiting[k].t); delete waiting[k]; }
+              var k = l.getAttribute('data-key');
+              cancel('l:' + k);
+              updates[k || upv] = 0;
               var n0 = cents(l, 'data-qty'), u0 = cents(l, 'data-unit'), w0 = cents(l, 'data-unit-was') || u0;
               addMoney(-n0 * u0, -n0 * Math.max(0, w0 - u0));
               l.setAttribute('data-qty', 0);
               l.classList.add('is-gone');
             });
-            schedule('purge', function () { var u = {}; u[upv] = 0; return request('cart/update.js', { updates: u }); });
           }
         }
       }
@@ -848,6 +857,9 @@
       var family = (o.variants || []).map(function (x) { return parseInt(x, 10); });
       var r = root();
       if (!r || !vid) return Promise.reject(new Error('gf-cart'));
+      /* un geste encore en attente (quantité modifiée juste avant) part avant l'offre,
+         sinon il passerait après et pourrait la défaire */
+      flush();
       var updates = {};
       qa('[data-gfc-line]', r).forEach(function (l) {
         var v = parseInt(l.getAttribute('data-vid'), 10);
@@ -859,7 +871,12 @@
       var sec = r.closest('.shopify-section'); if (sec) sec.setAttribute('data-hydrated', 'true');
       optimistic(vid, qty, family);
       opening = true;
-      var opened = open();
+      /* le bouton réagit d'abord (image suivante), le tiroir s'ouvre juste après :
+         l'ouverture d'Horizon (fenêtre modale sur une longue page) est lourde et ne
+         doit pas retarder le premier retour visuel du tap */
+      var opened = new Promise(function (res) {
+        requestAnimationFrame(function () { setTimeout(function () { open().then(res); }, 0); });
+      });
       opened.then(function () { requestAnimationFrame(function () { requestAnimationFrame(function () { opening = false; }); }); });
       return request('cart/update.js', { updates: updates }).then(function (cart) {
         return opened.then(function (ok) {
