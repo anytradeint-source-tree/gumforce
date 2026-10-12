@@ -331,7 +331,7 @@
     padding:8px; margin-top:10px; background:#fef2f2; border-radius:8px;
   }
 
-  /* ── Garantie 90 jours (visible uniquement sur tier 2+2) ── */
+  /* ── Garantie 30 jours (visible uniquement sur tier 2+2) ── */
   #gfp-{{ gf_id }} .gfp-guarantee {
     display:none; margin-top:14px; padding:10px 14px;
     background:var(--gfp-accent-soft);
@@ -513,12 +513,12 @@
 
       <div class="gfp-err" id="gfp-err-{{ gf_id }}"></div>
 
-      {%- comment -%} ——— Garantie 90j (visible uniquement quand le tier 2+2 est sélectionné) ——— {%- endcomment -%}
+      {%- comment -%} ——— Garantie 30j (visible uniquement quand le tier 2+2 est sélectionné) ——— {%- endcomment -%}
       {%- if s.show_guarantee -%}
         <div class="gfp-guarantee" data-gfp-guarantee>
           <div class="gfp-guarantee-line">
             <svg class="gfp-guarantee-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-            <span class="gfp-guarantee-text">{{ s.guarantee_text | default: 'Garantie 90 jours : résultat ou 100 % remboursé' }}</span>
+            <span class="gfp-guarantee-text">{{ s.guarantee_text | default: 'Garantie 30 jours : résultat ou 100 % remboursé' }}</span>
             {%- if s.guarantee_expanded != blank -%}
               <button type="button" class="gfp-guarantee-info" data-gfp-guarantee-info aria-label="Plus d'infos">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -536,7 +536,7 @@
       <button class="gfp-cta" id="gfp-cta-{{ gf_id }}">
         <span class="gfp-cta-main"><span data-gfp-ctalabel>{{ s.cta_text | default: 'Ajouter au panier' }}</span><span class="gfp-ctaprice" data-gfp-ctaprice></span></span>
         {%- if s.show_cta_guarantee -%}
-          <span class="gfp-cta-guar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>{{ s.cta_guarantee_text | default: 'Satisfait ou remboursé · 90 jours' | escape }}</span>
+          <span class="gfp-cta-guar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>{{ s.cta_guarantee_text | default: 'Satisfait ou remboursé · 30 jours' | escape }}</span>
         {%- endif -%}
       </button>
 
@@ -893,7 +893,7 @@
     });
   });
 
-  /* ── Garantie 90j : visible uniquement quand tier 2+2 est sélectionné ── */
+  /* ── Garantie 30j : visible uniquement quand tier 2+2 est sélectionné ── */
   (function(){
     var guaranteeEl = root.querySelector('[data-gfp-guarantee]');
     if (!guaranteeEl) return;
@@ -1009,19 +1009,19 @@
     { "type": "text", "id": "cta_adding_text", "label": "Texte loading", "default": "Ajout en cours…" },
     { "type": "text", "id": "cta_redirecting_text", "label": "Texte redirection", "default": "Redirection…" },
     { "type": "checkbox", "id": "show_cta_guarantee", "label": "Garantie dans le bouton", "default": false },
-    { "type": "text", "id": "cta_guarantee_text", "label": "Texte de la garantie", "default": "Satisfait ou remboursé · 90 jours" },
+    { "type": "text", "id": "cta_guarantee_text", "label": "Texte de la garantie", "default": "Satisfait ou remboursé · 30 jours" },
 
-    { "type": "header", "content": "── Garantie 90 jours (2+2 uniquement) ──" },
+    { "type": "header", "content": "── Garantie 30 jours (2+2 uniquement) ──" },
     { "type": "paragraph", "content": "Petit encart garantie affiché sous le bouton ATC. Visible uniquement quand le tier 2+2 est sélectionné. Désactivé par défaut (A/B test friendly)." },
     { "type": "checkbox", "id": "show_guarantee", "label": "Afficher le message garantie", "default": false },
-    { "type": "text", "id": "guarantee_text", "label": "Phrase courte", "default": "Garantie 90 jours : résultat ou 100 % remboursé (vraiment)" },
-    { "type": "richtext", "id": "guarantee_expanded", "label": "Texte étendu (au clic sur ⓘ)", "default": "<p>On a tellement confiance en GUMFORCE qu'on te laisse 90 jours pour juger. Pas de résultat ? On te rembourse l'intégralité. Zéro risque de ton côté. Valable uniquement sur l'offre 2+2 (4 sachets = 90 jours d'entraînement).</p>" },
+    { "type": "text", "id": "guarantee_text", "label": "Phrase courte", "default": "Garantie 30 jours : résultat ou 100 % remboursé (vraiment)" },
+    { "type": "richtext", "id": "guarantee_expanded", "label": "Texte étendu (au clic sur ⓘ)", "default": "<p>On a tellement confiance en GUMFORCE qu'on te laisse 30 jours pour juger. Pas de résultat ? On te rembourse l'intégralité. Zéro risque de ton côté. Valable uniquement sur l'offre 2+2 (4 sachets = 90 jours d'entraînement).</p>" },
 
     { "type": "header", "content": "── Réassurances ──" },
     { "type": "checkbox", "id": "show_reassure", "label": "Afficher les réassurances", "default": true },
     { "type": "text", "id": "reassure1", "label": "Réassurance 1", "default": "Livraison 48h" },
     { "type": "text", "id": "reassure2", "label": "Réassurance 2", "default": "Paiement sécurisé" },
-    { "type": "text", "id": "reassure3", "label": "Réassurance 3", "default": "Garantie 90 jours" },
+    { "type": "text", "id": "reassure3", "label": "Réassurance 3", "default": "Garantie 30 jours" },
 
     { "type": "header", "content": "── Carte contact ──" },
     { "type": "checkbox", "id": "show_contact", "label": "Afficher la carte contact", "default": false },

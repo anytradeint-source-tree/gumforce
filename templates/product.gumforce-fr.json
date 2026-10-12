@@ -379,7 +379,7 @@
                 "cta_adding_text": "Ajout en cours…",
                 "cta_redirecting_text": "Redirection…",
                 "show_cta_guarantee": true,
-                "cta_guarantee_text": "Satisfait ou remboursé · 90 jours",
+                "cta_guarantee_text": "Satisfait ou remboursé · 30 jours",
                 "oos_text": "Le stock est parti en 3 semaines. Le prochain lot arrive. Laisse tes coordonnées pour être servi avant tout le monde, avec une remise secrète en prime.",
                 "oos_btn_text": "Préviens-moi du retour",
                 "oos_cta_text": "Rupture de stock",
@@ -388,12 +388,12 @@
                 "oos_form_id": "Y8CXkC",
                 "oos_popup_delay": 0,
                 "show_guarantee": false,
-                "guarantee_text": "Garantie 90 jours : résultat ou 100 % remboursé (vraiment)",
-                "guarantee_expanded": "<p>On a tellement confiance en GUMFORCE qu'on te laisse 90 jours pour juger. Pas de résultat ? On te rembourse l'intégralité. Zéro risque de ton côté. Valable uniquement sur l'offre 2+2 (4 sachets = 90 jours d'entraînement).</p>",
+                "guarantee_text": "Garantie 30 jours : résultat ou 100 % remboursé (vraiment)",
+                "guarantee_expanded": "<p>On a tellement confiance en GUMFORCE qu'on te laisse 30 jours pour juger. Pas de résultat ? On te rembourse l'intégralité. Zéro risque de ton côté. Valable uniquement sur l'offre 2+2 (4 sachets = 90 jours d'entraînement).</p>",
                 "show_reassure": false,
                 "reassure1": "Paiement sécurisé",
                 "reassure2": "Livraison en 48h",
-                "reassure3": "Garantie 90 jours",
+                "reassure3": "Garantie 30 jours",
                 "show_contact": true,
                 "contact_title": "Une question ?",
                 "contact_sub": "Parle-nous en direct, on répond 7 j/7.",
@@ -445,7 +445,7 @@
                 "title_3": "Qu'est-ce qu'il contient ?",
                 "body_3": "Les chewing-gums GUMFORCE sont 10x plus résistants qu’un chewing-gum classique. Ils contiennent 500 mg de créatine monohydrate par chewing-gum, avec un dosage réel et vérifié.\n\nIls sont végans, sans sucre et sans gluten.\n\nChaque sachet contient 35 chewing-gums pour 100 g.",
                 "title_4": "Livraison, retours, contact",
-                "body_4": "Livraison mondiale avec suivi inclus. Expédition sous 1 à 2 jours ouvrés, puis livraison en 5 à 8 jours ouvrés selon votre localisation.\n\nGarantie satisfait ou remboursé pendant 90 jours. Pas satisfait ? Contactez-nous.\nhello@gumforce.co",
+                "body_4": "Livraison mondiale avec suivi inclus. Expédition sous 1 à 2 jours ouvrés, puis livraison en 5 à 8 jours ouvrés selon votre localisation.\n\nGarantie satisfait ou remboursé pendant 30 jours. Pas satisfait ? Contactez-nous.\nhello@gumforce.co",
                 "title_5": "",
                 "body_5": "",
                 "title_6": "",
@@ -608,7 +608,7 @@
         "stat_8R8UJh": {
           "type": "stat",
           "settings": {
-            "number": "90",
+            "number": "30",
             "suffix": "jours",
             "suffix_small": true,
             "lead": "pour tester.",
@@ -977,7 +977,7 @@
           "type": "trust_badge",
           "settings": {
             "icon": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
-            "text": "90-Day Money Back Guarantee"
+            "text": "30-Day Money Back Guarantee"
           }
         }
       },
@@ -1161,7 +1161,7 @@
         "cta_radius": 30,
         "cta_style": "filled",
         "cta_width": "full",
-        "guarantee_text": "Satisfait ou remboursé sous 90 jours",
+        "guarantee_text": "Satisfait ou remboursé sous 30 jours",
         "guarantee_icon": "shopify://shop_images/Ontwerp_zonder_titel_79.png",
         "guarantee_icon_size": 16,
         "guarantee_font_size": 13,
@@ -1205,7 +1205,7 @@
         "cta_radius": 30,
         "cta_style": "filled",
         "cta_width": "full",
-        "guarantee_text": "90-Day Money Back Guarantee",
+        "guarantee_text": "30-Day Money Back Guarantee",
         "guarantee_icon": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
         "guarantee_icon_size": 18,
         "guarantee_font_size": 13,
@@ -1249,7 +1249,7 @@
         "cta_radius": 8,
         "cta_style": "filled",
         "cta_width": "auto",
-        "guarantee_text": "90-Day Moneyback Guarantee",
+        "guarantee_text": "30-Day Moneyback Guarantee",
         "guarantee_icon_size": 18,
         "guarantee_font_size": 13,
         "text_align": "left",
@@ -2089,7 +2089,7 @@
           "type": "faq",
           "settings": {
             "question": "Livraison et retours",
-            "answer": "<p>Nous livrons dans le monde entier. Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement 48h pour la France & Belgique. 7-10 jours pour le reste du monde. Suivi inclus avec chaque commande.</p><p>Garantie satisfait ou remboursé pendant 90 jours. Pas satisfait ? Contacte-nous et nous trouverons une solution.</p>"
+            "answer": "<p>Nous livrons dans le monde entier. Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement 48h pour la France & Belgique. 7-10 jours pour le reste du monde. Suivi inclus avec chaque commande.</p><p>Garantie satisfait ou remboursé pendant 30 jours. Pas satisfait ? Contacte-nous et nous trouverons une solution.</p>"
           }
         }
       },
@@ -2129,7 +2129,7 @@
         "detail_4XBMVN": {
           "type": "detail",
           "settings": {
-            "text": "Remboursement intégral sous 90 jours"
+            "text": "Remboursement intégral sous 30 jours"
           }
         },
         "detail_VekweV": {
@@ -2156,8 +2156,8 @@
         "badge_image": "shopify://shop_images/Ontwerp_zonder_titel_79.png",
         "badge_url": "",
         "badge_size": 72,
-        "heading": "Garantie de remboursement de 90 jours",
-        "body": "<p>Nous utilisons GUMFORCE nous-mêmes. Si tu n'es pas satisfait de tes résultats dans 90 jours, contacte-nous et on remboursera ta commande.</p>",
+        "heading": "Garantie de remboursement de 30 jours",
+        "body": "<p>Nous utilisons GUMFORCE nous-mêmes. Si tu n'es pas satisfait de tes résultats dans 30 jours, contacte-nous et on remboursera ta commande.</p>",
         "cta_text": "J'EN PROFITE →",
         "cta_link": "",
         "cta_scroll_bundle": true,
