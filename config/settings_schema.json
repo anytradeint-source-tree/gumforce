@@ -37,7 +37,7 @@
         "type": "text",
         "id": "gfc_shipping_label",
         "label": "Ligne de livraison",
-        "default": "Livraison"
+        "default": "Livraison 48h"
       },
       {
         "type": "text",
@@ -56,6 +56,32 @@
         "unit": "€",
         "default": 40,
         "info": "Montant des articles hors pastèque. Règle relevée dans Shopify le 11/10/2026 : 1 sachet = payante, 2 sachets, 2 + 2 et 4 + 4 = gratuite en point relais (France, Belgique, Suisse, Allemagne, Espagne, Italie, Pays-Bas, Royaume-Uni, États-Unis, Canada) ; la pastèque ne compte pas. 0 = ligne jamais affichée."
+      },
+      {
+        "type": "text",
+        "id": "gfc_guarantee_label",
+        "label": "Ligne de garantie",
+        "default": "Garantie 30 jours"
+      },
+      {
+        "type": "text",
+        "id": "gfc_guarantee_value",
+        "label": "Garantie : texte à droite",
+        "default": "Gratuite",
+        "info": "Toujours affichée sous la livraison. Un des deux champs vide = ligne masquée."
+      },
+      {
+        "type": "text",
+        "id": "gfc_returns_label",
+        "label": "Ligne des retours",
+        "default": "Retours"
+      },
+      {
+        "type": "text",
+        "id": "gfc_returns_value",
+        "label": "Retours : texte à droite",
+        "default": "Gratuits",
+        "info": "Toujours affichée sous la garantie. Un des deux champs vide = ligne masquée."
       },
       {
         "type": "text",

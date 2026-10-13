@@ -35,6 +35,10 @@
   assign gfc_disc_lbl  = settings.gfc_discount_label | strip
   assign gfc_ship_lbl  = settings.gfc_shipping_label | strip
   assign gfc_ship_free = settings.gfc_shipping_free | strip
+  assign gfc_gar_lbl   = settings.gfc_guarantee_label | strip
+  assign gfc_gar_val   = settings.gfc_guarantee_value | strip
+  assign gfc_ret_lbl   = settings.gfc_returns_label | strip
+  assign gfc_ret_val   = settings.gfc_returns_value | strip
 
   comment — devise du visiteur ≠ devise boutique → total avec code ISO (comme le bloc d'offre)
   endcomment
@@ -262,8 +266,8 @@
 
   /* pied fixe */
   .gfc__foot { flex-shrink:0; padding:10px 16px calc(12px + env(safe-area-inset-bottom)); border-top:1px solid var(--gfc-hair); background:#fff; }
-  .gfc-sum { display:flex; flex-direction:column; gap:4px; }
-  .gfc-sum__row { display:flex; align-items:baseline; justify-content:space-between; gap:12px; font-size:13.5px; font-weight:500; line-height:1.3; color:var(--gfc-muted); }
+  .gfc-sum { display:flex; flex-direction:column; gap:2px; }
+  .gfc-sum__row { display:flex; align-items:baseline; justify-content:space-between; gap:12px; font-size:13.5px; font-weight:500; line-height:1.25; color:var(--gfc-muted); }
   .gfc-sum__row b { font-weight:700; color:var(--gfc-green); font-variant-numeric:tabular-nums; }
   .gfc-tot { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
   .gfc-sum:has(.gfc-sum__row:not([hidden])) .gfc-tot { margin-top:2px; padding-top:6px; border-top:1px solid var(--gfc-hair); }
@@ -448,6 +452,12 @@
       {%- endif -%}
       {%- if gfc_ship_lbl != blank and gfc_ship_free != blank -%}
         <p class="gfc-sum__row" data-gfc-ship{% unless gfc_ship_ok %} hidden{% endunless %}><span>{{ gfc_ship_lbl | escape }}</span><b>{{ gfc_ship_free | escape }}</b></p>
+      {%- endif -%}
+      {%- if gfc_gar_lbl != blank and gfc_gar_val != blank -%}
+        <p class="gfc-sum__row"><span>{{ gfc_gar_lbl | escape }}</span><b>{{ gfc_gar_val | escape }}</b></p>
+      {%- endif -%}
+      {%- if gfc_ret_lbl != blank and gfc_ret_val != blank -%}
+        <p class="gfc-sum__row"><span>{{ gfc_ret_lbl | escape }}</span><b>{{ gfc_ret_val | escape }}</b></p>
       {%- endif -%}
       <p class="gfc-tot">
         <span class="gfc-tot__lbl">{{ gfc_total_lbl | escape }}</span>
