@@ -744,7 +744,6 @@
       if (max && n > max) n = max;
       if (n < 0) n = 0;
       var prev = cents(line, 'data-qty'), unit = cents(line, 'data-unit'), was = cents(line, 'data-unit-was') || unit;
-      addMoney((n - prev) * unit, (n - prev) * Math.max(0, was - unit));
       var pb = q('.gfc-line__price b', line), ps = q('.gfc-line__price s', line);
       if (pb && unit && !root().classList.contains('gfc--cc')) {
         pb.textContent = fmt(unit * n);
@@ -753,6 +752,8 @@
       line.setAttribute('data-qty', n);
       line.classList.toggle('is-one', n === 1);
       line.classList.toggle('is-gone', n === 0);
+      /* après la mise à jour de la ligne : ship() relit les quantités affichées */
+      addMoney((n - prev) * unit, (n - prev) * Math.max(0, was - unit));
       var out = q('[data-gfc-n]', line); if (out) out.textContent = n;
       var inc = q('[data-gfc-inc]', line); if (inc) inc.disabled = !!max && n >= max;
       var key = line.getAttribute('data-key');
@@ -850,8 +851,9 @@
       });
       var d = data()[vid];
       var li = makeLine(vid, qty, d, 0);
-      if (d) { dT += d.cents * qty; dS += Math.max(0, d.was_cents - d.cents) * qty; addMoney(dT, dS); }
       list.insertBefore(li, list.firstChild);
+      /* ligne insérée d'abord : ship() la compte (« Livraison gratuite » dès l'ouverture) */
+      if (d) { dT += d.cents * qty; dS += Math.max(0, d.was_cents - d.cents) * qty; addMoney(dT, dS); } else ship();
       var empty = q('[data-gfc-empty]', r); if (empty) empty.hidden = true;
       var foot = q('[data-gfc-foot]', r); if (foot) foot.hidden = false;
       var up = q('[data-gfc-up]', r);
