@@ -1,0 +1,137 @@
+{
+  "sections": {
+    "hero": {
+      "type": "gumforce-hero",
+      "settings": {
+        "subheading": "D’une valeur de 3000 € · Du 1 au 30 novembre",
+        "heading": "Gagne 10 jours à Bali pour 2",
+        "heading_tag": "h1",
+        "cta_text": "Je participe",
+        "cta_link": "/products/gumforce",
+        "cta_style": "filled",
+        "cta_bg": "#C5FE89",
+        "cta_text_color": "#111111",
+        "overlay_opacity": 20,
+        "desktop_format": "21/9",
+        "mobile_format": "4/5",
+        "image_alt": "Rizières de Bali"
+      }
+    },
+    "comment_ca_marche": {
+      "type": "gumforce-how-it-works",
+      "settings": {
+        "heading": "Comment ça marche ?",
+        "text": "<p>Grand gagnant annoncé le samedi 5 décembre.</p>",
+        "cta_text": "Je participe",
+        "cta_link": "/products/gumforce",
+        "note": "<p><a href=\"#\">Règlement complet du jeu</a></p>"
+      },
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "icon_type": "gift",
+            "title": "Ce que tu peux gagner",
+            "text": "10 jours à Bali pour deux personnes, vols et logement compris. Le voyage a une valeur de 3000 €."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "icon_type": "bag",
+            "title": "Comment participer",
+            "text": "Passe une commande entre le 1er et le 30 novembre. C’est tout. Pas de formulaire à remplir, pas de code à entrer : ta commande compte direct comme une participation."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "icon_type": "ticket",
+            "title": "Plus tu commandes, plus t’as de chances",
+            "text": "Chaque commande te donne une participation de plus au tirage."
+          }
+        },
+        "step_4": {
+          "type": "step",
+          "settings": {
+            "icon_type": "wheel",
+            "title": "Le tirage",
+            "text": "Le 5 décembre, on met tous les numéros de commande dans une roue et on la fait tourner. On filme tout et on publie la vidéo, pour que tout le monde voie que c’est réel."
+          }
+        },
+        "step_5": {
+          "type": "step",
+          "settings": {
+            "icon_type": "phone",
+            "title": "Si tu gagnes",
+            "text": "Ton téléphone va sonner, et c’est nous au bout du fil. Prépare ton maillot et choisis avec qui tu pars : on s’occupe du reste pour que t’aies juste à profiter."
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3",
+        "step_4",
+        "step_5"
+      ]
+    },
+    "garantie": {
+      "type": "gumforce-guarantee",
+      "settings": {
+        "layout_centered": true,
+        "badge_image": "shopify://shop_images/Ontwerp_zonder_titel_79.png",
+        "badge_url": "",
+        "badge_size": 72,
+        "heading": "Garantie de remboursement de 30 jours",
+        "body": "<p>Nous utilisons GUMFORCE nous-mêmes. Si tu n'es pas satisfait de tes résultats dans 30 jours, contacte-nous et on remboursera ta commande.</p>",
+        "cta_text": "J'EN PROFITE →",
+        "cta_link": "/products/gumforce",
+        "cta_scroll_bundle": false,
+        "cta_radius": 30,
+        "bg_color": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "body_color": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "cta_bg_color": "#1a1a1a",
+        "cta_text_color": "#ffffff",
+        "heading_size": 32,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 60,
+        "padding_top": 40,
+        "padding_bottom": 60,
+        "enable_animations": true
+      },
+      "blocks": {
+        "detail_4XBMVN": {
+          "type": "detail",
+          "settings": {
+            "text": "Remboursement intégral sous 30 jours"
+          }
+        },
+        "detail_VekweV": {
+          "type": "detail",
+          "settings": {
+            "text": "Résultats garantis"
+          }
+        },
+        "detail_Fm4BT7": {
+          "type": "detail",
+          "settings": {
+            "text": "Sans poser de questions"
+          }
+        }
+      },
+      "block_order": [
+        "detail_4XBMVN",
+        "detail_VekweV",
+        "detail_Fm4BT7"
+      ]
+    }
+  },
+  "order": [
+    "hero",
+    "comment_ca_marche",
+    "garantie"
+  ]
+}

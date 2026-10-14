@@ -73,7 +73,7 @@
 
   /* ── Grid / item (recette creatine-benefits) ── */
   #gfhw-{{ sid }} .gfhw-grid { display: grid; grid-template-columns: repeat({{ section.blocks.size | at_least: 1 }}, 1fr); }
-  #gfhw-{{ sid }} .gfhw-item { text-align: center; padding: 0 28px; position: relative; }
+  #gfhw-{{ sid }} .gfhw-item { text-align: center; padding: 0 {% if section.blocks.size > 4 %}18{% else %}28{% endif %}px; position: relative; }
   #gfhw-{{ sid }} .gfhw-item + .gfhw-item::before {
     content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 1px; background: var(--gfhw-divider);
   }
@@ -105,6 +105,9 @@
   }
   #gfhw-{{ sid }} .gfhw-cta:hover { transform: scale(1.03); box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25); }
   #gfhw-{{ sid }} .gfhw-cta:active { transform: scale(0.98); }
+  #gfhw-{{ sid }} .gfhw-note { text-align: center; margin-top: 18px; font-size: 13px; color: var(--gfhw-subheading-color); }
+  #gfhw-{{ sid }} .gfhw-note p { margin: 0; }
+  #gfhw-{{ sid }} .gfhw-note a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 
   /* ── Scroll animations ── */
   #gfhw-{{ sid }}.gfhw-animate .gfhw-item { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -157,6 +160,16 @@
                 <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3L5 8v7c0 7.7 4.7 14.3 11 17 6.3-2.7 11-9.3 11-17V8L16 3z"/><polyline points="11 16 14.5 19.5 21 13"/></svg>
               {%- when 'target' -%}
                 <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="16" cy="16" r="12"/><circle cx="16" cy="16" r="7"/><circle cx="16" cy="16" r="2.5"/></svg>
+              {%- when 'gift' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="22" height="6" rx="1.5"/><path d="M16 11v17"/><path d="M25 17v8.5a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 017 25.5V17"/><path d="M10.5 11a3.3 3.3 0 010-6.6C13.5 4.4 16 11 16 11s2.5-6.6 5.5-6.6a3.3 3.3 0 010 6.6"/></svg>
+              {%- when 'bag' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L5 9v17a2.5 2.5 0 002.5 2.5h17A2.5 2.5 0 0027 26V9l-4-5z"/><line x1="5" y1="9" x2="27" y2="9"/><path d="M21 14a5 5 0 01-10 0"/></svg>
+              {%- when 'ticket' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a4 4 0 010 8v3.5A2.5 2.5 0 005.5 26h21a2.5 2.5 0 002.5-2.5V20a4 4 0 010-8V8.5A2.5 2.5 0 0026.5 6h-21A2.5 2.5 0 003 8.5z"/><line x1="18" y1="6" x2="18" y2="9"/><line x1="18" y1="14.5" x2="18" y2="17.5"/><line x1="18" y1="23" x2="18" y2="26"/></svg>
+              {%- when 'wheel' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="12"/><circle cx="16" cy="16" r="2"/><path d="M16 4v10M16 18v10M4 16h10M18 16h10M7.5 7.5l7 7M17.5 17.5l7 7M24.5 7.5l-7 7M14.5 17.5l-7 7"/></svg>
+              {%- when 'phone' -%}
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M28 22.3v3.8a2.5 2.5 0 01-2.7 2.5 25 25 0 01-10.9-3.9 24.6 24.6 0 01-7.6-7.6A25 25 0 013 6.2 2.5 2.5 0 015.5 3.5h3.8a2.5 2.5 0 012.5 2.2c.2 1.2.5 2.4.9 3.6a2.5 2.5 0 01-.6 2.7l-1.6 1.6a20 20 0 007.6 7.6l1.6-1.6a2.5 2.5 0 012.7-.6c1.2.4 2.4.7 3.6.9a2.5 2.5 0 012.2 2.5z"/></svg>
               {%- else -%}
                 <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 28c-5.5 0-8-4.2-8-8 0-5 4-8.5 6-13 .5 4 3 5.5 4.5 8.5 1-2 1.5-4 1.5-6 3 3 4.5 6.5 4.5 10.5 0 4.5-3 8-8.5 8z"/></svg>
             {%- endcase -%}
@@ -170,6 +183,9 @@
 
     {%- if s.cta_text != blank and s.cta_link != blank -%}
       <div class="gfhw-cta-wrap"><a class="gfhw-cta" href="{{ s.cta_link }}">{{ s.cta_text }}</a></div>
+    {%- endif -%}
+    {%- if s.note != blank -%}
+      <div class="gfhw-note">{{ s.note }}</div>
     {%- endif -%}
 
   </div>
@@ -206,6 +222,7 @@
     { "type": "richtext", "id": "text", "label": "Sous-titre", "default": "<p>Un chewing-gum 10x plus dur qu'un chewing-gum classique, 500 mg de créatine par pièce, 15 minutes par jour.</p>" },
     { "type": "text", "id": "cta_text", "label": "Bouton", "default": "COMMANDER GUMFORCE" },
     { "type": "url", "id": "cta_link", "label": "Lien du bouton" },
+    { "type": "richtext", "id": "note", "label": "Petit texte sous le bouton", "info": "Facultatif. Ex. lien vers le règlement d'un jeu." },
     { "type": "text", "id": "product_handle", "label": "Handle du produit (données structurées)", "info": "Ex. gumforce. Ajoute le balisage Product (prix, disponibilité) à la page. Utile sur la home." },
 
     { "type": "header", "content": "Style" },
@@ -236,13 +253,15 @@
         { "type": "select", "id": "icon_type", "label": "Icône", "options": [
           { "value": "clock", "label": "Horloge" }, { "value": "strength", "label": "Haltère" }, { "value": "power", "label": "Éclair" },
           { "value": "recovery", "label": "Récupération" }, { "value": "calendar", "label": "Calendrier" }, { "value": "shield", "label": "Bouclier" },
-          { "value": "target", "label": "Cible" }, { "value": "flame", "label": "Flamme" } ], "default": "clock" },
+          { "value": "target", "label": "Cible" }, { "value": "flame", "label": "Flamme" }, { "value": "gift", "label": "Cadeau" },
+          { "value": "bag", "label": "Sac de courses" }, { "value": "ticket", "label": "Ticket" }, { "value": "wheel", "label": "Roue" },
+          { "value": "phone", "label": "Téléphone" } ], "default": "clock" },
         { "type": "text", "id": "title", "label": "Mot-clé", "default": "15 min par jour" },
         { "type": "textarea", "id": "text", "label": "Description", "default": "Un chewing-gum à la fois, sur les molaires, en alternant les côtés." }
       ]
     }
   ],
-  "max_blocks": 4,
+  "max_blocks": 6,
   "presets": [
     {
       "name": "GF Comment ça marche",
