@@ -181,7 +181,9 @@
       {%- endfor -%}
     </div>
 
-    {%- if s.cta_text != blank and s.cta_link != blank -%}
+    {%- if s.cta_text != blank and s.cta_scroll_offer -%}
+      <div class="gfhw-cta-wrap"><a class="gfhw-cta" href="{{ s.cta_link | default: '#' }}" data-gfhw-scroll>{{ s.cta_text }}</a></div>
+    {%- elsif s.cta_text != blank and s.cta_link != blank -%}
       <div class="gfhw-cta-wrap"><a class="gfhw-cta" href="{{ s.cta_link }}">{{ s.cta_text }}</a></div>
     {%- endif -%}
     {%- if s.note != blank -%}
@@ -190,6 +192,23 @@
 
   </div>
 </section>
+
+{%- if s.cta_scroll_offer -%}
+<script>
+  (function(){
+    var btn = document.querySelector('#gfhw-{{ sid }} [data-gfhw-scroll]');
+    if (!btn) return;
+    btn.addEventListener('click', function (e) {
+      var target = document.querySelector('.gfof');
+      if (!target) return;
+      e.preventDefault();
+      var hdr = document.querySelector('header, .header, .shopify-section-header');
+      var top = target.getBoundingClientRect().top + window.pageYOffset - (hdr ? hdr.offsetHeight + 10 : 20);
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    });
+  })();
+</script>
+{%- endif -%}
 
 {%- if enable_animations -%}
 <script>
@@ -222,6 +241,7 @@
     { "type": "richtext", "id": "text", "label": "Sous-titre", "default": "<p>Un chewing-gum 10x plus dur qu'un chewing-gum classique, 500 mg de créatine par pièce, 15 minutes par jour.</p>" },
     { "type": "text", "id": "cta_text", "label": "Bouton", "default": "COMMANDER GUMFORCE" },
     { "type": "url", "id": "cta_link", "label": "Lien du bouton" },
+    { "type": "checkbox", "id": "cta_scroll_offer", "label": "Le bouton fait défiler jusqu'à l'offre de la page", "default": false, "info": "Pour une page avec la section GF Offre. Sans offre sur la page, le bouton suit le lien." },
     { "type": "richtext", "id": "note", "label": "Petit texte sous le bouton", "info": "Facultatif. Ex. lien vers le règlement d'un jeu." },
     { "type": "text", "id": "product_handle", "label": "Handle du produit (données structurées)", "info": "Ex. gumforce. Ajoute le balisage Product (prix, disponibilité) à la page. Utile sur la home." },
 

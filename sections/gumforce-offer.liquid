@@ -1,0 +1,57 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE Offre hors fiche produit
+  ----------------------------------------------------------------------------
+  Affiche le bloc d'offre de la fiche produit (blocks/gumforce-pack-offer) sur
+  une page, ex. la page du jeu Bali : mêmes offres, même bouton, même panier.
+  Le produit se règle dans le bloc par son identifiant (ex. gumforce).
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign s = section.settings
+  assign sid = section.id
+-%}
+
+<style>
+  #gfof-{{ sid }} { padding: {{ s.padding_top }}px 20px {{ s.padding_bottom }}px; background: {{ s.bg_color }}; }
+  #gfof-{{ sid }} .gfof-inner { max-width: {{ s.max_width }}px; margin: 0 auto; }
+  #gfof-{{ sid }} .gfof-heading {
+    margin: 0 0 24px; text-align: center; font-size: {{ s.heading_size }}px; font-weight: 700; line-height: 1.15;
+    letter-spacing: -0.025em; color: {{ s.heading_color }};
+  }
+  #gfof-{{ sid }} .gfof-heading em { font-style: normal; color: {{ s.accent_color }}; }
+  @media (max-width: 599px) {
+    #gfof-{{ sid }} { padding: {{ s.padding_top_mobile }}px 16px {{ s.padding_bottom_mobile }}px; }
+    #gfof-{{ sid }} .gfof-heading { font-size: {{ s.heading_size | times: 0.78 | round }}px; margin-bottom: 18px; }
+  }
+</style>
+
+<section id="gfof-{{ sid }}" class="gfof">
+  <div class="gfof-inner">
+    {%- if s.heading != blank -%}<h2 class="gfof-heading">{{ s.heading }}</h2>{%- endif -%}
+    {% content_for 'block', type: 'gumforce-pack-offer', id: 'offre' %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "GF Offre (page)",
+  "tag": "section",
+  "class": "gf-offer-section",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Titre", "info": "Facultatif. Mettre un mot entre <em> pour l'accent couleur." },
+    { "type": "color", "id": "heading_color", "label": "Couleur du titre", "default": "#1a1a1a" },
+    { "type": "color", "id": "accent_color", "label": "Couleur d'accent", "default": "#2AB5B4" },
+    { "type": "range", "id": "heading_size", "label": "Taille du titre", "min": 22, "max": 48, "step": 1, "unit": "px", "default": 34 },
+    { "type": "color", "id": "bg_color", "label": "Fond", "default": "#ffffff" },
+    { "type": "range", "id": "max_width", "label": "Largeur maximale", "min": 360, "max": 720, "step": 20, "unit": "px", "default": 480 },
+    { "type": "range", "id": "padding_top", "label": "Haut (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "label": "Bas (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_top_mobile", "label": "Haut (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom_mobile", "label": "Bas (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 }
+  ],
+  "blocks": [{ "type": "@theme" }],
+  "presets": [{ "name": "GF Offre (page)" }]
+}
+{% endschema %}

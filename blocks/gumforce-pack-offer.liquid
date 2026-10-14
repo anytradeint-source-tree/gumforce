@@ -20,6 +20,11 @@
   if pr == blank
     assign pr = product
   endif
+  comment — hors fiche produit (ex. page du jeu) : produit choisi par son identifiant
+  endcomment
+  if pr == blank and s.product_handle != blank
+    assign pr = all_products[s.product_handle]
+  endif
   if pr == blank and request.visual_preview_mode
     assign pr = collections.all.products.first
   endif
@@ -1163,6 +1168,12 @@
       "id": "product",
       "label": "Produit",
       "info": "Le produit avec 2 variantes (ex. « 1 sachet » / « 2+2 »). Vide = produit de la page."
+    },
+    {
+      "type": "text",
+      "id": "product_handle",
+      "label": "Produit hors fiche produit (identifiant)",
+      "info": "Pour afficher l'offre sur une page : identifiant du produit, ex. gumforce. Ignoré sur une fiche produit."
     },
 
     { "type": "header", "content": "── Offres (2 tiers) ──" },
