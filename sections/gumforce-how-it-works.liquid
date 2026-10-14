@@ -199,7 +199,7 @@
     var btn = document.querySelector('#gfhw-{{ sid }} [data-gfhw-scroll]');
     if (!btn) return;
     btn.addEventListener('click', function (e) {
-      var target = document.querySelector('.gfof');
+      var target = (window.innerWidth < 990 && document.querySelector('.gfof .gfof-buy')) || document.querySelector('.gfof');
       if (!target) return;
       e.preventDefault();
       var hdr = document.querySelector('header, .header, .shopify-section-header');

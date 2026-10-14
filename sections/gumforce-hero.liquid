@@ -580,7 +580,8 @@
   if (cta) {
     cta.addEventListener('click', function (e) {
       e.preventDefault();
-      var target = document.querySelector('.gfof')
+      var target = (window.innerWidth < 990 && document.querySelector('.gfof .gfof-buy'))
+                || document.querySelector('.gfof')
                 || document.querySelector('.gf-options')
                 || document.querySelector('[id^="gf-"] .gf-header')
                 || document.querySelector('[id^="gf-"]');

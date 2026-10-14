@@ -81,7 +81,12 @@
     "offre": {
       "type": "gumforce-offer",
       "settings": {
-        "heading": "Choisis ton <em>offre</em>"
+        "heading": "Choisis ton <em>offre</em>",
+        "show_gallery": true,
+        "product_handle": "gumforce",
+        "images_max": 6,
+        "max_width": 1140,
+        "offer_width": 460
       },
       "blocks": {
         "offre": {

@@ -11,6 +11,11 @@
 {%- liquid
   assign s = section.settings
   assign sid = section.id
+  assign gp = blank
+  if s.show_gallery and s.product_handle != blank
+    assign gp = all_products[s.product_handle]
+  endif
+  assign img_max = s.images_max | default: 6
 -%}
 
 <style>
@@ -21,6 +26,26 @@
     letter-spacing: -0.025em; color: {{ s.heading_color }};
   }
   #gfof-{{ sid }} .gfof-heading em { font-style: normal; color: {{ s.accent_color }}; }
+
+  /* photos du produit à côté de l'offre (recette de la fiche produit) */
+  #gfof-{{ sid }} .gfof-grid.has-media { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, {{ s.offer_width }}px); gap: 56px; align-items: start; }
+  #gfof-{{ sid }} .gfof-grid.has-media .gfof-heading { text-align: left; }
+  #gfof-{{ sid }} .gfof-media { position: sticky; top: 96px; display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 16px; }
+  #gfof-{{ sid }} .gfof-main { grid-column: 2; grid-row: 1; aspect-ratio: 1; border-radius: 20px; overflow: hidden; background: #f3f5f5; }
+  #gfof-{{ sid }} .gfof-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #gfof-{{ sid }} .gfof-thumbs { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; gap: 10px; }
+  #gfof-{{ sid }} .gfof-thumb { padding: 0; border: 1.5px solid transparent; border-radius: 12px; overflow: hidden; background: #f3f5f5; cursor: pointer; aspect-ratio: 1; display: block; }
+  #gfof-{{ sid }} .gfof-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #gfof-{{ sid }} .gfof-thumb.is-active { border-color: #1a1a1a; }
+  @media (max-width: 989px) {
+    #gfof-{{ sid }} .gfof-grid.has-media { grid-template-columns: minmax(0, 1fr); gap: 24px; max-width: {{ s.offer_width }}px; margin: 0 auto; }
+    #gfof-{{ sid }} .gfof-grid.has-media .gfof-heading { text-align: center; }
+    #gfof-{{ sid }} .gfof-media { position: static; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    #gfof-{{ sid }} .gfof-main { grid-column: 1; grid-row: 1; border-radius: 18px; }
+    #gfof-{{ sid }} .gfof-thumbs { grid-column: 1; grid-row: 2; flex-direction: row; overflow-x: auto; scrollbar-width: none; }
+    #gfof-{{ sid }} .gfof-thumbs::-webkit-scrollbar { display: none; }
+    #gfof-{{ sid }} .gfof-thumb { flex: 0 0 64px; }
+  }
   @media (max-width: 599px) {
     #gfof-{{ sid }} { padding: {{ s.padding_top_mobile }}px 16px {{ s.padding_bottom_mobile }}px; }
     #gfof-{{ sid }} .gfof-heading { font-size: {{ s.heading_size | times: 0.78 | round }}px; margin-bottom: 18px; }
@@ -29,10 +54,49 @@
 
 <section id="gfof-{{ sid }}" class="gfof">
   <div class="gfof-inner">
-    {%- if s.heading != blank -%}<h2 class="gfof-heading">{{ s.heading }}</h2>{%- endif -%}
-    {% content_for 'block', type: 'gumforce-pack-offer', id: 'offre' %}
+    <div class="gfof-grid{% if gp != blank and gp.images.size > 0 %} has-media{% endif %}">
+      {%- if gp != blank and gp.images.size > 0 -%}
+        {%- assign first = gp.images.first -%}
+        {%- assign first_alt = first.alt | default: gp.title -%}
+        <div class="gfof-media" data-gfof-media>
+          <div class="gfof-main">
+            {{ first | image_url: width: 1100 | image_tag: widths: '500, 700, 900, 1100', sizes: '(min-width: 990px) 46vw, 92vw', alt: first_alt, loading: 'lazy' }}
+          </div>
+          {%- if gp.images.size > 1 -%}
+            <div class="gfof-thumbs">
+              {%- for img in gp.images limit: img_max -%}
+                <button type="button" class="gfof-thumb{% if forloop.first %} is-active{% endif %}" data-src="{{ img | image_url: width: 1100 }}" aria-label="Photo {{ forloop.index }}">
+                  {{ img | image_url: width: 180 | image_tag: alt: '', loading: 'lazy' }}
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+      <div class="gfof-buy">
+        {%- if s.heading != blank -%}<h2 class="gfof-heading">{{ s.heading }}</h2>{%- endif -%}
+        {% content_for 'block', type: 'gumforce-pack-offer', id: 'offre' %}
+      </div>
+    </div>
   </div>
 </section>
+
+{%- if gp != blank and gp.images.size > 1 -%}
+<script>
+  (function () {
+    var root = document.querySelector('#gfof-{{ sid }} [data-gfof-media]');
+    if (!root) return;
+    var main = root.querySelector('.gfof-main img');
+    root.addEventListener('click', function (e) {
+      var t = e.target.closest('.gfof-thumb');
+      if (!t || !main) return;
+      main.removeAttribute('srcset');
+      main.src = t.getAttribute('data-src');
+      root.querySelectorAll('.gfof-thumb').forEach(function (b) { b.classList.toggle('is-active', b === t); });
+    });
+  })();
+</script>
+{%- endif -%}
 
 {% schema %}
 {
@@ -45,7 +109,13 @@
     { "type": "color", "id": "accent_color", "label": "Couleur d'accent", "default": "#2AB5B4" },
     { "type": "range", "id": "heading_size", "label": "Taille du titre", "min": 22, "max": 48, "step": 1, "unit": "px", "default": 34 },
     { "type": "color", "id": "bg_color", "label": "Fond", "default": "#ffffff" },
-    { "type": "range", "id": "max_width", "label": "Largeur maximale", "min": 360, "max": 720, "step": 20, "unit": "px", "default": 480 },
+    { "type": "header", "content": "Photos du produit" },
+    { "type": "checkbox", "id": "show_gallery", "label": "Afficher les photos à côté de l'offre", "default": true },
+    { "type": "text", "id": "product_handle", "label": "Produit (identifiant)", "default": "gumforce", "info": "Les photos de ce produit. Mettre le même que dans le bloc d'offre." },
+    { "type": "range", "id": "images_max", "label": "Nombre de photos", "min": 1, "max": 10, "step": 1, "default": 6 },
+    { "type": "header", "content": "Mise en page" },
+    { "type": "range", "id": "max_width", "label": "Largeur maximale", "min": 360, "max": 1340, "step": 20, "unit": "px", "default": 1140 },
+    { "type": "range", "id": "offer_width", "label": "Largeur de la colonne offre", "min": 360, "max": 560, "step": 20, "unit": "px", "default": 460 },
     { "type": "range", "id": "padding_top", "label": "Haut (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
     { "type": "range", "id": "padding_bottom", "label": "Bas (desktop)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
     { "type": "range", "id": "padding_top_mobile", "label": "Haut (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
