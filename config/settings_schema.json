@@ -8,6 +8,31 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Mode Halloween",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "gf_hw_enabled",
+        "label": "Activer le mode Halloween",
+        "default": false,
+        "info": "Chauves-souris dans le bandeau, badges de la photo et de l'offre en orange avec une citrouille, toile et araignée sur la photo principale."
+      },
+      {
+        "type": "text",
+        "id": "gf_hw_end",
+        "label": "Dernier jour (AAAA-MM-JJ)",
+        "default": "2026-10-31",
+        "info": "Le mode s'éteint tout seul le lendemain. Vide = pas de date de fin."
+      },
+      {
+        "type": "color",
+        "id": "gf_hw_color",
+        "label": "Couleur Halloween",
+        "default": "#FF7518"
+      }
+    ]
+  },
+  {
     "name": "Panier GUMFORCE",
     "settings": [
       {

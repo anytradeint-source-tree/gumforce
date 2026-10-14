@@ -1,12 +1,30 @@
 <!doctype html>
+{%- liquid
+  comment — mode Halloween : actif si coché et pas encore après le dernier jour
+  endcomment
+  assign gf_hw = false
+  if settings.gf_hw_enabled
+    assign gf_hw_end = settings.gf_hw_end | strip | remove: '-' | plus: 0
+    assign gf_hw_now = 'now' | date: '%Y%m%d' | plus: 0
+    if gf_hw_end == 0 or gf_hw_now <= gf_hw_end
+      assign gf_hw = true
+    endif
+  endif
+-%}
 <html
-  {% if request.design_mode %}
-    class="shopify-design-mode"
+  {% if request.design_mode or gf_hw %}
+    class="{% if request.design_mode %}shopify-design-mode{% endif %}{% if gf_hw %} gf-hw{% endif %}"
   {% endif %}
   lang="{{ request.locale.iso_code }}"
 >
   <head>
     {%- render 'gf-upsell-guard' -%}
+    {%- if gf_hw -%}
+      <style>:root { --gf-hw: {{ settings.gf_hw_color | default: '#FF7518' }}; }</style>
+      {%- if settings.gf_hw_end != blank -%}
+        <script>if (new Date() > new Date({{ settings.gf_hw_end | strip | append: 'T23:59:59' | json }})) document.documentElement.classList.remove('gf-hw');</script>
+      {%- endif -%}
+    {%- endif -%}
     <meta name="theme-color" content="#c5fff7">
     <style>
       html { background-color: #c5fff7; }
