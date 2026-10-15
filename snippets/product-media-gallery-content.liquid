@@ -797,6 +797,33 @@
 })();
 </script>
 {%- endif -%}
+<script>
+  /* GUMFORCE : sur certains iPhone, Safari laissait parfois une photo vide en revenant
+     sur sa diapo (affichée sans être redessinée). Quand une diapo redevient visible :
+     photo perdue (chargée mais sans image) → rechargée ; sinon Safari est forcé à la
+     redessiner (calque éphémère, 2 images d'animation, rien de visible). */
+  (function () {
+    var g = document.querySelector('media-gallery');
+    if (!g || !window.MutationObserver) return;
+    function refresh(slide) {
+      slide.querySelectorAll('img.product-media__image').forEach(function (img) {
+        if (img.complete && !img.naturalWidth && img.getAttribute('loading') !== 'lazy') {
+          var ss = img.getAttribute('srcset');
+          if (ss) { img.setAttribute('srcset', ''); img.setAttribute('srcset', ss); }
+          return;
+        }
+        img.style.transform = 'translateZ(0)';
+        requestAnimationFrame(function () { requestAnimationFrame(function () { img.style.transform = ''; }); });
+      });
+    }
+    new MutationObserver(function (list) {
+      list.forEach(function (m) {
+        var s = m.target;
+        if (s.tagName === 'SLIDESHOW-SLIDE' && s.getAttribute('aria-hidden') === 'false') refresh(s);
+      });
+    }).observe(g, { subtree: true, attributes: true, attributeFilter: ['aria-hidden'] });
+  })();
+</script>
 {% render 'product-media-gallery-content-styles' %}
 
 {% stylesheet %}
