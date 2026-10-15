@@ -19,6 +19,7 @@
 >
   <head>
     {%- render 'gf-upsell-guard' -%}
+    {%- render 'gf-preorder-cleanup' -%}
     {%- if gf_hw -%}
       <style>:root { --gf-hw: {{ settings.gf_hw_color | default: '#FF7518' }}; }</style>
       {%- if settings.gf_hw_end != blank -%}

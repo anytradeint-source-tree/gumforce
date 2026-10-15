@@ -1,0 +1,74 @@
+{%- comment -%}
+  GUMFORCE — fin de la précommande (15 octobre 2026). Les paniers remplis pendant
+  la précommande gardaient sur leurs lignes la propriété « Précommande : expédition
+  à partir du … » (panier, checkout, commande). Shopify ne permet pas d'effacer une
+  propriété : chaque ligne concernée est remplacée par la même ligne sans elle
+  (ajout d'abord, retrait ensuite : rien n'est perdu si l'ajout échoue), puis le
+  panier coulissant est rafraîchi (ou la page /cart rechargée).
+  Rendu en tête de page (layout/theme.liquid), il ne sort rien si aucune ligne du
+  panier n'a la propriété.
+{%- endcomment -%}
+{%- liquid
+  assign po_name = 'Précommande'
+  assign po_found = false
+  unless request.design_mode
+    for item in cart.items
+      for p in item.properties
+        if p.first == po_name
+          assign po_found = true
+          break
+        endif
+      endfor
+      if po_found
+        break
+      endif
+    endfor
+  endunless
+-%}
+{%- if po_found -%}
+  <script>
+    (function () {
+      var P = {{ po_name | json }};
+      var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+      function post(url, body) {
+        return fetch(root + url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(body)
+        }).then(function (r) { if (!r.ok) throw r; return r.json(); });
+      }
+      fetch(root + 'cart.js', { headers: { 'Accept': 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (cart) {
+          /* une seule tentative par ligne : si le retrait échouait, la ligne ne serait pas ajoutée à chaque page */
+          var tried = {};
+          try { tried = JSON.parse(sessionStorage.getItem('gfPoClean') || '{}'); } catch (e) {}
+          var lines = (cart.items || []).filter(function (i) { return i.properties && P in i.properties && !tried[i.key]; });
+          if (!lines.length) return false;
+          return lines.reduce(function (chain, i) {
+            return chain.then(function () {
+              tried[i.key] = 1;
+              try { sessionStorage.setItem('gfPoClean', JSON.stringify(tried)); } catch (e) {}
+              var props = {};
+              Object.keys(i.properties).forEach(function (k) { if (k !== P) props[k] = i.properties[k]; });
+              var it = { id: i.variant_id, quantity: i.quantity, properties: props };
+              if (i.selling_plan_allocation) it.selling_plan = i.selling_plan_allocation.selling_plan.id;
+              return post('cart/add.js', { items: [it] }).then(function () {
+                return post('cart/change.js', { id: i.key, quantity: 0 });
+              });
+            });
+          }, Promise.resolve()).then(function () { return true; });
+        })
+        .then(function (changed) {
+          if (!changed) return;
+          {%- if template.name == 'cart' %}
+          window.location.reload();
+          {%- else %}
+          function done() { if (window.gfCart) window.gfCart.refresh(); }
+          if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', done); else done();
+          {%- endif %}
+        })
+        .catch(function () {});
+    })();
+  </script>
+{%- endif -%}
