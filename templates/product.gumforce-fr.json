@@ -774,7 +774,7 @@
         "card_ciMprA": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_08_35_2cdd4133-7bff-4783-95db-cc8bee46d6a1.jpg",
+            "image": "shopify://shop_images/gumforce-visuel-129.jpg",
             "name": "Edgar Icon",
             "role": "Fondateur de Elwood"
           }
@@ -782,7 +782,7 @@
         "card_tcWqe8": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_43_21.jpg",
+            "image": "shopify://shop_images/gumforce-visuel-128.jpg",
             "name": "Sebastian Vale",
             "role": "Athlète Hyrox"
           }
@@ -790,7 +790,7 @@
         "card_bdnyPL": {
           "type": "card",
           "settings": {
-            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_20_33.jpg",
+            "image": "shopify://shop_images/gumforce-visuel-127.jpg",
             "name": "Aurélien Delmas",
             "role": "Acteur et modèle"
           }
@@ -906,8 +906,8 @@
         "text_align_desktop": "center",
         "heading_size": 32,
         "body_size": 15,
-        "before_image": "shopify://shop_images/hf_20260906_213047_bcda17a3-210d-4134-ac03-67e5cd1d590a.jpg",
-        "after_image": "shopify://shop_images/hf_20260906_210709_4710dcf2-0ffe-4b33-bd87-87079d93098c.jpg",
+        "before_image": "shopify://shop_images/gumforce-visuel-130.jpg",
+        "after_image": "shopify://shop_images/gumforce-visuel-131.jpg",
         "before_label": "Jour 1",
         "after_label": "Jour 30",
         "show_arrow": true,
