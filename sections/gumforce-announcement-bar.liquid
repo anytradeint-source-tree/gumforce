@@ -52,7 +52,7 @@
     will-change: transform;
   }
   #gfab-{{ uid }}:hover .gfab-track { animation-play-state: paused; }
-  #gfab-{{ uid }} .gfab-item { display: flex; align-items: center; white-space: nowrap; }
+  #gfab-{{ uid }} .gfab-item { display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
   #gfab-{{ uid }} .gfab-msg {
     font-family: var(--font-heading--family, 'Oswald', sans-serif);
     font-weight: {{ s.font_weight | default: 600 }};
@@ -94,7 +94,7 @@
           {%- if s.icon_image != blank -%}
             <img class="gfab-ic" src="{{ s.icon_image | image_url: width: 96 }}" alt="" aria-hidden="true" width="{{ s.icon_size | default: 18 }}" height="{{ s.icon_size | default: 18 }}">
           {%- else -%}
-            <svg class="gfab-ic gfab-ic-svg gfab-ic-star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/></svg>{%- if settings.gf_hw_enabled -%}<svg class="gfab-ic gfab-ic-svg gfab-ic-hw" viewBox="0 0 100 34" fill="currentColor" aria-hidden="true"><path d="M50 15L46.5 5 44.5 13C40 10 32 4 22 4 14 4 7 7 2 12 8 13 12 17 13 24 17 20 23 20 27 25 31 21 37 22 40 29 43 25 47 25 50 31 53 25 57 25 60 29 63 22 69 21 73 25 77 20 83 20 87 24 88 17 92 13 98 12 93 7 86 4 78 4 68 4 60 10 55.5 13L53.5 5Z"/></svg>{%- endif -%}
+            <svg class="gfab-ic gfab-ic-svg gfab-ic-star" width="{{ s.icon_size | default: 18 }}" height="{{ s.icon_size | default: 18 }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/></svg>{%- if settings.gf_hw_enabled -%}<svg class="gfab-ic gfab-ic-svg gfab-ic-hw" width="{{ s.icon_size | default: 18 | times: 1.9 | round }}" height="{{ s.icon_size | default: 18 | times: 0.65 | round }}" viewBox="0 0 100 34" fill="currentColor" aria-hidden="true"><path d="M50 15L46.5 5 44.5 13C40 10 32 4 22 4 14 4 7 7 2 12 8 13 12 17 13 24 17 20 23 20 27 25 31 21 37 22 40 29 43 25 47 25 50 31 53 25 57 25 60 29 63 22 69 21 73 25 77 20 83 20 87 24 88 17 92 13 98 12 93 7 86 4 78 4 68 4 60 10 55.5 13L53.5 5Z"/></svg>{%- endif -%}
           {%- endif -%}
         </span>
       {%- endfor -%}

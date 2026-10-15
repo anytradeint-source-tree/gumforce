@@ -246,16 +246,16 @@
   /* carte photo : l'image d'ambiance remplit la carte, le texte se lit sur un voile en bas */
   .gfc-up--photo .gfc-up__card { min-height:236px; padding:12px 14px 14px; border:none; background:#0d4a4a; color:#fff; overflow:hidden; box-shadow:0 10px 28px rgba(0,0,0,.14); }
   .gfc-up__bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-  .gfc-up--photo .gfc-up__card::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 34%, rgba(0,0,0,.6) 60%, rgba(0,0,0,.86) 100%); }
+  .gfc-up--photo .gfc-up__card::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.3) 55%, rgba(0,0,0,0) 88%), linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,.06) 18%, rgba(0,0,0,.22) 34%, rgba(0,0,0,.62) 58%, rgba(0,0,0,.86) 100%); }
   .gfc-up--photo .gfc-up__top, .gfc-up--photo .gfc-up__main, .gfc-up--photo .gfc-up__act { position:relative; z-index:1; }
   .gfc-up--photo .gfc-up__badge { background:var(--gfc-lime); color:#111; font-size:10.5px; }
   .gfc-up--photo .gfc-up__timer { padding:4px 9px; border-radius:8px; background:rgba(17,17,17,.74); color:#fff; }
   .gfc-up--photo .gfc-up__timer svg { color:var(--gfc-lime); }
   .gfc-up--photo .gfc-up__timer b { color:#fff; }
   .gfc-up--photo .gfc-up__main { margin-top:auto; }
-  .gfc-up--photo .gfc-up__title { font-size:23px; line-height:1.08; color:#fff; text-shadow:0 1px 14px rgba(0,0,0,.35); }
+  .gfc-up--photo .gfc-up__title { font-size:23px; line-height:1.08; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.6), 0 1px 2px rgba(0,0,0,.5); }
   .gfc-up--photo .gfc-up__title em { color:var(--gfc-lime); }
-  .gfc-up--photo .gfc-up__sub { color:rgba(255,255,255,.88); }
+  .gfc-up--photo .gfc-up__sub { color:rgba(255,255,255,.92); text-shadow:0 1px 6px rgba(0,0,0,.45); }
   .gfc-up--photo .gfc-up__price b { font-size:20px; color:#fff; }
   .gfc-up--photo .gfc-up__price s { color:rgba(255,255,255,.66); }
   .gfc-up--photo .gfc-qty { background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.62); }
