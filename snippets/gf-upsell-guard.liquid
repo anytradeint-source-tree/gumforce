@@ -7,6 +7,9 @@
   • Upsell resté seul au panier (offre retirée sur /cart, ancien panier…) :
     retiré au chargement, puis panier coulissant rafraîchi (ou page /cart
     rechargée). Dans le panier coulissant, il part déjà avec l'offre.
+  • Offre retirée SANS rechargement (page /cart d'Horizon, retour du checkout) :
+    à chaque cart:update, si l'upsell reste seul il est retiré tout de suite
+    (puis /cart rechargée, ou panier coulissant rafraîchi).
 {%- endcomment -%}
 {%- liquid
   assign g_on = false
@@ -44,6 +47,35 @@
 {%- if g_redirect -%}
   <meta name="robots" content="noindex">
   <script>window.location.replace({{ g_target | json }});</script>
+{%- endif -%}
+{%- if g_on -%}
+  <script>
+    (function () {
+      var H = {{ g_handle | json }}, busy = false;
+      var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+      document.addEventListener('cart:update', function (e) {
+        var cart = e.detail && e.detail.resource;
+        if (busy || !cart || !cart.items) return;
+        var up = [], other = 0;
+        cart.items.forEach(function (i) { if (i.handle === H) up.push(i); else other += i.quantity; });
+        if (!up.length || other > 0) return;
+        busy = true;
+        var u = {}; up.forEach(function (i) { u[i.key] = 0; });
+        fetch(root + 'cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ updates: u })
+        }).then(function () {
+          {%- if template.name == 'cart' %}
+          window.location.reload();
+          {%- else %}
+          busy = false;
+          if (window.gfCart) window.gfCart.refresh();
+          {%- endif %}
+        }, function () { busy = false; });
+      });
+    })();
+  </script>
 {%- endif -%}
 {%- if g_orphan -%}
   <script>
