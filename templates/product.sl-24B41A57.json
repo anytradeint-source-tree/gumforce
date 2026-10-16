@@ -681,22 +681,13 @@
         "show_image": true,
         "product_image": "shopify://shop_images/hf_20260402_155854_1d525629-3fc0-4015-a3d3-cc3b02c54a39.jpg",
         "image_size": 42,
-        "show_rating": false,
-        "rating_text": "[note]",
-        "rating_image": "shopify://shop_images/trust_45_1.svg",
-        "rating_image_height": 14,
-        "show_price": false,
         "price_product": "",
         "price_text": "",
-        "compare_price": "",
         "bg_color": "#121212",
-        "bg_opacity": 86,
         "text_color": "#f4f4f4",
         "cta_bg": "#f4f4f4",
         "cta_text_color": "#121212",
-        "bar_radius": 24,
-        "cta_radius": 20,
-        "blur_strength": 20
+        "cta_radius": 20
       }
     },
     "gumforce_influencers_grid_WkeiRW": {

@@ -583,22 +583,13 @@
         "show_image": true,
         "product_image": "shopify://shop_images/Ontwerp_zonder_titel_82.png",
         "image_size": 42,
-        "show_rating": false,
-        "rating_text": "[note]",
-        "rating_image": "shopify://shop_images/trust_45_1.svg",
-        "rating_image_height": 14,
-        "show_price": false,
         "price_product": "",
         "price_text": "",
-        "compare_price": "",
         "bg_color": "#121212",
-        "bg_opacity": 90,
         "text_color": "#f4f4f4",
         "cta_bg": "#f4f4f4",
         "cta_text_color": "#121212",
-        "bar_radius": 24,
-        "cta_radius": 20,
-        "blur_strength": 14
+        "cta_radius": 20
       }
     },
     "gumforce_influencers_dezddD": {
@@ -753,10 +744,10 @@
         "image_gap": 12,
         "card_radius": 16,
         "enable_animation": true,
-        "padding_top": 60,
-        "padding_bottom": 32,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 32,
         "use_theme_font": true
       }
     },
@@ -1005,10 +996,10 @@
         "content_gap": 48,
         "text_gap": 24,
         "color_scheme": "scheme-1",
-        "padding_top": 60,
-        "padding_bottom": 60,
         "padding_top_mobile": 32,
         "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 60,
         "enable_animations": true
       }
     },
@@ -1046,10 +1037,10 @@
         "content_gap": 48,
         "text_gap": 24,
         "color_scheme": "scheme-2",
-        "padding_top": 60,
-        "padding_bottom": 60,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 60,
         "enable_animations": true
       }
     },
@@ -1086,10 +1077,10 @@
         "content_gap": 48,
         "text_gap": 24,
         "color_scheme": "scheme-2",
-        "padding_top": 60,
-        "padding_bottom": 60,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 60,
         "enable_animations": true
       }
     },
@@ -1864,10 +1855,10 @@
         "btn_bg": "#1a1a1a",
         "btn_text_color": "#ffffff",
         "btn_radius": 30,
-        "padding_top": 64,
-        "padding_bottom": 64,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
+        "padding_top": 64,
+        "padding_bottom": 64,
         "enable_animations": true
       }
     },
@@ -1940,10 +1931,10 @@
         "border_color": "#1e1e1e",
         "icon_color": "#2ab5b4",
         "heading_size": 34,
-        "padding_top": 80,
-        "padding_bottom": 80,
         "padding_top_mobile": 32,
         "padding_bottom_mobile": 32,
+        "padding_top": 80,
+        "padding_bottom": 80,
         "enable_animations": true
       }
     },
@@ -1993,10 +1984,10 @@
         "cta_bg_color": "#1a1a1a",
         "cta_text_color": "#ffffff",
         "heading_size": 34,
-        "padding_top": 0,
-        "padding_bottom": 64,
         "padding_top_mobile": 48,
         "padding_bottom_mobile": 48,
+        "padding_top": 0,
+        "padding_bottom": 64,
         "enable_animations": true
       }
     }
