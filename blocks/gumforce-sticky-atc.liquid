@@ -14,7 +14,7 @@
 
   assign title        = s.product_title | default: 'GUMFORCE'
   assign show_rating  = s.show_rating
-  assign rating_text  = s.rating_text | default: '4.8'
+  assign rating_text  = s.rating_text | default: '4.8' | replace: '[note]', settings.gf_tp_rating
   assign rating_img   = s.rating_image
   assign rating_h     = s.rating_image_height | default: 14
   assign show_price   = s.show_price
@@ -657,6 +657,7 @@
       "type": "text",
       "id": "rating_text",
       "label": "Rating value",
+      "info": "[note] = note moyenne (Réglages du thème › Avis Trustpilot)",
       "default": "4.8"
     },
     {

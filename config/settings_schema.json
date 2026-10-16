@@ -8,6 +8,45 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Avis Trustpilot",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Change ici le nombre d'avis et la note : ils se mettent à jour partout sur le site (étoiles sous le titre, sections d'avis, barre d'achat). Dans les textes d'avis, [avis] = nombre d'avis et [note] = note moyenne, ex. « [note]/5 Excellent | [avis] avis Trustpilot »."
+      },
+      {
+        "type": "text",
+        "id": "gf_tp_count",
+        "label": "Nombre d'avis",
+        "default": "65",
+        "info": "Remplace [avis] dans les textes. Ex. 65 ou 1 250."
+      },
+      {
+        "type": "select",
+        "id": "gf_tp_rating",
+        "label": "Note moyenne",
+        "options": [
+          { "value": "5.0", "label": "5.0" },
+          { "value": "4.9", "label": "4.9" },
+          { "value": "4.8", "label": "4.8" },
+          { "value": "4.7", "label": "4.7" },
+          { "value": "4.6", "label": "4.6" },
+          { "value": "4.5", "label": "4.5" },
+          { "value": "4.4", "label": "4.4" },
+          { "value": "4.3", "label": "4.3" },
+          { "value": "4.2", "label": "4.2" },
+          { "value": "4.1", "label": "4.1" },
+          { "value": "4.0", "label": "4.0" },
+          { "value": "3.9", "label": "3.9" },
+          { "value": "3.8", "label": "3.8" },
+          { "value": "3.5", "label": "3.5" }
+        ],
+        "default": "4.8",
+        "info": "Remplace [note] dans les textes et sert aux étoiles quand la note d'un bloc est « Réglage du thème »."
+      }
+    ]
+  },
+  {
     "name": "Mode Halloween",
     "settings": [
       {

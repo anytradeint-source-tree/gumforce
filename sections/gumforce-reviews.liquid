@@ -39,7 +39,10 @@
   assign card_gap        = s.card_gap | default: 14
   assign show_header     = s.show_header
   assign header_rating   = s.header_rating | default: '4.8'
-  assign header_count    = s.header_count
+  if header_rating == 'theme'
+    assign header_rating = settings.gf_tp_rating | default: '4.8'
+  endif
+  assign header_count    = s.header_count | replace: '[avis]', settings.gf_tp_count | replace: '[note]', header_rating
   assign heading_text    = s.heading_text
   assign initial_count   = s.initial_count | default: 8
   if request.locale.iso_code == 'fr'
@@ -1052,6 +1055,7 @@
       "id": "header_rating",
       "label": "Average rating",
       "options": [
+        { "value": "theme", "label": "Réglage du thème (Avis Trustpilot)" },
         { "value": "5.0", "label": "5.0" },
         { "value": "4.9", "label": "4.9" },
         { "value": "4.8", "label": "4.8" },
@@ -1066,6 +1070,7 @@
       "type": "text",
       "id": "header_count",
       "label": "Review count text",
+      "info": "[avis] = nombre d'avis, [note] = note (Réglages du thème › Avis Trustpilot)",
       "default": "8,145 Reviews"
     },
     {

@@ -2,6 +2,10 @@
   assign gf_id          = block.id
   assign s              = block.settings
   assign rating_str     = s.rating | default: '4.8'
+  if rating_str == 'theme'
+    assign rating_str   = settings.gf_tp_rating | default: '4.8'
+  endif
+  assign review_text    = s.review_count | replace: '[avis]', settings.gf_tp_count | replace: '[note]', rating_str
   assign img_h          = s.stars_image_height | default: 20
   assign img_h_retina   = img_h | times: 3
 
@@ -119,9 +123,9 @@
   {%- if s.review_count != blank -%}
     <span class="gfsr-count">
       {%- if s.review_link != blank -%}
-        <a href="{{ s.review_link }}" onclick="if(this.hash){var t=document.querySelector(this.hash);if(t){event.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}}">{{ s.review_count }}</a>
+        <a href="{{ s.review_link }}" onclick="if(this.hash){var t=document.querySelector(this.hash);if(t){event.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}}">{{ review_text }}</a>
       {%- else -%}
-        {{ s.review_count }}
+        {{ review_text }}
       {%- endif -%}
     </span>
   {%- endif -%}
@@ -166,6 +170,7 @@
       "label": "Rating value",
       "info": "Shown as number and used for SVG fallback stars",
       "options": [
+        { "value": "theme", "label": "Réglage du thème (Avis Trustpilot)" },
         { "value": "5.0", "label": "5.0" },
         { "value": "4.9", "label": "4.9" },
         { "value": "4.8", "label": "4.8" },
@@ -194,6 +199,7 @@
       "id": "review_count",
       "label": "Review count text",
       "placeholder": "e.g. 1,247 reviews",
+      "info": "[avis] = nombre d'avis, [note] = note (Réglages du thème › Avis Trustpilot)",
       "default": "1,247 reviews"
     },
     {
