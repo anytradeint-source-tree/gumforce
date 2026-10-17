@@ -9,14 +9,14 @@
  */
 {
   "current": {
-    "gf_hw_enabled": true,
-    "gf_tp_count": "65",
+    "gf_tp_count": "69",
     "gf_tp_rating": "4.8",
+    "gf_hw_enabled": true,
     "gfc_up_badge": "Offre exclusive -65%",
     "logo": "shopify://shop_images/logo_no_bg_cut.svg",
     "logo_height": 60,
     "logo_height_mobile": 40,
-    "favicon": "shopify://shop_images/gf_favicon.png",
+    "favicon": "shopify://shop_images/GUMFORCE_FAVICON.png",
     "type_body_font": "manrope_n4",
     "type_subheading_font": "manrope_n4",
     "type_heading_font": "oswald_n6",
