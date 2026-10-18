@@ -20,6 +20,21 @@
   <head>
     {%- render 'gf-upsell-guard' -%}
     {%- render 'gf-preorder-cleanup' -%}
+    {%- comment -%}
+      GUMFORCE : cadre de focus réservé à la navigation au clavier. Sur iPhone, Safari affichait le cadre
+      quand un script redonnait le focus juste après un toucher (fenêtre qui se ferme, etc.), par exemple
+      autour des avis Trustpilot. Le cadre revient dès qu'on navigue avec Tab.
+    {%- endcomment -%}
+    <style>html:not(.gf-kbd) :focus-visible:not([aria-selected='true']) { outline: none !important; }</style>
+    <script>
+      (function () {
+        var d = document.documentElement;
+        addEventListener('keydown', function (e) { if (e.key === 'Tab') d.classList.add('gf-kbd'); }, true);
+        ['pointerdown', 'touchstart', 'mousedown'].forEach(function (t) {
+          addEventListener(t, function () { d.classList.remove('gf-kbd'); }, { capture: true, passive: true });
+        });
+      })();
+    </script>
     {%- if gf_hw -%}
       <style>:root { --gf-hw: {{ settings.gf_hw_color | default: '#FF7518' }}; }</style>
       {%- if settings.gf_hw_end != blank -%}
