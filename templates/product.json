@@ -285,7 +285,7 @@
                 "title_3": "What's in it?",
                 "body_3": "Every piece contains 500mg creatine monohydrate. No fillers, no underdosing, no guessing. Unlike some creatine gummies on the market that tested for nearly zero actual creatine, what's on our label is what's in the gum.\n\nSugar-free. Dense, chewy white pieces. You'll feel the difference the second you start chewing.\n\n100g resealable pouch.",
                 "title_4": "Shipping & returns",
-                "body_4": "We ship worldwide. Orders are processed within 1–2 business days. Standard delivery takes 5–8 business days depending on your location. Tracking included with every order.\n\n30-day money-back guarantee. Not satisfied? Reach out and we'll make it right. We stand behind the product because we use it ourselves.",
+                "body_4": "We ship worldwide. Orders are processed within 1–2 business days. Standard delivery takes 5–8 business days depending on your location. Tracking included with every order.\n\n90-day money-back guarantee. Not satisfied? Reach out and we'll make it right. We stand behind the product because we use it ourselves.",
                 "title_5": "",
                 "body_5": "",
                 "title_6": "",
@@ -468,7 +468,7 @@
           "type": "trust_badge",
           "settings": {
             "icon": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
-            "text": "30-Day Money Back Guarantee"
+            "text": "90-Day Money Back Guarantee"
           }
         }
       },
@@ -650,7 +650,7 @@
         "cta_radius": 30,
         "cta_style": "filled",
         "cta_width": "full",
-        "guarantee_text": "30-Day Money Back Guarantee",
+        "guarantee_text": "90-Day Money Back Guarantee",
         "guarantee_icon": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
         "guarantee_icon_size": 18,
         "guarantee_font_size": 13,
@@ -691,7 +691,7 @@
         "cta_radius": 8,
         "cta_style": "filled",
         "cta_width": "auto",
-        "guarantee_text": "30-Day Moneyback Guarantee",
+        "guarantee_text": "90-Day Moneyback Guarantee",
         "guarantee_icon_size": 18,
         "guarantee_font_size": 13,
         "text_align": "left",
@@ -1526,7 +1526,7 @@
           "type": "faq",
           "settings": {
             "question": "Shipping & returns",
-            "answer": "<p>We ship worldwide. Orders are processed within 1–2 business days. Standard delivery takes 5–8 business days depending on your location. Tracking included with every order.</p><p>30-day money-back guarantee. Not satisfied? Reach out and we'll make it right.</p>"
+            "answer": "<p>We ship worldwide. Orders are processed within 1–2 business days. Standard delivery takes 5–8 business days depending on your location. Tracking included with every order.</p><p>90-day money-back guarantee. Not satisfied? Reach out and we'll make it right.</p>"
           }
         }
       },
@@ -1566,7 +1566,7 @@
         "detail_YeWdDD": {
           "type": "detail",
           "settings": {
-            "text": "30-day full refund"
+            "text": "90-day full refund"
           }
         },
         "detail_znhDQi": {
@@ -1593,8 +1593,8 @@
         "badge_image": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
         "badge_url": "",
         "badge_size": 64,
-        "heading": "30-Day Money-Back Guarantee",
-        "body": "<p>We stand behind GUMFORCE because we use it ourselves. If you're not satisfied with your results within 30 days, contact us and we'll refund your order. No questions, no hassle.</p>",
+        "heading": "90-Day Money-Back Guarantee",
+        "body": "<p>We stand behind GUMFORCE because we use it ourselves. If you're not satisfied with your results within 90 days, contact us and we'll refund your order. No questions, no hassle.</p>",
         "cta_text": "Shop Now",
         "cta_link": "",
         "cta_scroll_bundle": true,

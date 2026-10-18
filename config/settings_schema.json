@@ -145,7 +145,7 @@
         "type": "text",
         "id": "gfc_guarantee_label",
         "label": "Ligne de garantie",
-        "default": "Garantie 30 jours"
+        "default": "Garantie 90 jours"
       },
       {
         "type": "text",

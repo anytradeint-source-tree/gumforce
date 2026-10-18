@@ -101,7 +101,7 @@
         "stat_8R8UJh": {
           "type": "stat",
           "settings": {
-            "number": "30",
+            "number": "90",
             "suffix": "jours",
             "suffix_small": true,
             "lead": "pour tester.",
@@ -248,7 +248,7 @@
         "cta_radius": 30,
         "cta_style": "filled",
         "cta_width": "auto",
-        "guarantee_text": "Satisfait ou remboursé 30 jours",
+        "guarantee_text": "Satisfait ou remboursé 90 jours",
         "guarantee_icon_size": 16,
         "guarantee_font_size": 13,
         "text_align": "left",
@@ -1092,7 +1092,7 @@
           "type": "faq",
           "settings": {
             "question": "Livraison et retours",
-            "answer": "<p>Nous livrons dans le monde entier. Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement 48h pour la France & Belgique. 7-10 jours pour le reste du monde. Suivi inclus avec chaque commande.</p><p>Garantie satisfait ou remboursé pendant 30 jours. Pas satisfait ? Contacte-nous et nous trouverons une solution.</p>"
+            "answer": "<p>Nous livrons dans le monde entier. Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement 48h pour la France & Belgique. 7-10 jours pour le reste du monde. Suivi inclus avec chaque commande.</p><p>Garantie satisfait ou remboursé pendant 90 jours. Pas satisfait ? Contacte-nous et nous trouverons une solution.</p>"
           }
         }
       },
@@ -1131,7 +1131,7 @@
         "detail_GAcTUP": {
           "type": "detail",
           "settings": {
-            "text": "Remboursement intégral sous 30 jours"
+            "text": "Remboursement intégral sous 90 jours"
           }
         },
         "detail_aGxDbJ": {
@@ -1157,8 +1157,8 @@
         "badge_image": "shopify://shop_images/Ontwerp_zonder_titel_79.png",
         "badge_url": "",
         "badge_size": 72,
-        "heading": "Garantie de remboursement de 30 jours",
-        "body": "<p>Nous utilisons GUMFORCE nous-mêmes. Si tu n'es pas satisfait de tes résultats dans 30 jours, contacte-nous et on remboursera ta commande.</p>",
+        "heading": "Garantie de remboursement de 90 jours",
+        "body": "<p>Nous utilisons GUMFORCE nous-mêmes. Si tu n'es pas satisfait de tes résultats dans 90 jours, contacte-nous et on remboursera ta commande.</p>",
         "cta_text": "J'EN PROFITE →",
         "cta_link": "shopify://products/gumforce",
         "cta_scroll_bundle": false,
@@ -1201,7 +1201,7 @@
           "settings": {
             "icon_type": "calendar",
             "title": "Résultats en 30 jours",
-            "text": "Mâchoire plus dessinée, moins de tension, et 500 mg de créatine monohydrate par chewing-gum pour soutenir le muscle. Satisfait ou remboursé 30 jours."
+            "text": "Mâchoire plus dessinée, moins de tension, et 500 mg de créatine monohydrate par chewing-gum pour soutenir le muscle. Satisfait ou remboursé 90 jours."
           }
         }
       },
