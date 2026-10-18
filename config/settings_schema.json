@@ -71,6 +71,13 @@
       },
       {
         "type": "checkbox",
+        "id": "gf_hw_orange",
+        "label": "Couleur Halloween sur les badges",
+        "info": "Badge de la photo produit et badges des offres. Décoché = couleurs habituelles du site.",
+        "default": false
+      },
+      {
+        "type": "checkbox",
         "id": "gf_hw_bats",
         "label": "Chauves-souris dans la barre d'annonce",
         "info": "Remplacent les étoiles entre les messages.",
