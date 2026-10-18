@@ -12,6 +12,8 @@
     "gf_tp_count": "849",
     "gf_tp_rating": "4.8",
     "gf_hw_enabled": true,
+    "gf_hw_bats": false,
+    "gf_hw_spider": false,
     "gfc_up_badge": "Offre exclusive -65%",
     "logo": "shopify://shop_images/logo_no_bg_cut.svg",
     "logo_height": 60,

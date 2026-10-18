@@ -68,6 +68,19 @@
         "id": "gf_hw_color",
         "label": "Couleur Halloween",
         "default": "#FF7518"
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_hw_bats",
+        "label": "Chauves-souris dans la barre d'annonce",
+        "info": "Remplacent les étoiles entre les messages.",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_hw_spider",
+        "label": "Toile et araignée sur la photo produit",
+        "default": false
       }
     ]
   },
