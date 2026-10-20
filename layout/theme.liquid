@@ -18,7 +18,6 @@
     render 'gf-bf-on'
   endcapture
   assign gf_bf = false
-  assign gf_bf_editor = false
   if gf_bf_on == '1'
     assign gf_bf_start = settings.gf_bf_start | strip | remove: '-' | plus: 0
     assign gf_bf_today = 'now' | date: '%Y%m%d' | plus: 0
@@ -27,7 +26,6 @@
     endif
     if request.design_mode and settings.gf_bf_editor
       assign gf_bf = true
-      assign gf_bf_editor = true
     endif
   endif
   if gf_bf
@@ -64,39 +62,7 @@
         <script>if (new Date() > new Date({{ settings.gf_hw_end | strip | append: 'T23:59:59' | json }})) document.documentElement.classList.remove('gf-hw');</script>
       {%- endif -%}
     {%- endif -%}
-    {%- if gf_bf_on == '1' -%}
-      {%- comment -%}
-        Mode Black Friday : les éléments marqués gf-bf-only ne s'affichent qu'avec la classe html.gf-bf,
-        ceux marqués gf-nobf seulement sans elle. La classe est recalculée ici à l'heure de Paris, pour
-        les pages servies depuis le cache. Aperçu : ?gf_bf=1 (gardé pendant la visite), ?gf_bf=0 pour l'arrêter.
-      {%- endcomment -%}
-      <style>
-        html:not(.gf-bf) .gf-bf-only { display: none !important; }
-        html.gf-bf .gf-nobf { display: none !important; }
-        :root { --gf-bf-dark: {{ settings.gf_bf_dark | default: '#111111' }}; --gf-bf-lime: {{ settings.gf_bf_lime | default: '#C5FE89' }}; }
-      </style>
-      <script>
-        (function () {
-          var d = document.documentElement, k = 'gf_bf_preview', p = false, t;
-          var FROM = {{ settings.gf_bf_start | strip | remove: '-' | plus: 0 }}, TO = {{ settings.gf_bf_end | strip | remove: '-' | plus: 0 }};
-          try {
-            var q = location.search.match(/[?&]gf_bf=([01])(&|$)/);
-            if (q) { if (q[1] === '1') sessionStorage.setItem(k, '1'); else sessionStorage.removeItem(k); }
-            p = sessionStorage.getItem(k) === '1';
-          } catch (e) { p = /[?&]gf_bf=1(&|$)/.test(location.search); }
-          try {
-            var o = {};
-            new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' })
-              .formatToParts(new Date()).forEach(function (x) { o[x.type] = x.value; });
-            t = +(o.year + o.month + o.day);
-          } catch (e) { var n = new Date(); t = n.getFullYear() * 10000 + (n.getMonth() + 1) * 100 + n.getDate(); }
-          var on = {{ gf_bf_editor | json }} || p || ((!FROM || t >= FROM) && (!TO || t <= TO));
-          d.classList.toggle('gf-bf', on);
-          if (p) d.classList.add('gf-bf-preview');
-          if (on) d.classList.remove('gf-hw');
-        })();
-      </script>
-    {%- endif -%}
+    {%- render 'gf-bf-head' -%}
     <meta name="theme-color" content="#c5fff7">
     <style>
       html { background-color: #c5fff7; }
