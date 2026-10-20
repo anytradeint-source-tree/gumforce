@@ -230,8 +230,8 @@
   {%- endif %}
   {%- if vb_src != blank %}
   /* bulle vidéo (décorative) */
-  #gfvb-{{ uid }} { --gfvb-accent:{{ vb_accent }}; position:absolute; top:14px; right:14px; z-index:4; width:{{ vb_size }}px; height:{{ vb_size }}px; border-radius:50%; pointer-events:none; opacity:0; transition:opacity .25s ease; filter:drop-shadow(0 10px 18px rgba(6,32,32,.28)); }
-  #gfvb-{{ uid }} .gfvb-clip { position:absolute; inset:4px; border-radius:50%; overflow:hidden; background:#0f1c1c; }
+  #gfvb-{{ uid }} { --gfvb-accent:{{ vb_accent }}; position:absolute; top:14px; right:14px; z-index:4; width:{{ vb_size }}px; height:{{ vb_size }}px; border-radius:50%; pointer-events:none; opacity:0; transition:opacity .45s ease; filter:drop-shadow(0 10px 18px rgba(6,32,32,.28)); }
+  #gfvb-{{ uid }} .gfvb-clip { position:absolute; inset:4px; border-radius:50%; overflow:hidden; background:#eef5f4; }
   #gfvb-{{ uid }} .gfvb-clip::after { content:''; position:absolute; inset:0; border-radius:50%; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9); }
   #gfvb-{{ uid }} .gfvb-v { display:block; width:100%; height:100%; object-fit:cover; object-position:50% {{ vb_focus }}%; transform:scale({{ vb_zoom }}); transform-origin:50% {{ vb_focus }}%; }
   #gfvb-{{ uid }} .gfvb-ring { position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); overflow:visible; }
@@ -277,7 +277,7 @@
     /* importNode (et pas cloneNode) : les éléments doivent appartenir à la page, sinon la vidéo ne se charge jamais */
     if (vbTpl && /[?&]gf_rond=1(&|$)/.test(location.search)) vbTpl.parentNode.insertBefore(document.importNode(vbTpl.content, true), vbTpl);
     var vb = document.getElementById('gfvb-{{ uid }}');
-    var vbOn = false;
+    var vbOn = false, vbReady = false;
     var placed = false;
     var myWrap = badge.closest('[id^="shopify-block-"]');
     function collapseWrap() {
@@ -307,7 +307,8 @@
       badge.style.opacity = (placed && onFirstSlide()) ? '1' : '0';
       if (hw) hw.style.opacity = badge.style.opacity;
       if (bf) bf.style.opacity = badge.style.opacity;
-      if (vb) { vb.style.opacity = badge.style.opacity; vbPlay(badge.style.opacity === '1'); }
+      /* la bulle n'apparaît (en fondu) qu'une fois la première image de la vidéo prête : pas de rond noir au chargement */
+      if (vb) { vb.style.opacity = (badge.style.opacity === '1' && vbReady) ? '1' : '0'; vbPlay(badge.style.opacity === '1'); }
     }
     /* bulle vidéo : lecture seulement quand elle est visible, anneau = avancement de la boucle */
     var vbV = vb && vb.querySelector('.gfvb-v'), vbProg = vb && vb.querySelector('.gfvb-prog'), vbRaf = 0, vbSeen = true;
@@ -317,13 +318,16 @@
        il lui retirerait sa source (zoomée dans le rond, elle n'atteint jamais ses 50 % visibles) */
     if (vbV) {
       vbV.muted = true; vbV.defaultMuted = true; vbV.__gfTamed = true;
-      vbV.addEventListener('error', function () { var full = vbV.getAttribute('data-src-full'); if (full && vbV.getAttribute('src') !== full) { vbV.src = full; vbOn = false; vbPlay(vb.style.opacity === '1'); } });
+      vbV.addEventListener('error', function () { var full = vbV.getAttribute('data-src-full'); if (full && vbV.getAttribute('src') !== full) { vbV.src = full; vbOn = false; vbPlay(badge.style.opacity === '1'); } });
+      var vbShow = function () { if (vbReady) return; vbReady = true; updateVis(); };
+      vbV.addEventListener('loadeddata', vbShow); vbV.addEventListener('playing', vbShow);
     }
     /* la vidéo ne se télécharge qu'une fois la photo principale affichée (elle ne retarde pas le chargement de la page) */
     function vbStart() {
       if (!vbV || vbV.getAttribute('src')) return;
+      vbV.preload = 'auto';
       vbV.src = vbV.getAttribute(window.matchMedia && matchMedia('(min-width: 750px)').matches ? 'data-src-d' : 'data-src-m');
-      vbOn = false; vbPlay(vb.style.opacity === '1');
+      vbOn = false; vbPlay(badge.style.opacity === '1');
     }
     if (vbV) {
       var vbImg = document.querySelector('media-gallery slideshow-slide img, media-gallery img');
@@ -341,7 +345,7 @@
       else { vbV.pause(); cancelAnimationFrame(vbRaf); vbRaf = 0; }
     }
     if (vb && 'IntersectionObserver' in window) {
-      new IntersectionObserver(function (es) { vbSeen = es[0].isIntersecting; vbPlay(vb.style.opacity === '1'); }, { threshold: 0.2 }).observe(vb);
+      new IntersectionObserver(function (es) { vbSeen = es[0].isIntersecting; vbPlay(badge.style.opacity === '1'); }, { threshold: 0.2 }).observe(vb);
     }
     function fitText() {
       var lines = badge.querySelectorAll('.gfib-line');
