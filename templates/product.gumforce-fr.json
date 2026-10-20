@@ -87,8 +87,8 @@
                 "offset_y": 8,
                 "shadow": true,
                 "anim": "pop",
-                "vb_zoom": 180,
-                "vb_focus": 30
+                "vb_zoom": 170,
+                "vb_focus": 10
               },
               "blocks": {}
             },
