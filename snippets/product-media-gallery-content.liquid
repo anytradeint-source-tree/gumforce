@@ -34,6 +34,23 @@
     src="{{ 'zoom-dialog.js' | asset_url }}"
     type="module"
   ></script>
+  {%- if block_settings.zoom_mobile == false -%}
+    <script>
+      /* GUMFORCE : sur mobile, toucher une photo n'ouvre pas la fenêtre agrandie (réglage « Agrandir au clic sur mobile »).
+         Intercepté à la capture sur window, avant les on:click du thème ; le glisser entre les photos n'est pas touché. */
+      (function () {
+        if (window.__gfNoZoomMobile) return;
+        window.__gfNoZoomMobile = true;
+        var mq = window.matchMedia('(max-width: 749px)');
+        window.addEventListener('click', function (e) {
+          if (!mq.matches || !e.target.closest || e.target.closest('.dialog-zoomed-gallery')) return;
+          if (!e.target.closest('media-gallery .product-media-container--zoomable')) return;
+          e.stopPropagation();
+          e.preventDefault();
+        }, true);
+      })();
+    </script>
+  {%- endif -%}
 {%- endif -%}
 {%- liquid
   assign selected_product = closest.product
