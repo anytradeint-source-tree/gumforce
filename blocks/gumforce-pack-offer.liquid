@@ -254,14 +254,6 @@
   endif
   assign gauge_color = s.gauge_color | default: '#E0482B'
 
-  comment — mode Black Friday : badges noirs et verts, mot remplacé dans les badges et le titre daté,
-    bande verte au-dessus du bouton qui ouvre la fenêtre « Comment ça marche ? » (snippets/gf-bf-popup)
-  endcomment
-  capture gf_bf_on
-    render 'gf-bf-on'
-  endcapture
-  assign offer_prefix = s.offer_prefix | default: 'Offre valable le'
-
   assign per_text = s.per_sachet_text | default: 'par sachet'
 
   assign skip_sun = s.delivery_skip_sunday | default: true, allow_false: true
@@ -382,17 +374,6 @@
   #gfp-{{ gf_id }} .gfp-hw-ic { display:none; width:12px; height:12px; flex-shrink:0; }
   html.gf-hw #gfp-{{ gf_id }} .gfp-hw-ic { display:block; }
   html.gf-hw #gfp-{{ gf_id }} .gfp-tbadge { display:inline-flex; align-items:center; gap:5px; }
-  {%- if gf_bf_on == '1' %}
-  html:not(.gf-bf) #gfp-{{ gf_id }} .gf-bf-only, html.gf-bf #gfp-{{ gf_id }} .gf-nobf { display:none !important; }
-  html.gf-bf #gfp-{{ gf_id }} .gfp-tbadge { background:var(--gf-bf-dark); color:var(--gf-bf-lime); }
-  #gfp-{{ gf_id }} .gfp-bfstrip { display:flex; align-items:center; gap:12px; width:100%; margin-top:12px; padding:14px 16px; border:0; border-radius:16px; background:var(--gf-bf-lime); color:#111; font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
-  #gfp-{{ gf_id }} .gfp-bfstrip svg { width:28px; height:28px; flex-shrink:0; }
-  #gfp-{{ gf_id }} .gfp-bfstrip-txt { display:flex; flex-direction:column; gap:3px; min-width:0; }
-  #gfp-{{ gf_id }} .gfp-bfstrip-t { font-family:var(--gfp-font-head); font-weight:700; text-transform:uppercase; font-size:16px; line-height:1.15; letter-spacing:.01em; }
-  #gfp-{{ gf_id }} .gfp-bfstrip-s { font-size:13px; font-weight:500; line-height:1.4; color:#33402f; }
-  #gfp-{{ gf_id }} .gfp-bfstrip-s u { font-weight:700; color:#111; text-underline-offset:3px; }
-  @container (min-width:560px) { #gfp-{{ gf_id }} .gfp-bfstrip-t { font-size:17px; } }
-  {%- endif %}
   {%- if settings.gf_hw_orange %}
   html.gf-hw #gfp-{{ gf_id }} .gfp-tbadge { background:var(--gf-hw); color:#111; box-shadow:0 3px 8px color-mix(in srgb, var(--gf-hw) 35%, transparent); }
   {%- endif %}
@@ -574,7 +555,7 @@
       {%- if show_offer_date -%}
         <div class="gfp-datehead"{% if gauge_on %} hidden{% endif %}>
           <span class="gfp-dot" aria-hidden="true"></span>
-          <span class="gfp-datetext">{% render 'gf-bf-text', text: offer_prefix, bf: gf_bf_on %} <b data-gfp-date>{{ 'now' | date: '%d/%m/%Y' }}</b></span>
+          <span class="gfp-datetext">{{ s.offer_prefix | default: 'Offre valable le' }} <b data-gfp-date>{{ 'now' | date: '%d/%m/%Y' }}</b></span>
         </div>
       {%- endif -%}
 
@@ -595,7 +576,7 @@
             var n = g.querySelector('[data-gfp-gauge-n]'), f = g.querySelector('[data-gfp-gauge-fill]');
             var FROM = {{ s.gauge_from | strip | remove: '-' | plus: 0 }}, TO = {{ s.gauge_to | strip | remove: '-' | plus: 0 }};
             var START = {{ s.gauge_start | default: 300 | plus: 0 }}, END = {{ s.gauge_end | default: 30 | plus: 0 }}, FILL = {{ s.gauge_fill | default: 35 | plus: 0 }};
-            var SHOW = {{ request.design_mode | json }} || /[?&]gf_jauge=1(&|$)/.test(location.search) || document.documentElement.classList.contains('gf-bf-preview');
+            var SHOW = {{ request.design_mode | json }} || /[?&]gf_jauge=1(&|$)/.test(location.search);
             var R = String({{ s.gauge_resets | default: '08:00, 14:00, 20:00' | json }}).split(',').map(function (t) {
               var p = t.trim().split(/[:hH]/);
               return (parseInt(p[0], 10) || 0) * 60 + (parseInt(p[1], 10) || 0);
@@ -642,7 +623,7 @@
         <label class="gfp-tier{% if t1_sel %} gfp-sel{% endif %}{% unless v1_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="1" data-gfp-avail="{{ v1_ok }}" data-gfp-vid="{{ v1.id }}" data-gfp-total="{{ v1_money | escape }}" data-gfp-cents="{{ v1.price }}" data-gfp-was="{{ v1.compare_at_price | default: 0 }}" data-gfp-sach="{{ t1_sach }}">
           <input type="radio" name="gfp-tier-{{ gf_id }}" value="1"{% if t1_sel %} checked{% endif %}>
           {%- unless has_timg -%}<span class="gfp-radio"></span>{%- endunless -%}
-          {%- if s.tier1_badge != blank -%}<span class="gfp-tbadge">{%- if settings.gf_hw_enabled -%}<svg class="gfp-hw-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c-.6-2.2.2-3.6 2-4.2"/><path d="M12 7c-4.6 0-8 2.8-8 6.8S7.4 21 12 21s8-3.2 8-7.2S16.6 7 12 7z"/><path d="M12 7c-1.9 0-3.1 3-3.1 7s1.2 7 3.1 7"/><path d="M12 7c1.9 0 3.1 3 3.1 7s-1.2 7-3.1 7"/></svg>{%- endif -%}{% render 'gf-bf-text', text: s.tier1_badge, bf: gf_bf_on %}</span>{%- endif -%}
+          {%- if s.tier1_badge != blank -%}<span class="gfp-tbadge">{%- if settings.gf_hw_enabled -%}<svg class="gfp-hw-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c-.6-2.2.2-3.6 2-4.2"/><path d="M12 7c-4.6 0-8 2.8-8 6.8S7.4 21 12 21s8-3.2 8-7.2S16.6 7 12 7z"/><path d="M12 7c-1.9 0-3.1 3-3.1 7s1.2 7 3.1 7"/><path d="M12 7c1.9 0 3.1 3 3.1 7s-1.2 7-3.1 7"/></svg>{%- endif -%}{{ s.tier1_badge }}</span>{%- endif -%}
           {%- if s.tier1_image != blank -%}<span class="gfp-timg"><img src="{{ s.tier1_image | image_url: width: 96 }}" alt="" width="46" height="46" loading="lazy"></span>{%- endif -%}
           <span class="gfp-tmain">
             <span class="gfp-tleft">
@@ -664,7 +645,7 @@
         <label class="gfp-tier{% if t2_sel %} gfp-sel{% endif %}{% unless v2_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="2" data-gfp-avail="{{ v2_ok }}" data-gfp-vid="{{ v2.id }}" data-gfp-total="{{ v2_money | escape }}" data-gfp-cents="{{ v2.price }}" data-gfp-was="{{ v2.compare_at_price | default: 0 }}" data-gfp-sach="{{ t2_sach }}">
           <input type="radio" name="gfp-tier-{{ gf_id }}" value="2"{% if t2_sel %} checked{% endif %}>
           {%- unless has_timg -%}<span class="gfp-radio"></span>{%- endunless -%}
-          {%- if s.tier2_badge != blank -%}<span class="gfp-tbadge">{%- if settings.gf_hw_enabled -%}<svg class="gfp-hw-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c-.6-2.2.2-3.6 2-4.2"/><path d="M12 7c-4.6 0-8 2.8-8 6.8S7.4 21 12 21s8-3.2 8-7.2S16.6 7 12 7z"/><path d="M12 7c-1.9 0-3.1 3-3.1 7s1.2 7 3.1 7"/><path d="M12 7c1.9 0 3.1 3 3.1 7s-1.2 7-3.1 7"/></svg>{%- endif -%}{% render 'gf-bf-text', text: s.tier2_badge, bf: gf_bf_on %}</span>{%- endif -%}
+          {%- if s.tier2_badge != blank -%}<span class="gfp-tbadge">{%- if settings.gf_hw_enabled -%}<svg class="gfp-hw-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c-.6-2.2.2-3.6 2-4.2"/><path d="M12 7c-4.6 0-8 2.8-8 6.8S7.4 21 12 21s8-3.2 8-7.2S16.6 7 12 7z"/><path d="M12 7c-1.9 0-3.1 3-3.1 7s1.2 7 3.1 7"/><path d="M12 7c1.9 0 3.1 3 3.1 7s-1.2 7-3.1 7"/></svg>{%- endif -%}{{ s.tier2_badge }}</span>{%- endif -%}
           {%- if s.tier2_image != blank -%}<span class="gfp-timg"><img src="{{ s.tier2_image | image_url: width: 96 }}" alt="" width="46" height="46" loading="lazy"></span>{%- endif -%}
           <span class="gfp-tmain">
             <span class="gfp-tleft">
@@ -686,7 +667,7 @@
         <label class="gfp-tier{% if t3_sel %} gfp-sel{% endif %}{% unless v3_ok %} gfp-tier--oos{% endunless %}" data-gfp-tier="3" data-gfp-avail="{{ v3_ok }}" data-gfp-vid="{{ v3.id }}" data-gfp-total="{{ v3_money | escape }}" data-gfp-cents="{{ v3.price }}" data-gfp-was="{{ v3.compare_at_price | default: 0 }}" data-gfp-sach="{{ t3_sach }}">
           <input type="radio" name="gfp-tier-{{ gf_id }}" value="3"{% if t3_sel %} checked{% endif %}>
           {%- unless has_timg -%}<span class="gfp-radio"></span>{%- endunless -%}
-          {%- if s.tier3_badge != blank -%}<span class="gfp-tbadge">{%- if settings.gf_hw_enabled -%}<svg class="gfp-hw-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c-.6-2.2.2-3.6 2-4.2"/><path d="M12 7c-4.6 0-8 2.8-8 6.8S7.4 21 12 21s8-3.2 8-7.2S16.6 7 12 7z"/><path d="M12 7c-1.9 0-3.1 3-3.1 7s1.2 7 3.1 7"/><path d="M12 7c1.9 0 3.1 3 3.1 7s-1.2 7-3.1 7"/></svg>{%- endif -%}{% render 'gf-bf-text', text: s.tier3_badge, bf: gf_bf_on %}</span>{%- endif -%}
+          {%- if s.tier3_badge != blank -%}<span class="gfp-tbadge">{%- if settings.gf_hw_enabled -%}<svg class="gfp-hw-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c-.6-2.2.2-3.6 2-4.2"/><path d="M12 7c-4.6 0-8 2.8-8 6.8S7.4 21 12 21s8-3.2 8-7.2S16.6 7 12 7z"/><path d="M12 7c-1.9 0-3.1 3-3.1 7s1.2 7 3.1 7"/><path d="M12 7c1.9 0 3.1 3 3.1 7s-1.2 7-3.1 7"/></svg>{%- endif -%}{{ s.tier3_badge }}</span>{%- endif -%}
           {%- if s.tier3_image != blank -%}<span class="gfp-timg"><img src="{{ s.tier3_image | image_url: width: 96 }}" alt="" width="46" height="46" loading="lazy"></span>{%- endif -%}
           <span class="gfp-tmain">
             <span class="gfp-tleft">
@@ -704,18 +685,6 @@
         </label>
         {%- endif -%}
       </div>
-
-      {%- if gf_bf_on == '1' and settings.gf_bf_strip_title != blank -%}
-        <button type="button" class="gfp-bfstrip gf-bf-only" data-gf-bf-open aria-haspopup="dialog">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8c0-2.76-2.46-5-5.5-5S2 5.24 2 8h2l1-1 1 1h4"/><path d="M13 7.14A5.82 5.82 0 0 1 16.5 6c3.04 0 5.5 2.24 5.5 5h-3l-1-1-1 1h-3"/><path d="M5.89 9.71c-2.15 2.15-2.3 5.47-.35 7.43l4.24-4.25.7-.7.71-.71 2.12-2.12c-1.95-1.96-5.27-1.8-7.42.35"/><path d="M11 15.5c.5 2.5-.17 4.5-1 6.5h4c2-5.5-.5-12-1-14"/></svg>
-          <span class="gfp-bfstrip-txt">
-            <span class="gfp-bfstrip-t">{{ settings.gf_bf_strip_title }}</span>
-            {%- if settings.gf_bf_strip_text != blank or settings.gf_bf_strip_link != blank -%}
-              <span class="gfp-bfstrip-s">{{ settings.gf_bf_strip_text }}{% if settings.gf_bf_strip_text != blank and settings.gf_bf_strip_link != blank %} · {% endif %}{% if settings.gf_bf_strip_link != blank %}<u>{{ settings.gf_bf_strip_link }}</u>{% endif %}</span>
-            {%- endif -%}
-          </span>
-        </button>
-      {%- endif -%}
 
       {%- if s.show_quantity -%}
         {%- liquid
