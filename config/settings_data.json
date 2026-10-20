@@ -15,6 +15,7 @@
     "gf_hw_orange": false,
     "gf_hw_bats": false,
     "gf_hw_spider": false,
+    "gf_bf_enabled": true,
     "gfc_up_badge": "Offre exclusive -65%",
     "logo": "shopify://shop_images/logo_no_bg_cut.svg",
     "logo_height": 60,
