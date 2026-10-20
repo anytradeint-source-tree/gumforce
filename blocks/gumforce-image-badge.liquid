@@ -49,12 +49,12 @@
   if vb_url == blank and product != blank
     assign vb_media = product.media | where: 'media_type', 'video' | first
     if vb_media != blank
-      for vs in vb_media.sources
-        if vs.format == 'mp4' and vs.height <= 720
+      assign vb_mp4 = vb_media.sources | where: 'format', 'mp4' | sort: 'height'
+      assign vb_src = vb_mp4.first.url
+      for vs in vb_mp4
+        assign vb_h = vs.height | plus: 0
+        if vb_h <= 720 or vb_src_hd == blank
           assign vb_src_hd = vs.url
-          if vb_src == blank or vs.height <= 480
-            assign vb_src = vs.url
-          endif
         endif
       endfor
       assign vb_poster = vb_media.preview_image | image_url: width: 480
@@ -299,7 +299,8 @@
     }
     /* bulle vidéo : en aperçu (?gf_rond=1), le <template> est copié dans la page */
     var vbTpl = document.getElementById('gfvb-tpl-{{ uid }}');
-    if (vbTpl && /[?&]gf_rond=1(&|$)/.test(location.search)) vbTpl.parentNode.insertBefore(vbTpl.content.cloneNode(true), vbTpl);
+    /* importNode (et pas cloneNode) : les éléments doivent appartenir à la page, sinon la vidéo ne se charge jamais */
+    if (vbTpl && /[?&]gf_rond=1(&|$)/.test(location.search)) vbTpl.parentNode.insertBefore(document.importNode(vbTpl.content, true), vbTpl);
     var vb = document.getElementById('gfvb-{{ uid }}');
     var vbDlg = document.getElementById('gfvb-dlg-{{ uid }}');
     var vbOn = false;
@@ -337,7 +338,7 @@
     /* bulle vidéo : lecture seulement quand elle est visible, anneau = avancement de la boucle */
     var vbV = vb && vb.querySelector('.gfvb-v'), vbProg = vb && vb.querySelector('.gfvb-prog'), vbRaf = 0, vbSeen = true;
     var vbReduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    /* une vidéo copiée depuis un <template> ne prend pas l'attribut muted : sans ça, le navigateur bloque la lecture automatique */
+    /* son coupé aussi en JS : condition de la lecture automatique sur tous les navigateurs */
     if (vbV) { vbV.muted = true; vbV.defaultMuted = true; }
     function vbTick() { if (vbV && vbV.duration) vbProg.style.strokeDashoffset = String(100 - vbV.currentTime / vbV.duration * 100); vbRaf = requestAnimationFrame(vbTick); }
     function vbPlay(want) {
