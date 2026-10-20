@@ -32,6 +32,7 @@
             "media_radius": 18,
             "extend_media": false,
             "zoom": true,
+            "zoom_mobile": false,
             "video_loop": true,
             "video_autoplay": true,
             "hide_variants": true,
