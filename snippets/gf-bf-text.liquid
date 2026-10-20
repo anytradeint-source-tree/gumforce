@@ -1,0 +1,23 @@
+{%- comment -%} Texte qui change pendant le mode Black Friday : si `text` contient le mot à remplacer (Réglages du thème › Mode Black Friday), rend les deux versions et la classe html.gf-bf montre la bonne. Sinon, rend `text` tel quel. Paramètres : text, bf (sortie de gf-bf-on). {%- endcomment -%}
+{%- liquid
+  assign gf_f = settings.gf_bf_swap_from | strip
+  assign gf_r = settings.gf_bf_swap_to | strip
+  assign gf_fu = gf_f | upcase
+  assign gf_ru = gf_r | upcase
+  assign gf_swap = false
+  if bf == '1' and gf_f != blank
+    if text contains gf_f or text contains gf_fu
+      assign gf_swap = true
+    endif
+  endif
+  if gf_swap
+    assign gf_alt = text | replace: gf_f, gf_r | replace: gf_fu, gf_ru
+    echo '<span class="gf-nobf">'
+    echo text
+    echo '</span><span class="gf-bf-only">'
+    echo gf_alt
+    echo '</span>'
+  else
+    echo text
+  endif
+-%}

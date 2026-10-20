@@ -92,6 +92,234 @@
     ]
   },
   {
+    "name": "Mode Black Friday",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "gf_bf_enabled",
+        "label": "Activer le mode Black Friday",
+        "default": false,
+        "info": "Barre d'annonce et badges en noir et vert, bandeau Bali sur la photo principale, bande verte au-dessus du bouton et fenêtre « Comment ça marche ? ». Il remplace le mode Halloween. Aperçu avant la date : ajoute ?gf_bf=1 à l'adresse d'une page, ?gf_bf=0 pour revenir."
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_start",
+        "label": "Premier jour (AAAA-MM-JJ)",
+        "default": "2026-11-01",
+        "info": "Le mode s'allume tout seul ce jour-là, à minuit (heure de Paris)."
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_end",
+        "label": "Dernier jour (AAAA-MM-JJ)",
+        "default": "2026-11-30",
+        "info": "Le mode s'éteint tout seul le lendemain."
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_bf_editor",
+        "label": "Voir le mode dans l'éditeur avant le premier jour",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "gf_bf_dark",
+        "label": "Couleur foncée",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "gf_bf_lime",
+        "label": "Couleur verte",
+        "default": "#C5FE89"
+      },
+      {
+        "type": "header",
+        "content": "Mot remplacé"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_swap_from",
+        "label": "Mot à remplacer",
+        "default": "Halloween",
+        "info": "Pendant le mode, ce mot est remplacé partout où il apparaît : barre d'annonce, badges et titre des offres, titres et boutons de la landing et des listicles."
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_swap_to",
+        "label": "Remplacé par",
+        "default": "Black Friday"
+      },
+      {
+        "type": "header",
+        "content": "Barre d'annonce"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_bar_msg",
+        "label": "Message en plus pendant le mode",
+        "default": "10 jours à Bali pour 2 à gagner"
+      },
+      {
+        "type": "header",
+        "content": "Badge de la photo produit"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_badge_l3",
+        "label": "Ligne 3 pendant le mode",
+        "default": "Black Friday"
+      },
+      {
+        "type": "header",
+        "content": "Bandeau Bali sur la photo principale"
+      },
+      {
+        "type": "image_picker",
+        "id": "gf_bf_photo",
+        "label": "Photo de Bali",
+        "info": "Aussi en haut de la fenêtre « Comment ça marche ? ». Vide = rizières de Tegallalang (Unsplash)."
+      },
+      {
+        "type": "inline_richtext",
+        "id": "gf_bf_band_title",
+        "label": "Titre",
+        "default": "Gagne <b>10 jours à Bali</b> pour 2",
+        "info": "Le texte en gras s'affiche en vert."
+      },
+      {
+        "type": "inline_richtext",
+        "id": "gf_bf_band_value",
+        "label": "Valeur",
+        "default": "D’une valeur de <b>3000 €</b>"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_band_note",
+        "label": "Conditions",
+        "default": "Pour toute commande passée du 1 au 30 novembre, annonce du grand gagnant le samedi 5 décembre."
+      },
+      {
+        "type": "header",
+        "content": "Bande verte au-dessus du bouton"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_strip_title",
+        "label": "Titre",
+        "default": "Gagne 10 jours à Bali pour 2",
+        "info": "Toute la bande ouvre la fenêtre « Comment ça marche ? ». Vide = pas de bande."
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_strip_text",
+        "label": "Texte",
+        "default": "Chaque commande = 1 participation"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_strip_link",
+        "label": "Lien souligné",
+        "default": "Plus d’infos"
+      },
+      {
+        "type": "header",
+        "content": "Fenêtre « Comment ça marche ? »"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_pop_title",
+        "label": "Titre",
+        "default": "Comment ça marche ?"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_pop_t1",
+        "label": "Partie 1 : titre (icône cadeau)",
+        "default": "Ce que tu peux gagner"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_bf_pop_x1",
+        "label": "Partie 1 : texte",
+        "default": "10 jours à Bali pour deux personnes, vols et logement compris. Le voyage a une valeur de 3000 €."
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_pop_t2",
+        "label": "Partie 2 : titre (icône sac)",
+        "default": "Comment participer"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_bf_pop_x2",
+        "label": "Partie 2 : texte",
+        "default": "Passe une commande entre le 1er et le 30 novembre. C’est tout. Pas de formulaire à remplir, pas de code à entrer : ta commande compte direct comme une participation."
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_pop_t3",
+        "label": "Partie 3 : titre (icône ticket)",
+        "default": "Plus tu commandes, plus t’as de chances"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_bf_pop_x3",
+        "label": "Partie 3 : texte",
+        "default": "Chaque commande te donne une participation de plus au tirage."
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_pop_t4",
+        "label": "Partie 4 : titre (icône roue)",
+        "default": "Le tirage"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_bf_pop_x4",
+        "label": "Partie 4 : texte",
+        "default": "Le 5 décembre, on met tous les numéros de commande dans une roue et on la fait tourner. On filme tout et on publie la vidéo, pour que tout le monde voie que c’est réel."
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_pop_t5",
+        "label": "Partie 5 : titre (icône téléphone)",
+        "default": "Si tu gagnes"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_bf_pop_x5",
+        "label": "Partie 5 : texte",
+        "default": "Ton téléphone va sonner, et c’est nous au bout du fil. Prépare ton maillot et choisis avec qui tu pars : on s’occupe du reste pour que t’aies juste à profiter."
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_rules_label",
+        "label": "Lien du règlement : texte",
+        "default": "Règlement complet du jeu"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_rules_url",
+        "label": "Lien du règlement : adresse",
+        "default": "/pages/reglement-du-jeu-concours-gagne-10-jours-a-bali-pour-deux"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_cta_label",
+        "label": "Bouton",
+        "default": "Je participe"
+      },
+      {
+        "type": "text",
+        "id": "gf_bf_cta_link",
+        "label": "Bouton : page ouverte hors page produit",
+        "default": "/products/gumforce",
+        "info": "Sur une page avec l'offre, le bouton ferme la fenêtre et descend jusqu'à l'offre."
+      }
+    ]
+  },
+  {
     "name": "Panier GUMFORCE",
     "settings": [
       {

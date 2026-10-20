@@ -1,0 +1,100 @@
+{%- comment -%}
+  Mode Black Friday : fenêtre « Comment ça marche ? » du jeu Bali, rendue une fois par page (layout/theme.liquid).
+  S'ouvre depuis tout élément [data-gf-bf-open] (la bande verte de l'offre). Centrée sur ordinateur,
+  ouverte depuis le bas sur mobile. Textes : Réglages du thème › Mode Black Friday.
+{%- endcomment -%}
+{%- liquid
+  if settings.gf_bf_photo != blank
+    assign gfbfp_img = settings.gf_bf_photo | image_url: width: 920
+  else
+    assign gfbfp_img = 'gf-bf-bali.jpg' | asset_img_url: '920x'
+  endif
+-%}
+<style>
+  dialog.gfbfp { width:min(460px, calc(100% - 32px)); max-width:none; max-height:min(86vh, 780px); margin:auto; padding:0; border:0; border-radius:24px; background:#fff; color:#111; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.35); font-family:var(--font-body--family, 'Manrope', sans-serif); }
+  dialog.gfbfp[open] { display:flex; flex-direction:column; animation:gfbfp-in .22s ease-out; }
+  dialog.gfbfp::backdrop { background:rgba(10,14,12,.55); }
+  @keyframes gfbfp-in { from { opacity:0; transform:translateY(12px) scale(.98); } to { opacity:1; transform:none; } }
+  html.gfbfp-lock { overflow:hidden; }
+  .gfbfp-hero { position:relative; flex-shrink:0; height:132px; background:#1d2a1d; }
+  .gfbfp-hero img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 55%; }
+  .gfbfp-hero::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.05) 25%, rgba(0,0,0,.6)); }
+  .gfbfp-hero h2 { position:absolute; left:22px; right:70px; bottom:14px; z-index:1; margin:0; color:#fff; font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; text-transform:uppercase; font-size:30px; line-height:1.05; letter-spacing:.01em; }
+  .gfbfp-x { position:absolute; top:12px; right:12px; z-index:2; width:38px; height:38px; padding:0; border:0; border-radius:50%; background:rgba(255,255,255,.94); color:#111; display:grid; place-items:center; cursor:pointer; }
+  .gfbfp-x svg { width:18px; height:18px; }
+  .gfbfp-body { flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; padding:4px 22px; }
+  .gfbfp-list { list-style:none; margin:0; padding:0; }
+  .gfbfp-list li { display:grid; grid-template-columns:44px 1fr; gap:14px; padding:16px 0; border-bottom:1px solid rgba(0,0,0,.07); }
+  .gfbfp-list li:last-child { border-bottom:0; }
+  .gfbfp-ic { width:44px; height:44px; border-radius:50%; border:1.5px solid #2AB5B4; color:#2AB5B4; display:grid; place-items:center; }
+  .gfbfp-ic svg { width:22px; height:22px; }
+  .gfbfp-list h3 { margin:0 0 4px; color:#111; font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; text-transform:uppercase; font-size:17px; line-height:1.15; letter-spacing:.01em; }
+  .gfbfp-list p { margin:0; color:#555; font-size:14px; line-height:1.5; }
+  .gfbfp-foot { flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 22px calc(14px + env(safe-area-inset-bottom, 0px)); border-top:1px solid rgba(0,0,0,.07); background:#fff; }
+  .gfbfp-rules { color:#555; font-size:13px; text-decoration:underline; text-underline-offset:3px; }
+  .gfbfp-cta { flex-shrink:0; background:#1a1a1a; color:#fff; border-radius:30px; padding:12px 24px; font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; text-transform:uppercase; font-size:16px; letter-spacing:.03em; line-height:1; text-decoration:none; white-space:nowrap; }
+  @media (max-width:749px) {
+    dialog.gfbfp { width:100%; max-height:88vh; margin:auto 0 0; border-radius:24px 24px 0 0; }
+    dialog.gfbfp[open] { animation-name:gfbfp-up; }
+    @keyframes gfbfp-up { from { transform:translateY(40px); opacity:.6; } to { transform:none; opacity:1; } }
+    .gfbfp-hero { height:150px; }
+    .gfbfp-hero h2 { font-size:28px; }
+  }
+  @media (prefers-reduced-motion: reduce) { dialog.gfbfp[open] { animation:none; } }
+</style>
+<dialog class="gfbfp" id="gf-bf-pop" aria-labelledby="gf-bf-pop-t">
+  <div class="gfbfp-hero">
+    <img src="{{ gfbfp_img }}" alt="" loading="lazy" width="920" height="613">
+    <h2 id="gf-bf-pop-t">{{ settings.gf_bf_pop_title | default: 'Comment ça marche ?' }}</h2>
+    <button type="button" class="gfbfp-x" data-gf-bf-close aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="gfbfp-body">
+    <ul class="gfbfp-list">
+      {%- for i in (1..5) -%}
+        {%- assign k_t = 'gf_bf_pop_t' | append: i -%}
+        {%- assign k_x = 'gf_bf_pop_x' | append: i -%}
+        {%- if settings[k_t] != blank -%}
+          <li>
+            <span class="gfbfp-ic" aria-hidden="true">
+              {%- case i -%}
+                {%- when 1 -%}<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="22" height="6" rx="1.5"/><path d="M16 11v17"/><path d="M25 17v8.5a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 017 25.5V17"/><path d="M10.5 11a3.3 3.3 0 010-6.6C13.5 4.4 16 11 16 11s2.5-6.6 5.5-6.6a3.3 3.3 0 010 6.6"/></svg>
+                {%- when 2 -%}<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L5 9v17a2.5 2.5 0 002.5 2.5h17A2.5 2.5 0 0027 26V9l-4-5z"/><line x1="5" y1="9" x2="27" y2="9"/><path d="M21 14a5 5 0 01-10 0"/></svg>
+                {%- when 3 -%}<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a4 4 0 010 8v3.5A2.5 2.5 0 005.5 26h21a2.5 2.5 0 002.5-2.5V20a4 4 0 010-8V8.5A2.5 2.5 0 0026.5 6h-21A2.5 2.5 0 003 8.5z"/><line x1="18" y1="6" x2="18" y2="9"/><line x1="18" y1="14.5" x2="18" y2="17.5"/><line x1="18" y1="23" x2="18" y2="26"/></svg>
+                {%- when 4 -%}<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="12"/><circle cx="16" cy="16" r="2"/><path d="M16 4v10M16 18v10M4 16h10M18 16h10M7.5 7.5l7 7M17.5 17.5l7 7M24.5 7.5l-7 7M14.5 17.5l-7 7"/></svg>
+                {%- else -%}<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M28 22.3v3.8a2.5 2.5 0 01-2.7 2.5 25 25 0 01-10.9-3.9 24.6 24.6 0 01-7.6-7.6A25 25 0 013 6.2 2.5 2.5 0 015.5 3.5h3.8a2.5 2.5 0 012.5 2.2c.2 1.2.5 2.4.9 3.6a2.5 2.5 0 01-.6 2.7l-1.6 1.6a20 20 0 007.6 7.6l1.6-1.6a2.5 2.5 0 012.7-.6c1.2.4 2.4.7 3.6.9a2.5 2.5 0 012.2 2.5z"/></svg>
+              {%- endcase -%}
+            </span>
+            <div><h3>{{ settings[k_t] }}</h3><p>{{ settings[k_x] }}</p></div>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+  <div class="gfbfp-foot">
+    {%- if settings.gf_bf_rules_url != blank -%}
+      <a class="gfbfp-rules" href="{{ settings.gf_bf_rules_url | strip }}" target="_blank" rel="noopener">{{ settings.gf_bf_rules_label | default: 'Règlement complet du jeu' }}</a>
+    {%- else -%}<span></span>{%- endif -%}
+    <a class="gfbfp-cta" href="{{ settings.gf_bf_cta_link | default: '/products/gumforce' | strip }}" data-gf-bf-go>{{ settings.gf_bf_cta_label | default: 'Je participe' }}</a>
+  </div>
+</dialog>
+<script>
+  (function () {
+    var dlg = document.getElementById('gf-bf-pop');
+    if (!dlg || typeof dlg.showModal !== 'function') return;
+    var root = document.documentElement;
+    function close() { if (dlg.open) dlg.close(); }
+    dlg.addEventListener('close', function () { root.classList.remove('gfbfp-lock'); });
+    document.addEventListener('click', function (e) {
+      var o = e.target.closest && e.target.closest('[data-gf-bf-open]');
+      if (!o) return;
+      e.preventDefault();
+      dlg.showModal();
+      root.classList.add('gfbfp-lock');
+    });
+    dlg.addEventListener('click', function (e) {
+      if (e.target === dlg || e.target.closest('[data-gf-bf-close]')) { close(); return; }
+      var go = e.target.closest('[data-gf-bf-go]'), offer = document.querySelector('.gfp-tiers');
+      if (go && offer) { e.preventDefault(); close(); offer.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    });
+  })();
+</script>

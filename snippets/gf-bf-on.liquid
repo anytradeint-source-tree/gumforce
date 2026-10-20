@@ -1,0 +1,10 @@
+{%- comment -%} Mode Black Friday : affiche « 1 » quand le mode est coché et pas encore terminé. Le balisage Black Friday est alors rendu, puis montré par la classe html.gf-bf (posée dans layout/theme.liquid entre les deux dates). Sortie sans espace : elle est capturée et comparée à '1'. {%- endcomment -%}
+{%- liquid
+  if settings.gf_bf_enabled
+    assign gf_bf_e = settings.gf_bf_end | strip | remove: '-' | plus: 0
+    assign gf_bf_t = 'now' | date: '%Y%m%d' | plus: 0
+    if gf_bf_e == 0 or gf_bf_t <= gf_bf_e
+      echo '1'
+    endif
+  endif
+-%}
