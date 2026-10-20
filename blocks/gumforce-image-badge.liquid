@@ -63,6 +63,17 @@
     assign vb_poster = vb_media.preview_image | image_url: width: 480
     assign vb_ar = vb_media.aspect_ratio | default: 1
   endif
+  comment — le rond n'a pas besoin de la 1080p : versions 480p (mobile) et 720p (ordinateur) générées par Shopify,
+    déduites de l'adresse ; la vidéo d'origine reprend la main si l'une d'elles manque
+  endcomment
+  assign vb_480 = vb_src
+  assign vb_720 = vb_src
+  if vb_src contains 'HD-1080p-7.2Mbps'
+    assign vb_480 = vb_src | replace: 'HD-1080p-7.2Mbps', 'SD-480p-1.5Mbps'
+    assign vb_720 = vb_src | replace: 'HD-1080p-7.2Mbps', 'HD-720p-4.5Mbps'
+  elsif vb_src contains 'HD-720p-4.5Mbps'
+    assign vb_480 = vb_src | replace: 'HD-720p-4.5Mbps', 'SD-480p-1.5Mbps'
+  endif
   assign vb_size = s.vb_size | default: 108
   assign vb_size_m = s.vb_size_mobile | default: 80
   assign vb_zoom = s.vb_zoom | default: 150 | divided_by: 100.0
@@ -185,7 +196,7 @@
 {%- if vb_src != blank -%}
   {%- capture vb_html -%}
     <button type="button" class="gfvb" id="gfvb-{{ uid }}" aria-label="{{ s.vb_label | default: 'Voir la vidéo' | escape }}" data-hd="{{ vb_src_hd }}">
-      <span class="gfvb-clip"><video class="gfvb-v" src="{{ vb_src }}"{% if vb_poster != blank %} poster="{{ vb_poster }}"{% endif %} muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"></video></span>
+      <span class="gfvb-clip"><video class="gfvb-v" data-src-m="{{ vb_480 }}" data-src-d="{{ vb_720 }}" data-src-full="{{ vb_src }}"{% if vb_poster != blank %} poster="{{ vb_poster }}"{% endif %} muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"></video></span>
       <svg class="gfvb-ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="gfvb-track" cx="50" cy="50" r="48.5"/><circle class="gfvb-prog" cx="50" cy="50" r="48.5" pathLength="100"/></svg>
       <span class="gfvb-exp" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M10 20H4v-6"/><path d="M20 4l-6.5 6.5"/><path d="M4 20l6.5-6.5"/></svg></span>
     </button>
@@ -344,7 +355,11 @@
     /* son coupé aussi en JS : condition de la lecture automatique sur tous les navigateurs.
        __gfTamed : le script perf de la galerie (gumforce-product-card) ne touche pas à cette vidéo,
        il lui retirerait sa source (zoomée dans le rond, elle n'atteint jamais ses 50 % visibles) */
-    if (vbV) { vbV.muted = true; vbV.defaultMuted = true; vbV.__gfTamed = true; }
+    if (vbV) {
+      vbV.muted = true; vbV.defaultMuted = true; vbV.__gfTamed = true;
+      vbV.addEventListener('error', function () { var full = vbV.getAttribute('data-src-full'); if (full && vbV.getAttribute('src') !== full) { vbV.src = full; vbOn = false; vbPlay(vb.style.opacity === '1'); } });
+      vbV.src = vbV.getAttribute(window.matchMedia && matchMedia('(min-width: 750px)').matches ? 'data-src-d' : 'data-src-m');
+    }
     function vbTick() { if (vbV && vbV.duration) vbProg.style.strokeDashoffset = String(100 - vbV.currentTime / vbV.duration * 100); vbRaf = requestAnimationFrame(vbTick); }
     function vbPlay(want) {
       if (!vbV) return;
