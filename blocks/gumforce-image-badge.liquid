@@ -40,25 +40,28 @@
 
   comment — bulle vidéo : rond en haut à droite de la première photo, vidéo en boucle, un clic l'agrandit.
     Affichée si la case est cochée, sinon gardée dans un <template> (rien n'est chargé) et montrée avec ?gf_rond=1.
-    Vidéo : le lien des réglages, sinon la première vidéo du produit (480p dans le rond, 720p agrandie)
+    Vidéo : celle choisie dans les réglages (Contenu › Fichiers), sinon le lien, sinon la première vidéo du produit
   endcomment
   assign vb_url = s.vb_video_url | strip
   assign vb_src = vb_url
   assign vb_src_hd = vb_url
   assign vb_poster = ''
-  if vb_url == blank and product != blank
+  assign vb_ar = 1
+  assign vb_media = s.vb_video
+  if vb_media == blank and vb_url == blank and product != blank
     assign vb_media = product.media | where: 'media_type', 'video' | first
-    if vb_media != blank
-      assign vb_mp4 = vb_media.sources | where: 'format', 'mp4' | sort: 'height'
-      assign vb_src = vb_mp4.first.url
-      for vs in vb_mp4
-        assign vb_h = vs.height | plus: 0
-        if vb_h <= 720 or vb_src_hd == blank
-          assign vb_src_hd = vs.url
-        endif
-      endfor
-      assign vb_poster = vb_media.preview_image | image_url: width: 480
-    endif
+  endif
+  if vb_media != blank
+    assign vb_mp4 = vb_media.sources | where: 'format', 'mp4' | sort: 'height'
+    assign vb_src = vb_mp4.first.url
+    for vs in vb_mp4
+      assign vb_h = vs.height | plus: 0
+      if vb_h <= 720 or vb_src_hd == blank
+        assign vb_src_hd = vs.url
+      endif
+    endfor
+    assign vb_poster = vb_media.preview_image | image_url: width: 480
+    assign vb_ar = vb_media.aspect_ratio | default: 1
   endif
   assign vb_size = s.vb_size | default: 108
   assign vb_size_m = s.vb_size_mobile | default: 80
@@ -244,7 +247,7 @@
   #gfvb-{{ uid }} .gfvb-prog { fill:none; stroke:var(--gfvb-accent); stroke-width:3; stroke-linecap:round; stroke-dasharray:100; stroke-dashoffset:100; }
   #gfvb-{{ uid }} .gfvb-exp { position:absolute; right:1px; bottom:3px; width:26px; height:26px; border-radius:50%; background:#fff; color:#111; display:grid; place-items:center; box-shadow:0 2px 8px rgba(0,0,0,.18); }
   #gfvb-{{ uid }} .gfvb-exp svg { width:12px; height:12px; }
-  dialog#gfvb-dlg-{{ uid }} { --gfvb-accent:{{ vb_accent }}; width:min(440px, calc(100vw - 32px)); max-width:none; max-height:calc(100vh - 48px); margin:auto; padding:0; border:0; border-radius:28px; overflow:hidden; background:#0f1c1c; box-shadow:0 40px 100px rgba(0,0,0,.45); }
+  dialog#gfvb-dlg-{{ uid }} { --gfvb-accent:{{ vb_accent }}; width:min(440px, calc(100vw - 32px), calc((100vh - 48px) * {{ vb_ar }})); max-width:none; max-height:calc(100vh - 48px); margin:auto; padding:0; border:0; border-radius:28px; overflow:hidden; background:#0f1c1c; box-shadow:0 40px 100px rgba(0,0,0,.45); }
   dialog#gfvb-dlg-{{ uid }}::backdrop { background:rgba(8,16,16,.62); }
   dialog#gfvb-dlg-{{ uid }}[open]::backdrop { animation:gfvb-fade .3s ease; }
   @keyframes gfvb-fade { from { opacity:0; } to { opacity:1; } }
@@ -263,7 +266,7 @@
     #gfvb-{{ uid }} .gfvb-clip { inset:4px; }
     #gfvb-{{ uid }} .gfvb-exp { width:22px; height:22px; right:0; bottom:1px; }
     #gfvb-{{ uid }} .gfvb-exp svg { width:11px; height:11px; }
-    dialog#gfvb-dlg-{{ uid }} { width:calc(100vw - 24px); border-radius:24px; }
+    dialog#gfvb-dlg-{{ uid }} { width:min(calc(100vw - 24px), calc((100vh - 48px) * {{ vb_ar }})); border-radius:24px; }
     #gfvb-dlg-{{ uid }} .gfvb-cap { font-size:21px; left:18px; bottom:18px; }
   }
   {%- endif %}
@@ -477,7 +480,8 @@
     { "type": "checkbox", "id": "shadow", "label": "Ombre portee", "default": true },
     { "type": "header", "content": "Bulle vidéo (en haut à droite)" },
     { "type": "checkbox", "id": "vb_enabled", "label": "Afficher la bulle vidéo", "default": false, "info": "Aperçu sans l'afficher : ajoute ?gf_rond=1 à l'adresse de la page produit." },
-    { "type": "text", "id": "vb_video_url", "label": "Lien de la vidéo (MP4)", "info": "Contenu › Fichiers › la vidéo › Copier le lien. Vide = la première vidéo du produit." },
+    { "type": "video", "id": "vb_video", "label": "Vidéo", "info": "Vide = le lien ci-dessous, sinon la première vidéo du produit." },
+    { "type": "text", "id": "vb_video_url", "label": "Lien de la vidéo (MP4)", "info": "Utilisé seulement si aucune vidéo n'est choisie au-dessus." },
     { "type": "range", "id": "vb_size", "label": "Taille (ordinateur)", "min": 72, "max": 160, "step": 4, "unit": "px", "default": 108 },
     { "type": "range", "id": "vb_size_mobile", "label": "Taille (mobile)", "min": 56, "max": 120, "step": 4, "unit": "px", "default": 80 },
     { "type": "range", "id": "vb_zoom", "label": "Zoom dans la vidéo", "min": 100, "max": 250, "step": 10, "unit": "%", "default": 150 },
