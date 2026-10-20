@@ -88,6 +88,7 @@
                 "shadow": true,
                 "anim": "pop",
                 "vb_video": "shopify:\/\/files\/videos\/landing-page_masseter.mp4",
+                "vb_size": 140,
                 "vb_zoom": 130,
                 "vb_focus": 40
               },
