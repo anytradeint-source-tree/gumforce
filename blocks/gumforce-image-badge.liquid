@@ -338,8 +338,10 @@
     /* bulle vidéo : lecture seulement quand elle est visible, anneau = avancement de la boucle */
     var vbV = vb && vb.querySelector('.gfvb-v'), vbProg = vb && vb.querySelector('.gfvb-prog'), vbRaf = 0, vbSeen = true;
     var vbReduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    /* son coupé aussi en JS : condition de la lecture automatique sur tous les navigateurs */
-    if (vbV) { vbV.muted = true; vbV.defaultMuted = true; }
+    /* son coupé aussi en JS : condition de la lecture automatique sur tous les navigateurs.
+       __gfTamed : le script perf de la galerie (gumforce-product-card) ne touche pas à cette vidéo,
+       il lui retirerait sa source (zoomée dans le rond, elle n'atteint jamais ses 50 % visibles) */
+    if (vbV) { vbV.muted = true; vbV.defaultMuted = true; vbV.__gfTamed = true; }
     function vbTick() { if (vbV && vbV.duration) vbProg.style.strokeDashoffset = String(100 - vbV.currentTime / vbV.duration * 100); vbRaf = requestAnimationFrame(vbTick); }
     function vbPlay(want) {
       if (!vbV) return;
