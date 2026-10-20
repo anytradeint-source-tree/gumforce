@@ -233,7 +233,9 @@
   {%- endif %}
   {%- if vb_src != blank %}
   /* bulle vidéo (décorative) */
-  #gfvb-{{ uid }} { --gfvb-accent:{{ vb_accent }}; position:absolute; top:14px; right:14px; z-index:4; width:{{ vb_size }}px; height:{{ vb_size }}px; border-radius:50%; pointer-events:none; opacity:0; transition:opacity .25s ease; filter:drop-shadow(0 10px 18px rgba(6,32,32,.28)); }
+  #gfvb-{{ uid }} { --gfvb-accent:{{ vb_accent }}; position:absolute; top:14px; right:14px; z-index:4; width:{{ vb_size }}px; height:{{ vb_size }}px; border-radius:50%; pointer-events:none; opacity:0; transform:scale(.94); transition:opacity .3s ease, transform .5s cubic-bezier(.2,.8,.2,1); filter:drop-shadow(0 10px 18px rgba(6,32,32,.28)); }
+  #gfvb-{{ uid }}.is-shown { transform:none; }
+  @media (prefers-reduced-motion: reduce) { #gfvb-{{ uid }} { transform:none; transition:opacity .3s ease; } }
   #gfvb-{{ uid }} .gfvb-clip { position:absolute; inset:4px; border-radius:50%; overflow:hidden; background:#eef5f4; }
   #gfvb-{{ uid }} .gfvb-clip::after { content:''; position:absolute; inset:0; z-index:1; border-radius:50%; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9); }
   #gfvb-{{ uid }} .gfvb-m { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:cover; object-position:50% {{ vb_focus }}%; transform:scale({{ vb_zoom }}); transform-origin:50% {{ vb_focus }}%; }
@@ -314,7 +316,7 @@
       if (hw) hw.style.opacity = badge.style.opacity;
       if (bf) bf.style.opacity = badge.style.opacity;
       /* la bulle apparaît en fondu une fois l'image fixe décodée (sans image fixe : à la 1re image de la vidéo) */
-      if (vb) { vb.style.opacity = (badge.style.opacity === '1' && vbReady) ? '1' : '0'; vbPlay(badge.style.opacity === '1'); }
+      if (vb) { var vbVis = badge.style.opacity === '1' && vbReady; vb.style.opacity = vbVis ? '1' : '0'; vb.classList.toggle('is-shown', vbVis); vbPlay(badge.style.opacity === '1'); }
     }
     /* bulle vidéo : lecture seulement quand elle est visible, anneau = avancement de la boucle */
     var vbV = vb && vb.querySelector('.gfvb-v'), vbProg = vb && vb.querySelector('.gfvb-prog'), vbRaf = 0, vbSeen = true;
