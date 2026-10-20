@@ -161,6 +161,13 @@
         "default": "10 jours à Bali pour 2 à gagner"
       },
       {
+        "type": "checkbox",
+        "id": "gf_bf_bar_dark",
+        "label": "Barre d'annonce en noir et vert",
+        "info": "Décoché = couleurs habituelles de la barre.",
+        "default": false
+      },
+      {
         "type": "header",
         "content": "Badge de la photo produit"
       },
@@ -168,7 +175,14 @@
         "type": "text",
         "id": "gf_bf_badge_l3",
         "label": "Ligne 3 pendant le mode",
-        "default": "Black Friday"
+        "info": "Vide = la ligne 3 habituelle du badge."
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_bf_badge_dark",
+        "label": "Badge de la photo en noir et vert",
+        "info": "Décoché = couleurs habituelles du badge.",
+        "default": false
       },
       {
         "type": "header",

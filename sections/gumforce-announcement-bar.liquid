@@ -87,8 +87,10 @@
   {%- endif %}
   {%- if gf_bf_on == '1' %}
   html:not(.gf-bf) #gfab-{{ uid }} .gf-bf-only, html.gf-bf #gfab-{{ uid }} .gf-nobf { display: none !important; }
+  {%- if settings.gf_bf_bar_dark %}
   html.gf-bf #gfab-{{ uid }} { background: var(--gf-bf-dark); }
   html.gf-bf #gfab-{{ uid }} .gfab-msg, html.gf-bf #gfab-{{ uid }} .gfab-ic-svg { color: var(--gf-bf-lime); }
+  {%- endif %}
   {%- endif %}
   @keyframes gfab-scroll-{{ uid }} {
     from { transform: translateX(0); }

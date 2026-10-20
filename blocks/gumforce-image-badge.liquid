@@ -144,8 +144,10 @@
   html.gf-hw #gfib-hw-{{ uid }} { display:block; }
   {%- if gf_bf_on == '1' %}
   html:not(.gf-bf) #gfib-{{ uid }} .gf-bf-only, html:not(.gf-bf) #gfib-bf-{{ uid }}, html.gf-bf #gfib-{{ uid }} .gf-nobf { display:none !important; }
+  {%- if settings.gf_bf_badge_dark %}
   html.gf-bf #gfib-{{ uid }} .gfib-shape polygon { fill: var(--gf-bf-dark); }
   html.gf-bf #gfib-{{ uid }} .gfib-text { color: var(--gf-bf-lime); }
+  {%- endif %}
   #gfib-bf-{{ uid }} { position:absolute; left:0; right:0; bottom:0; z-index:3; pointer-events:none; overflow:hidden; opacity:0; transition:opacity .25s ease; border-radius:0 0 var(--media-radius, 0px) var(--media-radius, 0px); background:#18241a; }
   #gfib-bf-{{ uid }} .gfib-bf-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 60%; }
   #gfib-bf-{{ uid }}::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(8,12,9,.9) 0%, rgba(8,12,9,.66) 46%, rgba(8,12,9,.12) 100%); }
