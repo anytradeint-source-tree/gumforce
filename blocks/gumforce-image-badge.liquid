@@ -37,6 +37,34 @@
   if gf_bf_on == '1'
     assign bf_l3 = settings.gf_bf_badge_l3 | strip
   endif
+
+  comment — bulle vidéo : rond en haut à droite de la première photo, vidéo en boucle, un clic l'agrandit.
+    Affichée si la case est cochée, sinon gardée dans un <template> (rien n'est chargé) et montrée avec ?gf_rond=1.
+    Vidéo : le lien des réglages, sinon la première vidéo du produit (480p dans le rond, 720p agrandie)
+  endcomment
+  assign vb_url = s.vb_video_url | strip
+  assign vb_src = vb_url
+  assign vb_src_hd = vb_url
+  assign vb_poster = ''
+  if vb_url == blank and product != blank
+    assign vb_media = product.media | where: 'media_type', 'video' | first
+    if vb_media != blank
+      for vs in vb_media.sources
+        if vs.format == 'mp4' and vs.height <= 720
+          assign vb_src_hd = vs.url
+          if vb_src == blank or vs.height <= 480
+            assign vb_src = vs.url
+          endif
+        endif
+      endfor
+      assign vb_poster = vb_media.preview_image | image_url: width: 480
+    endif
+  endif
+  assign vb_size = s.vb_size | default: 108
+  assign vb_size_m = s.vb_size_mobile | default: 80
+  assign vb_zoom = s.vb_zoom | default: 150 | divided_by: 100.0
+  assign vb_focus = s.vb_focus | default: 30
+  assign vb_accent = s.vb_accent | default: '#2AB5B4'
 -%}
 {%- if s.show_badge and l1 != blank -%}
 {%- capture poscss -%}
@@ -151,6 +179,25 @@
     </div>
   </div>
 {%- endif -%}
+{%- if vb_src != blank -%}
+  {%- capture vb_html -%}
+    <button type="button" class="gfvb" id="gfvb-{{ uid }}" aria-label="{{ s.vb_label | default: 'Voir la vidéo' | escape }}" data-hd="{{ vb_src_hd }}">
+      <span class="gfvb-clip"><video class="gfvb-v" src="{{ vb_src }}"{% if vb_poster != blank %} poster="{{ vb_poster }}"{% endif %} muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"></video></span>
+      <svg class="gfvb-ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="gfvb-track" cx="50" cy="50" r="48.5"/><circle class="gfvb-prog" cx="50" cy="50" r="48.5" pathLength="100"/></svg>
+      <span class="gfvb-exp" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M10 20H4v-6"/><path d="M20 4l-6.5 6.5"/><path d="M4 20l6.5-6.5"/></svg></span>
+    </button>
+    <dialog class="gfvb-dlg" id="gfvb-dlg-{{ uid }}" aria-label="{{ s.vb_label | default: 'Vidéo' | escape }}">
+      <video class="gfvb-dv"{% if vb_poster != blank %} poster="{{ vb_poster | replace: 'width=480', 'width=900' }}"{% endif %} muted loop playsinline preload="none"></video>
+      {%- if s.vb_caption != blank -%}<p class="gfvb-cap">{{ s.vb_caption }}</p>{%- endif -%}
+      <button type="button" class="gfvb-btn gfvb-x" data-gfvb-close aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button type="button" class="gfvb-btn gfvb-snd" data-gfvb-sound aria-label="Activer le son" aria-pressed="false">
+        <svg class="gfvb-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>
+        <svg class="gfvb-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M18.5 5.5a9 9 0 010 13"/></svg>
+      </button>
+    </dialog>
+  {%- endcapture -%}
+  {%- if s.vb_enabled -%}{{ vb_html }}{%- else -%}<template id="gfvb-tpl-{{ uid }}">{{ vb_html }}</template>{%- endif -%}
+{%- endif -%}
 <style>
   /* Wrapper hors du flux + badge invisible tant qu'il n'est pas posé sur la galerie (évite le saut de 22 px et le flash) */
   #shopify-block-{{ block.id }} { position:absolute !important; width:0 !important; height:0 !important; min-height:0 !important; margin:0 !important; padding:0 !important; border:0 !important; overflow:hidden !important; }
@@ -184,6 +231,42 @@
     #gfib-bf-{{ uid }} .gfib-bf-c { margin-top:6px; font-size:11.5px; max-width:300px; }
   }
   {%- endif %}
+  {%- if vb_src != blank %}
+  /* bulle vidéo */
+  #gfvb-{{ uid }} { --gfvb-accent:{{ vb_accent }}; position:absolute; top:14px; right:14px; z-index:4; width:{{ vb_size }}px; height:{{ vb_size }}px; margin:0; padding:0; border:0; border-radius:50%; background:none; cursor:pointer; opacity:0; transition:opacity .25s ease, transform .35s cubic-bezier(.2,.8,.2,1); filter:drop-shadow(0 10px 18px rgba(6,32,32,.28)); -webkit-tap-highlight-color:transparent; }
+  @media (hover:hover) { #gfvb-{{ uid }}:hover { transform:scale(1.05); } }
+  #gfvb-{{ uid }}:focus-visible { outline:2px solid var(--gfvb-accent); outline-offset:4px; }
+  #gfvb-{{ uid }} .gfvb-clip { position:absolute; inset:5px; border-radius:50%; overflow:hidden; background:#0f1c1c; }
+  #gfvb-{{ uid }} .gfvb-clip::after { content:''; position:absolute; inset:0; border-radius:50%; box-shadow:inset 0 0 0 2px rgba(255,255,255,.9); pointer-events:none; }
+  #gfvb-{{ uid }} .gfvb-v { display:block; width:100%; height:100%; object-fit:cover; object-position:50% {{ vb_focus }}%; transform:scale({{ vb_zoom }}); transform-origin:50% {{ vb_focus }}%; }
+  #gfvb-{{ uid }} .gfvb-ring { position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); overflow:visible; }
+  #gfvb-{{ uid }} .gfvb-track { fill:none; stroke:#fff; stroke-width:3; }
+  #gfvb-{{ uid }} .gfvb-prog { fill:none; stroke:var(--gfvb-accent); stroke-width:3; stroke-linecap:round; stroke-dasharray:100; stroke-dashoffset:100; }
+  #gfvb-{{ uid }} .gfvb-exp { position:absolute; right:1px; bottom:3px; width:26px; height:26px; border-radius:50%; background:#fff; color:#111; display:grid; place-items:center; box-shadow:0 2px 8px rgba(0,0,0,.18); }
+  #gfvb-{{ uid }} .gfvb-exp svg { width:12px; height:12px; }
+  dialog#gfvb-dlg-{{ uid }} { --gfvb-accent:{{ vb_accent }}; width:min(440px, calc(100vw - 32px)); max-width:none; max-height:calc(100vh - 48px); margin:auto; padding:0; border:0; border-radius:28px; overflow:hidden; background:#0f1c1c; box-shadow:0 40px 100px rgba(0,0,0,.45); }
+  dialog#gfvb-dlg-{{ uid }}::backdrop { background:rgba(8,16,16,.62); }
+  dialog#gfvb-dlg-{{ uid }}[open]::backdrop { animation:gfvb-fade .3s ease; }
+  @keyframes gfvb-fade { from { opacity:0; } to { opacity:1; } }
+  dialog#gfvb-dlg-{{ uid }}::after { content:''; position:absolute; inset:auto 0 0; height:45%; background:linear-gradient(transparent, rgba(0,0,0,.55)); pointer-events:none; }
+  #gfvb-dlg-{{ uid }} .gfvb-dv { display:block; width:100%; height:auto; max-height:calc(100vh - 48px); object-fit:cover; }
+  #gfvb-dlg-{{ uid }} .gfvb-cap { position:absolute; left:22px; right:76px; bottom:20px; z-index:1; margin:0; color:#fff; font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; text-transform:uppercase; font-size:24px; line-height:1.05; letter-spacing:.01em; }
+  #gfvb-dlg-{{ uid }} .gfvb-btn { position:absolute; z-index:2; right:16px; width:40px; height:40px; padding:0; border:0; border-radius:50%; background:rgba(255,255,255,.94); color:#111; display:grid; place-items:center; cursor:pointer; }
+  #gfvb-dlg-{{ uid }} .gfvb-btn svg { width:18px; height:18px; }
+  #gfvb-dlg-{{ uid }} .gfvb-x { top:16px; }
+  #gfvb-dlg-{{ uid }} .gfvb-snd { bottom:16px; }
+  #gfvb-dlg-{{ uid }} .gfvb-on, #gfvb-dlg-{{ uid }} .gfvb-snd[aria-pressed="true"] .gfvb-off { display:none; }
+  #gfvb-dlg-{{ uid }} .gfvb-snd[aria-pressed="true"] .gfvb-on { display:block; }
+  html.gfvb-lock { overflow:hidden; }
+  @media screen and (max-width: 749px) {
+    #gfvb-{{ uid }} { top:10px; right:10px; width:{{ vb_size_m }}px; height:{{ vb_size_m }}px; }
+    #gfvb-{{ uid }} .gfvb-clip { inset:4px; }
+    #gfvb-{{ uid }} .gfvb-exp { width:22px; height:22px; right:0; bottom:1px; }
+    #gfvb-{{ uid }} .gfvb-exp svg { width:11px; height:11px; }
+    dialog#gfvb-dlg-{{ uid }} { width:calc(100vw - 24px); border-radius:24px; }
+    #gfvb-dlg-{{ uid }} .gfvb-cap { font-size:21px; left:18px; bottom:18px; }
+  }
+  {%- endif %}
   #gfib-hw-{{ uid }} .gfib-hw-web { position:absolute; top:0; right:0; width:min(150px, 100%); height:auto; color:#0f1a1a; opacity:.38; }
   #gfib-hw-{{ uid }} .gfib-hw-spider { position:absolute; top:0; right:50%; display:flex; flex-direction:column; align-items:center; animation:gfib-hw-bob 3.2s ease-in-out infinite alternate; }
   #gfib-hw-{{ uid }} .gfib-hw-spider::before { content:''; display:block; width:1px; height:110px; background:rgba(15,26,26,.55); }
@@ -214,6 +297,12 @@
         today.textContent = o.weekday + ' ' + (o.day === '1' ? '1er' : o.day) + ' ' + o.month;
       } catch (e) {}
     }
+    /* bulle vidéo : en aperçu (?gf_rond=1), le <template> est copié dans la page */
+    var vbTpl = document.getElementById('gfvb-tpl-{{ uid }}');
+    if (vbTpl && /[?&]gf_rond=1(&|$)/.test(location.search)) vbTpl.parentNode.insertBefore(vbTpl.content.cloneNode(true), vbTpl);
+    var vb = document.getElementById('gfvb-{{ uid }}');
+    var vbDlg = document.getElementById('gfvb-dlg-{{ uid }}');
+    var vbOn = false;
     var placed = false;
     var myWrap = badge.closest('[id^="shopify-block-"]');
     function collapseWrap() {
@@ -243,6 +332,64 @@
       badge.style.opacity = (placed && onFirstSlide()) ? '1' : '0';
       if (hw) hw.style.opacity = badge.style.opacity;
       if (bf) bf.style.opacity = badge.style.opacity;
+      if (vb) { vb.style.opacity = badge.style.opacity; vbPlay(badge.style.opacity === '1'); }
+    }
+    /* bulle vidéo : lecture seulement quand elle est visible, anneau = avancement de la boucle */
+    var vbV = vb && vb.querySelector('.gfvb-v'), vbProg = vb && vb.querySelector('.gfvb-prog'), vbRaf = 0, vbSeen = true;
+    var vbReduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function vbTick() { if (vbV && vbV.duration) vbProg.style.strokeDashoffset = String(100 - vbV.currentTime / vbV.duration * 100); vbRaf = requestAnimationFrame(vbTick); }
+    function vbPlay(want) {
+      if (!vbV) return;
+      want = want && vbSeen && !vbReduce && !(vbDlg && vbDlg.open);
+      if (want === vbOn) return;
+      vbOn = want;
+      if (want) { var pr = vbV.play(); if (pr && pr.catch) pr.catch(function () {}); if (!vbRaf) vbTick(); }
+      else { vbV.pause(); cancelAnimationFrame(vbRaf); vbRaf = 0; }
+    }
+    if (vb && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { vbSeen = es[0].isIntersecting; vbPlay(vb.style.opacity === '1'); }, { threshold: 0.2 }).observe(vb);
+    }
+    if (vb && vbDlg && typeof vbDlg.showModal === 'function') {
+      document.body.appendChild(vbDlg);
+      var vbDV = vbDlg.querySelector('.gfvb-dv'), vbSnd = vbDlg.querySelector('[data-gfvb-sound]');
+      var vbEase = 'cubic-bezier(.2,.8,.2,1)';
+      function vbMorph(reverse) {
+        if (vbReduce || !vbDlg.animate) return null;
+        var a = vb.getBoundingClientRect(), b = vbDlg.getBoundingClientRect();
+        var from = { transform: 'translate(' + ((a.left + a.width / 2) - (b.left + b.width / 2)) + 'px,' + ((a.top + a.height / 2) - (b.top + b.height / 2)) + 'px) scale(' + (a.width / b.width) + ',' + (a.height / b.height) + ')', borderRadius: '50%' };
+        var to = { transform: 'none', borderRadius: getComputedStyle(vbDlg).borderTopLeftRadius };
+        return vbDlg.animate(reverse ? [to, from] : [from, to], { duration: reverse ? 300 : 440, easing: vbEase });
+      }
+      vb.addEventListener('click', function () {
+        if (!vbDV.src) vbDV.src = vb.getAttribute('data-hd');
+        vbDlg.showModal();
+        document.documentElement.classList.add('gfvb-lock');
+        vbPlay(false);
+        var t0 = vbV.currentTime || 0;
+        if (vbDV.readyState >= 1) { try { vbDV.currentTime = t0; } catch (e) {} }
+        else vbDV.addEventListener('loadedmetadata', function () { try { vbDV.currentTime = t0; } catch (e) {} }, { once: true });
+        var pr = vbDV.play(); if (pr && pr.catch) pr.catch(function () {});
+        vbMorph(false);
+      });
+      function vbClose() {
+        var an = vbMorph(true);
+        var done = function () { vbDlg.close(); };
+        if (an) an.onfinish = done; else done();
+      }
+      vbDlg.addEventListener('close', function () {
+        vbDV.pause(); vbDV.muted = true; vbSnd.setAttribute('aria-pressed', 'false'); vbSnd.setAttribute('aria-label', 'Activer le son');
+        document.documentElement.classList.remove('gfvb-lock');
+        vbPlay(vb.style.opacity === '1');
+      });
+      vbDlg.addEventListener('cancel', function (e) { e.preventDefault(); vbClose(); });
+      vbDlg.addEventListener('click', function (e) {
+        if (e.target === vbDlg || e.target.closest('[data-gfvb-close]')) { vbClose(); return; }
+        if (e.target.closest('[data-gfvb-sound]')) {
+          vbDV.muted = !vbDV.muted;
+          vbSnd.setAttribute('aria-pressed', String(!vbDV.muted));
+          vbSnd.setAttribute('aria-label', vbDV.muted ? 'Activer le son' : 'Couper le son');
+        }
+      });
     }
     function fitText() {
       var lines = badge.querySelectorAll('.gfib-line');
@@ -266,6 +413,7 @@
       if (badge.parentNode !== h) h.appendChild(badge);
       if (hw && hw.parentNode !== h) h.appendChild(hw);
       if (bf && bf.parentNode !== h) h.appendChild(bf);
+      if (vb && vb.parentNode !== h) h.appendChild(vb);
       collapseWrap();
       placed = true;
       fitText();
@@ -322,6 +470,16 @@
     { "type": "range", "id": "offset_x", "label": "Decalage horizontal", "min": -200, "max": 200, "step": 4, "default": 12, "unit": "px" },
     { "type": "range", "id": "offset_y", "label": "Decalage vertical (depuis le bord)", "min": 0, "max": 200, "step": 2, "default": 14, "unit": "px" },
     { "type": "checkbox", "id": "shadow", "label": "Ombre portee", "default": true },
+    { "type": "header", "content": "Bulle vidéo (en haut à droite)" },
+    { "type": "checkbox", "id": "vb_enabled", "label": "Afficher la bulle vidéo", "default": false, "info": "Aperçu sans l'afficher : ajoute ?gf_rond=1 à l'adresse de la page produit." },
+    { "type": "text", "id": "vb_video_url", "label": "Lien de la vidéo (MP4)", "info": "Contenu › Fichiers › la vidéo › Copier le lien. Vide = la première vidéo du produit." },
+    { "type": "range", "id": "vb_size", "label": "Taille (ordinateur)", "min": 72, "max": 160, "step": 4, "unit": "px", "default": 108 },
+    { "type": "range", "id": "vb_size_mobile", "label": "Taille (mobile)", "min": 56, "max": 120, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "vb_zoom", "label": "Zoom dans la vidéo", "min": 100, "max": 250, "step": 10, "unit": "%", "default": 150 },
+    { "type": "range", "id": "vb_focus", "label": "Cadrage vertical", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 30, "info": "0 = haut de la vidéo, 100 = bas." },
+    { "type": "color", "id": "vb_accent", "label": "Couleur de l'anneau", "default": "#2AB5B4" },
+    { "type": "text", "id": "vb_caption", "label": "Légende de la vidéo agrandie", "default": "Le masséter en action" },
+    { "type": "text", "id": "vb_label", "label": "Description pour les lecteurs d'écran", "default": "Voir la vidéo : le masséter en action" },
     { "type": "header", "content": "Animation" },
     {
       "type": "select", "id": "anim", "label": "Animation au depart", "default": "pulse",
