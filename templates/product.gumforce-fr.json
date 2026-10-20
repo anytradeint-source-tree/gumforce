@@ -87,6 +87,7 @@
                 "offset_y": 8,
                 "shadow": true,
                 "anim": "pop",
+                "vb_enabled": true,
                 "vb_video": "shopify:\/\/files\/videos\/landing-page_masseter.mp4",
                 "vb_size": 140,
                 "vb_zoom": 130,

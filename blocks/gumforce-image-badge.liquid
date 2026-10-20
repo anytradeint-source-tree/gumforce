@@ -318,12 +318,23 @@
     if (vbV) {
       vbV.muted = true; vbV.defaultMuted = true; vbV.__gfTamed = true;
       vbV.addEventListener('error', function () { var full = vbV.getAttribute('data-src-full'); if (full && vbV.getAttribute('src') !== full) { vbV.src = full; vbOn = false; vbPlay(vb.style.opacity === '1'); } });
+    }
+    /* la vidéo ne se télécharge qu'une fois la photo principale affichée (elle ne retarde pas le chargement de la page) */
+    function vbStart() {
+      if (!vbV || vbV.getAttribute('src')) return;
       vbV.src = vbV.getAttribute(window.matchMedia && matchMedia('(min-width: 750px)').matches ? 'data-src-d' : 'data-src-m');
+      vbOn = false; vbPlay(vb.style.opacity === '1');
+    }
+    if (vbV) {
+      var vbImg = document.querySelector('media-gallery slideshow-slide img, media-gallery img');
+      var vbGo = function () { setTimeout(function () { (window.requestIdleCallback || function (f) { setTimeout(f, 1); })(vbStart, { timeout: 1500 }); }, 200); };
+      if (!vbImg || vbImg.complete) vbGo();
+      else { vbImg.addEventListener('load', vbGo, { once: true }); vbImg.addEventListener('error', vbGo, { once: true }); setTimeout(vbStart, 4000); }
     }
     function vbTick() { if (vbV && vbV.duration) vbProg.style.strokeDashoffset = String(100 - vbV.currentTime / vbV.duration * 100); vbRaf = requestAnimationFrame(vbTick); }
     function vbPlay(want) {
       if (!vbV) return;
-      want = want && vbSeen && !vbReduce;
+      want = want && vbSeen && !vbReduce && !!vbV.getAttribute('src');
       if (want === vbOn) return;
       vbOn = want;
       if (want) { var pr = vbV.play(); if (pr && pr.catch) pr.catch(function () {}); if (!vbRaf) vbTick(); }
