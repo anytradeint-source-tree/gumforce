@@ -150,17 +150,18 @@
   {%- endif %}
   #gfib-bf-{{ uid }} { position:absolute; left:0; right:0; bottom:0; z-index:3; pointer-events:none; overflow:hidden; opacity:0; transition:opacity .25s ease; border-radius:0 0 var(--media-radius, 0px) var(--media-radius, 0px); background:#18241a; }
   #gfib-bf-{{ uid }} .gfib-bf-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 60%; }
-  #gfib-bf-{{ uid }}::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(8,12,9,.9) 0%, rgba(8,12,9,.66) 46%, rgba(8,12,9,.12) 100%); }
-  #gfib-bf-{{ uid }} .gfib-bf-txt { position:relative; z-index:1; padding:22px 28px; color:#fff; }
+  #gfib-bf-{{ uid }}::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(8,12,9,.88) 0%, rgba(8,12,9,.72) 32%, rgba(8,12,9,.3) 58%, rgba(8,12,9,0) 78%); }
+  #gfib-bf-{{ uid }} .gfib-bf-txt { position:relative; z-index:1; padding:22px 28px; color:#fff; text-shadow:0 1px 10px rgba(0,0,0,.35); }
   #gfib-bf-{{ uid }} p { margin:0; }
   #gfib-bf-{{ uid }} .gfib-bf-t { font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; text-transform:uppercase; font-size:30px; line-height:1.08; letter-spacing:.01em; }
-  #gfib-bf-{{ uid }} .gfib-bf-v { margin-top:4px; font-size:16px; font-weight:600; line-height:1.3; }
+  #gfib-bf-{{ uid }} .gfib-bf-v { margin-top:4px; font-size:19px; font-weight:600; line-height:1.3; }
   #gfib-bf-{{ uid }} .gfib-bf-c { margin-top:10px; max-width:420px; font-size:13px; line-height:1.4; color:rgba(255,255,255,.86); }
   #gfib-bf-{{ uid }} b, #gfib-bf-{{ uid }} strong { color:var(--gf-bf-lime); font-weight:700; }
   @media screen and (max-width: 749px) {
     #gfib-bf-{{ uid }} .gfib-bf-txt { padding:14px 16px; }
     #gfib-bf-{{ uid }} .gfib-bf-t { font-size:21px; }
-    #gfib-bf-{{ uid }} .gfib-bf-v { margin-top:2px; font-size:13.5px; }
+    #gfib-bf-{{ uid }}::after { background:linear-gradient(90deg, rgba(8,12,9,.88) 0%, rgba(8,12,9,.7) 40%, rgba(8,12,9,.32) 68%, rgba(8,12,9,0) 92%); }
+    #gfib-bf-{{ uid }} .gfib-bf-v { margin-top:2px; font-size:15.5px; }
     #gfib-bf-{{ uid }} .gfib-bf-c { margin-top:6px; font-size:11.5px; max-width:300px; }
   }
   {%- endif %}
