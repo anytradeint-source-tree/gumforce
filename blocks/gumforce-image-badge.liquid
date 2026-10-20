@@ -323,7 +323,7 @@
       if (vbV.getAttribute('poster')) vbReady = true;
       vbV.addEventListener('loadeddata', vbShow); vbV.addEventListener('playing', vbShow);
     }
-    /* la vidéo ne se télécharge qu'une fois la photo principale affichée (elle ne retarde pas le chargement de la page) */
+    /* la vidéo ne se télécharge qu'une fois la photo principale chargée (elle ne la retarde pas) ; d'ici là, le poster est affiché */
     function vbStart() {
       if (!vbV || vbV.getAttribute('src')) return;
       vbV.preload = 'auto';
@@ -332,7 +332,7 @@
     }
     if (vbV) {
       var vbImg = document.querySelector('media-gallery slideshow-slide img, media-gallery img');
-      var vbGo = function () { setTimeout(function () { (window.requestIdleCallback || function (f) { setTimeout(f, 1); })(vbStart, { timeout: 1500 }); }, 200); };
+      var vbGo = function () { setTimeout(vbStart, 50); };
       if (!vbImg || vbImg.complete) vbGo();
       else { vbImg.addEventListener('load', vbGo, { once: true }); vbImg.addEventListener('error', vbGo, { once: true }); setTimeout(vbStart, 4000); }
     }
