@@ -20,6 +20,15 @@
     endif
   endfor
   assign msg_list = raw | split: '|||'
+  comment — mode Black Friday : mot remplacé dans les messages + un message en plus, fond et texte aux couleurs du mode
+  endcomment
+  capture gf_bf_on
+    render 'gf-bf-on'
+  endcapture
+  assign gf_bf_msg = ''
+  if gf_bf_on == '1'
+    assign gf_bf_msg = settings.gf_bf_bar_msg | strip
+  endif
   assign show_bar = true
   if s.target_product != blank
     if product == blank or product.id != s.target_product.id
@@ -76,6 +85,11 @@
   html.gf-hw #gfab-{{ uid }} .gfab-ic.gfab-ic-hw { display: block; }
   html.gf-hw #gfab-{{ uid }} .gfab-ic-star { display: none; }
   {%- endif %}
+  {%- if gf_bf_on == '1' %}
+  html:not(.gf-bf) #gfab-{{ uid }} .gf-bf-only, html.gf-bf #gfab-{{ uid }} .gf-nobf { display: none !important; }
+  html.gf-bf #gfab-{{ uid }} { background: var(--gf-bf-dark); }
+  html.gf-bf #gfab-{{ uid }} .gfab-msg, html.gf-bf #gfab-{{ uid }} .gfab-ic-svg { color: var(--gf-bf-lime); }
+  {%- endif %}
   @keyframes gfab-scroll-{{ uid }} {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
@@ -92,7 +106,7 @@
     {%- for pass in (1..6) -%}
       {%- for m in msg_list -%}
         <span class="gfab-item">
-          <span class="gfab-msg">{{ m }}</span>
+          <span class="gfab-msg">{% render 'gf-bf-text', text: m, bf: gf_bf_on %}</span>
           {%- if s.icon_image != blank -%}
             <img class="gfab-ic" src="{{ s.icon_image | image_url: width: 96 }}" alt="" aria-hidden="true" width="{{ s.icon_size | default: 18 }}" height="{{ s.icon_size | default: 18 }}">
           {%- else -%}
@@ -100,6 +114,16 @@
           {%- endif -%}
         </span>
       {%- endfor -%}
+      {%- if gf_bf_msg != blank -%}
+        <span class="gfab-item gf-bf-only">
+          <span class="gfab-msg">{{ gf_bf_msg }}</span>
+          {%- if s.icon_image != blank -%}
+            <img class="gfab-ic" src="{{ s.icon_image | image_url: width: 96 }}" alt="" aria-hidden="true" width="{{ s.icon_size | default: 18 }}" height="{{ s.icon_size | default: 18 }}">
+          {%- else -%}
+            <svg class="gfab-ic gfab-ic-svg gfab-ic-star" width="{{ s.icon_size | default: 18 }}" height="{{ s.icon_size | default: 18 }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/></svg>
+          {%- endif -%}
+        </span>
+      {%- endif -%}
     {%- endfor -%}
   </div>
 </div>

@@ -36,8 +36,13 @@
 
   assign gf_first_img = true
 -%}
+{%- comment -%} Mode Black Friday : mot remplacé dans les titres et les boutons (Réglages du thème › Mode Black Friday) {%- endcomment -%}
+{%- capture gf_bf_on -%}{%- render 'gf-bf-on' -%}{%- endcapture -%}
 
 <style>
+  {%- if gf_bf_on == '1' %}
+  html:not(.gf-bf) #gfl-{{ sid }} .gf-bf-only, html.gf-bf #gfl-{{ sid }} .gf-nobf { display:none !important; }
+  {%- endif %}
   #gfl-{{ sid }},
   #gfl-{{ sid }} *,
   #gfl-{{ sid }} *::before,
@@ -214,7 +219,7 @@
           {%- assign h_tag = b.tag | default: 'h2' -%}
           {%- assign h_cls = 'gfl-h--2' -%}
           {%- if h_tag == 'h1' -%}{%- assign h_cls = 'gfl-h--1' -%}{%- endif -%}
-          <{{ h_tag }} class="gfl-h {{ h_cls }}{% if b.align == 'center' %} gfl-h--c{% endif %}" {{ block.shopify_attributes }}>{%- if b.number != blank -%}<span class="gfl-num">{{ b.number }}.</span> {% endif -%}{{ b.text }}</{{ h_tag }}>
+          <{{ h_tag }} class="gfl-h {{ h_cls }}{% if b.align == 'center' %} gfl-h--c{% endif %}" {{ block.shopify_attributes }}>{%- if b.number != blank -%}<span class="gfl-num">{{ b.number }}.</span> {% endif -%}{% render 'gf-bf-text', text: b.text, bf: gf_bf_on %}</{{ h_tag }}>
 
         {%- when 'text' -%}
           <div class="gfl-t{% if b.style == 'lead' %} gfl-t--lead{% elsif b.style == 'punch' %} gfl-t--punch{% elsif b.style == 'small' %} gfl-t--small{% endif %}{% if b.align == 'center' %} gfl-t--c{% endif %}" {{ block.shopify_attributes }}>{{ b.text }}</div>
@@ -252,8 +257,9 @@
 
         {%- when 'cta' -%}
           <div class="gfl-ctawrap" {{ block.shopify_attributes }}>
+            {%- assign cta_txt = b.text | default: 'Je commande' -%}
             <a class="gfl-cta" href="{{ b.link | default: '/products/gumforce' }}">
-              {{ b.text | default: 'Je commande' }}
+              {% render 'gf-bf-text', text: cta_txt, bf: gf_bf_on %}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
             {%- if b.note != blank -%}<div class="gfl-ctanote">{{ b.note }}</div>{%- endif -%}
