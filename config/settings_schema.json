@@ -211,7 +211,8 @@
         "type": "text",
         "id": "gf_bf_band_note",
         "label": "Conditions",
-        "default": "Pour toute commande passée du 1 au 30 novembre, annonce du grand gagnant le samedi 5 décembre."
+        "default": "Passe commande ce [date]. Annonce du grand gagnant le samedi 5 décembre.",
+        "info": "[date] = la date du jour, par exemple « samedi 30 novembre »."
       },
       {
         "type": "header",

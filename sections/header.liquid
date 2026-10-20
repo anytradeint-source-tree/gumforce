@@ -313,7 +313,10 @@
   {% endif %}
   style="
     --color-scheme-top-row: rgba({{ section.settings.color_scheme_top.settings.background.rgba }});
-    --color-scheme-bottom-row: rgba({{ section.settings.color_scheme_bottom.settings.background.rgba }});
+    {%- comment -%} GUMFORCE : sans ligne du bas, le fond du header passe quand même à la couleur « ligne du bas » après --top-row-height,
+      arrondi au pixel par le JS (82 px pour un header de 82,375 px) : un trait blanc apparaissait sous le header (Safari, Chrome zoomé).
+      Sans ligne du bas, ce reste prend la couleur de la ligne du haut. {%- endcomment %}
+    --color-scheme-bottom-row: rgba({% if bottom_row_blocks.size > 0 %}{{ section.settings.color_scheme_bottom.settings.background.rgba }}{% else %}{{ section.settings.color_scheme_top.settings.background.rgba }}{% endif %});
     {% if section.settings.actions_display_style == 'text' %}
       --header-actions-font-size: {{ section.settings.actions_font_size | default: '1rem' }};
       --header-actions-font-family: var(--font-{{ section.settings.actions_font | default: 'heading' }}--family);

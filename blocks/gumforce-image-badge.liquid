@@ -129,7 +129,25 @@
     <div class="gfib-bf-txt">
       <p class="gfib-bf-t">{{ settings.gf_bf_band_title }}</p>
       {%- if settings.gf_bf_band_value != blank -%}<p class="gfib-bf-v">{{ settings.gf_bf_band_value }}</p>{%- endif -%}
-      {%- if settings.gf_bf_band_note != blank -%}<p class="gfib-bf-c">{{ settings.gf_bf_band_note }}</p>{%- endif -%}
+      {%- if settings.gf_bf_band_note != blank -%}
+        {%- liquid
+          comment — [date] = date du jour en toutes lettres (« samedi 30 novembre », « dimanche 1er novembre ») ; le script la recalcule à l'heure de Paris pour les pages en cache
+          endcomment
+          assign gfd_days = 'dimanche,lundi,mardi,mercredi,jeudi,vendredi,samedi' | split: ','
+          assign gfd_months = 'janvier,février,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre' | split: ','
+          assign gfd_w = 'now' | date: '%w' | plus: 0
+          assign gfd_m = 'now' | date: '%m' | plus: 0 | minus: 1
+          assign gfd_d = 'now' | date: '%d' | plus: 0
+          assign gfd_day = gfd_d | append: ''
+          if gfd_d == 1
+            assign gfd_day = '1er'
+          endif
+          assign gfd_txt = gfd_days[gfd_w] | append: ' ' | append: gfd_day | append: ' ' | append: gfd_months[gfd_m]
+          assign gfd_html = '<span class="gfib-bf-d" data-gf-bf-today>' | append: gfd_txt | append: '</span>'
+          assign band_note = settings.gf_bf_band_note | replace: '[date]', gfd_html
+        -%}
+        <p class="gfib-bf-c">{{ band_note }}</p>
+      {%- endif -%}
     </div>
   </div>
 {%- endif -%}
@@ -157,6 +175,7 @@
   #gfib-bf-{{ uid }} .gfib-bf-v { margin-top:4px; font-size:19px; font-weight:600; line-height:1.3; }
   #gfib-bf-{{ uid }} .gfib-bf-c { margin-top:10px; max-width:420px; font-size:13px; line-height:1.4; color:rgba(255,255,255,.86); }
   #gfib-bf-{{ uid }} b, #gfib-bf-{{ uid }} strong { color:var(--gf-bf-lime); font-weight:700; }
+  #gfib-bf-{{ uid }} .gfib-bf-d { color:#fff; font-weight:700; }
   @media screen and (max-width: 749px) {
     #gfib-bf-{{ uid }} .gfib-bf-txt { padding:14px 16px; }
     #gfib-bf-{{ uid }} .gfib-bf-t { font-size:21px; }
@@ -185,6 +204,16 @@
     if (!badge) return;
     var hw = document.getElementById('gfib-hw-{{ uid }}');
     var bf = document.getElementById('gfib-bf-{{ uid }}');
+    /* bandeau Bali : date du jour à l'heure de Paris (la date rendue par le serveur peut venir du cache) */
+    var today = bf && bf.querySelector('[data-gf-bf-today]');
+    if (today) {
+      try {
+        var o = {};
+        new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long', day: 'numeric', month: 'long' })
+          .formatToParts(new Date()).forEach(function (x) { o[x.type] = x.value; });
+        today.textContent = o.weekday + ' ' + (o.day === '1' ? '1er' : o.day) + ' ' + o.month;
+      } catch (e) {}
+    }
     var placed = false;
     var myWrap = badge.closest('[id^="shopify-block-"]');
     function collapseWrap() {

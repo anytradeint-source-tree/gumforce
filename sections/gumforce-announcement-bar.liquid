@@ -51,8 +51,6 @@
     box-sizing: border-box;
     padding-block: {{ s.padding | default: 10 }}px;
     display: flex;
-    /* couvre la ligne d'un pixel que Safari (et Chrome zoomé) laisse voir entre le header (hauteur 82,375 px) et la barre */
-    box-shadow: 0 -2px 0 0 {{ s.bg_color | default: '#c5fff7' }};
   }
   #gfab-{{ uid }} .gfab-track {
     display: flex;
@@ -90,7 +88,7 @@
   {%- if gf_bf_on == '1' %}
   html:not(.gf-bf) #gfab-{{ uid }} .gf-bf-only, html.gf-bf #gfab-{{ uid }} .gf-nobf { display: none !important; }
   {%- if settings.gf_bf_bar_dark %}
-  html.gf-bf #gfab-{{ uid }} { background: var(--gf-bf-dark); box-shadow: 0 -2px 0 0 var(--gf-bf-dark); }
+  html.gf-bf #gfab-{{ uid }} { background: var(--gf-bf-dark); }
   html.gf-bf #gfab-{{ uid }} .gfab-msg, html.gf-bf #gfab-{{ uid }} .gfab-ic-svg { color: var(--gf-bf-lime); }
   {%- endif %}
   {%- endif %}
