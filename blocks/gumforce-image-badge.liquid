@@ -191,7 +191,8 @@
     <div class="gfvb" id="gfvb-{{ uid }}" aria-hidden="true">
       <span class="gfvb-clip">
         {%- if vb_poster != blank -%}<img class="gfvb-m gfvb-p" src="{{ vb_poster }}" alt="" width="480" height="{{ 480 | divided_by: vb_ar | round }}" fetchpriority="low" decoding="async">{%- endif -%}
-        <video class="gfvb-m gfvb-v" data-src-m="{{ vb_480 }}" data-src-d="{{ vb_720 }}" data-src-full="{{ vb_src }}" muted loop playsinline preload="none" tabindex="-1"></video>
+        <video class="gfvb-m gfvb-v is-front" data-src-m="{{ vb_480 }}" data-src-d="{{ vb_720 }}" data-src-full="{{ vb_src }}" muted loop playsinline preload="none" tabindex="-1"></video>
+        <video class="gfvb-m gfvb-v" data-src-full="{{ vb_src }}" muted loop playsinline preload="none" tabindex="-1"></video>
       </span>
       <svg class="gfvb-ring" viewBox="0 0 100 100"><circle class="gfvb-track" cx="50" cy="50" r="49.1"/><circle class="gfvb-prog" cx="50" cy="50" r="49.1" pathLength="100"/></svg>
     </div>
@@ -237,11 +238,12 @@
   #gfvb-{{ uid }}.is-shown { transform:none; }
   @media (prefers-reduced-motion: reduce) { #gfvb-{{ uid }} { transform:none; transition:opacity .3s ease; } }
   #gfvb-{{ uid }} .gfvb-clip { position:absolute; inset:4px; border-radius:50%; overflow:hidden; background:#eef5f4; }
-  #gfvb-{{ uid }} .gfvb-clip::after { content:''; position:absolute; inset:0; z-index:1; border-radius:50%; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9); }
+  #gfvb-{{ uid }} .gfvb-clip::after { content:''; position:absolute; inset:0; z-index:3; border-radius:50%; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9); }
   #gfvb-{{ uid }} .gfvb-m { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:cover; object-position:50% {{ vb_focus }}%; transform:scale({{ vb_zoom }}); transform-origin:50% {{ vb_focus }}%; }
   /* la vidéo passe en fondu sur l'image fixe une fois sa 1re image affichée : jamais de flash entre les deux */
-  #gfvb-{{ uid }} .gfvb-v { opacity:0; transition:opacity .35s ease; }
-  #gfvb-{{ uid }}.is-playing .gfvb-v { opacity:1; }
+  #gfvb-{{ uid }} .gfvb-v { opacity:0; }
+  #gfvb-{{ uid }}.is-playing .gfvb-v.is-front { z-index:2; opacity:1; transition:opacity .3s ease; }
+  #gfvb-{{ uid }}.is-playing .gfvb-v.is-back { z-index:1; opacity:1; }
   #gfvb-{{ uid }} .gfvb-ring { position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); overflow:visible; }
   #gfvb-{{ uid }} .gfvb-track { fill:none; stroke:#fff; stroke-width:1.8; }
   #gfvb-{{ uid }} .gfvb-prog { fill:none; stroke:var(--gfvb-accent); stroke-width:1.8; stroke-linecap:round; stroke-dasharray:100; stroke-dashoffset:100; }
@@ -318,15 +320,24 @@
       /* la bulle apparaît en fondu une fois l'image fixe décodée (sans image fixe : à la 1re image de la vidéo) */
       if (vb) { var vbVis = badge.style.opacity === '1' && vbReady; vb.style.opacity = vbVis ? '1' : '0'; vb.classList.toggle('is-shown', vbVis); vbPlay(badge.style.opacity === '1'); }
     }
-    /* bulle vidéo : lecture seulement quand elle est visible, anneau = avancement de la boucle */
-    var vbV = vb && vb.querySelector('.gfvb-v'), vbProg = vb && vb.querySelector('.gfvb-prog'), vbRaf = 0, vbSeen = true;
+    /* bulle vidéo : deux lecteurs qui se relaient. 0,3 s avant la fin, le second repart du début en fondu enchaîné
+       par-dessus le premier : pas de retour en arrière visible (la boucle native marque une pause), et le passage
+       fin → début est adouci. Lecture seulement quand la bulle est visible ; anneau = avancement de la boucle. */
+    var vbVs = vb ? [].slice.call(vb.querySelectorAll('.gfvb-v')) : [];
+    var vbV = vbVs[0], vbProg = vb && vb.querySelector('.gfvb-prog'), vbRaf = 0, vbSeen = true, vbAct = 0, vbSwap = false, VB_XF = 0.3;
     var vbReduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function vbCur() { return vbVs[vbAct]; }
     /* son coupé aussi en JS : condition de la lecture automatique sur tous les navigateurs.
-       __gfTamed : le script perf de la galerie (gumforce-product-card) ne touche pas à cette vidéo,
-       il lui retirerait sa source (zoomée dans le rond, elle n'atteint jamais ses 50 % visibles) */
+       __gfTamed : le script perf de la galerie (gumforce-product-card) ne touche pas à ces vidéos,
+       il leur retirerait leur source (zoomées dans le rond, elles n'atteignent jamais ses 50 % visibles) */
+    vbVs.forEach(function (v) {
+      v.muted = true; v.defaultMuted = true; v.__gfTamed = true;
+      v.addEventListener('error', function () {
+        var full = v.getAttribute('data-src-full');
+        if (full && v.getAttribute('src') !== full) { v.src = full; if (v === vbCur()) { vbOn = false; vbPlay(badge.style.opacity === '1'); } }
+      });
+    });
     if (vbV) {
-      vbV.muted = true; vbV.defaultMuted = true; vbV.__gfTamed = true;
-      vbV.addEventListener('error', function () { var full = vbV.getAttribute('data-src-full'); if (full && vbV.getAttribute('src') !== full) { vbV.src = full; vbOn = false; vbPlay(badge.style.opacity === '1'); } });
       var vbShow = function () { if (vbReady) return; vbReady = true; updateVis(); };
       var vbP = vb.querySelector('.gfvb-p');
       if (vbP) {
@@ -334,7 +345,7 @@
         else if (vbP.complete) vbShow();
         else { vbP.addEventListener('load', vbShow); vbP.addEventListener('error', vbShow); }
       }
-      /* fondu de la vidéo seulement quand une image est vraiment peinte (requestVideoFrameCallback) */
+      /* fondu de la vidéo sur l'image fixe seulement quand une image est vraiment peinte (requestVideoFrameCallback) */
       var vbLive = function () {
         vbShow();
         var on = function () { vb.classList.add('is-playing'); };
@@ -342,12 +353,16 @@
       };
       vbV.addEventListener('playing', vbLive, { once: true });
     }
-    /* la vidéo ne se télécharge qu'une fois la photo principale chargée (elle ne la retarde pas) ; d'ici là, le poster est affiché */
+    /* la vidéo ne se télécharge qu'une fois la photo principale chargée (elle ne la retarde pas) ; d'ici là, l'image fixe est affichée.
+       Le second lecteur prend la même source une fois la première chargée (servie par le cache) */
     function vbStart() {
       if (!vbV || vbV.getAttribute('src')) return;
+      var src = vbV.getAttribute(window.matchMedia && matchMedia('(min-width: 750px)').matches ? 'data-src-d' : 'data-src-m');
       vbV.preload = 'auto';
-      vbV.src = vbV.getAttribute(window.matchMedia && matchMedia('(min-width: 750px)').matches ? 'data-src-d' : 'data-src-m');
+      vbV.src = src;
       vbOn = false; vbPlay(badge.style.opacity === '1');
+      var v2 = vbVs[1];
+      if (v2) vbV.addEventListener('canplaythrough', function () { if (!v2.getAttribute('src')) { v2.preload = 'auto'; v2.src = vbV.currentSrc || src; } }, { once: true });
     }
     if (vbV) {
       var vbImg = document.querySelector('media-gallery slideshow-slide img, media-gallery img');
@@ -355,14 +370,35 @@
       if (!vbImg || vbImg.complete) vbGo();
       else { vbImg.addEventListener('load', vbGo, { once: true }); vbImg.addEventListener('error', vbGo, { once: true }); setTimeout(vbStart, 4000); }
     }
-    function vbTick() { if (vbV && vbV.duration) vbProg.style.strokeDashoffset = String(100 - vbV.currentTime / vbV.duration * 100); vbRaf = requestAnimationFrame(vbTick); }
+    function vbCross() {
+      var a = vbCur(), n = vbVs[1 - vbAct];
+      if (!n || !n.getAttribute('src') || n.readyState < 2) return; /* second lecteur pas prêt : la boucle native prend le relais */
+      vbSwap = true;
+      try { n.currentTime = 0; } catch (e) {}
+      var pr = n.play(); if (pr && pr.catch) pr.catch(function () {});
+      var go = function () {
+        a.classList.remove('is-front'); a.classList.add('is-back');
+        n.classList.add('is-front');
+        vbAct = 1 - vbAct;
+        setTimeout(function () { a.classList.remove('is-back'); a.pause(); try { a.currentTime = 0; } catch (e) {} vbSwap = false; }, VB_XF * 1000 + 60);
+      };
+      if (n.requestVideoFrameCallback) n.requestVideoFrameCallback(go); else setTimeout(go, 40);
+    }
+    function vbTick() {
+      var v = vbCur();
+      if (v && v.duration) {
+        vbProg.style.strokeDashoffset = String(100 - v.currentTime / v.duration * 100);
+        if (!vbSwap && v.currentTime >= v.duration - VB_XF) vbCross();
+      }
+      vbRaf = requestAnimationFrame(vbTick);
+    }
     function vbPlay(want) {
       if (!vbV) return;
-      want = want && vbSeen && !vbReduce && !!vbV.getAttribute('src');
+      want = want && vbSeen && !vbReduce && !!vbCur().getAttribute('src');
       if (want === vbOn) return;
       vbOn = want;
-      if (want) { var pr = vbV.play(); if (pr && pr.catch) pr.catch(function () {}); if (!vbRaf) vbTick(); }
-      else { vbV.pause(); cancelAnimationFrame(vbRaf); vbRaf = 0; }
+      if (want) { var pr = vbCur().play(); if (pr && pr.catch) pr.catch(function () {}); if (!vbRaf) vbTick(); }
+      else { vbVs.forEach(function (v) { v.pause(); }); cancelAnimationFrame(vbRaf); vbRaf = 0; }
     }
     if (vb && 'IntersectionObserver' in window) {
       new IntersectionObserver(function (es) { vbSeen = es[0].isIntersecting; vbPlay(badge.style.opacity === '1'); }, { threshold: 0.2 }).observe(vb);
