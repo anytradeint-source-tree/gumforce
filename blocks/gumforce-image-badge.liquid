@@ -53,7 +53,7 @@
   if vb_media != blank
     assign vb_mp4 = vb_media.sources | where: 'format', 'mp4' | sort: 'height'
     assign vb_src = vb_mp4.first.url
-    assign vb_poster = vb_media.preview_image | image_url: width: 480
+    assign vb_poster = vb_media.preview_image | image_url: width: 400
     assign vb_ar = vb_media.aspect_ratio | default: 1
   endif
   comment — le rond n'a pas besoin de la 1080p : versions 480p (mobile) et 720p (ordinateur) générées par Shopify,
@@ -190,7 +190,7 @@
   {%- capture vb_html -%}
     <div class="gfvb" id="gfvb-{{ uid }}" aria-hidden="true">
       <span class="gfvb-clip">
-        {%- if vb_poster != blank -%}<img class="gfvb-m gfvb-p" src="{{ vb_poster }}" alt="" width="480" height="{{ 480 | divided_by: vb_ar | round }}" fetchpriority="low" decoding="async">{%- endif -%}
+        {%- if vb_poster != blank -%}<img class="gfvb-m gfvb-p" src="{{ vb_poster }}" alt="" width="400" height="{{ 400 | divided_by: vb_ar | round }}" decoding="async">{%- endif -%}
         <video class="gfvb-m gfvb-v is-front" data-src-m="{{ vb_480 }}" data-src-d="{{ vb_720 }}" data-src-full="{{ vb_src }}" muted loop playsinline preload="none" tabindex="-1"></video>
         <video class="gfvb-m gfvb-v" data-src-full="{{ vb_src }}" muted loop playsinline preload="none" tabindex="-1"></video>
       </span>
@@ -374,9 +374,14 @@
       var a = vbCur(), n = vbVs[1 - vbAct];
       if (!n || !n.getAttribute('src') || n.readyState < 2) return; /* second lecteur pas prêt : la boucle native prend le relais */
       vbSwap = true;
+      var done = false;
       try { n.currentTime = 0; } catch (e) {}
       var pr = n.play(); if (pr && pr.catch) pr.catch(function () {});
+      /* relais raté (lecture refusée, image jamais peinte) : on rend la main, le premier lecteur boucle seul */
+      setTimeout(function () { if (!done) { vbSwap = false; n.pause(); } }, 900);
       var go = function () {
+        if (done) return;
+        done = true;
         a.classList.remove('is-front'); a.classList.add('is-back');
         n.classList.add('is-front');
         vbAct = 1 - vbAct;
@@ -397,11 +402,40 @@
       want = want && vbSeen && !vbReduce && !!vbCur().getAttribute('src');
       if (want === vbOn) return;
       vbOn = want;
-      if (want) { var pr = vbCur().play(); if (pr && pr.catch) pr.catch(function () {}); if (!vbRaf) vbTick(); }
+      if (want) {
+        var pr = vbCur().play();
+        if (pr && pr.catch) pr.catch(function (err) { vbOn = false; if (err && err.name === 'NotAllowedError') vbArm(); });
+        if (!vbRaf) vbTick();
+      }
       else { vbVs.forEach(function (v) { v.pause(); }); cancelAnimationFrame(vbRaf); vbRaf = 0; }
     }
     if (vb && 'IntersectionObserver' in window) {
       new IntersectionObserver(function (es) { vbSeen = es[0].isIntersecting; vbPlay(badge.style.opacity === '1'); }, { threshold: 0.2 }).observe(vb);
+    }
+    /* lecture robuste. Certains navigateurs refusent la lecture automatique, même sans son : iPhone en mode économie
+       d'énergie, navigateurs intégrés d'Instagram / Facebook / TikTok, économiseur de données Android. D'autres mettent
+       la vidéo en pause quand la page est cachée (page préchargée par la pub, retour arrière depuis le panier).
+       On relance donc au retour au premier plan, au retour arrière, au premier geste (toucher, clic, touche),
+       et on vérifie toutes les 1,5 s que la vidéo tourne bien quand elle doit tourner. */
+    function vbKick() { if (!vbV) return; vbOn = false; vbPlay(badge.style.opacity === '1'); }
+    var vbArmed = false, VB_GESTURES = ['touchend', 'pointerup', 'click', 'keydown'];
+    function vbOnGesture() {
+      vbArmed = false;
+      VB_GESTURES.forEach(function (t) { document.removeEventListener(t, vbOnGesture, true); });
+      vbKick();
+    }
+    function vbArm() {
+      if (vbArmed) return;
+      vbArmed = true;
+      VB_GESTURES.forEach(function (t) { document.addEventListener(t, vbOnGesture, { capture: true, passive: true }); });
+    }
+    if (vbV) {
+      document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') vbKick(); });
+      window.addEventListener('pageshow', vbKick);
+      window.addEventListener('focus', vbKick);
+      setInterval(function () {
+        if (vbOn && !vbSwap && document.visibilityState === 'visible' && vbCur().paused) vbKick();
+      }, 1500);
     }
     function fitText() {
       var lines = badge.querySelectorAll('.gfib-line');
