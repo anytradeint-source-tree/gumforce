@@ -427,7 +427,7 @@
         "optional_phone_label": "Téléphone (recommandé)"
       },
       "post_purchase": {
-        "escape_confirmation": "Offre exclusive valable 5 minutes."
+        "escape_confirmation": "Offre exclusive valable 3 minutes."
       }
     }
   }
