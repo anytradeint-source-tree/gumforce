@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "layout": "theme.blank",
   "sections": {
@@ -48,6 +57,31 @@
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/lp-senior-masseter.png",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-age": {
+          "type": "heading",
+          "settings": {
+            "text": "Un muscle se développe à tout âge, c'est prouvé",
+            "number": "2",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-age": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Stallone a 80 ans, Schwarzenegger 79. Les deux s'entraînent encore aujourd'hui, et ce n'est pas un hasard s'ils ont gardé du muscle.</p><p>La science le confirme. En 1990, une étude publiée dans le JAMA, l'une des plus grandes revues médicales du monde, a fait faire de la musculation à des personnes <strong>de 86 à 96 ans</strong>. Au bout de 8 semaines, leur force avait presque triplé (+174 %).</p><p><strong>Si un muscle repart à 90 ans, le tien repart à 45, 55 ou 65 ans.</strong> Ton masséter fonctionne comme tes biceps : remets-lui de la charge et il se reconstruit.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-age": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/lp-senior-force.png",
             "size": "full",
             "caption": ""
           }
@@ -249,31 +283,6 @@
             "text": "Offre Halloween",
             "link": "shopify://products/gumforce",
             "note": "Livraison offerte en 48 h · Remboursé 90 jours"
-          }
-        },
-        "h2-age": {
-          "type": "heading",
-          "settings": {
-            "text": "Un muscle se développe à tout âge, c'est prouvé",
-            "number": "2",
-            "tag": "h2",
-            "align": "left"
-          }
-        },
-        "t-age": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Stallone a 80 ans, Schwarzenegger 79. Les deux s'entraînent encore aujourd'hui, et ce n'est pas un hasard s'ils ont gardé du muscle.</p><p>La science le confirme. En 1990, une étude publiée dans le JAMA, l'une des plus grandes revues médicales du monde, a fait faire de la musculation à des personnes <strong>de 86 à 96 ans</strong>. Au bout de 8 semaines, leur force avait presque triplé (+174 %).</p><p><strong>Si un muscle repart à 90 ans, le tien repart à 45, 55 ou 65 ans.</strong> Ton masséter fonctionne comme tes biceps : remets-lui de la charge et il se reconstruit.</p>",
-            "style": "normal",
-            "align": "left"
-          }
-        },
-        "img-age": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/lp-senior-force.png",
-            "size": "full",
-            "caption": ""
           }
         }
       },
