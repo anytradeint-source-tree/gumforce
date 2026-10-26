@@ -1,0 +1,336 @@
+{
+  "layout": "theme.blank",
+  "sections": {
+    "main": {
+      "type": "gumforce-landing",
+      "blocks": {
+        "h1": {
+          "type": "heading",
+          "settings": {
+            "text": "Après 40 ans : 7 raisons pour lesquelles Gumforce te redonne <em>la mâchoire de tes 25 ans</em> 💪",
+            "number": "",
+            "tag": "h1",
+            "align": "center"
+          }
+        },
+        "spacer_XFfWUt": {
+          "type": "spacer",
+          "settings": {
+            "size": "s"
+          }
+        },
+        "intro": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Rappelle-toi Stallone dans Rocky, ou Schwarzenegger dans Terminator. Une mâchoire carrée, des joues creusées, un visage taillé à la serpe. <strong>À l'époque, c'était ça, une gueule d'homme.</strong></p><p>Puis les années passent. Le bas du visage s'arrondit, l'ovale se perd, le menton se noie dans le cou. On met ça sur le dos de l'âge et on laisse tomber.</p><p><strong>Sauf que ce n'est pas seulement l'âge. C'est un muscle que plus personne n'entraîne.</strong></p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "h2-visible": {
+          "type": "heading",
+          "settings": {
+            "text": "Ta mâchoire est un muscle, et il fond avec les années",
+            "number": "1",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-visible": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Mets deux doigts sur ta mâchoire et serre les dents. La boule dure qui ressort, c'est le masséter.</p><p>C'est lui qui donne au bas du visage sa forme carrée. Et comme tous les muscles, <strong>il s'affaiblit et fond quand on ne le fait plus travailler.</strong></p><p>En 50 ans, la nourriture est devenue de plus en plus molle. Nos grands-pères l'entraînaient sans y penser avec du pain dur et de la viande à mâcher. Aujourd'hui, il ne bosse quasiment plus.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-visible": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/lp-senior-masseter.png",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-ecrase": {
+          "type": "heading",
+          "settings": {
+            "text": "Un chewing-gum qui ne s'écrase pas au bout de 30 secondes",
+            "number": "3",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-ecrase": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Un chewing-gum de supermarché, tu le tues en une minute. La texture cède, tu mâches du vide.</p><p>GUMFORCE est formulé 10x plus dur pour tenir toute la séance. Chaque mastication est une répétition : 15 minutes, ça fait des centaines de répétitions sous résistance.</p><p><strong>C'est une haltère pour ta mâchoire.</strong></p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-ecrase": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/hf_20260831_111709_f50e57ee-220c-4def-8ee7-ee521e702006.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-courbatures": {
+          "type": "heading",
+          "settings": {
+            "text": "Tu sens que ça travaille dès les premiers jours",
+            "number": "4",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-courbatures": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Les premières séances, tu vas avoir des courbatures à la mâchoire. Comme quand tu reprends le sport après des années d'arrêt.</p><p>Ça tire pendant un jour ou deux. <strong>C'est bon signe</strong> : c'est la preuve qu'un muscle qui dormait depuis longtemps vient de se réveiller.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-courbatures": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Capture_d_ecran_2026-08-31_a_19.01.31.png",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-creatine": {
+          "type": "heading",
+          "settings": {
+            "text": "500 mg de créatine monohydrate dans chaque chewing-gum",
+            "number": "5",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-creatine": {
+          "type": "text",
+          "settings": {
+            "text": "<p>La molécule la plus étudiée de la nutrition sportive depuis 30 ans. Ton corps en fabrique tous les jours, et tu en manges déjà dans la viande et le poisson.</p><p>C'est aussi l'un des compléments les plus étudiés chez les plus de 50 ans, <strong>pour son rôle sur le muscle avec l'âge.</strong></p><p>500 mg par chewing-gum, c'est à peu près ce que contient un steak.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-creatine": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/hf_20260831_114724_da3629b5-c7f6-4fe6-8287-14353c221eea.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-quinze": {
+          "type": "heading",
+          "settings": {
+            "text": "15 minutes par chewing-gum, zéro salle de sport",
+            "number": "6",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-quinze": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Au rythme conseillé, c'est 3 chewing-gums par jour, 15 minutes chacun.</p><p>Pas besoin de t'inscrire à la salle au milieu des jeunes de 20 ans. Pas d'abonnement, pas de trajet, pas de matériel. Le sachet tient dans ta poche.</p><p><strong>C'est très probablement la séance la plus facile de ta vie.</strong></p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-quinze": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/hf_20260831_112729_29bce1fb-7c63-48a0-8568-f2c0e576eee1.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-tempsmorts": {
+          "type": "heading",
+          "settings": {
+            "text": "Ça se mâche pendant les temps morts",
+            "number": "7",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-tempsmorts": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Dans la voiture. Au bureau. Devant le match. En promenant le chien.</p><p>Tu ne rajoutes rien à ta journée, tu remplis juste des moments où tu ne faisais rien.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-tempsmorts": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/hf_20260831_110820_3b1a70f2-6a04-42af-90d3-7ccbb029460b.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "spacer_hBBf9E": {
+          "type": "spacer",
+          "settings": {
+            "size": "l"
+          }
+        },
+        "h2-changer": {
+          "type": "heading",
+          "disabled": true,
+          "settings": {
+            "text": "Ce qui va changer",
+            "number": "",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-changer": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "text": "<p>La mâchoire, c'est la première chose qu'on voit d'un visage. C'est elle qui fait la différence entre un homme qui a pris un coup de vieux et un homme qui a encore de la gueule à 50 ans.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "t-photo": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Prends une photo de profil aujourd'hui et reprends exactement la même dans 90 jours.</p>",
+            "style": "punch",
+            "align": "center"
+          }
+        },
+        "img-changer": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/lp-senior-profils.png",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "t-rejoins": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Rejoins les 15 000 hommes qui ont décidé que l'âge n'était pas une excuse.</p>",
+            "style": "punch",
+            "align": "center"
+          }
+        },
+        "h2-offre": {
+          "type": "heading",
+          "settings": {
+            "text": "Offre Halloween: Tu en paies 2, tu en reçois 4",
+            "number": "",
+            "tag": "h2",
+            "align": "center"
+          }
+        },
+        "t-offre": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Livraison offerte en 48 h. On a tellement confiance en GUMFORCE qu'on te <strong>rembourse à 100 % si tu ne vois rien au bout de 90 jours.</strong></p>",
+            "style": "normal",
+            "align": "center"
+          }
+        },
+        "cta-fin": {
+          "type": "cta",
+          "settings": {
+            "text": "Offre Halloween",
+            "link": "shopify://products/gumforce",
+            "note": "Livraison offerte en 48 h · Remboursé 90 jours"
+          }
+        },
+        "h2-age": {
+          "type": "heading",
+          "settings": {
+            "text": "Un muscle se développe à tout âge, c'est prouvé",
+            "number": "2",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-age": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Stallone a 80 ans, Schwarzenegger 79. Les deux s'entraînent encore aujourd'hui, et ce n'est pas un hasard s'ils ont gardé du muscle.</p><p>La science le confirme. En 1990, une étude publiée dans le JAMA, l'une des plus grandes revues médicales du monde, a fait faire de la musculation à des personnes <strong>de 86 à 96 ans</strong>. Au bout de 8 semaines, leur force avait presque triplé (+174 %).</p><p><strong>Si un muscle repart à 90 ans, le tien repart à 45, 55 ou 65 ans.</strong> Ton masséter fonctionne comme tes biceps : remets-lui de la charge et il se reconstruit.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-age": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/lp-senior-force.png",
+            "size": "full",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "h1",
+        "spacer_XFfWUt",
+        "intro",
+        "h2-visible",
+        "t-visible",
+        "img-visible",
+        "h2-age",
+        "t-age",
+        "img-age",
+        "h2-ecrase",
+        "t-ecrase",
+        "img-ecrase",
+        "h2-courbatures",
+        "t-courbatures",
+        "img-courbatures",
+        "h2-creatine",
+        "t-creatine",
+        "img-creatine",
+        "h2-quinze",
+        "t-quinze",
+        "img-quinze",
+        "h2-tempsmorts",
+        "t-tempsmorts",
+        "img-tempsmorts",
+        "spacer_hBBf9E",
+        "h2-changer",
+        "t-changer",
+        "t-photo",
+        "img-changer",
+        "t-rejoins",
+        "h2-offre",
+        "t-offre",
+        "cta-fin"
+      ],
+      "settings": {
+        "h1_size": 40,
+        "h2_size": 28,
+        "transparent_bg": false,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#1c1c1e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "cta_bg": "#111111",
+        "cta_text_color": "#ffffff",
+        "img_radius": 16,
+        "enable_animation": true,
+        "padding_top": 40,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
