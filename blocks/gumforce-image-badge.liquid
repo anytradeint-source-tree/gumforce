@@ -167,6 +167,7 @@
       {%- if settings.gf_bf_band_note != blank -%}
         {%- liquid
           comment — [date] = date du jour en toutes lettres (« samedi 30 novembre », « dimanche 1er novembre ») ; le script la recalcule à l'heure de Paris pour les pages en cache
+          — un retour à la ligne dans le réglage devient un <br>
           endcomment
           assign gfd_days = 'dimanche,lundi,mardi,mercredi,jeudi,vendredi,samedi' | split: ','
           assign gfd_months = 'janvier,février,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre' | split: ','
@@ -179,7 +180,7 @@
           endif
           assign gfd_txt = gfd_days[gfd_w] | append: ' ' | append: gfd_day | append: ' ' | append: gfd_months[gfd_m]
           assign gfd_html = '<span class="gfib-bf-d" data-gf-bf-today>' | append: gfd_txt | append: '</span>'
-          assign band_note = settings.gf_bf_band_note | replace: '[date]', gfd_html
+          assign band_note = settings.gf_bf_band_note | strip | newline_to_br | replace: '[date]', gfd_html
         -%}
         <p class="gfib-bf-c">{{ band_note }}</p>
       {%- endif -%}

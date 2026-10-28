@@ -208,11 +208,11 @@
         "default": "D’une valeur de <b>3000 €</b>"
       },
       {
-        "type": "text",
+        "type": "textarea",
         "id": "gf_bf_band_note",
         "label": "Conditions",
-        "default": "Passe commande ce [date]. Annonce du grand gagnant le samedi 5 décembre.",
-        "info": "[date] = la date du jour, par exemple « samedi 30 novembre »."
+        "default": "Passe commande ce [date].\nAnnonce du grand gagnant le samedi 5 décembre.",
+        "info": "[date] = la date du jour, par exemple « samedi 30 novembre ». Un retour à la ligne ici = une nouvelle ligne dans le bandeau."
       },
       {
         "type": "header",
