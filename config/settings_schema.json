@@ -192,7 +192,7 @@
         "type": "image_picker",
         "id": "gf_bf_photo",
         "label": "Photo de Bali",
-        "info": "Aussi en haut de la fenêtre « Comment ça marche ? ». Vide = rizières de Tegallalang (Unsplash)."
+        "info": "Aussi en haut de la fenêtre « Comment ça marche ? ». Vide = vue drone d’une plage bordée de palmiers et de son lagon."
       },
       {
         "type": "inline_richtext",
