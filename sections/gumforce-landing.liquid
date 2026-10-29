@@ -5,7 +5,7 @@
   Landing éditoriale 100% modulaire : chaque élément est un bloc que l'on
   peut éditer, déplacer, dupliquer ou supprimer dans l'éditeur. Rien de figé.
   Blocs : Titre · Texte · Image · Bouton · Avant/Après ×3 · Puces · Question
-  FAQ · Espace. Identité GF : recette titre canonique (clamp ×0.78 mobile),
+  FAQ · Espace · Tableau (en-tête + lignes) · Avis (texte). Identité GF : recette titre canonique (clamp ×0.78 mobile),
   Manrope/Oswald du thème, accent teal, colonne de lecture 680px.
   S'utilise avec le template templates/page.gumforce-landing.json qui
   pré-remplit tout le contenu — modifiable ensuite librement.
@@ -35,7 +35,11 @@
   assign h2_size = s.h2_size | default: 28
 
   assign gf_first_img = true
+
+  assign gfl_period = s.period | strip
+  assign gfl_tbl = false
 -%}
+{%- comment -%} [période] dans les textes = réglage « Nom de la période » (Halloween, Black Friday…) ; [note] = note Trustpilot du thème. Seuls les textes qui contiennent « [ » passent par gf-landing-ph : les landings existantes restent identiques. {%- endcomment -%}
 {%- comment -%} Mode Black Friday : mot remplacé dans les titres et les boutons (Réglages du thème › Mode Black Friday) {%- endcomment -%}
 {%- capture gf_bf_on -%}{%- render 'gf-bf-on' -%}{%- endcapture -%}
 
@@ -182,6 +186,80 @@
     #gfl-{{ sid }} .gfl-faq .gfl-q:hover svg { color: var(--gfl-accent); }
   }
 
+  /* ── Tableau comparatif (blocs « Tableau : en-tête » + « Tableau : ligne ») ──
+     mobile : la colonne 1 reste fixe à gauche, le tableau défile seul */
+  #gfl-{{ sid }} .gfl-cmpw { margin: 22px 0 8px; }
+  #gfl-{{ sid }} .gfl-cmp-hint { font-size: 12.5px; color: var(--gfl-mut); text-align: right; margin-bottom: 6px; }
+  #gfl-{{ sid }} .gfl-cmp {
+    margin: 0 -16px; overflow-x: auto;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  #gfl-{{ sid }} .gfl-cmp::-webkit-scrollbar { display: none; }
+  #gfl-{{ sid }} .gfl-cmp table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 548px; min-width: 100%; }
+  #gfl-{{ sid }} .gfl-cmp th,
+  #gfl-{{ sid }} .gfl-cmp td {
+    width: 137px; padding: 2px 12px 12px; text-align: left; vertical-align: top;
+    font-size: 14px; line-height: 1.4; font-weight: 400; color: var(--gfl-text);
+  }
+  #gfl-{{ sid }} .gfl-cmp thead th {
+    font-family: var(--gfl-font-head); font-size: 15px; font-weight: 700; line-height: 1.2;
+    text-transform: uppercase; color: var(--gfl-hd); vertical-align: bottom;
+    padding-top: 14px; padding-bottom: 12px; border-bottom: 2px solid var(--gfl-hd);
+  }
+  #gfl-{{ sid }} .gfl-cmp-sub {
+    display: block; margin-top: 3px; font-family: var(--gfl-font);
+    font-size: 11.5px; font-weight: 600; text-transform: none; color: var(--gfl-mut);
+  }
+  #gfl-{{ sid }} .gfl-cmp .gfl-cmp-l th { padding: 14px 12px 6px 16px; }
+  #gfl-{{ sid }} .gfl-cmp-l span {
+    position: sticky; left: 16px; display: inline-block;
+    font-family: var(--gfl-font-head); font-size: 12.5px; font-weight: 700;
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--gfl-mut);
+  }
+  #gfl-{{ sid }} .gfl-cmp-v td { border-bottom: 1px solid rgba(0,0,0,0.08); }
+  #gfl-{{ sid }} .gfl-cmp .is-gf {
+    position: sticky; left: 0; z-index: 2; padding-left: 16px;
+    background: linear-gradient(rgba(var(--gfl-ar),var(--gfl-ag),var(--gfl-ab),0.10), rgba(var(--gfl-ar),var(--gfl-ag),var(--gfl-ab),0.10)), #fff;
+    color: var(--gfl-hd); font-weight: 700;
+    box-shadow: 6px 0 8px -6px rgba(0,0,0,0.16);
+  }
+  #gfl-{{ sid }} .gfl-cmp thead .is-gf { color: var(--gfl-accent); }
+
+  /* ── Avis en texte (recette des cartes d'avis de la page produit) ── */
+  #gfl-{{ sid }} .gfl-quote {
+    background: #fff; border: 1px solid #2a2a2a; border-radius: 24px;
+    padding: 15px 18px 17px; margin: 12px 0;
+  }
+  #gfl-{{ sid }} .gfl-quote-top { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
+  #gfl-{{ sid }} .gfl-quote-name { font-size: 14px; font-weight: 700; color: var(--gfl-hd); }
+  #gfl-{{ sid }} .gfl-quote-meta { font-size: 12px; color: #888; }
+  #gfl-{{ sid }} .gfl-quote-stars { display: block; height: 13px; width: auto; margin: 6px 0 8px; }
+  #gfl-{{ sid }} .gfl-quote-txt { font-size: 15.5px; line-height: 1.6; color: var(--gfl-text); }
+  #gfl-{{ sid }} .gfl-quote-txt mark { background: #c5fe89; color: #1a1a1a; padding: 0 2px; }
+
+  /* ── Bouton collant mobile (recette de la barre collante de la page produit, style noir) ── */
+  #gfl-{{ sid }} .gfl-stk { display: none; }
+  @media (max-width: 749px) {
+    #gfl-{{ sid }} .gfl-stk {
+      display: flex; align-items: center; gap: 12px;
+      position: fixed; z-index: 9990; left: 50%;
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      width: calc(100% - 32px); max-width: 680px; padding: 10px 10px 10px 16px;
+      background: #161616; color: #f4f4f4;
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.30), 0 0 0 0.5px rgba(0,0,0,0.10);
+      opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(20px);
+      transition: opacity .45s cubic-bezier(.22,1,.36,1), transform .45s cubic-bezier(.22,1,.36,1);
+    }
+    #gfl-{{ sid }} .gfl-stk.is-visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+    #gfl-{{ sid }} .gfl-stk-t { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 700; line-height: 1.3; }
+    #gfl-{{ sid }} .gfl-stk-b {
+      flex-shrink: 0; background: #fff; color: #0a0a0a; text-decoration: none;
+      font-size: 14px; font-weight: 700; padding: 12px 18px; border-radius: 20px;
+      -webkit-tap-highlight-color: transparent;
+    }
+  }
+
   /* ── Espace ── */
   #gfl-{{ sid }} .gfl-sp--s { height: 14px; }
   #gfl-{{ sid }} .gfl-sp--m { height: 34px; }
@@ -191,6 +269,14 @@
     #gfl-{{ sid }} .gfl-h--1 { font-size: var(--gfl-h1); }
     #gfl-{{ sid }} .gfl-h--2 { font-size: var(--gfl-h2); }
     #gfl-{{ sid }} .gfl-t { font-size: 17px; }
+    #gfl-{{ sid }} .gfl-cmp-hint { display: none; }
+    #gfl-{{ sid }} .gfl-cmp { margin: 0; overflow: visible; }
+    #gfl-{{ sid }} .gfl-cmp table { width: 100%; }
+    #gfl-{{ sid }} .gfl-cmp th,
+    #gfl-{{ sid }} .gfl-cmp td { width: auto; }
+    #gfl-{{ sid }} .gfl-cmp .is-gf { position: static; padding-left: 12px; box-shadow: none; }
+    #gfl-{{ sid }} .gfl-cmp .gfl-cmp-l th { padding-left: 12px; }
+    #gfl-{{ sid }} .gfl-cmp-l span { position: static; }
   }
 
   /* ── PERF : les blocs hors écran ne sont ni mis en page ni peints
@@ -213,16 +299,17 @@
   <div class="gfl-w">
     {%- for block in section.blocks -%}
       {%- assign b = block.settings -%}
+      {%- if gfl_tbl and block.type != 'cmp_row' -%}</tbody></table></div></div>{%- assign gfl_tbl = false -%}{%- endif -%}
       {%- case block.type -%}
 
         {%- when 'heading' -%}
           {%- assign h_tag = b.tag | default: 'h2' -%}
           {%- assign h_cls = 'gfl-h--2' -%}
           {%- if h_tag == 'h1' -%}{%- assign h_cls = 'gfl-h--1' -%}{%- endif -%}
-          <{{ h_tag }} class="gfl-h {{ h_cls }}{% if b.align == 'center' %} gfl-h--c{% endif %}" {{ block.shopify_attributes }}>{%- if b.number != blank -%}<span class="gfl-num">{{ b.number }}.</span> {% endif -%}{% render 'gf-bf-text', text: b.text, bf: gf_bf_on %}</{{ h_tag }}>
+          <{{ h_tag }} class="gfl-h {{ h_cls }}{% if b.align == 'center' %} gfl-h--c{% endif %}" {{ block.shopify_attributes }}>{%- if b.number != blank -%}<span class="gfl-num">{{ b.number }}.</span> {% endif -%}{% render 'gf-landing-ph', text: b.text, period: gfl_period, bf: gf_bf_on %}</{{ h_tag }}>
 
         {%- when 'text' -%}
-          <div class="gfl-t{% if b.style == 'lead' %} gfl-t--lead{% elsif b.style == 'punch' %} gfl-t--punch{% elsif b.style == 'small' %} gfl-t--small{% endif %}{% if b.align == 'center' %} gfl-t--c{% endif %}" {{ block.shopify_attributes }}>{{ b.text }}</div>
+          <div class="gfl-t{% if b.style == 'lead' %} gfl-t--lead{% elsif b.style == 'punch' %} gfl-t--punch{% elsif b.style == 'small' %} gfl-t--small{% endif %}{% if b.align == 'center' %} gfl-t--c{% endif %}" {{ block.shopify_attributes }}>{%- if b.text contains '[' -%}{% render 'gf-landing-ph', text: b.text, period: gfl_period, bf: gf_bf_on %}{%- else -%}{{ b.text }}{%- endif -%}</div>
 
         {%- when 'image' -%}
           {%- comment -%} vide + hors éditeur → rien (pas de cadre gris en live) {%- endcomment -%}
@@ -259,10 +346,10 @@
           <div class="gfl-ctawrap" {{ block.shopify_attributes }}>
             {%- assign cta_txt = b.text | default: 'Je commande' -%}
             <a class="gfl-cta" href="{{ b.link | default: '/products/gumforce' }}">
-              {% render 'gf-bf-text', text: cta_txt, bf: gf_bf_on %}
+              {% render 'gf-landing-ph', text: cta_txt, period: gfl_period, bf: gf_bf_on %}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
-            {%- if b.note != blank -%}<div class="gfl-ctanote">{{ b.note }}</div>{%- endif -%}
+            {%- if b.note != blank -%}<div class="gfl-ctanote">{%- if b.note contains '[' -%}{% render 'gf-landing-ph', text: b.note, period: gfl_period, bf: gf_bf_on %}{%- else -%}{{ b.note }}{%- endif -%}</div>{%- endif -%}
           </div>
 
         {%- when 'trio' -%}
@@ -312,22 +399,87 @@
 
         {%- when 'faq' -%}
           <details class="gfl-faq" {{ block.shopify_attributes }}{% if b.open_default %} open{% endif %}>
-            <summary class="gfl-q">{{ b.question }}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
-            <div class="gfl-a">{{ b.answer }}</div>
+            <summary class="gfl-q">{%- if b.question contains '[' -%}{% render 'gf-landing-ph', text: b.question, period: gfl_period, bf: gf_bf_on %}{%- else -%}{{ b.question }}{%- endif -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
+            <div class="gfl-a">{%- if b.answer contains '[' -%}{% render 'gf-landing-ph', text: b.answer, period: gfl_period, bf: gf_bf_on %}{%- else -%}{{ b.answer }}{%- endif -%}</div>
           </details>
 
         {%- when 'spacer' -%}
           <div class="gfl-sp--{{ b.size | default: 'm' }}" {{ block.shopify_attributes }}></div>
 
+        {%- when 'cmp_head' -%}
+          {%- assign gfl_tbl = true -%}
+          <div class="gfl-cmpw" {{ block.shopify_attributes }}>
+            {%- if b.hint != blank -%}<div class="gfl-cmp-hint">{{ b.hint }}</div>{%- endif -%}
+            <div class="gfl-cmp"><table>
+              <thead><tr>
+                <th class="is-gf" scope="col">{% render 'gf-landing-ph', text: b.col1, period: gfl_period, bf: gf_bf_on %}{%- if b.col1_note != blank -%}<span class="gfl-cmp-sub">{% render 'gf-landing-ph', text: b.col1_note, period: gfl_period, bf: gf_bf_on %}</span>{%- endif -%}</th>
+                <th scope="col">{{ b.col2 }}</th>
+                <th scope="col">{{ b.col3 }}</th>
+                <th scope="col">{{ b.col4 }}</th>
+              </tr></thead>
+              <tbody>
+
+        {%- when 'cmp_row' -%}
+          {%- unless gfl_tbl -%}{%- assign gfl_tbl = true -%}<div class="gfl-cmpw"><div class="gfl-cmp"><table><tbody>{%- endunless -%}
+          <tr class="gfl-cmp-l" {{ block.shopify_attributes }}><th colspan="4" scope="rowgroup"><span>{{ b.label }}</span></th></tr>
+          <tr class="gfl-cmp-v">
+            <td class="is-gf">{% render 'gf-landing-ph', text: b.c1, period: gfl_period, bf: gf_bf_on %}</td>
+            <td>{% render 'gf-landing-ph', text: b.c2, period: gfl_period, bf: gf_bf_on %}</td>
+            <td>{% render 'gf-landing-ph', text: b.c3, period: gfl_period, bf: gf_bf_on %}</td>
+            <td>{% render 'gf-landing-ph', text: b.c4, period: gfl_period, bf: gf_bf_on %}</td>
+          </tr>
+
+        {%- when 'quote' -%}
+          {%- assign q_txt = b.text | escape | newline_to_br -%}
+          {%- if b.highlight != blank -%}
+            {%- assign q_hl = b.highlight | escape -%}
+            {%- assign q_mark = '<mark>' | append: q_hl | append: '</mark>' -%}
+            {%- assign q_txt = q_txt | replace_first: q_hl, q_mark -%}
+          {%- endif -%}
+          <figure class="gfl-quote" {{ block.shopify_attributes }}>
+            <figcaption class="gfl-quote-top"><span class="gfl-quote-name">{{ b.name }}</span>{%- if b.meta != blank -%}<span class="gfl-quote-meta">{{ b.meta }}</span>{%- endif -%}</figcaption>
+            {%- if b.stars != blank -%}{{ b.stars | image_url: height: 39 | image_tag: class: 'gfl-quote-stars', loading: 'lazy', alt: b.stars.alt }}{%- endif -%}
+            <blockquote class="gfl-quote-txt">{{ q_txt }}</blockquote>
+          </figure>
+
       {%- endcase -%}
     {%- endfor -%}
+    {%- if gfl_tbl -%}</tbody></table></div></div>{%- endif -%}
   </div>
+  {%- if s.sticky_enabled -%}
+    {%- assign stk_link = s.sticky_link | default: '/products/gumforce' -%}
+    <div class="gfl-stk" aria-hidden="true">
+      <div class="gfl-stk-t">{% render 'gf-landing-ph', text: s.sticky_text, period: gfl_period, bf: gf_bf_on %}</div>
+      <a class="gfl-stk-b" href="{{ stk_link }}" tabindex="-1">{% render 'gf-landing-ph', text: s.sticky_cta, period: gfl_period, bf: gf_bf_on %}</a>
+    </div>
+  {%- endif %}
 </section>
 
 <script>
 (function () {
   var root = document.getElementById('gfl-{{ sid }}');
   if (!root) return;
+  {%- if s.sticky_enabled %}
+  /* bouton collant mobile : visible une fois le 1er bouton passé, caché dès que le dernier bouton arrive à l'écran */
+  (function () {
+    var stk = root.querySelector('.gfl-stk');
+    var ctas = root.querySelectorAll('.gfl-ctawrap');
+    if (!stk || !ctas.length) return;
+    var first = ctas[0], last = ctas[ctas.length - 1], lnk = stk.querySelector('a'), on = false, tick = false;
+    function upd() {
+      tick = false;
+      var show = first.getBoundingClientRect().bottom < 0 && last.getBoundingClientRect().top > window.innerHeight;
+      if (show === on) return;
+      on = show;
+      stk.classList.toggle('is-visible', on);
+      stk.setAttribute('aria-hidden', on ? 'false' : 'true');
+      if (lnk) lnk.tabIndex = on ? 0 : -1;
+    }
+    window.addEventListener('scroll', function () { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
+    window.addEventListener('resize', upd);
+    upd();
+  })();
+  {%- endif -%}
   {%- if s.enable_animation -%}
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!('IntersectionObserver' in window)) return;
@@ -386,6 +538,15 @@
     { "type": "color", "id": "cta_bg", "label": "Fond des boutons", "default": "#111111" },
     { "type": "color", "id": "cta_text_color", "label": "Texte des boutons", "default": "#ffffff" },
     { "type": "range", "id": "img_radius", "label": "Arrondi des images", "min": 0, "max": 28, "step": 2, "default": 16, "unit": "px" },
+
+    { "type": "header", "content": "── Période de l'offre ──" },
+    { "type": "text", "id": "period", "label": "Nom de la période", "default": "Halloween", "info": "Remplace [période] dans tous les blocs de la page et dans le bouton collant. Pendant le mode Black Friday (Réglages du thème), « Halloween » s'affiche tout seul en « Black Friday ». [note] = note Trustpilot des Réglages du thème." },
+
+    { "type": "header", "content": "── Bouton collant (mobile) ──" },
+    { "type": "checkbox", "id": "sticky_enabled", "label": "Afficher le bouton collant en bas d'écran", "default": false, "info": "Mobile uniquement. Il apparaît une fois le premier bouton passé et disparaît quand le dernier bouton de la page arrive à l'écran." },
+    { "type": "text", "id": "sticky_text", "label": "Texte", "default": "Offre [période] : tu en paies 2, tu en reçois 4" },
+    { "type": "text", "id": "sticky_cta", "label": "Texte du bouton", "default": "J'en profite" },
+    { "type": "url", "id": "sticky_link", "label": "Lien du bouton" },
 
     { "type": "header", "content": "── Animation ──" },
     { "type": "checkbox", "id": "enable_animation", "label": "Animation d'entrée au scroll", "default": true },
@@ -481,6 +642,41 @@
       "name": "Espace",
       "settings": [
         { "type": "select", "id": "size", "label": "Taille", "options": [ {"value":"s","label":"Petit"}, {"value":"m","label":"Moyen"}, {"value":"l","label":"Grand"} ], "default": "m" }
+      ]
+    },
+    {
+      "type": "cmp_head",
+      "name": "Tableau : en-tête",
+      "settings": [
+        { "type": "paragraph", "content": "Ouvre un tableau comparatif. Les blocs « Tableau : ligne » placés juste après s'y ajoutent. Sur téléphone, la colonne 1 reste fixe à gauche et le tableau défile." },
+        { "type": "text", "id": "col1", "label": "Colonne 1 (mise en avant)", "default": "GUMFORCE" },
+        { "type": "text", "id": "col1_note", "label": "Sous-titre de la colonne 1", "default": "Offre 2+2" },
+        { "type": "text", "id": "col2", "label": "Colonne 2", "default": "Marque 2" },
+        { "type": "text", "id": "col3", "label": "Colonne 3", "default": "Marque 3" },
+        { "type": "text", "id": "col4", "label": "Colonne 4", "default": "Marque 4" },
+        { "type": "text", "id": "hint", "label": "Aide au défilement (mobile)", "default": "Fais glisser pour voir les autres →" }
+      ]
+    },
+    {
+      "type": "cmp_row",
+      "name": "Tableau : ligne",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Critère", "default": "Critère" },
+        { "type": "text", "id": "c1", "label": "Colonne 1", "default": "Oui" },
+        { "type": "text", "id": "c2", "label": "Colonne 2", "default": "Non" },
+        { "type": "text", "id": "c3", "label": "Colonne 3", "default": "Non" },
+        { "type": "text", "id": "c4", "label": "Colonne 4", "default": "Non" }
+      ]
+    },
+    {
+      "type": "quote",
+      "name": "Avis (texte)",
+      "settings": [
+        { "type": "textarea", "id": "text", "label": "Avis, mot pour mot", "default": "Texte de l'avis." },
+        { "type": "text", "id": "highlight", "label": "Passage surligné (optionnel)", "info": "Recopie un morceau exact de l'avis : il est surligné en vert, comme sur la page produit." },
+        { "type": "text", "id": "name", "label": "Prénom (tel qu'affiché)", "default": "Prénom" },
+        { "type": "text", "id": "meta", "label": "Source", "default": "Avis Trustpilot" },
+        { "type": "image_picker", "id": "stars", "label": "Étoiles (image)" }
       ]
     }
   ],

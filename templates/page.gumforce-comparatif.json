@@ -1,0 +1,511 @@
+{
+  "sections": {
+    "main": {
+      "type": "gumforce-landing",
+      "blocks": {
+        "h1": {
+          "type": "heading",
+          "settings": {
+            "text": "Jawliner, Grindlabs (ex‑Grindgum), Fitgum ou <em>GUMFORCE</em> : on a fait les comptes.",
+            "tag": "h1",
+            "align": "center"
+          }
+        },
+        "chapo": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Prix au chewing-gum, garantie, livraison, ce qu'il y a dedans. Leurs chiffres, pris sur leurs sites. Les nôtres à côté. Va vérifier.</p>",
+            "style": "lead",
+            "align": "center"
+          }
+        },
+        "preuve": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong><a href=\"https://fr.trustpilot.com/review/gumforce.co\" target=\"_blank\">[note] sur 5 sur Trustpilot</a> · 15 000+ mâchoires entraînées</strong></p>",
+            "style": "normal",
+            "align": "center"
+          }
+        },
+        "cta-haut": {
+          "type": "cta",
+          "settings": {
+            "text": "Voir l'offre [période]",
+            "link": "/products/gumforce?variant=54986619584817"
+          }
+        },
+        "h2-silicone": {
+          "type": "heading",
+          "settings": {
+            "text": "<em>Chewing-gum</em> ou bout de silicone ?",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-silicone": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Jawliner vend aussi des pièces en silicone. Le principe : tu poses deux bouts de silicone sur tes molaires et tu mords dedans.</p><p><strong>Le silicone :</strong> la même pièce pendant des mois, à laver avant chaque séance. Aucun goût. Et dans les avis Trustpilot de Jawliner, la plainte qui revient le plus, c'est le silicone qui casse. Essaie de mordre dans un bout de plastique en pleine réunion.</p><p><strong>GUMFORCE :</strong> un chewing-gum neuf à chaque fois, avec du goût. Tu le mâches au bureau, en voiture, devant ton écran, et personne ne voit rien. Avec 500 mg de créatine dans chaque chewing-gum.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "t-appareil": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Le silicone, c'est un appareil. GUMFORCE, c'est un chewing-gum. Il est dans ta poche, tu mâches, c'est tout.</p><p>Reste à savoir quel chewing-gum. Voilà les chiffres.</p>",
+            "style": "punch",
+            "align": "left"
+          }
+        },
+        "h2-raisons": {
+          "type": "heading",
+          "settings": {
+            "text": "5 raisons de prendre <em>GUMFORCE</em> plutôt qu'un autre",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "r1": {
+          "type": "heading",
+          "settings": {
+            "text": "90 jours pour juger. Pas 30.",
+            "tag": "h3",
+            "align": "left",
+            "number": "1"
+          }
+        },
+        "r1-t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Un muscle met des semaines à prendre. Avec 30 jours, ta garantie est finie avant que t'aies pu juger.</p><p><strong>GUMFORCE : remboursé pendant 90 jours.</strong></p><p>Jawliner, Fitgum, Grindlabs : 30 jours. Chez Fitgum, il faut renvoyer le paquet presque plein (35 chewing-gums sur 40), port à ta charge. Chez Grindlabs, le produit doit être non utilisé. Bonne chance pour juger un chewing-gum sans le mâcher.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "r2": {
+          "type": "heading",
+          "settings": {
+            "text": "Le moins cher au chewing-gum, livraison comprise.",
+            "tag": "h3",
+            "align": "left",
+            "number": "2"
+          }
+        },
+        "r2-t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Le prix du paquet, ça veut rien dire. Ce qui compte, c'est ce que te coûte chaque chewing-gum, livraison payée.</p><p><strong>GUMFORCE : 0,36 €.</strong></p><p>Jawliner : 0,40 €, sur leur offre « 6 mois » plus 7,95 € de livraison. Fitgum : 0,46 €. Grindlabs : ils ne disent même pas combien il y en a dans le paquet.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "r3": {
+          "type": "heading",
+          "settings": {
+            "text": "Le seul avec de la créatine.",
+            "tag": "h3",
+            "align": "left",
+            "number": "3"
+          }
+        },
+        "r3-t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Sans sucre et vegan, tout le monde l'est. La différence, c'est ce qu'il y a en plus.</p><p><strong>GUMFORCE : 500 mg de créatine monohydrate dans chaque chewing-gum.</strong></p><p>Jawliner : rien. Grindlabs : rien. Fitgum : des vitamines B.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "r4": {
+          "type": "heading",
+          "settings": {
+            "text": "Chez toi en 48h.",
+            "tag": "h3",
+            "align": "left",
+            "number": "4"
+          }
+        },
+        "r4-t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Jawliner expédie d'Allemagne : 7 à 12 jours ouvrés en livraison standard, ou 18,95 € pour l'express.</p><p><strong>GUMFORCE : 48h en France et en Belgique.</strong></p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "r5": {
+          "type": "heading",
+          "settings": {
+            "text": "La meilleure note sur Trustpilot.",
+            "tag": "h3",
+            "align": "left",
+            "number": "5"
+          }
+        },
+        "r5-t": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>GUMFORCE : [note] sur 5.</strong></p><p>Jawliner : 4,6. Fitgum : 4,6. Grindlabs n'a même pas de page Trustpilot.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "cta-raisons": {
+          "type": "cta",
+          "settings": {
+            "text": "Voir l'offre [période]",
+            "link": "/products/gumforce?variant=54986619584817"
+          }
+        },
+        "h2-tableau": {
+          "type": "heading",
+          "settings": {
+            "text": "Le tableau, <em>sans blabla</em>",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "tab-tete": {
+          "type": "cmp_head",
+          "settings": {
+            "col1": "GUMFORCE",
+            "col1_note": "Offre 2+2",
+            "col2": "Jawliner",
+            "col3": "Grindlabs (ex‑Grindgum)",
+            "col4": "Fitgum",
+            "hint": "Fais glisser pour voir les autres →"
+          }
+        },
+        "tab-prix": {
+          "type": "cmp_row",
+          "settings": {
+            "label": "Prix par chewing-gum, livraison comprise",
+            "c1": "0,36 €",
+            "c2": "0,40 €",
+            "c3": "Non communiqué",
+            "c4": "0,46 €"
+          }
+        },
+        "tab-garantie": {
+          "type": "cmp_row",
+          "settings": {
+            "label": "Garantie",
+            "c1": "Remboursé pendant 90 jours",
+            "c2": "30 jours, conditions non communiquées",
+            "c3": "30 jours, produit non utilisé",
+            "c4": "30 jours, 35 chewing-gums sur 40 à renvoyer, port à ta charge"
+          }
+        },
+        "tab-creatine": {
+          "type": "cmp_row",
+          "settings": {
+            "label": "Créatine",
+            "c1": "500 mg par chewing-gum",
+            "c2": "Non",
+            "c3": "Non",
+            "c4": "Non"
+          }
+        },
+        "tab-sucre": {
+          "type": "cmp_row",
+          "settings": {
+            "label": "Sans sucre",
+            "c1": "Oui",
+            "c2": "Oui",
+            "c3": "Oui",
+            "c4": "Oui"
+          }
+        },
+        "tab-vegan": {
+          "type": "cmp_row",
+          "settings": {
+            "label": "Vegan",
+            "c1": "Oui",
+            "c2": "Oui",
+            "c3": "Oui",
+            "c4": "Oui"
+          }
+        },
+        "tab-livraison": {
+          "type": "cmp_row",
+          "settings": {
+            "label": "Livraison en France",
+            "c1": "48h",
+            "c2": "7 à 12 jours ouvrés",
+            "c3": "Non communiqué",
+            "c4": "24 à 48h en express"
+          }
+        },
+        "tab-note": {
+          "type": "cmp_row",
+          "settings": {
+            "label": "Note Trustpilot",
+            "c1": "[note] sur 5",
+            "c2": "4,6 sur 5",
+            "c3": "Pas de page",
+            "c4": "4,6 sur 5"
+          }
+        },
+        "tab-source": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Relevé le 29 octobre 2026 sur les sites des marques et sur Trustpilot. Prix : offre mise en avant par chaque marque, livraison vers la France comprise.</p>",
+            "style": "small",
+            "align": "center"
+          }
+        },
+        "cta-tableau": {
+          "type": "cta",
+          "settings": {
+            "text": "Je prends GUMFORCE",
+            "link": "/products/gumforce?variant=54986619584817"
+          }
+        },
+        "h2-avis": {
+          "type": "heading",
+          "settings": {
+            "text": "Ceux qui ont testé en parlent <em>mieux que nous</em>",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "avis-1": {
+          "type": "quote",
+          "settings": {
+            "text": "J'en ai essayé plusieurs mais c'est de loin de meilleur. La texture est top, comparé à d'autres. On sent vraiment des courbatures à la mâchoire le lendemain.",
+            "highlight": "c'est de loin de meilleur",
+            "name": "Alexis",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-2": {
+          "type": "quote",
+          "settings": {
+            "text": "Top chewing gum rien à dire ! J'étais un peu sceptique avant utilisation mais il n'y a que les c**** qui ne changent pas d'avis.",
+            "highlight": "J'étais un peu sceptique avant utilisation",
+            "name": "Alexandre",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-3": {
+          "type": "quote",
+          "settings": {
+            "text": "Pas trop dur pas trop mou fait bien travailler les muscles de la mâchoire. Au top.",
+            "highlight": "fait bien travailler les muscles de la mâchoire",
+            "name": "jerome",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-lien": {
+          "type": "text",
+          "settings": {
+            "text": "<p><a href=\"https://fr.trustpilot.com/review/gumforce.co\" target=\"_blank\">Lire tous les avis sur Trustpilot →</a></p>",
+            "style": "small",
+            "align": "center"
+          }
+        },
+        "h2-offre": {
+          "type": "heading",
+          "settings": {
+            "text": "Offre [période] : <em>tu en paies 2, tu en reçois 4</em>",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-offre": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>4 sachets. 140 chewing-gums. 49,99 €.</strong></p><p>6 semaines d'entraînement à 3 chewing-gums par jour, soit 1,07 € par jour. Moins qu'un café.</p><p>Livraison 48h, offerte en point relais.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "cta-offre": {
+          "type": "cta",
+          "settings": {
+            "text": "Je prends l'offre",
+            "link": "/products/gumforce?variant=54986619584817",
+            "note": "On a tellement confiance en GUMFORCE qu'on te laisse 90 jours pour juger. Pas de résultat ? On te rembourse l'intégralité."
+          }
+        },
+        "h2-faq": {
+          "type": "heading",
+          "settings": {
+            "text": "Questions",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "faq-1": {
+          "type": "faq",
+          "settings": {
+            "question": "Combien par jour ?",
+            "answer": "<p>3 chewing-gums, 10 à 15 minutes chacun. Pas plus : ton muscle grossit quand il récupère, pas quand il bosse.</p>",
+            "open_default": false
+          }
+        },
+        "faq-2": {
+          "type": "faq",
+          "settings": {
+            "question": "Quand est-ce que je vois un effet ?",
+            "answer": "<p><strong>Jour 1 :</strong> courbatures. Ta mâchoire tire le lendemain, comme après une séance de jambes.</p><p><strong>Semaine 2 :</strong> moins de courbatures. C'est là que les autres lâchent. Toi, tu continues.</p><p><strong>Semaine 4 :</strong> ton masséter est bien plus dur sous tes doigts.</p><p><strong>Semaines 6 à 8 :</strong> ça commence à se voir sur les photos.</p>",
+            "open_default": false
+          }
+        },
+        "faq-3": {
+          "type": "faq",
+          "settings": {
+            "question": "J'ai mal à la mâchoire, c'est normal ?",
+            "answer": "<p>Des courbatures dans le muscle les premiers jours, oui, c'est même bon signe. Une douleur dans l'articulation, devant l'oreille, non : tu arrêtes et tu vas voir un médecin.</p>",
+            "open_default": false
+          }
+        },
+        "faq-4": {
+          "type": "faq",
+          "settings": {
+            "question": "Ça abîme pas l'articulation ?",
+            "answer": "<p>C'est la dose qui fait le poison. D'où le rythme : 3 chewing-gums par jour, 15 minutes max. Si t'as déjà un souci à l'articulation, demande à ton médecin avant.</p>",
+            "open_default": false
+          }
+        },
+        "faq-5": {
+          "type": "faq",
+          "settings": {
+            "question": "Pourquoi cette offre maintenant ?",
+            "answer": "<p>C'est notre offre [période]. Profites-en tant qu'elle est là.</p>",
+            "open_default": false
+          }
+        },
+        "faq-6": {
+          "type": "faq",
+          "settings": {
+            "question": "Et si ça me plaît pas ?",
+            "answer": "<p>Tu nous écris, on te rembourse. 90 jours.</p>",
+            "open_default": false
+          }
+        },
+        "t-fin": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Ta mâchoire va pas se muscler toute seule.</p>",
+            "style": "punch",
+            "align": "center"
+          }
+        },
+        "cta-fin": {
+          "type": "cta",
+          "settings": {
+            "text": "Je prends l'offre [période]",
+            "link": "/products/gumforce?variant=54986619584817",
+            "note": "Remboursé pendant 90 jours si t'es pas convaincu."
+          }
+        },
+        "img-gum": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Ontwerp_zonder_titel_-_2026-08-26T132201.280.jpg",
+            "size": "medium",
+            "caption": ""
+          }
+        },
+        "trio-clients": {
+          "type": "trio",
+          "settings": {
+            "image1": "shopify://shop_images/4_e877a757-c4b9-4e86-907f-05335684f8e4.jpg",
+            "image2": "shopify://shop_images/5_005fbd85-56a5-4bd6-9e8d-a490f939dcfb.jpg",
+            "image3": "shopify://shop_images/6_bfddd004-9a25-48c0-9904-b39a18392503.jpg",
+            "caption": "Photos envoyées par des clients satisfaits."
+          }
+        },
+        "img-offre": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/1_6c796416-5fa9-45da-9bbd-4c02d9525f0c.png",
+            "size": "small",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "h1",
+        "chapo",
+        "preuve",
+        "cta-haut",
+        "img-gum",
+        "h2-silicone",
+        "t-silicone",
+        "t-appareil",
+        "h2-raisons",
+        "r1",
+        "r1-t",
+        "r2",
+        "r2-t",
+        "r3",
+        "r3-t",
+        "r4",
+        "r4-t",
+        "r5",
+        "r5-t",
+        "cta-raisons",
+        "h2-tableau",
+        "tab-tete",
+        "tab-prix",
+        "tab-garantie",
+        "tab-creatine",
+        "tab-sucre",
+        "tab-vegan",
+        "tab-livraison",
+        "tab-note",
+        "tab-source",
+        "cta-tableau",
+        "h2-avis",
+        "trio-clients",
+        "avis-1",
+        "avis-2",
+        "avis-3",
+        "avis-lien",
+        "h2-offre",
+        "img-offre",
+        "t-offre",
+        "cta-offre",
+        "h2-faq",
+        "faq-1",
+        "faq-2",
+        "faq-3",
+        "faq-4",
+        "faq-5",
+        "faq-6",
+        "t-fin",
+        "cta-fin"
+      ],
+      "settings": {
+        "h1_size": 40,
+        "h2_size": 28,
+        "transparent_bg": false,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#1c1c1e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "cta_bg": "#111111",
+        "cta_text_color": "#ffffff",
+        "img_radius": 16,
+        "period": "Halloween",
+        "sticky_enabled": true,
+        "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
+        "sticky_cta": "J'en profite",
+        "sticky_link": "/products/gumforce?variant=54986619584817",
+        "enable_animation": true,
+        "padding_top": 40,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
