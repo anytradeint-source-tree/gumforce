@@ -14,7 +14,7 @@
         "chapo": {
           "type": "text",
           "settings": {
-            "text": "<p>Prix au chewing-gum, garantie, livraison, ce qu'il y a dedans. Leurs chiffres, pris sur leurs sites. Les nôtres à côté. Va vérifier.</p>",
+            "text": "<p><strong>Le comparatif des chewing-gums pour muscler la mâchoire.</strong></p><p>Prix au chewing-gum, garantie, livraison, ce qu'il y a dedans. Leurs chiffres, pris sur leurs sites. Les nôtres à côté. Va vérifier.</p>",
             "style": "lead",
             "align": "center"
           }
@@ -45,16 +45,8 @@
         "t-silicone": {
           "type": "text",
           "settings": {
-            "text": "<p>Jawliner vend aussi des pièces en silicone. Le principe : tu poses deux bouts de silicone sur tes molaires et tu mords dedans.</p><p><strong>Le silicone :</strong> la même pièce pendant des mois, à laver avant chaque séance. Aucun goût. Et dans les avis Trustpilot de Jawliner, la plainte qui revient le plus, c'est le silicone qui casse. Essaie de mordre dans un bout de plastique en pleine réunion.</p><p><strong>GUMFORCE :</strong> un chewing-gum neuf à chaque fois, avec du goût. Tu le mâches au bureau, en voiture, devant ton écran, et personne ne voit rien. Avec 500 mg de créatine dans chaque chewing-gum.</p>",
+            "text": "<p>Jawliner vend aussi des pièces en silicone. Le principe : tu poses deux bouts de silicone sur tes molaires et tu mords dedans. Les entraîneurs de mâchoire en silicone font le même travail, mais il faut les avoir sur soi et ça se voit.</p><p><strong>Le silicone :</strong> la même pièce pendant des mois, à laver avant chaque séance. Aucun goût. Et dans les avis Trustpilot de Jawliner, la plainte qui revient le plus, c'est le silicone qui casse. Essaie de mordre dans un bout de plastique en pleine réunion.</p><p><strong>GUMFORCE :</strong> un chewing-gum neuf à chaque fois, avec du goût. Tu le mâches au bureau, en voiture, devant ton écran, et personne ne voit rien. Avec 500 mg de créatine dans chaque chewing-gum.</p><p><strong>Le silicone, c'est un appareil. GUMFORCE, c'est un chewing-gum. Il est dans ta poche, tu mâches, c'est tout.</strong></p>",
             "style": "normal",
-            "align": "left"
-          }
-        },
-        "t-appareil": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Le silicone, c'est un appareil. GUMFORCE, c'est un chewing-gum. Il est dans ta poche, tu mâches, c'est tout.</p><p>Reste à savoir quel chewing-gum. Voilà les chiffres.</p>",
-            "style": "punch",
             "align": "left"
           }
         },
@@ -359,16 +351,8 @@
         "faq-3": {
           "type": "faq",
           "settings": {
-            "question": "J'ai mal à la mâchoire, c'est normal ?",
-            "answer": "<p>Des courbatures dans le muscle les premiers jours, oui, c'est même bon signe. Une douleur dans l'articulation, devant l'oreille, non : tu arrêtes et tu vas voir un médecin.</p>",
-            "open_default": false
-          }
-        },
-        "faq-4": {
-          "type": "faq",
-          "settings": {
-            "question": "Ça abîme pas l'articulation ?",
-            "answer": "<p>C'est la dose qui fait le poison. D'où le rythme : 3 chewing-gums par jour, 15 minutes max. Si t'as déjà un souci à l'articulation, demande à ton médecin avant.</p>",
+            "question": "J'ai mal à la mâchoire : c'est normal ? Ça abîme l'articulation ?",
+            "answer": "<p>Des courbatures dans le muscle les premiers jours, oui, c'est même bon signe. Une douleur dans l'articulation, devant l'oreille, non : tu arrêtes et tu vas voir un médecin.</p><p>Pour l'articulation, c'est la dose qui fait le poison. D'où le rythme : 3 chewing-gums par jour, 15 minutes max. Si t'as déjà un souci à l'articulation, demande à ton médecin avant.</p>",
             "open_default": false
           }
         },
@@ -428,6 +412,22 @@
             "size": "small",
             "caption": ""
           }
+        },
+        "t-raisons": {
+          "type": "text",
+          "settings": {
+            "style": "normal",
+            "align": "left",
+            "text": "<p><strong>GUMFORCE, c'est un chewing-gum dur, 10x plus dur qu'un classique, pour vraiment faire travailler ton masséter.</strong> Utilisé par ceux qui font de la musculation. Face aux autres, voilà ce qui fait la différence.</p>"
+          }
+        },
+        "faq-jawline": {
+          "type": "faq",
+          "settings": {
+            "question": "Est-ce que ça aide à avoir une jawline ?",
+            "open_default": false,
+            "answer": "<p>C'est fait pour ça. Ta jawline, c'est d'abord ton masséter, le muscle sur le côté de ta mâchoire. Un chewing-gum 10x plus dur qu'un classique le fait bosser comme une charge à la salle, et un muscle qui bosse prend du volume. Au rythme conseillé de 3 chewing-gums par jour, ça commence à se voir entre la semaine 6 et la semaine 8.</p>"
+          }
         }
       },
       "block_order": [
@@ -438,8 +438,8 @@
         "img-gum",
         "h2-silicone",
         "t-silicone",
-        "t-appareil",
         "h2-raisons",
+        "t-raisons",
         "r1",
         "r1-t",
         "r2",
@@ -473,10 +473,10 @@
         "t-offre",
         "cta-offre",
         "h2-faq",
+        "faq-jawline",
         "faq-1",
         "faq-2",
         "faq-3",
-        "faq-4",
         "faq-5",
         "faq-6",
         "t-fin",
