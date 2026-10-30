@@ -70,7 +70,7 @@
         "r1-t": {
           "type": "text",
           "settings": {
-            "text": "<p>Un muscle met des semaines à prendre. Avec 30 jours, ta garantie est finie avant que t'aies pu juger.</p><p><strong>GUMFORCE : remboursé pendant 90 jours.</strong></p><p>Jawliner, Fitgum, Grindlabs : 30 jours. Chez Fitgum, il faut renvoyer le paquet presque plein (35 chewing-gums sur 40), port à ta charge. Chez Grindlabs, le produit doit être non utilisé. Bonne chance pour juger un chewing-gum sans le mâcher.</p>",
+            "text": "<p>Le vrai changement arrive après 3 à 4 semaines. Avec 30 jours, ta garantie s'arrête pile quand ça commence à changer.</p><p><strong>GUMFORCE : remboursé pendant 90 jours.</strong></p><p>Jawliner, Fitgum, Grindlabs : 30 jours. Chez Fitgum, il faut renvoyer le paquet presque plein (35 chewing-gums sur 40), port à ta charge. Chez Grindlabs, le produit doit être non utilisé. Bonne chance pour juger un chewing-gum sans le mâcher.</p>",
             "style": "normal",
             "align": "left"
           }
@@ -311,7 +311,7 @@
         "t-offre": {
           "type": "text",
           "settings": {
-            "text": "<p><strong>4 sachets. 140 chewing-gums. 49,99 €.</strong></p><p>6 semaines d'entraînement à 3 chewing-gums par jour, soit 1,07 € par jour. Moins qu'un café.</p><p>Livraison 48h, offerte en point relais.</p>",
+            "text": "<p><strong>4 sachets. 140 chewing-gums. 49,99 €.</strong></p><p>5 à 6 semaines d'entraînement à 3 ou 4 chewing-gums par jour : t'as de quoi dépasser les 3 à 4 semaines, là où le vrai changement arrive.</p><p>Moins de 1,50 € par jour. Moins qu'un café.</p><p>Livraison 48h, offerte en point relais.</p>",
             "style": "normal",
             "align": "left"
           }
@@ -336,7 +336,7 @@
           "type": "faq",
           "settings": {
             "question": "Combien par jour ?",
-            "answer": "<p>3 chewing-gums, 10 à 15 minutes chacun. Pas plus : ton muscle grossit quand il récupère, pas quand il bosse.</p>",
+            "answer": "<p>3 à 4 chewing-gums, 10 à 15 minutes chacun. Tu adaptes à ton confort.</p>",
             "open_default": false
           }
         },
@@ -344,7 +344,7 @@
           "type": "faq",
           "settings": {
             "question": "Quand est-ce que je vois un effet ?",
-            "answer": "<p><strong>Jour 1 :</strong> courbatures. Ta mâchoire tire le lendemain, comme après une séance de jambes.</p><p><strong>Semaine 2 :</strong> moins de courbatures. C'est là que les autres lâchent. Toi, tu continues.</p><p><strong>Semaine 4 :</strong> ton masséter est bien plus dur sous tes doigts.</p><p><strong>Semaines 6 à 8 :</strong> ça commence à se voir sur les photos.</p>",
+            "answer": "<p>Ça dépend de chacun. En gros :</p><p><strong>Jour 1 :</strong> courbatures. Ta mâchoire tire le lendemain, comme après une séance de jambes.</p><p><strong>Semaines 1 à 2 :</strong> les premiers résultats. Les courbatures passent, ton masséter est plus dur sous tes doigts. C'est là que les autres lâchent. Toi, tu continues.</p><p><strong>Semaines 3 à 4 :</strong> le vrai changement. Ça se voit sur les photos.</p>",
             "open_default": false
           }
         },
@@ -352,7 +352,7 @@
           "type": "faq",
           "settings": {
             "question": "J'ai mal à la mâchoire : c'est normal ? Ça abîme l'articulation ?",
-            "answer": "<p>Des courbatures dans le muscle les premiers jours, oui, c'est même bon signe. Une douleur dans l'articulation, devant l'oreille, non : tu arrêtes et tu vas voir un médecin.</p><p>Pour l'articulation, c'est la dose qui fait le poison. D'où le rythme : 3 chewing-gums par jour, 15 minutes max. Si t'as déjà un souci à l'articulation, demande à ton médecin avant.</p>",
+            "answer": "<p>Des courbatures dans le muscle les premiers jours, oui, c'est même bon signe. Une douleur dans l'articulation, devant l'oreille, non : tu arrêtes et tu vas voir un médecin.</p><p>Pour l'articulation, c'est la dose qui fait le poison. D'où le rythme : 3 à 4 chewing-gums par jour, 15 minutes max. Si t'as déjà un souci à l'articulation, demande à ton médecin avant.</p>",
             "open_default": false
           }
         },
@@ -426,7 +426,7 @@
           "settings": {
             "question": "Est-ce que ça aide à avoir une jawline ?",
             "open_default": false,
-            "answer": "<p>C'est fait pour ça. Ta jawline, c'est d'abord ton masséter, le muscle sur le côté de ta mâchoire. Un chewing-gum 10x plus dur qu'un classique le fait bosser comme une charge à la salle, et un muscle qui bosse prend du volume. Au rythme conseillé de 3 chewing-gums par jour, ça commence à se voir entre la semaine 6 et la semaine 8.</p>"
+            "answer": "<p>C'est fait pour ça. Ta jawline, c'est d'abord ton masséter, le muscle sur le côté de ta mâchoire. Un chewing-gum 10x plus dur qu'un classique le fait bosser comme une charge à la salle, et un muscle qui bosse prend du volume. À 3 ou 4 chewing-gums par jour, les premiers résultats arrivent en 1 à 2 semaines, le vrai changement après 3 à 4 semaines.</p>"
           }
         }
       },
