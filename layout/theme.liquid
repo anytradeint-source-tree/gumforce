@@ -62,6 +62,7 @@
         <script>if (new Date() > new Date({{ settings.gf_hw_end | strip | append: 'T23:59:59' | json }})) document.documentElement.classList.remove('gf-hw');</script>
       {%- endif -%}
     {%- endif -%}
+    {%- render 'gf-per-head' -%}
     {%- render 'gf-bf-head' -%}
     <meta name="theme-color" content="#c5fff7">
     <style>

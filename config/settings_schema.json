@@ -92,6 +92,163 @@
     ]
   },
   {
+    "name": "Calendrier des offres",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Dans les textes du site (barre d'annonce, badges et titre des offres, titres et boutons des landings), [période] est remplacé par le nom de la période en cours. Le changement se fait tout seul à minuit, heure de Paris. Hors période, c'est le nom de base. Si deux périodes se chevauchent, la première de la liste gagne. Aperçu : ajoute ?gf_per=2 à l'adresse (numéro de la période, 0 = nom de base), ?gf_per=off pour revenir."
+      },
+      {
+        "type": "text",
+        "id": "gf_per_base",
+        "label": "Nom de base (hors période)",
+        "default": "du jour",
+        "info": "Exemple : « Offre [période] » devient « Offre du jour »."
+      },
+      {
+        "type": "header",
+        "content": "Période 1"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_1_name",
+        "label": "Nom",
+        "default": "Halloween",
+        "info": "Vide = période désactivée."
+      },
+      {
+        "type": "text",
+        "id": "gf_per_1_from",
+        "label": "Premier jour (AAAA-MM-JJ)",
+        "info": "Vide = pas de limite."
+      },
+      {
+        "type": "text",
+        "id": "gf_per_1_to",
+        "label": "Dernier jour (AAAA-MM-JJ)",
+        "default": "2026-10-31"
+      },
+      {
+        "type": "header",
+        "content": "Période 2"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_2_name",
+        "label": "Nom",
+        "default": "Black Friday"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_2_from",
+        "label": "Premier jour (AAAA-MM-JJ)",
+        "default": "2026-11-01"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_2_to",
+        "label": "Dernier jour (AAAA-MM-JJ)",
+        "default": "2026-11-29"
+      },
+      {
+        "type": "header",
+        "content": "Période 3"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_3_name",
+        "label": "Nom",
+        "default": "Cyber Monday"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_3_from",
+        "label": "Premier jour (AAAA-MM-JJ)",
+        "default": "2026-11-30"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_3_to",
+        "label": "Dernier jour (AAAA-MM-JJ)",
+        "default": "2026-11-30"
+      },
+      {
+        "type": "header",
+        "content": "Période 4"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_4_name",
+        "label": "Nom",
+        "default": "des Fêtes"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_4_from",
+        "label": "Premier jour (AAAA-MM-JJ)",
+        "default": "2026-12-01"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_4_to",
+        "label": "Dernier jour (AAAA-MM-JJ)",
+        "default": "2026-12-31"
+      },
+      {
+        "type": "header",
+        "content": "Période 5"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_5_name",
+        "label": "Nom",
+        "default": "Nouvelle Résolution"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_5_from",
+        "label": "Premier jour (AAAA-MM-JJ)",
+        "default": "2027-01-01"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_5_to",
+        "label": "Dernier jour (AAAA-MM-JJ)",
+        "default": "2027-01-31"
+      },
+      {
+        "type": "header",
+        "content": "Période 6"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_6_name",
+        "label": "Nom"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_6_from",
+        "label": "Premier jour (AAAA-MM-JJ)"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_6_to",
+        "label": "Dernier jour (AAAA-MM-JJ)"
+      },
+      {
+        "type": "header",
+        "content": "Ancien mot"
+      },
+      {
+        "type": "text",
+        "id": "gf_per_legacy",
+        "label": "Ancien mot traité comme [période]",
+        "default": "Halloween",
+        "info": "Un texte qui contient encore ce mot le voit remplacé par le nom de la période en cours, comme [période]."
+      }
+    ]
+  },
+  {
     "name": "Mode Black Friday",
     "settings": [
       {
@@ -132,23 +289,6 @@
         "id": "gf_bf_lime",
         "label": "Couleur verte",
         "default": "#C5FE89"
-      },
-      {
-        "type": "header",
-        "content": "Mot remplacé"
-      },
-      {
-        "type": "text",
-        "id": "gf_bf_swap_from",
-        "label": "Mot à remplacer",
-        "default": "Halloween",
-        "info": "Pendant le mode, ce mot est remplacé partout où il apparaît : barre d'annonce, badges et titre des offres, titres et boutons de la landing et des listicles."
-      },
-      {
-        "type": "text",
-        "id": "gf_bf_swap_to",
-        "label": "Remplacé par",
-        "default": "Black Friday"
       },
       {
         "type": "header",

@@ -1,0 +1,50 @@
+{%- comment -%}
+  Calendrier des offres (Réglages du thème › Calendrier des offres), dans le <head> de layout/theme.liquid
+  et layout/theme.blank.liquid : pose html[data-gf-per] = numéro de la période en cours à l'heure de Paris
+  (0 = nom de base), pages en cache comprises. Les textes avec [période] (snippet gf-bf-text) rendent une
+  version par période dans des <span class="gf-per gf-per-N"> ; seule celle de la période en cours reste visible.
+  Sans JavaScript, la version marquée gf-per-on (date du serveur) reste visible.
+  Aperçu : ?gf_per=2 (numéro de la période, 0 = base), gardé pendant la visite ; ?gf_per=off pour revenir.
+{%- endcomment -%}
+<style>
+  html:not([data-gf-per]) .gf-per:not(.gf-per-on) { display: none !important; }
+  {%- for i in (0..6) %}
+  html[data-gf-per="{{ i }}"] .gf-per:not(.gf-per-{{ i }}) { display: none !important; }
+  {%- endfor %}
+</style>
+<script>
+  (function () {
+    var P = [
+      {%- for i in (1..6) -%}
+        {%- liquid
+          assign gf_kn = 'gf_per_' | append: i | append: '_name'
+          assign gf_kf = 'gf_per_' | append: i | append: '_from'
+          assign gf_kt = 'gf_per_' | append: i | append: '_to'
+          assign gf_n = settings[gf_kn] | strip
+          assign gf_f = settings[gf_kf] | strip | remove: '-' | plus: 0
+          assign gf_e = settings[gf_kt] | strip | remove: '-' | plus: 0
+        -%}
+        {%- if gf_n != blank -%}[{{ gf_f }}, {{ gf_e }}]{%- else -%}null{%- endif -%}
+        {%- unless forloop.last -%}, {% endunless -%}
+      {%- endfor -%}
+    ];
+    var d = document.documentElement, k = 'gf_per_preview', v = null, t, n = 0;
+    try {
+      var q = location.search.match(/[?&]gf_per=([^&]*)/);
+      if (q) { if (/^[0-6]$/.test(q[1])) sessionStorage.setItem(k, q[1]); else sessionStorage.removeItem(k); }
+      v = sessionStorage.getItem(k);
+    } catch (e) { var q2 = location.search.match(/[?&]gf_per=([0-6])(&|$)/); v = q2 ? q2[1] : null; }
+    if (v !== null) { d.setAttribute('data-gf-per', v); return; }
+    try {
+      var o = {};
+      new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' })
+        .formatToParts(new Date()).forEach(function (x) { o[x.type] = x.value; });
+      t = +(o.year + o.month + o.day);
+    } catch (e) { var m = new Date(); t = m.getFullYear() * 10000 + (m.getMonth() + 1) * 100 + m.getDate(); }
+    for (var i = 0; i < P.length; i++) {
+      var p = P[i];
+      if (p && (!p[0] || t >= p[0]) && (!p[1] || t <= p[1])) { n = i + 1; break; }
+    }
+    d.setAttribute('data-gf-per', n);
+  })();
+</script>
