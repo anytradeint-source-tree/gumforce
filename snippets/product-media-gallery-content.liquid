@@ -186,6 +186,44 @@
   endfor
   assign sorted_media = gf_visible_media
 
+  comment
+    GUMFORCE : TEST A/B DES PHOTOS PRODUIT (Intelligems, template product.gumforce-fr-photos-b).
+    Réglé par 3 métachamps produit (texte, identifiants de médias séparés par des virgules) :
+      custom.gf_ab_commun : médias affichés dans les deux versions
+      custom.gf_ab_a      : médias affichés uniquement dans la version actuelle (A)
+      custom.gf_ab_b      : médias affichés uniquement dans la version B
+    Version B = réglage « Test A/B photos : version » du bloc galerie sur « b ».
+    Version B : masque gf_ab_a.
+    Version A : si gf_ab_b est rempli, masque gf_ab_b ; sinon, si gf_ab_a est rempli,
+    n'affiche que gf_ab_commun + gf_ab_a (toute photo ajoutée reste cachée).
+    Métachamps vides = aucun effet.
+  endcomment
+  assign gf_ab_a = selected_product.metafields.custom.gf_ab_a.value | default: '' | remove: ' ' | split: ','
+  assign gf_ab_b = selected_product.metafields.custom.gf_ab_b.value | default: '' | remove: ' ' | split: ','
+  assign gf_ab_commun = selected_product.metafields.custom.gf_ab_commun.value | default: '' | remove: ' ' | split: ','
+  if gf_ab_a.size > 0 or gf_ab_b.size > 0
+    assign gf_ab_media = '' | split: ','
+    for media in sorted_media
+      assign gf_mid = media.id | append: ''
+      if block_settings.gf_photos_version == 'b'
+        if gf_ab_a contains gf_mid
+          continue
+        endif
+      elsif gf_ab_b.size > 0
+        if gf_ab_b contains gf_mid
+          continue
+        endif
+      else
+        unless gf_ab_a contains gf_mid or gf_ab_commun contains gf_mid
+          continue
+        endunless
+      endif
+      assign gf_found = sorted_media | where: 'id', media.id
+      assign gf_ab_media = gf_ab_media | concat: gf_found
+    endfor
+    assign sorted_media = gf_ab_media
+  endif
+
   assign has_image_drop = sorted_media | has: 'media_type', 'image'
 
   # Determine if we're in single column mode (carousel or grid with one column)
