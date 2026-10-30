@@ -2063,32 +2063,53 @@
     "gumforce_faq_9zyYPB": {
       "type": "gumforce-faq",
       "blocks": {
-        "faq_EUhDEd": {
+        "faq_gnbWhW": {
           "type": "faq",
           "settings": {
-            "question": "Comment l'utiliser ?",
-            "answer": "<p>Mâche un chewing-gum à la fois en utilisant tes molaires. Alterne les côtés toutes les quelques minutes pour travailler les deux côtés de façon équilibrée. Chaque session doit durer entre 10 et 15 minutes maximum. Nous recommandons 3 à 4 chewing-gums maximum répartis dans la journée.</p><p>N’en fais pas trop. Ta mâchoire est un muscle comme un autre. Si tu ressens une douleur ou un inconfort, arrête et repose-toi. Augmente progressivement, surtout pendant la première semaine.</p>"
+            "question": "Qu’est-ce que Gumforce ?",
+            "answer": "<p>Gumforce est un chewing-gum d’entraînement spécialement conçu pour développer les muscles de la mâchoire, affiner le visage et creuser les joues.</p><p>Il est 10 fois plus dur qu’un chewing-gum traditionnel et contient 500 mg de créatine par chewing-gum.</p><p>Sa dureté permet de solliciter intensément les muscles de la mâchoire, tandis que la créatine contribue à améliorer les performances physiques lors d’efforts, à développer les muscles plus rapidement, augmenter la force et à améliorer les facultés cognitives.</p>"
           }
         },
         "faq_dgrBAD": {
           "type": "faq",
           "settings": {
-            "question": "Est-ce que ça marche vraiment ?",
-            "answer": "<p>GUMFORCE est 10× plus résistant qu’un chewing-gum classique. Cela permet de vraiment solliciter les muscles masséters — les principaux muscles responsables d’une mâchoire plus définie. Comme tous les muscles, ils réagissent à un entraînement régulier et progressif.</p><p>Chaque chewing-gum contient également 500 mg de créatine monohydrate, l’un des compléments sportifs les plus étudiés au monde.</p><p>Les résultats viennent avant tout de la régularité, associés à une bonne condition physique et à un faible taux de masse grasse pour une définition visible.</p>"
+            "question": "Est-ce que ça marche vraiment ?",
+            "answer": "<p>Oui, et la science le confirme.</p><p>Ta mâchoire possède des muscles appelés <strong>masséters</strong>. Comme les autres muscles du corps, ils peuvent se renforcer et se développer lorsqu'ils sont sollicités régulièrement.</p><p>En entraînant tes masséters avec Gumforce, tu peux donc développer les muscles de ta mâchoire et, par la même occasion, affiner ton visage et creuser tes joues.</p>"
           }
         },
-        "faq_gnbWhW": {
+        "faq_EUhDEd": {
           "type": "faq",
           "settings": {
-            "question": "Qu'est-ce qu'il y a dedans ?",
-            "answer": "<p>Chaque chewing-gum contient 500 mg de créatine monohydrate. Pas d’ingrédients inutiles, pas de sous-dosage, pas de mauvaise surprise.</p><p>Sans sucre. Des chewing-gums blancs, denses et ultra résistants. Tu sens la différence dès les premières secondes.</p><p>Sachet refermable de 100 g. Convient aux végans.</p>"
+            "question": "Combien de chewing-gums faut-il mâcher par jour ?",
+            "answer": "<p>Notre protocole recommande de mâcher <strong>3 à 4 chewing-gums Gumforce par jour</strong>, en adaptant la fréquence et la durée à ton confort.</p><p>Il n'est pas obligatoire de prendre des jours de repos, sauf si tes courbatures sont trop intenses.</p><p><strong>La régularité est essentielle !</strong> Comme à la salle de sport, les résultats ne se construisent pas en quelques jours. L'important est d'adopter une routine progressive et adaptée.</p>"
           }
         },
         "faq_k3U3zJ": {
           "type": "faq",
           "settings": {
-            "question": "Dans combien de temps verrai-je des résultats ?",
-            "answer": "<p>La plupart des clients sentent leurs mâchoires travailler dès la première utilisation. Une mâchoire plus définie apparaît généralement après 2 à 6 semaines d’utilisation quotidienne, selon ton point de départ, ton taux de masse grasse et ta régularité.</p>"
+            "question": "Combien de temps avant les premiers résultats ?",
+            "answer": "<p>Les premiers résultats peuvent apparaître après <strong>1 à 2 semaines</strong>, mais cela varie d'une personne à l'autre.</p><p><strong>La régularité est essentielle !</strong> Comme à la salle de sport, les muscles se développent progressivement. Il est donc important de travailler ta mâchoire sur la durée et d'intégrer cet entraînement à ton quotidien, sans forcer.</p>"
+          }
+        },
+        "faq_Rk7pQa": {
+          "type": "faq",
+          "settings": {
+            "question": "Dois-je continuer une fois les résultats atteints ?",
+            "answer": "<p>Oui, c'est même impératif ! Il est très important de maintenir une certaine régularité pour préserver les résultats obtenus.</p><p><strong>C'est comme à la salle de sport !</strong> Si tu arrêtes complètement de solliciter un muscle, il peut progressivement perdre une partie de son développement. L'objectif est donc d'intégrer Gumforce à ta routine sur le long terme, tout en respectant les besoins de repos de ta mâchoire.</p>"
+          }
+        },
+        "faq_Vn2sLe": {
+          "type": "faq",
+          "settings": {
+            "question": "La mâchoire est-elle un os ou un muscle ?",
+            "answer": "<p>Les deux ! La mâchoire est composée d’os, mais également de muscles appelés <strong>masséters</strong>.</p><p>Comme les autres muscles du corps, les masséters peuvent se renforcer et se développer grâce à un entraînement régulier.</p><p><strong>C’est justement le principe de Gumforce !</strong> Grâce à sa dureté, notre chewing-gum sollicite intensément les masséters pour aider à les renforcer et à obtenir une mâchoire plus développée et mieux dessinée.</p>"
+          }
+        },
+        "faq_Tc9mHu": {
+          "type": "faq",
+          "settings": {
+            "question": "C'est quoi et pourquoi de la créatine ?",
+            "answer": "<p>La créatine est <strong>le complément alimentaire le plus étudié scientifiquement et le plus efficace pour le développement musculaire</strong>. Elle contribue à améliorer les performances physiques, à augmenter la force, à favoriser la prise de muscle et peut soutenir certaines fonctions cognitives.</p><p>Naturellement présente dans notre corps, principalement dans les muscles, elle joue un rôle essentiel dans la production d'énergie lors d'efforts physiques courts et intenses, comme la musculation.</p><p>C'est pourquoi nous avons intégré <strong>500 mg de créatine monohydrate dans chaque chewing-gum Gumforce</strong>, afin d'associer un entraînement ciblé de la mâchoire à un apport suffisant en créatine.</p><p><strong>Une combinaison pensée pour accompagner le développement des muscles de la mâchoire.</strong></p>"
           }
         },
         "faq_gMMnPE": {
@@ -2107,10 +2128,13 @@
         }
       },
       "block_order": [
-        "faq_EUhDEd",
-        "faq_dgrBAD",
         "faq_gnbWhW",
+        "faq_dgrBAD",
+        "faq_EUhDEd",
         "faq_k3U3zJ",
+        "faq_Rk7pQa",
+        "faq_Vn2sLe",
+        "faq_Tc9mHu",
         "faq_gMMnPE",
         "faq_hTKgm3"
       ],
