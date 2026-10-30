@@ -1,22 +1,63 @@
-{%- comment -%} Texte qui change pendant le mode Black Friday : si `text` contient le mot à remplacer (Réglages du thème › Mode Black Friday), rend les deux versions et la classe html.gf-bf montre la bonne. Sinon, rend `text` tel quel. Paramètres : text, bf (sortie de gf-bf-on). {%- endcomment -%}
+{%- comment -%} Texte qui suit le calendrier des offres (Réglages du thème › Calendrier des offres) : [période] (ou l'ancien mot, par défaut Halloween) devient le nom de la période en cours. Rend la version de base et une version par période pas encore terminée, chacune dans un <span class="gf-per gf-per-N"> ; snippet gf-per-head ne laisse visible que celle du jour (heure de Paris). Sans [période], rend `text` tel quel. Paramètres : text, bf (plus utilisé, gardé pour les appels existants). {%- endcomment -%}
 {%- liquid
-  assign gf_f = settings.gf_bf_swap_from | strip
-  assign gf_r = settings.gf_bf_swap_to | strip
-  assign gf_fu = gf_f | upcase
-  assign gf_ru = gf_r | upcase
-  assign gf_swap = false
-  if bf == '1' and gf_f != blank
-    if text contains gf_f or text contains gf_fu
-      assign gf_swap = true
-    endif
+  assign gf_t = text
+  assign gf_old = settings.gf_per_legacy | strip
+  if gf_old != blank
+    assign gf_oldu = gf_old | upcase
+    assign gf_t = gf_t | replace: gf_old, '[période]' | replace: gf_oldu, '[PÉRIODE]'
   endif
-  if gf_swap
-    assign gf_alt = text | replace: gf_f, gf_r | replace: gf_fu, gf_ru
-    echo '<span class="gf-nobf">'
-    echo text
-    echo '</span><span class="gf-bf-only">'
-    echo gf_alt
+
+  if gf_t contains '[période]' or gf_t contains '[PÉRIODE]'
+    assign gf_today = 'now' | date: '%Y%m%d' | plus: 0
+    assign gf_on = 0
+    for i in (1..6)
+      assign gf_kn = 'gf_per_' | append: i | append: '_name'
+      assign gf_kf = 'gf_per_' | append: i | append: '_from'
+      assign gf_kt = 'gf_per_' | append: i | append: '_to'
+      assign gf_n = settings[gf_kn] | strip
+      assign gf_f = settings[gf_kf] | strip | remove: '-' | plus: 0
+      assign gf_e = settings[gf_kt] | strip | remove: '-' | plus: 0
+      if gf_n != blank
+        if gf_f == 0 or gf_today >= gf_f
+          if gf_e == 0 or gf_today <= gf_e
+            assign gf_on = i
+            break
+          endif
+        endif
+      endif
+    endfor
+
+    assign gf_n = settings.gf_per_base | strip
+    assign gf_nu = gf_n | upcase
+    echo '<span class="gf-per gf-per-0'
+    if gf_on == 0
+      echo ' gf-per-on'
+    endif
+    echo '">'
+    echo gf_t | replace: '[période]', gf_n | replace: '[PÉRIODE]', gf_nu
     echo '</span>'
+
+    for i in (1..6)
+      assign gf_kn = 'gf_per_' | append: i | append: '_name'
+      assign gf_kt = 'gf_per_' | append: i | append: '_to'
+      assign gf_n = settings[gf_kn] | strip
+      assign gf_e = settings[gf_kt] | strip | remove: '-' | plus: 0
+      if gf_n == blank
+        continue
+      endif
+      if gf_e != 0 and gf_e < gf_today
+        continue
+      endif
+      assign gf_nu = gf_n | upcase
+      echo '<span class="gf-per gf-per-'
+      echo i
+      if gf_on == i
+        echo ' gf-per-on'
+      endif
+      echo '">'
+      echo gf_t | replace: '[période]', gf_n | replace: '[PÉRIODE]', gf_nu
+      echo '</span>'
+    endfor
   else
     echo text
   endif

@@ -1,6 +1,9 @@
-{%- comment -%} GF Landing : remplace [période] (réglage « Nom de la période » de la section) et [note] (Réglages du thème › Avis Trustpilot, écrit 4,8), puis applique le mot du mode Black Friday. Paramètres : text, period, bf (sortie de gf-bf-on). {%- endcomment -%}
+{%- comment -%} GF Landing : remplace [note] (Réglages du thème › Avis Trustpilot, écrit 4,8) et, si le réglage « Nom de la période » de la section est rempli, [période] par ce nom. Sinon [période] suit le calendrier des offres (snippet gf-bf-text). Paramètres : text, period, bf (sortie de gf-bf-on). {%- endcomment -%}
 {%- liquid
   assign gf_note = settings.gf_tp_rating | append: '' | replace: '.', ','
-  assign gf_t = text | replace: '[période]', period | replace: '[note]', gf_note
+  assign gf_t = text | replace: '[note]', gf_note
+  if period != blank
+    assign gf_t = gf_t | replace: '[période]', period
+  endif
   render 'gf-bf-text', text: gf_t, bf: bf
 -%}

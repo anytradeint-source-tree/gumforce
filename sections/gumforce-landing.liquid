@@ -39,8 +39,8 @@
   assign gfl_period = s.period | strip
   assign gfl_tbl = false
 -%}
-{%- comment -%} [période] dans les textes = réglage « Nom de la période » (Halloween, Black Friday…) ; [note] = note Trustpilot du thème. Seuls les textes qui contiennent « [ » passent par gf-landing-ph : les landings existantes restent identiques. {%- endcomment -%}
-{%- comment -%} Mode Black Friday : mot remplacé dans les titres et les boutons (Réglages du thème › Mode Black Friday) {%- endcomment -%}
+{%- comment -%} [période] dans les textes = période en cours du calendrier des offres (Réglages du thème), ou le réglage « Nom de la période » s'il est rempli ; [note] = note Trustpilot du thème. Seuls les textes qui contiennent « [ » passent par gf-landing-ph : les landings existantes restent identiques. {%- endcomment -%}
+{%- comment -%} Mode Black Friday : éléments gf-bf-only / gf-nobf (Réglages du thème › Mode Black Friday) {%- endcomment -%}
 {%- capture gf_bf_on -%}{%- render 'gf-bf-on' -%}{%- endcapture -%}
 
 <style>
@@ -543,7 +543,7 @@
     { "type": "range", "id": "img_radius", "label": "Arrondi des images", "min": 0, "max": 28, "step": 2, "default": 16, "unit": "px" },
 
     { "type": "header", "content": "── Période de l'offre ──" },
-    { "type": "text", "id": "period", "label": "Nom de la période", "default": "Halloween", "info": "Remplace [période] dans tous les blocs de la page et dans le bouton collant. Pendant le mode Black Friday (Réglages du thème), « Halloween » s'affiche tout seul en « Black Friday ». [note] = note Trustpilot des Réglages du thème." },
+    { "type": "text", "id": "period", "label": "Nom de la période", "info": "Laisse vide : [période] suit le calendrier des offres (Réglages du thème) et change tout seul (Black Friday, Cyber Monday, des Fêtes…). Rempli, ce nom remplace [période] sur cette page uniquement, toute l'année. [note] = note Trustpilot des Réglages du thème." },
 
     { "type": "header", "content": "── Bouton collant (mobile) ──" },
     { "type": "checkbox", "id": "sticky_enabled", "label": "Afficher le bouton collant en bas d'écran", "default": false, "info": "Mobile uniquement. Il apparaît une fois le premier bouton passé et disparaît quand le dernier bouton de la page arrive à l'écran." },

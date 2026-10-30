@@ -503,7 +503,6 @@
         "cta_bg": "#111111",
         "cta_text_color": "#ffffff",
         "img_radius": 16,
-        "period": "Halloween",
         "sticky_enabled": true,
         "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
         "sticky_cta": "J'en profite",

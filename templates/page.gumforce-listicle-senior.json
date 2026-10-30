@@ -263,7 +263,7 @@
         "h2-offre": {
           "type": "heading",
           "settings": {
-            "text": "Offre Halloween: Tu en paies 2, tu en reçois 4",
+            "text": "Offre [période]: Tu en paies 2, tu en reçois 4",
             "number": "",
             "tag": "h2",
             "align": "center"
@@ -280,7 +280,7 @@
         "cta-fin": {
           "type": "cta",
           "settings": {
-            "text": "Offre Halloween",
+            "text": "Offre [période]",
             "link": "shopify://products/gumforce",
             "note": "Livraison offerte en 48 h · Remboursé 90 jours"
           }
