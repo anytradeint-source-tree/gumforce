@@ -47,6 +47,9 @@
   {%- if gf_bf_on == '1' %}
   html:not(.gf-bf) #gfl-{{ sid }} .gf-bf-only, html.gf-bf #gfl-{{ sid }} .gf-nobf { display:none !important; }
   {%- endif %}
+  {%- if s.hide_header %}
+  #header-group .header-section { display:none !important; }
+  {%- endif %}
   #gfl-{{ sid }},
   #gfl-{{ sid }} *,
   #gfl-{{ sid }} *::before,
@@ -552,6 +555,7 @@
     { "type": "checkbox", "id": "enable_animation", "label": "Animation d'entrée au scroll", "default": true },
 
     { "type": "header", "content": "── Mise en page ──" },
+    { "type": "checkbox", "id": "hide_header", "label": "Masquer le header du site", "default": false, "info": "Retire la barre du haut (menu, logo, panier) sur les pages de ce template. Le footer reste." },
     { "type": "range", "id": "padding_top", "label": "Padding haut", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
     { "type": "range", "id": "padding_bottom", "label": "Padding bas", "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" }
   ],

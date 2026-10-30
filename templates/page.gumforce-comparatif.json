@@ -501,7 +501,8 @@
         "sticky_link": "/products/gumforce?variant=54986619584817",
         "enable_animation": true,
         "padding_top": 40,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "hide_header": true
       }
     }
   },
