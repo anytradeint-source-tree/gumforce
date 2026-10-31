@@ -1,0 +1,40 @@
+{%- comment -%}
+  Bande verte du concours Bali (Réglages du thème › Mode Black Friday), pour les landings : même balisage que la bande
+  du bloc gumforce-pack-offer (page produit), avec ses versions x2. À rendre seulement quand gf-bf-on vaut « 1 ».
+  Ouvre la fenêtre « Comment ça marche ? » (snippet gf-bf-popup). Paramètre : text (2e ligne hors créneau x2).
+{%- endcomment -%}
+<button type="button" class="gfp-bfstrip gf-bf-only" data-gf-bf-open aria-haspopup="dialog">
+  <svg class="gfp-bfv gfp-bfv-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8c0-2.76-2.46-5-5.5-5S2 5.24 2 8h2l1-1 1 1h4"/><path d="M13 7.14A5.82 5.82 0 0 1 16.5 6c3.04 0 5.5 2.24 5.5 5h-3l-1-1-1 1h-3"/><path d="M5.89 9.71c-2.15 2.15-2.3 5.47-.35 7.43l4.24-4.25.7-.7.71-.71 2.12-2.12c-1.95-1.96-5.27-1.8-7.42.35"/><path d="M11 15.5c.5 2.5-.17 4.5-1 6.5h4c2-5.5-.5-12-1-14"/></svg>
+  <span class="gfp-bfstrip-txt gfp-bfv gfp-bfv-0">
+    <span class="gfp-bfstrip-t">{{ settings.gf_bf_strip_title }}</span>
+    {%- if text != blank or settings.gf_bf_strip_link != blank -%}
+      <span class="gfp-bfstrip-s">{{ text }}{% if text != blank and settings.gf_bf_strip_link != blank %} · {% endif %}{% if settings.gf_bf_strip_link != blank %}<u>{{ settings.gf_bf_strip_link }}</u>{% endif %}</span>
+    {%- endif -%}
+  </span>
+  {%- comment -%} Commandes x2 (Réglages du thème › Mode Black Friday) : une version par créneau pas encore fini ; snippet gf-bf-head ne montre que celle du créneau en cours (heure de Paris). {%- endcomment -%}
+  {%- liquid
+    assign gf_x2_now = 'now' | date: '%Y%m%d%H%M' | plus: 0
+    assign gf_x2_sign = settings.gf_x2_sign | strip
+  -%}
+  {%- for i in (1..4) -%}
+    {%- liquid
+      assign gf_x2_kt = 'gf_x2_' | append: i | append: '_title'
+      assign gf_x2_ke = 'gf_x2_' | append: i | append: '_to'
+      assign gf_x2_t = settings[gf_x2_kt] | strip
+      assign gf_x2_e = settings[gf_x2_ke] | strip | remove: '-' | remove: ' ' | remove: ':' | plus: 0
+      if gf_x2_t == blank
+        continue
+      endif
+      if gf_x2_e != 0 and gf_x2_e < gf_x2_now
+        continue
+      endif
+    -%}
+    {%- if gf_x2_sign != blank -%}<span class="gfp-bfstrip-x2 gfp-bfv gfp-bfv-{{ i }}" aria-hidden="true">{{ gf_x2_sign }}</span>{%- endif -%}
+    <span class="gfp-bfstrip-txt gfp-bfv gfp-bfv-{{ i }}">
+      <span class="gfp-bfstrip-t">{{ gf_x2_t }}</span>
+      {%- if settings.gf_x2_text != blank or settings.gf_bf_strip_link != blank -%}
+        <span class="gfp-bfstrip-s">{{ settings.gf_x2_text }}{% if settings.gf_x2_text != blank and settings.gf_bf_strip_link != blank %} · {% endif %}{% if settings.gf_bf_strip_link != blank %}<u>{{ settings.gf_bf_strip_link }}</u>{% endif %}</span>
+      {%- endif -%}
+    </span>
+  {%- endfor -%}
+</button>

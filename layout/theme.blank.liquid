@@ -53,5 +53,9 @@
     >
       {{ content_for_layout }}
     </main>
+    {%- capture gf_bf_on -%}{%- render 'gf-bf-on' -%}{%- endcapture -%}
+    {%- if gf_bf_on == '1' -%}
+      {%- render 'gf-bf-popup' -%}
+    {%- endif %}
   </body>
 </html>

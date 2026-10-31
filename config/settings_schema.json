@@ -378,6 +378,13 @@
         "default": "Plus d’infos"
       },
       {
+        "type": "text",
+        "id": "gf_bf_strip_text_lp",
+        "label": "Texte sur les landings",
+        "default": "Un voyage d’une valeur de 3000 €. Chaque commande = 1 participation",
+        "info": "Remplace le texte ci-dessus dans la bande des landings (case « Bande concours Bali au-dessus du bouton » sur le bouton de l'offre)."
+      },
+      {
         "type": "header",
         "content": "Bande verte : commandes x2"
       },

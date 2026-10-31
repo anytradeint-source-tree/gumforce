@@ -46,6 +46,13 @@
 <style>
   {%- if gf_bf_on == '1' %}
   html:not(.gf-bf) #gfl-{{ sid }} .gf-bf-only, html.gf-bf #gfl-{{ sid }} .gf-nobf { display:none !important; }
+  #gfl-{{ sid }} .gfp-bfstrip { display:flex; align-items:center; gap:12px; width:100%; max-width:460px; margin:0 auto 14px; padding:14px 16px; border:0; border-radius:16px; background:var(--gf-bf-lime); color:#111; font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  #gfl-{{ sid }} .gfp-bfstrip svg { width:28px; height:28px; flex-shrink:0; }
+  #gfl-{{ sid }} .gfp-bfstrip-x2 { font-family:var(--gfl-font-head); font-weight:700; font-size:36px; line-height:.9; letter-spacing:-.01em; flex-shrink:0; }
+  #gfl-{{ sid }} .gfp-bfstrip-txt { display:flex; flex-direction:column; gap:3px; min-width:0; }
+  #gfl-{{ sid }} .gfp-bfstrip-t { font-family:var(--gfl-font-head); font-weight:700; text-transform:uppercase; font-size:17px; line-height:1.15; letter-spacing:.01em; }
+  #gfl-{{ sid }} .gfp-bfstrip-s { font-size:13px; font-weight:500; line-height:1.4; color:#33402f; }
+  #gfl-{{ sid }} .gfp-bfstrip-s u { font-weight:700; color:#111; text-underline-offset:3px; }
   {%- endif %}
   {%- if s.hide_header %}
   #header-group .header-section { display:none !important; }
@@ -348,6 +355,7 @@
         {%- when 'cta' -%}
           <div class="gfl-ctawrap" {{ block.shopify_attributes }}>
             {%- assign cta_txt = b.text | default: 'Je commande' -%}
+            {%- if b.bf_strip and gf_bf_on == '1' -%}{% render 'gf-bf-strip', text: settings.gf_bf_strip_text_lp %}{%- endif -%}
             <a class="gfl-cta" href="{{ b.link | default: '/products/gumforce' }}">
               {% render 'gf-landing-ph', text: cta_txt, period: gfl_period, bf: gf_bf_on %}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -595,7 +603,8 @@
       "settings": [
         { "type": "text", "id": "text", "label": "Texte", "default": "Je commande" },
         { "type": "url", "id": "link", "label": "Lien" },
-        { "type": "text", "id": "note", "label": "Note sous le bouton (optionnel)" }
+        { "type": "text", "id": "note", "label": "Note sous le bouton (optionnel)" },
+        { "type": "checkbox", "id": "bf_strip", "label": "Bande concours Bali au-dessus du bouton", "default": false, "info": "Pendant le mode Black Friday : la bande verte du concours (textes dans Réglages du thème › Mode Black Friday), en x2 pendant les créneaux x2. Disparaît toute seule à la fin du mode." }
       ]
     },
     {
