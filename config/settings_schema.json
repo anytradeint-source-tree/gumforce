@@ -379,6 +379,96 @@
       },
       {
         "type": "header",
+        "content": "Bande verte : commandes x2"
+      },
+      {
+        "type": "paragraph",
+        "content": "Pendant ces créneaux (heure de Paris), la bande verte annonce que chaque commande compte double, puis reprend son texte normal toute seule. Dates au format AAAA-MM-JJ HH:MM. Aperçu : ajoute ?gf_x2=2 à l'adresse (numéro du créneau), ?gf_x2=off pour revenir."
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_sign",
+        "label": "Symbole à gauche",
+        "default": "x2"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_text",
+        "label": "Texte sous le titre",
+        "default": "Deux fois plus de chances de partir à Bali"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_1_title",
+        "label": "Créneau 1 : titre",
+        "default": "11 novembre férié : ta commande compte double",
+        "info": "Vide = créneau désactivé."
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_1_from",
+        "label": "Créneau 1 : début (AAAA-MM-JJ HH:MM)",
+        "default": "2026-11-11 00:00"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_1_to",
+        "label": "Créneau 1 : fin (AAAA-MM-JJ HH:MM)",
+        "default": "2026-11-11 23:59"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_2_title",
+        "label": "Créneau 2 : titre",
+        "default": "Black Friday : ta commande compte double"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_2_from",
+        "label": "Créneau 2 : début (AAAA-MM-JJ HH:MM)",
+        "default": "2026-11-26 19:00"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_2_to",
+        "label": "Créneau 2 : fin (AAAA-MM-JJ HH:MM)",
+        "default": "2026-11-29 23:59"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_3_title",
+        "label": "Créneau 3 : titre",
+        "default": "Cyber Monday : ta commande compte double"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_3_from",
+        "label": "Créneau 3 : début (AAAA-MM-JJ HH:MM)",
+        "default": "2026-11-30 00:00"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_3_to",
+        "label": "Créneau 3 : fin (AAAA-MM-JJ HH:MM)",
+        "default": "2026-11-30 23:59"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_4_title",
+        "label": "Créneau 4 : titre"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_4_from",
+        "label": "Créneau 4 : début (AAAA-MM-JJ HH:MM)"
+      },
+      {
+        "type": "text",
+        "id": "gf_x2_4_to",
+        "label": "Créneau 4 : fin (AAAA-MM-JJ HH:MM)"
+      },
+      {
+        "type": "header",
         "content": "Fenêtre « Comment ça marche ? »"
       },
       {

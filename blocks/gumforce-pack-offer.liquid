@@ -387,6 +387,7 @@
   html.gf-bf #gfp-{{ gf_id }} .gfp-tbadge { background:var(--gf-bf-dark); color:var(--gf-bf-lime); }
   #gfp-{{ gf_id }} .gfp-bfstrip { display:flex; align-items:center; gap:12px; width:100%; margin-top:12px; padding:14px 16px; border:0; border-radius:16px; background:var(--gf-bf-lime); color:#111; font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
   #gfp-{{ gf_id }} .gfp-bfstrip svg { width:28px; height:28px; flex-shrink:0; }
+  #gfp-{{ gf_id }} .gfp-bfstrip-x2 { font-family:var(--gfp-font-head); font-weight:700; font-size:36px; line-height:.9; letter-spacing:-.01em; flex-shrink:0; }
   #gfp-{{ gf_id }} .gfp-bfstrip-txt { display:flex; flex-direction:column; gap:3px; min-width:0; }
   #gfp-{{ gf_id }} .gfp-bfstrip-t { font-family:var(--gfp-font-head); font-weight:700; text-transform:uppercase; font-size:16px; line-height:1.15; letter-spacing:.01em; }
   #gfp-{{ gf_id }} .gfp-bfstrip-s { font-size:13px; font-weight:500; line-height:1.4; color:#33402f; }
@@ -707,13 +708,39 @@
 
       {%- if gf_bf_on == '1' and settings.gf_bf_strip_title != blank -%}
         <button type="button" class="gfp-bfstrip gf-bf-only" data-gf-bf-open aria-haspopup="dialog">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8c0-2.76-2.46-5-5.5-5S2 5.24 2 8h2l1-1 1 1h4"/><path d="M13 7.14A5.82 5.82 0 0 1 16.5 6c3.04 0 5.5 2.24 5.5 5h-3l-1-1-1 1h-3"/><path d="M5.89 9.71c-2.15 2.15-2.3 5.47-.35 7.43l4.24-4.25.7-.7.71-.71 2.12-2.12c-1.95-1.96-5.27-1.8-7.42.35"/><path d="M11 15.5c.5 2.5-.17 4.5-1 6.5h4c2-5.5-.5-12-1-14"/></svg>
-          <span class="gfp-bfstrip-txt">
+          <svg class="gfp-bfv gfp-bfv-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8c0-2.76-2.46-5-5.5-5S2 5.24 2 8h2l1-1 1 1h4"/><path d="M13 7.14A5.82 5.82 0 0 1 16.5 6c3.04 0 5.5 2.24 5.5 5h-3l-1-1-1 1h-3"/><path d="M5.89 9.71c-2.15 2.15-2.3 5.47-.35 7.43l4.24-4.25.7-.7.71-.71 2.12-2.12c-1.95-1.96-5.27-1.8-7.42.35"/><path d="M11 15.5c.5 2.5-.17 4.5-1 6.5h4c2-5.5-.5-12-1-14"/></svg>
+          <span class="gfp-bfstrip-txt gfp-bfv gfp-bfv-0">
             <span class="gfp-bfstrip-t">{{ settings.gf_bf_strip_title }}</span>
             {%- if settings.gf_bf_strip_text != blank or settings.gf_bf_strip_link != blank -%}
               <span class="gfp-bfstrip-s">{{ settings.gf_bf_strip_text }}{% if settings.gf_bf_strip_text != blank and settings.gf_bf_strip_link != blank %} · {% endif %}{% if settings.gf_bf_strip_link != blank %}<u>{{ settings.gf_bf_strip_link }}</u>{% endif %}</span>
             {%- endif -%}
           </span>
+          {%- comment -%} Commandes x2 (Réglages du thème › Mode Black Friday) : une version par créneau pas encore fini ; snippet gf-bf-head ne montre que celle du créneau en cours (heure de Paris). {%- endcomment -%}
+          {%- liquid
+            assign gf_x2_now = 'now' | date: '%Y%m%d%H%M' | plus: 0
+            assign gf_x2_sign = settings.gf_x2_sign | strip
+          -%}
+          {%- for i in (1..4) -%}
+            {%- liquid
+              assign gf_x2_kt = 'gf_x2_' | append: i | append: '_title'
+              assign gf_x2_ke = 'gf_x2_' | append: i | append: '_to'
+              assign gf_x2_t = settings[gf_x2_kt] | strip
+              assign gf_x2_e = settings[gf_x2_ke] | strip | remove: '-' | remove: ' ' | remove: ':' | plus: 0
+              if gf_x2_t == blank
+                continue
+              endif
+              if gf_x2_e != 0 and gf_x2_e < gf_x2_now
+                continue
+              endif
+            -%}
+            {%- if gf_x2_sign != blank -%}<span class="gfp-bfstrip-x2 gfp-bfv gfp-bfv-{{ i }}" aria-hidden="true">{{ gf_x2_sign }}</span>{%- endif -%}
+            <span class="gfp-bfstrip-txt gfp-bfv gfp-bfv-{{ i }}">
+              <span class="gfp-bfstrip-t">{{ gf_x2_t }}</span>
+              {%- if settings.gf_x2_text != blank or settings.gf_bf_strip_link != blank -%}
+                <span class="gfp-bfstrip-s">{{ settings.gf_x2_text }}{% if settings.gf_x2_text != blank and settings.gf_bf_strip_link != blank %} · {% endif %}{% if settings.gf_bf_strip_link != blank %}<u>{{ settings.gf_bf_strip_link }}</u>{% endif %}</span>
+              {%- endif -%}
+            </span>
+          {%- endfor -%}
         </button>
       {%- endif -%}
 

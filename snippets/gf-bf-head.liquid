@@ -3,6 +3,8 @@
   les éléments marqués gf-bf-only ne s'affichent qu'avec la classe html.gf-bf, ceux marqués gf-nobf
   seulement sans elle. La classe est calculée ici à l'heure de Paris (pages en cache comprises).
   Aperçu : ?gf_bf=1 (gardé pendant la visite), ?gf_bf=0 pour l'arrêter.
+  Commandes x2 : pose html[data-gf-x2] = numéro du créneau en cours (heure de Paris, à la minute, revérifié chaque minute), 0 hors créneau ;
+  la bande verte du bloc d'offre ne montre que sa version gfp-bfv-N. Aperçu : ?gf_x2=2, ?gf_x2=off pour revenir.
 {%- endcomment -%}
 {%- capture gf_bf_on -%}{%- render 'gf-bf-on' -%}{%- endcapture -%}
 {%- if gf_bf_on == '1' -%}
@@ -15,6 +17,10 @@
 <style>
   html:not(.gf-bf) .gf-bf-only { display: none !important; }
   html.gf-bf .gf-nobf { display: none !important; }
+  html:not([data-gf-x2]) .gfp-bfv:not(.gfp-bfv-0) { display: none !important; }
+  {%- for i in (0..4) %}
+  html[data-gf-x2="{{ i }}"] .gfp-bfv:not(.gfp-bfv-{{ i }}) { display: none !important; }
+  {%- endfor %}
   :root { --gf-bf-dark: {{ settings.gf_bf_dark | default: '#111111' }}; --gf-bf-lime: {{ settings.gf_bf_lime | default: '#C5FE89' }}; }
 </style>
 <script>
@@ -34,6 +40,41 @@
     } catch (e) { var n = new Date(); t = n.getFullYear() * 10000 + (n.getMonth() + 1) * 100 + n.getDate(); }
     var on = {{ gf_bf_ed | json }} || p || ((!FROM || t >= FROM) && (!TO || t <= TO));
     d.classList.toggle('gf-bf', on);
+    var X2 = [
+      {%- for i in (1..4) -%}
+        {%- liquid
+          assign gf_kt = 'gf_x2_' | append: i | append: '_title'
+          assign gf_kf = 'gf_x2_' | append: i | append: '_from'
+          assign gf_ke = 'gf_x2_' | append: i | append: '_to'
+          assign gf_t = settings[gf_kt] | strip
+          assign gf_f = settings[gf_kf] | strip | remove: '-' | remove: ' ' | remove: ':' | plus: 0
+          assign gf_e = settings[gf_ke] | strip | remove: '-' | remove: ' ' | remove: ':' | plus: 0
+        -%}
+        {%- if gf_t != blank -%}[{{ gf_f }}, {{ gf_e }}]{%- else -%}null{%- endif -%}
+        {%- unless forloop.last -%}, {% endunless -%}
+      {%- endfor -%}
+    ], kx = 'gf_x2_preview', vx = null;
+    try {
+      var qx = location.search.match(/[?&]gf_x2=([^&]*)/);
+      if (qx) { if (/^[0-4]$/.test(qx[1])) sessionStorage.setItem(kx, qx[1]); else sessionStorage.removeItem(kx); }
+      vx = sessionStorage.getItem(kx);
+    } catch (e) { var qx2 = location.search.match(/[?&]gf_x2=([0-4])(&|$)/); vx = qx2 ? qx2[1] : null; }
+    function gfX2() {
+      if (vx !== null) { d.setAttribute('data-gf-x2', vx); return; }
+      var m, n = 0, o2 = {};
+      try {
+        new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+          .formatToParts(new Date()).forEach(function (x) { o2[x.type] = x.value; });
+        m = +(o2.year + o2.month + o2.day + o2.hour + o2.minute);
+      } catch (e) { var z = new Date(); m = ((z.getFullYear() * 100 + z.getMonth() + 1) * 100 + z.getDate()) * 10000 + z.getHours() * 100 + z.getMinutes(); }
+      for (var i = 0; i < X2.length; i++) {
+        var w = X2[i];
+        if (w && (!w[0] || m >= w[0]) && (!w[1] || m <= w[1])) { n = i + 1; break; }
+      }
+      d.setAttribute('data-gf-x2', n);
+    }
+    gfX2();
+    setInterval(gfX2, 60000);
     if (p) d.classList.add('gf-bf-preview');
     if (on) d.classList.remove('gf-hw');
   })();
