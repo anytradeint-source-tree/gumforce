@@ -280,6 +280,7 @@
         "cta-fin": {
           "type": "cta",
           "settings": {
+            "bf_strip": true,
             "text": "Offre [période]",
             "link": "shopify://products/gumforce",
             "note": "Livraison offerte en 48 h · Remboursé 90 jours"

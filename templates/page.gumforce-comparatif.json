@@ -328,6 +328,7 @@
         "cta-offre": {
           "type": "cta",
           "settings": {
+            "bf_strip": true,
             "text": "Je prends l'offre",
             "link": "/products/gumforce?variant=54986619584817",
             "note": "On a tellement confiance en GUMFORCE qu'on te laisse 90 jours pour juger. Pas de résultat ? On te rembourse l'intégralité."
