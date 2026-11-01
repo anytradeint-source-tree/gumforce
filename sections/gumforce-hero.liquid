@@ -11,6 +11,7 @@
   ============================================================================
 {% endcomment %}
 
+{%- capture gf_bf_on -%}{%- render 'gf-bf-on' -%}{%- endcapture -%}
 {%- liquid
   assign sid = section.id
   assign s   = section.settings
@@ -79,6 +80,16 @@
 {%- endcomment -%}
 
 <style>
+  {%- if s.bf_strip and gf_bf_on == '1' %}
+  /* Bande concours Bali sous le bouton (mode Black Friday) : même bande que la page produit */
+  #gfh-{{ sid }} .gfp-bfstrip { display:flex; align-items:center; gap:12px; width:100%; max-width:420px; padding:14px 16px; border:0; border-radius:16px; background:var(--gf-bf-lime); color:#111; font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  #gfh-{{ sid }} .gfp-bfstrip svg { width:28px; height:28px; flex-shrink:0; }
+  #gfh-{{ sid }} .gfp-bfstrip-x2 { font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; font-size:36px; line-height:.9; letter-spacing:-.01em; flex-shrink:0; }
+  #gfh-{{ sid }} .gfp-bfstrip-txt { display:flex; flex-direction:column; gap:3px; min-width:0; }
+  #gfh-{{ sid }} .gfp-bfstrip-t { font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; text-transform:uppercase; font-size:17px; line-height:1.15; letter-spacing:.01em; }
+  #gfh-{{ sid }} .gfp-bfstrip-s { font-size:13px; font-weight:500; line-height:1.4; color:#33402f; }
+  #gfh-{{ sid }} .gfp-bfstrip-s u { font-weight:700; color:#111; text-underline-offset:3px; }
+  {%- endif %}
   /* ================================================================
      SECTION WRAPPER — full-bleed, pulled under the header
      ================================================================ */
@@ -479,6 +490,10 @@
             href="#"
           {%- endif -%}
         >{{ cta_text }}</a>
+      {%- endif -%}
+
+      {%- if s.bf_strip and gf_bf_on == '1' -%}
+        {% render 'gf-bf-strip', text: settings.gf_bf_strip_text_lp %}
       {%- endif -%}
     </div>
 
@@ -881,6 +896,13 @@
       "label": "Scroll to bundle picker",
       "info": "Overrides the link. Smoothly scrolls to the bundle section.",
       "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "bf_strip",
+      "label": "Bande concours Bali sous le bouton",
+      "default": false,
+      "info": "Pendant le mode Black Friday : la bande verte du concours (textes dans Réglages du thème › Mode Black Friday, « Texte sur les landings »), en x2 pendant les créneaux x2. Disparaît toute seule à la fin du mode."
     },
     {
       "type": "select",
