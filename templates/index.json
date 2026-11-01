@@ -12,6 +12,7 @@
     "gumforce_hero_VXkr7T": {
       "type": "gumforce-hero",
       "settings": {
+        "bf_strip": true,
         "image_desktop": "shopify://shop_images/Ontwerp_zonder_titel_91_1.jpg",
         "desktop_format": "16/9",
         "image_mobile": "shopify://shop_images/Ontwerp_zonder_titel_90_1.jpg",
