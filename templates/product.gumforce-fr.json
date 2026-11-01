@@ -39,7 +39,8 @@
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "padding-inline-end": 0,
+            "gf_photos_version": "a"
           },
           "blocks": {}
         },
@@ -87,12 +88,15 @@
                 "offset_x": 0,
                 "offset_y": 8,
                 "shadow": true,
-                "anim": "pop",
                 "vb_enabled": true,
-                "vb_video": "shopify:\/\/files\/videos\/landing-page_masseter.mp4",
+                "vb_video": "shopify://files/videos/landing-page_masseter.mp4",
+                "vb_video_url": "",
                 "vb_size": 140,
+                "vb_size_mobile": 80,
                 "vb_zoom": 130,
-                "vb_focus": 40
+                "vb_focus": 40,
+                "vb_accent": "#2ab5b4",
+                "anim": "pop"
               },
               "blocks": {}
             },
@@ -375,8 +379,14 @@
                 "show_offer_date": true,
                 "offer_prefix": "Offre [période]",
                 "gauge_enabled": true,
+                "gauge_text": "Plus que <b>[nombre] sachets</b>",
                 "gauge_from": "2026-11-01",
                 "gauge_to": "2026-11-30",
+                "gauge_resets": "08:00, 14:00, 20:00",
+                "gauge_start": 300,
+                "gauge_end": 30,
+                "gauge_fill": 35,
+                "gauge_color": "#e0482b",
                 "show_quantity": false,
                 "qty_label": "Quantité",
                 "cta_text": "Ajouter au panier",
@@ -661,6 +671,14 @@
         "video_nKaAfL": {
           "type": "video",
           "settings": {
+            "video": "shopify://files/videos/CO265.mp4",
+            "name": "Elio, 27 ans",
+            "role": "3 semaines d'utilisation"
+          }
+        },
+        "video_Ah3GFN": {
+          "type": "video",
+          "settings": {
             "video": "shopify://files/videos/RO2.mp4",
             "name": "Elio, 27 ans",
             "role": "3 semaines d'utilisation"
@@ -717,6 +735,7 @@
       },
       "block_order": [
         "video_nKaAfL",
+        "video_Ah3GFN",
         "video_D3Hpc9",
         "video_9Jq3GL",
         "video_4AtHWX",
