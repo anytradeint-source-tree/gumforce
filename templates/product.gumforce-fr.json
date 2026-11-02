@@ -2100,7 +2100,14 @@
           "type": "faq",
           "settings": {
             "question": "Combien de chewing-gums faut-il mâcher par jour ?",
-            "answer": "<p>Notre protocole recommande de mâcher <strong>3 à 4 chewing-gums Gumforce par jour</strong>, en adaptant la fréquence et la durée à ton confort.</p><p>Il n'est pas obligatoire de prendre des jours de repos, sauf si tes courbatures sont trop intenses.</p><p><strong>La régularité est essentielle !</strong> Comme à la salle de sport, les résultats ne se construisent pas en quelques jours. L'important est d'adopter une routine progressive et adaptée.</p>"
+            "answer": "<p>Notre protocole recommande de mâcher <strong>3 à 4 chewing-gums Gumforce par jour</strong>, en adaptant la fréquence et la durée à ton confort.</p><p>Il n'est pas obligatoire de prendre des jours de repos, sauf si tes courbatures sont trop intenses.</p><p><strong>La régularité est essentielle&nbsp;!</strong> Comme à la salle de sport, les résultats ne se construisent pas en quelques jours. L'important est d'adopter une routine progressive et adaptée.</p>"
+          }
+        },
+        "faq_eDrpCi": {
+          "type": "faq",
+          "settings": {
+            "question": "Combien de chewing-gums contient un sachet de 100 g  ?",
+            "answer": "<p>Chaque sachet Gumforce contient environ 35 chewing-gums, soit 100 g de produit.</p>"
           }
         },
         "faq_k3U3zJ": {
@@ -2150,6 +2157,7 @@
         "faq_gnbWhW",
         "faq_dgrBAD",
         "faq_EUhDEd",
+        "faq_eDrpCi",
         "faq_k3U3zJ",
         "faq_Rk7pQa",
         "faq_Vn2sLe",
