@@ -223,7 +223,7 @@
                   "type": "text",
                   "name": "t:names.text",
                   "settings": {
-                    "text": "<p>1 CHEWING-GUM = 1 ENTRAÎNEMENT DE 15 MIN</p>",
+                    "text": "<p>1 CHEWING-GUM = 1 ENTRAÎNEMENT DE <strong>15 MIN</strong></p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
