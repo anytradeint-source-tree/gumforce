@@ -88,12 +88,15 @@
                 "offset_x": 0,
                 "offset_y": 8,
                 "shadow": true,
-                "anim": "pop",
                 "vb_enabled": true,
-                "vb_video": "shopify:\/\/files\/videos\/landing-page_masseter.mp4",
+                "vb_video": "shopify://files/videos/landing-page_masseter.mp4",
+                "vb_video_url": "",
                 "vb_size": 140,
+                "vb_size_mobile": 80,
                 "vb_zoom": 130,
-                "vb_focus": 40
+                "vb_focus": 40,
+                "vb_accent": "#2ab5b4",
+                "anim": "pop"
               },
               "blocks": {}
             },
@@ -376,8 +379,14 @@
                 "show_offer_date": true,
                 "offer_prefix": "Offre [période]",
                 "gauge_enabled": true,
+                "gauge_text": "Plus que <strong>[nombre] sachets</strong>",
                 "gauge_from": "2026-11-01",
                 "gauge_to": "2026-11-30",
+                "gauge_resets": "06:00",
+                "gauge_start": 300,
+                "gauge_end": 30,
+                "gauge_fill": 35,
+                "gauge_color": "#e0482b",
                 "show_quantity": false,
                 "qty_label": "Quantité",
                 "cta_text": "Ajouter au panier",
@@ -662,6 +671,14 @@
         "video_nKaAfL": {
           "type": "video",
           "settings": {
+            "video": "shopify://files/videos/CO265.mp4",
+            "name": "Elio, 27 ans",
+            "role": "3 semaines d'utilisation"
+          }
+        },
+        "video_Ah3GFN": {
+          "type": "video",
+          "settings": {
             "video": "shopify://files/videos/RO2.mp4",
             "name": "Elio, 27 ans",
             "role": "3 semaines d'utilisation"
@@ -718,6 +735,7 @@
       },
       "block_order": [
         "video_nKaAfL",
+        "video_Ah3GFN",
         "video_D3Hpc9",
         "video_9Jq3GL",
         "video_4AtHWX",
@@ -2082,7 +2100,14 @@
           "type": "faq",
           "settings": {
             "question": "Combien de chewing-gums faut-il mâcher par jour ?",
-            "answer": "<p>Notre protocole recommande de mâcher <strong>3 à 4 chewing-gums Gumforce par jour</strong>, en adaptant la fréquence et la durée à ton confort.</p><p>Il n'est pas obligatoire de prendre des jours de repos, sauf si tes courbatures sont trop intenses.</p><p><strong>La régularité est essentielle !</strong> Comme à la salle de sport, les résultats ne se construisent pas en quelques jours. L'important est d'adopter une routine progressive et adaptée.</p>"
+            "answer": "<p>Notre protocole recommande de mâcher <strong>3 à 4 chewing-gums Gumforce par jour</strong>, en adaptant la fréquence et la durée à ton confort.</p><p>Il n'est pas obligatoire de prendre des jours de repos, sauf si tes courbatures sont trop intenses.</p><p><strong>La régularité est essentielle&nbsp;!</strong> Comme à la salle de sport, les résultats ne se construisent pas en quelques jours. L'important est d'adopter une routine progressive et adaptée.</p>"
+          }
+        },
+        "faq_eDrpCi": {
+          "type": "faq",
+          "settings": {
+            "question": "Combien de chewing-gums contient un sachet de 100 g  ?",
+            "answer": "<p>Chaque sachet Gumforce contient environ 35 chewing-gums, soit 100 g de produit.</p>"
           }
         },
         "faq_k3U3zJ": {
@@ -2132,6 +2157,7 @@
         "faq_gnbWhW",
         "faq_dgrBAD",
         "faq_EUhDEd",
+        "faq_eDrpCi",
         "faq_k3U3zJ",
         "faq_Rk7pQa",
         "faq_Vn2sLe",
