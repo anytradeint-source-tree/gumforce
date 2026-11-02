@@ -291,6 +291,10 @@
                 "icon_3": "leaf",
                 "color_bg_3": "#2ab5b4",
                 "color_text_3": "#ffffff",
+                "badge_text_4": "35 pièces / sachet",
+                "icon_4": "none",
+                "color_bg_4": "#1a1a1a",
+                "color_text_4": "#ffffff",
                 "font_size": 10,
                 "badge_gap": 8
               },
