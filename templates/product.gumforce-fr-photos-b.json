@@ -223,7 +223,7 @@
                   "type": "text",
                   "name": "t:names.text",
                   "settings": {
-                    "text": "<p>1 CHEWING-GUM = 1 ENTRAÎNEMENT DE 15 MIN</p>",
+                    "text": "<p>1 CHEWING-GUM = 1 ENTRAÎNEMENT DE <strong>15 MIN</strong></p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",
@@ -2114,6 +2114,13 @@
             "answer": "<p>Chaque sachet Gumforce contient environ 35 chewing-gums, soit 100 g de produit.</p>"
           }
         },
+        "faq_qzQx7E": {
+          "type": "faq",
+          "settings": {
+            "question": "Combien de temps dure un entraînement ?",
+            "answer": "<p>Chaque session de mastication avec Gumforce dure entre 10 et 15 minutes maximum. Nous recommandons de répartir 3 à 4 chewing-gums par jour sur plusieurs sessions.</p>"
+          }
+        },
         "faq_k3U3zJ": {
           "type": "faq",
           "settings": {
@@ -2162,6 +2169,7 @@
         "faq_dgrBAD",
         "faq_EUhDEd",
         "faq_eDrpCi",
+        "faq_qzQx7E",
         "faq_k3U3zJ",
         "faq_Rk7pQa",
         "faq_Vn2sLe",
