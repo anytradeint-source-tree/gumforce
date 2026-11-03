@@ -61,6 +61,82 @@
     ]
   },
   {
+    "name": "Données Google : livraison et retours",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Frais de livraison, délais et retours envoyés à Google pour chaque variante de la page produit (fiches marchand de la Search Console). Ils doivent correspondre à ce que le client paie au paiement et à la politique de remboursement."
+      },
+      {
+        "type": "text",
+        "id": "gf_gg_countries",
+        "label": "Pays concernés",
+        "default": "FR,BE",
+        "info": "Codes à 2 lettres séparés par des virgules. Vide = rien n'est envoyé à Google."
+      },
+      {
+        "type": "number",
+        "id": "gf_gg_ship_weight",
+        "label": "Poids à partir duquel la livraison change (g)",
+        "default": 400
+      },
+      {
+        "type": "text",
+        "id": "gf_gg_ship_light",
+        "label": "Livraison la moins chère sous ce poids (€)",
+        "default": "3.99",
+        "info": "Ex. 1 sachet en point relais."
+      },
+      {
+        "type": "text",
+        "id": "gf_gg_ship_heavy",
+        "label": "Livraison la moins chère à partir de ce poids (€)",
+        "default": "0",
+        "info": "Ex. 2+2 en point relais. 0 = gratuite."
+      },
+      {
+        "type": "number",
+        "id": "gf_gg_handling_min",
+        "label": "Préparation : jours minimum",
+        "default": 1
+      },
+      {
+        "type": "number",
+        "id": "gf_gg_handling_max",
+        "label": "Préparation : jours maximum",
+        "default": 2
+      },
+      {
+        "type": "number",
+        "id": "gf_gg_transit_min",
+        "label": "Transport : jours minimum",
+        "default": 2
+      },
+      {
+        "type": "number",
+        "id": "gf_gg_transit_max",
+        "label": "Transport : jours maximum",
+        "default": 5
+      },
+      {
+        "type": "number",
+        "id": "gf_gg_return_days",
+        "label": "Jours pour demander un remboursement",
+        "default": 90
+      },
+      {
+        "type": "select",
+        "id": "gf_gg_return_fees",
+        "label": "Frais de retour",
+        "options": [
+          { "value": "FreeReturn", "label": "Gratuit pour le client" },
+          { "value": "ReturnFeesCustomerResponsibility", "label": "À la charge du client" }
+        ],
+        "default": "FreeReturn"
+      }
+    ]
+  },
+  {
     "name": "Mode Halloween",
     "settings": [
       {

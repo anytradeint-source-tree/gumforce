@@ -1,7 +1,11 @@
 {%- comment -%}
-  Données Google du produit : celles de Shopify (structured_data), plus la note Trustpilot (aggregateRating) quand
-  « Étoiles Trustpilot dans Google » est coché dans Réglages du thème › Avis Trustpilot. Note = gf_tp_rating,
-  nombre = gf_tp_google_count (le vrai total affiché sur Trustpilot). Paramètre : product.
+  Données Google du produit : celles de Shopify (structured_data), complétées par :
+  - la note Trustpilot (aggregateRating) quand « Étoiles Trustpilot dans Google » est coché (Réglages du thème › Avis
+    Trustpilot) : note = gf_tp_rating, nombre = gf_tp_google_count (le vrai total affiché sur Trustpilot) ;
+  - la description du produit sur chaque variante ;
+  - sur chaque offre, la politique de retour et les frais de livraison les moins chers, selon le poids de la variante
+    (Réglages du thème › Données Google : livraison et retours). Pays vide = rien n'est ajouté. Seulement en euros,
+    la devise des frais saisis. Paramètre : product.
 {%- endcomment -%}
 {%- capture gf_ld -%}{{ product | structured_data }}{%- endcapture -%}
 {%- assign gf_ld = gf_ld | strip -%}
@@ -11,6 +15,37 @@
   {%- unless gf_ld contains '"aggregateRating"' -%}
     {%- capture gf_ld_rating -%},"aggregateRating":{"@type":"AggregateRating","ratingValue":{{ settings.gf_tp_rating }},"bestRating":5,"worstRating":1,"ratingCount":{{ gf_ld_count }}}}{%- endcapture -%}
     {%- assign gf_ld = gf_ld | remove_last: '}' | append: gf_ld_rating -%}
+  {%- endunless -%}
+{%- endif -%}
+
+{%- assign gf_ld_desc = product.description | strip_html | strip_newlines | strip -%}
+{%- if gf_ld_desc != blank -%}
+  {%- unless gf_ld contains '#variant","@type":"Product","description"' -%}
+    {%- for v in product.variants -%}
+      {%- capture gf_ld_from -%}?variant={{ v.id }}#variant","@type":"Product",{%- endcapture -%}
+      {%- capture gf_ld_to -%}{{ gf_ld_from }}"description":{{ gf_ld_desc | json }},{%- endcapture -%}
+      {%- assign gf_ld = gf_ld | replace: gf_ld_from, gf_ld_to -%}
+    {%- endfor -%}
+  {%- endunless -%}
+{%- endif -%}
+
+{%- assign gf_ld_countries = settings.gf_gg_countries | upcase | remove: ' ' | split: ',' -%}
+{%- if gf_ld_countries.size > 0 and cart.currency.iso_code == 'EUR' -%}
+  {%- unless gf_ld contains '"shippingDetails"' or gf_ld contains '"hasMerchantReturnPolicy"' -%}
+    {%- capture gf_ld_return -%}"hasMerchantReturnPolicy":{"@type":"MerchantReturnPolicy","applicableCountry":{{ gf_ld_countries | json }},"returnPolicyCategory":"https://schema.org/MerchantReturnFiniteReturnWindow","merchantReturnDays":{{ settings.gf_gg_return_days | default: 0 | plus: 0 }},"returnMethod":"https://schema.org/ReturnByMail","returnFees":"https://schema.org/{{ settings.gf_gg_return_fees }}"},{%- endcapture -%}
+    {%- capture gf_ld_dest -%}[{%- for c in gf_ld_countries -%}{"@type":"DefinedRegion","addressCountry":{{ c | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]{%- endcapture -%}
+    {%- capture gf_ld_time -%}{"@type":"ShippingDeliveryTime","handlingTime":{"@type":"QuantitativeValue","minValue":{{ settings.gf_gg_handling_min | default: 0 | plus: 0 }},"maxValue":{{ settings.gf_gg_handling_max | default: 0 | plus: 0 }},"unitCode":"DAY"},"transitTime":{"@type":"QuantitativeValue","minValue":{{ settings.gf_gg_transit_min | default: 0 | plus: 0 }},"maxValue":{{ settings.gf_gg_transit_max | default: 0 | plus: 0 }},"unitCode":"DAY"}}{%- endcapture -%}
+    {%- assign gf_ld_weight = settings.gf_gg_ship_weight | default: 0 | plus: 0 -%}
+    {%- for v in product.variants -%}
+      {%- assign gf_ld_rate = settings.gf_gg_ship_light -%}
+      {%- if v.weight >= gf_ld_weight -%}
+        {%- assign gf_ld_rate = settings.gf_gg_ship_heavy -%}
+      {%- endif -%}
+      {%- assign gf_ld_rate = gf_ld_rate | default: '0' | replace: ',', '.' | remove: '€' | strip | plus: 0 -%}
+      {%- capture gf_ld_from -%}?variant={{ v.id }}#offer","@type":"Offer",{%- endcapture -%}
+      {%- capture gf_ld_to -%}{{ gf_ld_from }}{{ gf_ld_return }}"shippingDetails":{"@type":"OfferShippingDetails","shippingRate":{"@type":"MonetaryAmount","value":{{ gf_ld_rate }},"currency":"EUR"},"shippingDestination":{{ gf_ld_dest }},"deliveryTime":{{ gf_ld_time }}},{%- endcapture -%}
+      {%- assign gf_ld = gf_ld | replace: gf_ld_from, gf_ld_to -%}
+    {%- endfor -%}
   {%- endunless -%}
 {%- endif -%}
 <script type="application/ld+json">
