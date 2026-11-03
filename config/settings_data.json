@@ -11,6 +11,8 @@
   "current": {
     "gf_tp_count": "849",
     "gf_tp_rating": "4.8",
+    "gf_tp_google": true,
+    "gf_tp_google_count": 77,
     "gf_hw_enabled": true,
     "gf_hw_orange": false,
     "gf_hw_bats": false,

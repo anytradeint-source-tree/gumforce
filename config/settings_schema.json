@@ -43,6 +43,20 @@
         ],
         "default": "4.8",
         "info": "Remplace [note] dans les textes et sert aux étoiles quand la note d'un bloc est « Réglage du thème »."
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_tp_google",
+        "label": "Étoiles Trustpilot dans Google",
+        "default": false,
+        "info": "Ajoute la note moyenne et le nombre d'avis Trustpilot aux données Google des pages produit (étoiles sous le résultat). Décocher retire tout."
+      },
+      {
+        "type": "number",
+        "id": "gf_tp_google_count",
+        "label": "Nombre d'avis pour Google",
+        "default": 77,
+        "info": "Le vrai total affiché sur trustpilot.com/review/gumforce.co, à mettre à jour à la main."
       }
     ]
   },

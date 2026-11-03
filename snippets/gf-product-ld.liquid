@@ -1,0 +1,18 @@
+{%- comment -%}
+  Données Google du produit : celles de Shopify (structured_data), plus la note Trustpilot (aggregateRating) quand
+  « Étoiles Trustpilot dans Google » est coché dans Réglages du thème › Avis Trustpilot. Note = gf_tp_rating,
+  nombre = gf_tp_google_count (le vrai total affiché sur Trustpilot). Paramètre : product.
+{%- endcomment -%}
+{%- capture gf_ld -%}{{ product | structured_data }}{%- endcapture -%}
+{%- assign gf_ld = gf_ld | strip -%}
+{%- assign gf_ld_count = settings.gf_tp_google_count | default: 0 | plus: 0 -%}
+{%- assign gf_ld_end = gf_ld | slice: -1 -%}
+{%- if settings.gf_tp_google and gf_ld_count > 0 and gf_ld_end == '}' -%}
+  {%- unless gf_ld contains '"aggregateRating"' -%}
+    {%- capture gf_ld_rating -%},"aggregateRating":{"@type":"AggregateRating","ratingValue":{{ settings.gf_tp_rating }},"bestRating":5,"worstRating":1,"ratingCount":{{ gf_ld_count }}}}{%- endcapture -%}
+    {%- assign gf_ld = gf_ld | remove_last: '}' | append: gf_ld_rating -%}
+  {%- endunless -%}
+{%- endif -%}
+<script type="application/ld+json">
+  {{ gf_ld }}
+</script>
