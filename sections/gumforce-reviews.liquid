@@ -74,12 +74,13 @@
   assign enable_animations = s.enable_animations
 
   comment
-    ── Star logic: only exact X.0 = full, any decimal = half star ──
+    ── Star logic: rounded to the nearest half star (4.8 → 5 full, 4.7 → 4.5, 4.2 → 4) ──
   endcomment
-  assign full_stars = header_rating | plus: 0 | floor
-  assign decimal    = header_rating | split: '.' | last | plus: 0
+  assign half_units = header_rating | plus: 0 | times: 2 | round
+  assign full_stars = half_units | divided_by: 2
+  assign half_rest  = half_units | modulo: 2
   assign has_half   = false
-  if decimal > 0
+  if half_rest == 1
     assign has_half = true
   endif
   assign empty_stars = 5 | minus: full_stars
