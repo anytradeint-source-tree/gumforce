@@ -849,8 +849,10 @@
                 {%- elsif verified_image_url != blank -%}
                   <img src="{{ verified_image_url }}" class="gfrev-verified-icon" alt="{{ verified_label }}" loading="lazy">
                 {%- else -%}
-                  <svg viewBox="0 0 24 24" fill="currentColor" aria-label="{{ verified_label }}" class="gfrev-verified-icon">
-                    <path d="M12 1l3.09 1.64L18.55 2l1.64 3.09L22 8.55l-.73 3.45.73 3.45-1.81 3.46L18.55 22l-3.46-.73L12 23l-3.09-1.64L5.45 22l-1.64-3.09L2 15.45l.73-3.45L2 8.55l1.81-3.46L5.45 2l3.46.73L12 1zm-1.5 14l5.5-5.5-1.41-1.41L10.5 12.17l-2.09-2.08L7 11.5l3.5 3.5z"/>
+                  {%- comment -%} même icône que le badge vérifié de gumforce-results : cercle fin + coche {%- endcomment -%}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="gfrev-verified-icon">
+                    <circle cx="12" cy="12" r="9" stroke-width="1.5"/>
+                    <path d="M9 12l2 2 4-4" stroke-width="1.8"/>
                   </svg>
                 {%- endif -%}
                 <span class="gfrev-verified-label">{{ verified_label }}</span>
