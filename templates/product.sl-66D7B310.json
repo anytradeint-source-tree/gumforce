@@ -1852,17 +1852,17 @@
             "review_video": "shopify://files/videos/gf-avis-r46.mp4"
           }
         },
-        "avis_r47": {
+        "avis_r51": {
           "type": "review",
           "settings": {
-            "reviewer_name": "Fred L.",
+            "reviewer_name": "Matis K.",
             "review_date": "",
             "rating": 5,
             "verified": true,
-            "review_text": "J’ai commandé un display de Gumforce pocket dans mon magasin, c'est un produit qui cartonne, je suis vraiment surpris tous les jeunes connaissent le produit que je le mets à part comme des pains. Merci à Gumforce",
+            "review_text": "Bonne découverte mon magasin vient de recevoir ces produits je recommande",
             "highlight_text": "",
             "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r47.jpg"
+            "review_image": "shopify://shop_images/gf-avis-r51.jpg"
           }
         },
         "avis_r48": {
@@ -1952,7 +1952,7 @@
         "avis_r44",
         "avis_r45",
         "avis_r46",
-        "avis_r47",
+        "avis_r51",
         "avis_r48",
         "avis_r49",
         "avis_r50"
