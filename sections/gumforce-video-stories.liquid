@@ -50,6 +50,7 @@
   assign card_vw  = s.card_vw  | default: 76
   assign card_gap = s.card_gap | default: 14
   assign card_rad = s.player_radius | default: 18
+  assign side_dim = s.neighbor_dim | default: 10 | divided_by: 100.0
 
   assign autoplay_on = s.autoplay | default: true, allow_false: true
   assign loop_on     = s.loop_all | default: true, allow_false: true
@@ -163,7 +164,7 @@
 
   /* voile cinéma des voisines : assombri, jamais délavé */
   #gfvc-{{ sid }} .gfvc-card::after {
-    content:''; position:absolute; inset:0; background:#0b0b0c; opacity:.30;
+    content:''; position:absolute; inset:0; background:#0b0b0c; opacity:{{ side_dim }};
     transition:opacity .3s ease; pointer-events:none; z-index:3;
   }
   #gfvc-{{ sid }} .gfvc-card.gfvc-on::after { opacity:0; }
@@ -857,6 +858,7 @@
     { "type": "range", "id": "card_w", "label": "Largeur carte (desktop)", "min": 200, "max": 360, "step": 10, "default": 270, "unit": "px" },
     { "type": "range", "id": "card_gap", "label": "Espacement", "min": 8, "max": 28, "step": 2, "default": 14, "unit": "px" },
     { "type": "range", "id": "player_radius", "label": "Arrondi des cartes", "min": 0, "max": 32, "step": 2, "default": 18, "unit": "px" },
+    { "type": "range", "id": "neighbor_dim", "label": "Assombrissement des vidéos voisines", "info": "Voile sombre sur les vidéos qui ne sont pas au centre. 0 = aucun.", "min": 0, "max": 50, "step": 5, "default": 10, "unit": "%" },
     { "type": "checkbox", "id": "autoplay", "label": "Lecture auto muette (carte centrée)", "default": true },
     { "type": "checkbox", "id": "loop_all", "label": "Boucler (dernière → première)", "default": true },
     { "type": "checkbox", "id": "restart_on_return", "label": "Recommencer la vidéo au retour", "default": true },
