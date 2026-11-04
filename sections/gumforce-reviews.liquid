@@ -3,7 +3,7 @@
   GUMFORCE Reviews — Loox-Inspired Masonry Grid
   ============================================================================
   Dark masonry grid of customer review cards.
-  Each review = image (optional) + name + verified badge + date + stars + text.
+  Each review = image or video (optional) + name + verified badge + date + stars + text.
   Highlight key phrases with a gold/accent mark.
   CSS-columns masonry — zero JS for layout.
   "Show more" progressive reveal.
@@ -60,8 +60,10 @@
 
   if request.locale.iso_code == 'fr'
     assign verified_label = 'Achat vérifié'
+    assign play_label = 'Lire la vidéo'
   else
     assign verified_label = 'Verified'
+    assign play_label = 'Play video'
   endif
 
   assign pad_top         = s.padding_top | default: 40
@@ -244,6 +246,93 @@
   #gfrev-{{ sid }} .gfrev-card:hover .gfrev-img {
     transform: scale(1.03);
   }
+
+  /* ── Vidéo client : poster, puis lecture au tap avec le son (bouton = recette gumforce-video-stories).
+     La vidéo est posée sur le poster et n'apparaît qu'à sa 1re frame : jamais d'écran vide. ── */
+  #gfrev-{{ sid }} .gfrev-vid {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #gfrev-{{ sid }} .gfrev-vid-ph {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+  }
+
+  #gfrev-{{ sid }} .gfrev-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  #gfrev-{{ sid }} .gfrev-vid.gfrev-started .gfrev-video {
+    opacity: 1;
+  }
+
+  #gfrev-{{ sid }} .gfrev-play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    z-index: 2;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(0,0,0,.42);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    transition: opacity 0.25s ease, transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #gfrev-{{ sid }} .gfrev-play svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    margin-left: 2px;
+  }
+
+  #gfrev-{{ sid }} .gfrev-vid:hover .gfrev-play {
+    transform: scale(1.07);
+  }
+
+  #gfrev-{{ sid }} .gfrev-vid.gfrev-playing .gfrev-play,
+  #gfrev-{{ sid }} .gfrev-vid.gfrev-loading .gfrev-play {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #gfrev-{{ sid }} .gfrev-spin {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2.5px solid rgba(255,255,255,.25);
+    border-top-color: #fff;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+
+  #gfrev-{{ sid }} .gfrev-vid.gfrev-loading .gfrev-spin {
+    opacity: 1;
+    animation: gfrev-rot 0.8s linear infinite;
+  }
+
+  @keyframes gfrev-rot { to { transform: rotate(360deg); } }
 
   /* ── Card Body ── */
   #gfrev-{{ sid }} .gfrev-body {
@@ -659,6 +748,7 @@
           assign r_rating   = b.rating | default: 5 | plus: 0
           assign r_text     = b.review_text
           assign r_image    = b.review_image
+          assign r_video    = b.review_video
           assign r_verified = b.verified
           assign r_highlight = b.highlight_text
           assign r_item     = b.item_type
@@ -673,7 +763,65 @@
 
         <div class="gfrev-card{% if is_hidden %} gfrev-more{% endif %}" {{ block.shopify_attributes }}>
 
-          {%- if r_image != blank -%}
+          {%- if r_video != blank -%}
+            {%- liquid
+              comment — même recette que gumforce-video-stories : MP4 le plus proche de 720p, puis la rendition
+                « SD-480p » dérivée de son nom (Liquid n'expose que le plus gros MP4) ; le JS retombe sur le
+                fichier d'origine si elle n'existe pas. Le débit du 480p suit celui du 1080p (échelles Shopify
+                constatées : 7.2 → 1.5, 4.8 → 1.2, 3.3 → 1.0 Mbps)
+              endcomment
+              assign vsrc = ''
+              assign vbest = 99999
+              for srcx in r_video.sources
+                if srcx.mime_type == 'video/mp4'
+                  assign hh = srcx.height | default: 720
+                  assign diff = hh | minus: 720 | abs
+                  if diff < vbest
+                    assign vbest = diff
+                    assign vsrc = srcx.url
+                  endif
+                endif
+              endfor
+              if vsrc == '' and r_video.sources.size > 0
+                assign vsrc = r_video.sources.first.url
+              endif
+              assign vsrc_sd = vsrc
+              assign vparts = vsrc | split: '.HD-'
+              if vparts.size == 2
+                assign vtail = vparts.last | split: '-'
+                if vtail.size == 3
+                  case vtail[1]
+                    when '4.8Mbps'
+                      assign sd_rate = '1.2Mbps'
+                    when '3.3Mbps'
+                      assign sd_rate = '1.0Mbps'
+                    else
+                      assign sd_rate = '1.5Mbps'
+                  endcase
+                  assign vsrc_sd = vparts.first | append: '.SD-480p-' | append: sd_rate | append: '-' | append: vtail.last
+                endif
+              endif
+              assign r_alt = r_name | append: ' review video'
+            -%}
+          <div class="gfrev-img-wrap gfrev-vid" data-gfrev-vid data-src="{{ vsrc_sd | escape }}"
+               {%- if vsrc_sd != vsrc %} data-src-hd="{{ vsrc | escape }}"{% endif %}>
+            {%- if r_video.preview_image != blank -%}
+              {{ r_video.preview_image | image_url: width: 600 | image_tag:
+                  class: 'gfrev-img',
+                  loading: 'lazy',
+                  widths: '300, 450, 600',
+                  sizes: '(max-width: 749px) 50vw, (max-width: 999px) 33vw, 25vw',
+                  alt: r_alt }}
+            {%- else -%}
+              <div class="gfrev-vid-ph"></div>
+            {%- endif -%}
+            <video class="gfrev-video" playsinline webkit-playsinline loop preload="none" aria-label="{{ r_alt | escape }}"></video>
+            <button type="button" class="gfrev-play" aria-label="{{ play_label }}">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.6v12.8a1 1 0 0 0 1.52.85l10.2-6.4a1 1 0 0 0 0-1.7L9.52 4.75A1 1 0 0 0 8 5.6Z"/></svg>
+            </button>
+            <span class="gfrev-spin" aria-hidden="true"></span>
+          </div>
+          {%- elsif r_image != blank -%}
           <div class="gfrev-img-wrap">
             {%- assign r_alt = r_name | append: ' review photo' -%}
             {{ r_image | image_url: width: 600 | image_tag:
@@ -961,6 +1109,51 @@
       if (!queue.length && btnWrap) btnWrap.classList.add('gfrev-hide');
     });
   }
+
+  /* ── Vidéos clients : rien n'est chargé avant le tap (preload none, pas de src).
+     Tap = lecture avec le son (le play() naît du geste → autorisé sur iOS) ; re-tap = pause ;
+     une seule vidéo à la fois ; pause dès que la carte sort de l'écran. ── */
+  var curVid = null;
+  function vidPause(w){
+    var v = w.querySelector('video');
+    if (v && !v.paused) v.pause();
+    w.classList.remove('gfrev-playing', 'gfrev-loading');
+    if (curVid === w) curVid = null;
+  }
+  var vidIO = ('IntersectionObserver' in window) ? new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (!e.isIntersecting) vidPause(e.target); });
+  }) : null;
+  grid.addEventListener('click', function(e){
+    var w = e.target.closest('[data-gfrev-vid]');
+    if (!w || scrolling) return;
+    var v = w.querySelector('video');
+    if (!v) return;
+    if (curVid === w) { vidPause(w); return; }
+    if (curVid) vidPause(curVid);
+    curVid = w;
+    if (!v.getAttribute('src')) {
+      v.addEventListener('playing', function(){
+        w.classList.add('gfrev-started', 'gfrev-playing');
+        w.classList.remove('gfrev-loading');
+      });
+      v.addEventListener('waiting', function(){ if (curVid === w) w.classList.add('gfrev-loading'); });
+      v.addEventListener('error', function(){
+        var hd = w.getAttribute('data-src-hd');
+        if (hd && v.getAttribute('src') !== hd) {
+          v.src = hd;
+          if (curVid === w) { var q = v.play(); if (q && q.catch) q.catch(function(){}); }
+        } else {
+          w.classList.remove('gfrev-loading');
+        }
+      });
+      v.src = w.getAttribute('data-src');
+      if (vidIO) vidIO.observe(w);
+    }
+    w.classList.add('gfrev-loading');
+    v.muted = false;
+    var p = v.play();
+    if (p && p.catch) p.catch(function(){ if (curVid === w) vidPause(w); });
+  });
 
   /* ── Write a Review form ── */
   var formToggle = root.querySelector('[data-gfrev-toggle-form]');
@@ -1415,6 +1608,12 @@
           "type": "image_picker",
           "id": "review_image",
           "label": "Customer photo (optional)"
+        },
+        {
+          "type": "video",
+          "id": "review_video",
+          "label": "Customer video (optional)",
+          "info": "Shown instead of the photo. Plays on tap, with sound."
         },
         {
           "type": "text",
