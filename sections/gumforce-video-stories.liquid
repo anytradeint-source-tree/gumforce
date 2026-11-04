@@ -333,12 +333,21 @@
             # Liquid n'expose que le plus gros MP4 (1080p, 7 Mb/s, jusqu'à 54 Mo) alors que Shopify
             # génère aussi « SD-480p-1.5Mbps » sous le même nom → on le sert (4 à 5 fois plus léger) ;
             # le JS retombe sur le fichier d'origine s'il n'existe pas
+            # le débit du 480p suit celui du 1080p (échelles Shopify constatées : 7.2 → 1.5, 4.8 → 1.2, 3.3 → 1.0 Mbps)
             assign vsrc_sd = vsrc
             assign vparts = vsrc | split: '.HD-'
             if vparts.size == 2
               assign vtail = vparts.last | split: '-'
               if vtail.size == 3
-                assign vsrc_sd = vparts.first | append: '.SD-480p-1.5Mbps-' | append: vtail.last
+                case vtail[1]
+                  when '4.8Mbps'
+                    assign sd_rate = '1.2Mbps'
+                  when '3.3Mbps'
+                    assign sd_rate = '1.0Mbps'
+                  else
+                    assign sd_rate = '1.5Mbps'
+                endcase
+                assign vsrc_sd = vparts.first | append: '.SD-480p-' | append: sd_rate | append: '-' | append: vtail.last
               endif
             endif
             assign vposter = v.preview_image | image_url: width: 560
