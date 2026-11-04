@@ -674,6 +674,7 @@
       "blocks": {
         "video_nKaAfL": {
           "type": "video",
+          "disabled": true,
           "settings": {
             "video": "shopify://files/videos/CO265.mp4",
             "name": "Ethan, 27 ans",
