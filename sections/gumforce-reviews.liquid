@@ -375,11 +375,9 @@
     color: var(--gfrev-verified);
   }
 
-  #gfrev-{{ sid }} .gfrev-verified-label {
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--gfrev-verified);
-    line-height: 1;
+  /* coche évidée : couleur du fond de carte (blanc ou noir selon le template) */
+  #gfrev-{{ sid }} .gfrev-verified svg.gfrev-verified-icon polyline {
+    stroke: var(--gfrev-card-bg);
   }
 
   /* Date */
@@ -839,7 +837,7 @@
             <div class="gfrev-name-row">
               <span class="gfrev-name">{{ r_name }}</span>
               {%- if r_verified -%}
-              <span class="gfrev-verified">
+              <span class="gfrev-verified" title="{{ verified_label }}">
                 {%- if verified_image != blank -%}
                   {%- assign v_height = verified_height | times: 3 -%}
                   {{ verified_image | image_url: height: v_height | image_tag:
@@ -849,13 +847,14 @@
                 {%- elsif verified_image_url != blank -%}
                   <img src="{{ verified_image_url }}" class="gfrev-verified-icon" alt="{{ verified_label }}" loading="lazy">
                 {%- else -%}
-                  {%- comment -%} même icône que le badge vérifié de gumforce-results : cercle fin + coche {%- endcomment -%}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="gfrev-verified-icon">
-                    <circle cx="12" cy="12" r="9" stroke-width="1.5"/>
-                    <path d="M9 12l2 2 4-4" stroke-width="1.8"/>
+                  {%- comment -%} même badge que la coche à côté du nom dans gumforce-results : disque plein + coche évidée {%- endcomment -%}
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="gfrev-verified-icon">
+                    <circle cx="12" cy="12" r="11" fill="currentColor"/>
+                    <polyline points="7.5 12.5 10.5 15.5 16.5 9.5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 {%- endif -%}
-                <span class="gfrev-verified-label">{{ verified_label }}</span>
+                {%- comment -%} texte masqué : badge seul à l'écran (le libellé coupait ou faisait passer le nom sur 2 lignes), libellé gardé pour les lecteurs d'écran {%- endcomment -%}
+                <span class="visually-hidden">{{ verified_label }}</span>
               </span>
               {%- endif -%}
             </div>
