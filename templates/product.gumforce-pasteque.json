@@ -1,0 +1,2310 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "product-information",
+      "blocks": {
+        "media-gallery": {
+          "type": "_product-media-gallery",
+          "static": true,
+          "settings": {
+            "media_presentation": "carousel",
+            "media_columns": "two",
+            "image_gap": 4,
+            "large_first_image": true,
+            "icons_style": "none",
+            "slideshow_controls_style": "thumbnails",
+            "slideshow_mobile_controls_style": "thumbnails",
+            "thumbnail_position": "left",
+            "thumbnail_width": 44,
+            "thumbnail_radius": 0,
+            "aspect_ratio": "adapt",
+            "constrain_to_viewport": true,
+            "media_fit": "cover",
+            "media_radius": 18,
+            "extend_media": false,
+            "zoom": true,
+            "zoom_mobile": false,
+            "video_loop": true,
+            "video_autoplay": true,
+            "hide_variants": true,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0,
+            "gf_photos_version": "a"
+          },
+          "blocks": {}
+        },
+        "product-details": {
+          "type": "_product-details",
+          "static": true,
+          "settings": {
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "details_position": "flex-start",
+            "gap": 22,
+            "sticky_details_desktop": true,
+            "inherit_color_scheme": true,
+            "color_scheme": "scheme-1",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "gumforce_image_badge_pAxyfF": {
+              "type": "gumforce-image-badge",
+              "name": "GF Badge image",
+              "settings": {
+                "show_badge": true,
+                "txt1": "2 Achetés",
+                "txt2": "2 Offerts",
+                "txt3": "AUJOURD'HUI",
+                "bg_color": "#c5fe89",
+                "text_color": "#0a0a0a",
+                "position": "top-left",
+                "badge_w": 140,
+                "badge_w_mobile": 96,
+                "rotation": -8,
+                "offset_x": 0,
+                "offset_y": 8,
+                "shadow": true,
+                "vb_enabled": true,
+                "vb_video": "shopify://files/videos/landing-page_masseter.mp4",
+                "vb_video_url": "",
+                "vb_size": 140,
+                "vb_size_mobile": 80,
+                "vb_zoom": 130,
+                "vb_focus": 40,
+                "vb_accent": "#2ab5b4",
+                "anim": "pop"
+              },
+              "blocks": {}
+            },
+            "gumforce_fond_mint_gQcfBN": {
+              "type": "gumforce-fond-mint",
+              "name": "GF Fond dégradé",
+              "settings": {
+                "color_top": "#a6d4da",
+                "color_mid": "#f0faf7",
+                "color_bottom": "#e3e7ea",
+                "mid_position": 55
+              },
+              "blocks": {}
+            },
+            "gumforce_product_card_3pUaWV": {
+              "type": "gumforce-product-card",
+              "name": "GF Carte produit",
+              "settings": {
+                "hide_alt_marker": "#checkout",
+                "card_width": 480,
+                "content_max": 1380,
+                "media_card_gap": 64,
+                "top_gap": 32,
+                "thumb_size": 96,
+                "thumb_gap": 36,
+                "card_bg": "#ffffff",
+                "card_radius": 28,
+                "card_pad": 32,
+                "card_pad_top": 20,
+                "mobile_media_inset": 12,
+                "mobile_media_radius": 16,
+                "card_radius_mobile": 20,
+                "card_pad_mobile": 12,
+                "card_pad_top_mobile": 20,
+                "top_gap_mobile": 20
+              },
+              "blocks": {}
+            },
+            "gumforce_star_rating_AQ9xU8": {
+              "type": "gumforce-star-rating",
+              "name": "GF Star Rating",
+              "settings": {
+                "stars_image": "shopify://shop_images/1_2.avif",
+                "stars_image_url": "",
+                "stars_image_height": 16,
+                "rating": "theme",
+                "show_number": false,
+                "review_count": "[note]/5 Excellent | [avis] avis Trustpilot",
+                "review_link": "#reviews",
+                "star_size": 18,
+                "color_star": "#f5a623",
+                "color_text": "#111111",
+                "color_subtext": "#6b7280"
+              },
+              "blocks": {}
+            },
+            "group_icgrde": {
+              "type": "group",
+              "name": "Header",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 12,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "inherit_color_scheme": true,
+                "color_scheme": "",
+                "background_media": "none",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "text_xrnftG": {
+                  "type": "text",
+                  "name": "Product title",
+                  "settings": {
+                    "text": "<h1>GUMFORCE - LE CHEWING‑GUM QUI MUSCLE TA MÂCHOIRE</h1>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "h1",
+                    "font": "var(--font-primary--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "text_pqB7WG": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>1 CHEWING-GUM = 1 ENTRAÎNEMENT DE 15 MIN</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "custom",
+                    "font": "var(--font-body--family)",
+                    "font_size": "0.875rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "uppercase",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "price_tVjtKg": {
+                  "type": "price",
+                  "disabled": true,
+                  "settings": {
+                    "show_sale_price_first": true,
+                    "show_installments": false,
+                    "show_tax_info": false,
+                    "type_preset": "h3",
+                    "width": "100%",
+                    "alignment": "left",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "color": "var(--color-foreground)",
+                    "padding-block-start": 4,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_xrnftG",
+                "text_pqB7WG",
+                "price_tVjtKg"
+              ]
+            },
+            "gumforce_product_badge_nmFar6": {
+              "type": "gumforce-product-badge",
+              "name": "GF Product Badge",
+              "settings": {
+                "badge_text": "10x plus dur",
+                "icon": "none",
+                "color_bg": "#1a1a1a",
+                "color_text": "#ffffff",
+                "badge_text_2": "500mg de créatine",
+                "icon_2": "none",
+                "color_bg_2": "#1a1a1a",
+                "color_text_2": "#ffffff",
+                "badge_text_3": "PASTÈQUE",
+                "icon_3": "pasteque",
+                "color_bg_3": "#fa5f83",
+                "color_text_3": "#ffffff",
+                "badge_text_4": "35 pièces / sachet",
+                "icon_4": "none",
+                "color_bg_4": "#1a1a1a",
+                "color_text_4": "#ffffff",
+                "font_size": 10,
+                "badge_gap": 8
+              },
+              "blocks": {}
+            },
+            "gumforce_benefits_bullets_XaPQDd": {
+              "type": "gumforce-benefits-bullets",
+              "name": "GF Benefits Bullets",
+              "settings": {
+                "header_text": "",
+                "bullet_1": "Développe un visage défini et masculin",
+                "bullet_2": "Deviens plus attirant physiquement",
+                "bullet_3": "Renforce ta confiance en toi",
+                "bullet_4": "Livraison 48h en France & Belgique",
+                "bullet_5": "",
+                "bullet_6": "",
+                "bullet_7": "",
+                "bullet_8": "",
+                "icon_type": "check",
+                "color_icon": "#01b5b4",
+                "icon_size": 16,
+                "color_text": "#111111",
+                "gap": 10
+              },
+              "blocks": {}
+            },
+            "divider_VJhene": {
+              "type": "_divider",
+              "name": "t:names.divider",
+              "settings": {
+                "thickness": 1,
+                "corner_radius": "square",
+                "width_percent": 100,
+                "padding-block-start": 0,
+                "padding-block-end": 0
+              },
+              "blocks": {}
+            },
+            "gumforce_pack_offer_wfzGnq": {
+              "type": "gumforce-pack-offer",
+              "name": "GF Pack Offer",
+              "settings": {
+                "product_handle": "",
+                "tier1_show": true,
+                "tier2_show": true,
+                "default_tier": "2",
+                "per_sachet_text": "par sachet",
+                "tier1_product": "",
+                "tier1_variant": 1,
+                "tier1_name": "1 sachet",
+                "tier1_image": "shopify://shop_images/gumforce-pasteque-1-sachet.png",
+                "tier1_sachets": 1,
+                "tier1_badge": "",
+                "tier1_ship": "",
+                "tier2_product": "",
+                "tier2_variant": 2,
+                "tier2_name": "2 + 2 offerts",
+                "tier2_image": "shopify://shop_images/gumforce-pasteque-4-sachets.png",
+                "tier2_sachets": 4,
+                "tier2_badge": "Offre [période]",
+                "tier2_ship": "Livraison gratuite",
+                "tier3_show": false,
+                "tier3_product": "",
+                "tier3_variant": 3,
+                "tier3_name": "3 + 3 offerts",
+                "tier3_sachets": 6,
+                "tier3_badge": "",
+                "tier3_ship": "",
+                "urgency_text": "Commande dans les [temps] pour une livraison le [date]",
+                "cutoff_hour": 24,
+                "delivery_icon": "truck",
+                "delivery_offset": 2,
+                "delivery_skip_sunday": true,
+                "show_formgrid": true,
+                "formgrid_head": "Pourquoi la créatine",
+                "fg_icon_size": 42,
+                "fg1_icon": "dumbbell",
+                "fg1_label": "FORCE",
+                "fg2_icon": "bolt",
+                "fg2_label": "PUISSANCE",
+                "fg3_icon": "refresh",
+                "fg3_label": "RÉCUPÉRATION",
+                "fg4_icon": "bulb",
+                "fg4_label": "MENTAL",
+                "show_offer_date": true,
+                "offer_prefix": "Offre [période]",
+                "gauge_enabled": true,
+                "gauge_text": "Plus que <strong>[nombre] sachets</strong>",
+                "gauge_from": "2026-11-01",
+                "gauge_to": "2026-11-30",
+                "gauge_resets": "06:00",
+                "gauge_start": 300,
+                "gauge_end": 30,
+                "gauge_fill": 35,
+                "gauge_color": "#e0482b",
+                "show_quantity": false,
+                "qty_label": "Quantité",
+                "cta_text": "Ajouter au panier",
+                "cta_bg": "#111111",
+                "cta_text_color": "#ffffff",
+                "cta_radius": 30,
+                "cta_link": "",
+                "go_to_checkout": false,
+                "fast_checkout": true,
+                "cta_adding_text": "Ajout en cours…",
+                "cta_redirecting_text": "Redirection…",
+                "show_cta_guarantee": true,
+                "cta_guarantee_text": "Satisfait ou remboursé · 90 jours",
+                "oos_text": "Le stock est parti en 3 semaines. Le prochain lot arrive. Laisse tes coordonnées pour être servi avant tout le monde, avec une remise secrète en prime.",
+                "oos_btn_text": "Préviens-moi du retour",
+                "oos_cta_text": "Rupture de stock",
+                "oos_tier_text": "Épuisé",
+                "oos_done_text": "C'est noté, on te prévient",
+                "oos_form_id": "Y8CXkC",
+                "oos_popup_delay": 0,
+                "show_guarantee": false,
+                "guarantee_text": "Garantie 90 jours : résultat ou 100 % remboursé (vraiment)",
+                "guarantee_expanded": "<p>On a tellement confiance en GUMFORCE qu'on te laisse 90 jours pour juger. Pas de résultat ? On te rembourse l'intégralité. Zéro risque de ton côté. Valable uniquement sur l'offre 2+2 (4 sachets = 90 jours d'entraînement).</p>",
+                "show_reassure": false,
+                "reassure1": "Paiement sécurisé",
+                "reassure2": "Livraison en 48h",
+                "reassure3": "Garantie 90 jours",
+                "show_contact": true,
+                "contact_title": "Une question ?",
+                "contact_sub": "Parle-nous en direct, on répond 7 j/7.",
+                "contact_badge": "Réponse < 2 h",
+                "contact_whatsapp": "+33 6 44 65 10 54",
+                "contact_email": "hello@gumforce.co",
+                "bg_color": "#ffffff",
+                "card_bg": "#ffffff",
+                "text_color": "#111111",
+                "heading_color": "#111111",
+                "text_muted": "#777777",
+                "padding_top": 0,
+                "padding_bottom": 24,
+                "nut_label": "Informations nutritionnelles",
+                "nut_title": "Informations nutritionnelles",
+                "nut_portion": "Portion : 1 pièce (2,7 g)",
+                "nut_perpack": "35 pièces par sachet",
+                "nut_col1": "Par portion",
+                "nut_col2": "Pour 100g",
+                "nut_rows": "Énergie;12 kJ / 3 kcal;445 kJ / 106 kcal\nMatières grasses;0 g;0 g\n-dont saturées;0 g;0 g\nGlucides;1 g;37 g\n-dont sucres;0 g;0 g\nProtéines;0 g;0 g\nSel;0 g;0 g",
+                "nut_ref": "Apports de référence pour un adulte type (8400 kJ / 2000 kcal).",
+                "nut_notes": "<p>Une consommation excessive peut avoir des effets laxatifs.</p><p><strong>Créatine Monohydrate : 500 mg par pièce.</strong></p>"
+              },
+              "blocks": {}
+            },
+            "variant_picker_R3rGDr": {
+              "type": "variant-picker",
+              "disabled": true,
+              "settings": {
+                "variant_style": "dropdowns",
+                "show_swatches": false,
+                "alignment": "left",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "gumforce_accordions_EbbYcA": {
+              "type": "gumforce-accordions",
+              "name": "GF Accordions",
+              "disabled": true,
+              "settings": {
+                "title_1": "Comment l'utiliser ?",
+                "body_1": "3 à 4 chewing-gums GUMFORCE par jour suffisent.\nMâche chaque chewing-gum pendant environ 15 minutes.\nVeille à bien mâcher des deux côtés pour un développement harmonieux de la mâchoire.",
+                "title_2": "Est-ce que ça marche vraiment ?",
+                "body_2": "Oui, GUMFORCE est 10x plus résistant qu’un chewing-gum classique et possède une texture conçue pour travailler les muscles en profondeur, offrant une vraie résistance pour entraîner les masséters, les muscles qui dessinent la mâchoire.\n\nChaque chewing-gum contient également 500 mg de créatine monohydrate, le complément sportif le plus étudié au monde. Celle-ci contribue au développement musculaire.",
+                "title_3": "Qu'est-ce qu'il contient ?",
+                "body_3": "Les chewing-gums GUMFORCE sont 10x plus résistants qu’un chewing-gum classique. Ils contiennent 500 mg de créatine monohydrate par chewing-gum, avec un dosage réel et vérifié.\n\nIls sont végans, sans sucre et sans gluten.\n\nChaque sachet contient 35 chewing-gums pour 100 g.",
+                "title_4": "Livraison, retours, contact",
+                "body_4": "Livraison mondiale avec suivi inclus. Expédition sous 1 à 2 jours ouvrés, puis livraison en 5 à 8 jours ouvrés selon votre localisation.\n\nGarantie satisfait ou remboursé pendant 90 jours. Pas satisfait ? Contactez-nous.\nhello@gumforce.co",
+                "title_5": "",
+                "body_5": "",
+                "title_6": "",
+                "body_6": "",
+                "open_first": false,
+                "one_at_a_time": true,
+                "icon_style": "chevron",
+                "row_padding": 14,
+                "title_tag": "p",
+                "text_transform": "none",
+                "letter_spacing": "0.03",
+                "body_size": 14,
+                "body_line_height": "1.6",
+                "color_border": "#e5e7eb",
+                "color_title": "#111111",
+                "color_body": "#374151",
+                "color_icon": "#111111",
+                "color_accent": "#111111",
+                "color_hover": ""
+              },
+              "blocks": {}
+            },
+            "buy_buttons_eYQEYi": {
+              "type": "buy-buttons",
+              "disabled": true,
+              "settings": {
+                "stacking": true,
+                "show_pickup_availability": false,
+                "gift_card_form": true,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "quantity": {
+                  "type": "quantity",
+                  "disabled": true,
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                },
+                "add-to-cart": {
+                  "type": "add-to-cart",
+                  "static": true,
+                  "settings": {
+                    "style_class": "button"
+                  },
+                  "blocks": {}
+                },
+                "accelerated-checkout": {
+                  "type": "accelerated-checkout",
+                  "disabled": true,
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                }
+              },
+              "block_order": []
+            },
+            "text_aEtTtq": {
+              "type": "text",
+              "name": "Product description",
+              "disabled": true,
+              "settings": {
+                "text": "{{ closest.product.description }}",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-primary--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "gumforce_image_badge_pAxyfF",
+            "gumforce_fond_mint_gQcfBN",
+            "gumforce_product_card_3pUaWV",
+            "gumforce_star_rating_AQ9xU8",
+            "group_icgrde",
+            "gumforce_product_badge_nmFar6",
+            "gumforce_benefits_bullets_XaPQDd",
+            "divider_VJhene",
+            "gumforce_pack_offer_wfzGnq",
+            "variant_picker_R3rGDr",
+            "gumforce_accordions_EbbYcA",
+            "buy_buttons_eYQEYi",
+            "text_aEtTtq"
+          ]
+        }
+      },
+      "settings": {
+        "content_width": "content-center-aligned",
+        "desktop_media_position": "left",
+        "equal_columns": false,
+        "limit_details_width": false,
+        "gap": 48,
+        "enable_sticky_add_to_cart": false,
+        "color_scheme": "scheme-4",
+        "padding-block-start": 0,
+        "padding-block-end": 24
+      }
+    },
+    "gumforce_stats_mosaic_6HaQjW": {
+      "type": "gumforce-stats-mosaic",
+      "blocks": {
+        "stat_6bA3mG": {
+          "type": "stat",
+          "settings": {
+            "number": "10",
+            "suffix": "x",
+            "suffix_small": false,
+            "lead": "plus dur",
+            "text": "qu'un chewing-gum normal, ta mâchoire bosse vraiment",
+            "bg": "#c5fe89",
+            "fg": "#121212",
+            "grid": false
+          }
+        },
+        "stat_Yz8NHB": {
+          "type": "stat",
+          "settings": {
+            "number": "15",
+            "suffix": "min",
+            "suffix_small": true,
+            "lead": "par jour",
+            "text": "suffisent, pendant que tu fais autre chose",
+            "bg": "#121212",
+            "fg": "#f4f3ee",
+            "grid": false
+          }
+        },
+        "stat_XkUHPD": {
+          "type": "stat",
+          "settings": {
+            "number": "15000",
+            "suffix": "+",
+            "suffix_small": false,
+            "lead": "mâchoires",
+            "text": "déjà entraînées avec GUMFORCE",
+            "bg": "#ffffff",
+            "fg": "#121212",
+            "grid": true
+          }
+        },
+        "stat_8R8UJh": {
+          "type": "stat",
+          "settings": {
+            "number": "90",
+            "suffix": "jours",
+            "suffix_small": true,
+            "lead": "pour tester.",
+            "text": "Pas convaincu ? On te rembourse.",
+            "bg": "#c5fe89",
+            "fg": "#121212",
+            "grid": false
+          }
+        }
+      },
+      "block_order": [
+        "stat_6bA3mG",
+        "stat_Yz8NHB",
+        "stat_XkUHPD",
+        "stat_8R8UJh"
+      ],
+      "name": "GF Chiffres mosaïque",
+      "settings": {
+        "image_alt": "",
+        "image_bw": true,
+        "image_fit": "contain",
+        "image_bg": "#000000",
+        "image_ratio_mobile": "3-2",
+        "image_focus_mobile": 40,
+        "radius": 28,
+        "radius_mobile": 20,
+        "content_max": 1380,
+        "enable_animation": true,
+        "shadow": false,
+        "aria_label": "GUMFORCE en chiffres",
+        "padding_top": 44,
+        "padding_bottom": 8,
+        "padding_top_mobile": 32,
+        "padding_bottom_mobile": 0
+      }
+    },
+    "gumforce_video_stories_wNDBM4": {
+      "type": "gumforce-video-stories",
+      "blocks": {
+        "video_nKaAfL": {
+          "type": "video",
+          "disabled": true,
+          "settings": {
+            "video": "shopify://files/videos/CO265.mp4",
+            "name": "Ethan, 27 ans",
+            "role": "3 semaines d'utilisation"
+          }
+        },
+        "video_Ah3GFN": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/RO2-sdr.mp4",
+            "name": "Arthur, 27 ans",
+            "role": "3 semaines d'utilisation"
+          }
+        },
+        "video_D3Hpc9": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/YA7.mp4",
+            "name": "Yann, 26 ans",
+            "role": "3 semaines d'utilisation"
+          }
+        },
+        "video_9Jq3GL": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/0722(1).mp4",
+            "name": "Fanny, 32 ans",
+            "role": "1 mois d'utilisation"
+          }
+        },
+        "video_4AtHWX": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/JULIEN1.mp4",
+            "name": "Julien, 31 ans",
+            "role": "3 mois d'utilisation"
+          }
+        },
+        "video_gt3efb": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/EL5.mp4",
+            "name": "Ethan, 25 ans",
+            "role": "1 mois d'utilisation"
+          }
+        },
+        "video_LXRVPL": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/LUCAS5.mp4",
+            "name": "Lucas, 26 ans",
+            "role": "2 mois d'utilisation"
+          }
+        },
+        "video_ck9ziC": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/0721-copy.mp4",
+            "name": "Quan, 25 ans",
+            "role": "1 mois d'utilisation"
+          }
+        }
+      },
+      "block_order": [
+        "video_nKaAfL",
+        "video_Ah3GFN",
+        "video_D3Hpc9",
+        "video_9Jq3GL",
+        "video_4AtHWX",
+        "video_gt3efb",
+        "video_LXRVPL",
+        "video_ck9ziC"
+      ],
+      "name": "GF Vidéos clients",
+      "settings": {
+        "badge_text": "",
+        "heading": "Ils ont testé",
+        "heading_accent": "GUMFORCE",
+        "heading_size": 32,
+        "heading_tag": "h2",
+        "subheading": "Et senti l'effet dès la première mâche.",
+        "ratio": "9-16",
+        "card_vw": 76,
+        "card_w": 270,
+        "card_gap": 14,
+        "player_radius": 22,
+        "autoplay": true,
+        "loop_all": true,
+        "restart_on_return": true,
+        "transparent_bg": true,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_muted": "#7c8388",
+        "accent_color": "#2ab5b4",
+        "enable_animation": true,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 40
+      }
+    },
+    "gumforce_sticky_atc_9wJNA9": {
+      "type": "gumforce-sticky-atc",
+      "name": "GF Sticky ATC",
+      "settings": {
+        "style": "noir",
+        "product_title": "LE CHEWING GUM QUI MUSCLE TA MÂCHOIRE",
+        "note_text": "Livraison gratuite",
+        "cta_text": "COMMANDER",
+        "cta_action": "cart",
+        "show_image": true,
+        "product_image": "shopify://shop_images/gumforce-pasteque-sachet.png",
+        "image_size": 42,
+        "price_product": "",
+        "price_text": "",
+        "bg_color": "#121212",
+        "text_color": "#f4f4f4",
+        "cta_bg": "#f4f4f4",
+        "cta_text_color": "#121212",
+        "cta_radius": 20
+      }
+    },
+    "gumforce_influencers_grid_WkeiRW": {
+      "type": "gumforce-influencers-grid",
+      "blocks": {
+        "card_JANfz3": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/Remove_Margins_1_1.jpg",
+            "name": "Igor Leroy",
+            "role": "Modèle à la Fashion Week de Paris 2026"
+          }
+        },
+        "card_ciMprA": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/gumforce-visuel-129.jpg",
+            "name": "Edgar Icon",
+            "role": "Fondateur de Elwood"
+          }
+        },
+        "card_tcWqe8": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/gumforce-visuel-128.jpg",
+            "name": "Sebastian Vale",
+            "role": "Athlète Hyrox"
+          }
+        },
+        "card_bdnyPL": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/gumforce-visuel-127.jpg",
+            "name": "Aurélien Delmas",
+            "role": "Acteur et modèle"
+          }
+        }
+      },
+      "block_order": [
+        "card_JANfz3",
+        "card_ciMprA",
+        "card_tcWqe8",
+        "card_bdnyPL"
+      ],
+      "name": "GF Influenceurs (grille)",
+      "settings": {
+        "badge_text": "",
+        "heading": "Adopté par les meilleurs",
+        "subheading": "Rejoins la communauté GUMFORCE",
+        "heading_size": 32,
+        "heading_tag": "h2",
+        "cols_desktop": 4,
+        "cols_mobile": "2",
+        "card_ratio": "portrait",
+        "grid_gap": 12,
+        "card_radius": 16,
+        "show_limit": true,
+        "limit_mobile": 6,
+        "more_text": "Voir plus",
+        "transparent_bg": true,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#0e0e0e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "color_card": "#e9e9ec",
+        "enable_animation": true,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 60
+      }
+    },
+    "gumforce_influencers_mCTQJn": {
+      "type": "gumforce-influencers",
+      "blocks": {
+        "card_GHiRRp": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/c9e112a0-8c0c-457d-9b6e-b6e22bf9888a.png",
+            "name": "Igor Leroy",
+            "role": "Modèle à la Fashion Week de Paris 2026"
+          }
+        },
+        "card_QjiXfp": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_22_59_13.png",
+            "name": "Edgar Icon",
+            "role": "Fondateur de Elwood"
+          }
+        },
+        "card_YEMwcx": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/ChatGPT_Image_17_juin_2026_23_43_21.png",
+            "name": "Sebastian Vale",
+            "role": "Athlète Hyrox"
+          }
+        },
+        "card_ieLqwb": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/Untitled_design_17_copie_b4af2629-b2a7-48c4-b8d9-985bdefec8c6.png",
+            "name": "Aurélien Delmas",
+            "role": "Acteur et modèle"
+          }
+        }
+      },
+      "block_order": [
+        "card_GHiRRp",
+        "card_QjiXfp",
+        "card_YEMwcx",
+        "card_ieLqwb"
+      ],
+      "disabled": true,
+      "name": "GF Influencer Carousel",
+      "settings": {
+        "badge_text": "",
+        "heading": "Adopté par les meilleurs",
+        "subheading": "Rejoins la communauté GUMFORCE",
+        "heading_tag": "h2",
+        "transparent_bg": true,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#0e0e0e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "color_card": "#e9e9ec",
+        "card_width": 310,
+        "card_gap": 16,
+        "card_radius": 0,
+        "enable_animation": true,
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "gumforce_before_after_eyaDmY": {
+      "type": "gumforce-before-after",
+      "name": "GF Avant / Après",
+      "settings": {
+        "badge_text": "",
+        "heading": "30 jours d'entraînement de la mâchoire",
+        "subheading": "<p>Trois chewing-gums Gumforce par jour. </p>",
+        "heading_tag": "h2",
+        "text_align_desktop": "center",
+        "heading_size": 32,
+        "body_size": 15,
+        "before_image": "shopify://shop_images/gumforce-visuel-130.jpg",
+        "after_image": "shopify://shop_images/gumforce-visuel-131.jpg",
+        "before_label": "Jour 1",
+        "after_label": "Jour 30",
+        "show_arrow": true,
+        "info_name": "",
+        "info_duration": "",
+        "bg_color": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "text_color": "#6b6b6b",
+        "text_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "image_gap": 4,
+        "card_radius": 16,
+        "enable_animation": true,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "use_theme_font": true
+      }
+    },
+    "gumforce_social_proof_Aeif3C": {
+      "type": "gumforce-social-proof",
+      "blocks": {
+        "benefit_pN33rb": {
+          "type": "benefit",
+          "settings": {
+            "title": "10x Harder Than Regular Gum",
+            "description": "Real resistance. Real results."
+          }
+        },
+        "benefit_KtAiep": {
+          "type": "benefit",
+          "settings": {
+            "title": "500mg Creatine Per Piece",
+            "description": "The world's most proven supplement."
+          }
+        },
+        "benefit_9rf7fh": {
+          "type": "benefit",
+          "settings": {
+            "title": "First & Only Jawline Gum With Creatine",
+            "description": "No other gum does this."
+          }
+        },
+        "benefit_xzirkx": {
+          "type": "benefit",
+          "settings": {
+            "title": "Train Your Jaw. Anywhere. Anytime.",
+            "description": "Commute. Desk. Gym. Date night."
+          }
+        },
+        "benefit_WLcBqJ": {
+          "type": "benefit",
+          "settings": {
+            "title": "Flavor That Doesn't Quit",
+            "description": "No bland gum. No flavor fade."
+          }
+        },
+        "benefit_kMfkQC": {
+          "type": "benefit",
+          "settings": {
+            "title": "Looks Like Regular Gum",
+            "description": "No one knows you're training."
+          }
+        },
+        "trust_badge_9RhJCe": {
+          "type": "trust_badge",
+          "settings": {
+            "icon": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
+            "text": "90-Day Money Back Guarantee"
+          }
+        }
+      },
+      "block_order": [
+        "benefit_pN33rb",
+        "benefit_KtAiep",
+        "benefit_9rf7fh",
+        "benefit_xzirkx",
+        "benefit_WLcBqJ",
+        "benefit_kMfkQC",
+        "trust_badge_9RhJCe"
+      ],
+      "disabled": true,
+      "name": "GUMFORCE Social Proof",
+      "settings": {
+        "bg_color": "#121212",
+        "column_split": "60/40",
+        "content_valign": "center",
+        "content_gap": 16,
+        "text_alignment": "center",
+        "headline_number": "350,000+",
+        "headline_number_tag": "h1",
+        "headline_number_size": 60,
+        "headline_number_color": "#00b5b4",
+        "show_badge": false,
+        "headline_text": "<p>have already chosen GUMFORCE</p>",
+        "headline_text_tag": "h2",
+        "headline_text_size": 28,
+        "headline_text_color": "#f4f4f4",
+        "subtitle": "<p>The World's First Jawline Gum with Creatine Monohydrate</p>",
+        "subtitle_size": 16,
+        "subtitle_color": "#c0c0c0",
+        "benefit_title_tag": "h6",
+        "benefit_desc_tag": "p",
+        "benefit_title_size": 15,
+        "benefit_title_color": "#f4f4f4",
+        "benefit_desc_size": 13,
+        "benefit_desc_color": "#a0a0a0",
+        "benefit_icon_size": 28,
+        "benefits_gap": 24,
+        "cta_text": "SHOP NOW",
+        "cta_scroll_to_bundle": true,
+        "cta_link": "",
+        "cta_bg_color": "#f4f4f4",
+        "cta_text_color": "#121212",
+        "cta_radius": 30,
+        "cta_style": "filled",
+        "cta_width": "auto",
+        "trust_text_color": "#a0a0a0",
+        "trust_icon_size": 18,
+        "trust_full_image_height": 36,
+        "accent_color": "#2ab5b4",
+        "hero_image": "shopify://shop_images/Ontwerp_zonder_titel_69_2.jpg",
+        "hero_aspect": "1:1",
+        "hero_position": "center",
+        "hero_radius": 12,
+        "hero_overlay_color": "#000000",
+        "hero_overlay_opacity": 0,
+        "show_hero_mobile": true,
+        "padding_top": 56,
+        "padding_bottom": 56,
+        "padding_top_mobile": 36,
+        "padding_bottom_mobile": 36,
+        "enable_animations": true
+      }
+    },
+    "gumforce_results_8mpJyz": {
+      "type": "gumforce-results",
+      "blocks": {
+        "result_card_aidfH6": {
+          "type": "result_card",
+          "settings": {
+            "image_before": "shopify://shop_images/3_d7d63888-1066-45e2-a96e-24562fd1322a.jpg",
+            "image_after": "shopify://shop_images/Ontwerp_zonder_titel_78.jpg",
+            "client_name": "Vincenzo T.",
+            "show_verified_check": true,
+            "location": "Austin, TX",
+            "first_order": "First order: Nov 12, 2025",
+            "duration": "30 DAYS",
+            "quote": "",
+            "show_stars": false,
+            "star_count": 5,
+            "show_verified_tag": true
+          }
+        },
+        "result_card_hVCrnK": {
+          "type": "result_card",
+          "settings": {
+            "image_before": "shopify://shop_images/2_e9567129-fa92-4ac7-9abd-5c775211ad1b.jpg",
+            "image_after": "shopify://shop_images/1_aefa3bb7-5f47-4e5d-b5f6-8f5046a7ff32.jpg",
+            "client_name": "Jake R.",
+            "show_verified_check": true,
+            "location": "Miami, FL",
+            "first_order": "First order: Nov 3, 2025",
+            "duration": "60 DAYS",
+            "quote": "",
+            "show_stars": false,
+            "star_count": 5,
+            "show_verified_tag": true
+          }
+        },
+        "result_card_TtGn73": {
+          "type": "result_card",
+          "settings": {
+            "image_before": "shopify://shop_images/Ontwerp_zonder_titel_75.jpg",
+            "image_after": "shopify://shop_images/Ontwerp_zonder_titel_74.jpg",
+            "client_name": "Mike K.",
+            "show_verified_check": true,
+            "location": "London, UK",
+            "first_order": "First order: Dec 18, 2025",
+            "duration": "90 DAYS",
+            "quote": "",
+            "show_stars": false,
+            "star_count": 5,
+            "show_verified_tag": true
+          }
+        }
+      },
+      "block_order": [
+        "result_card_aidfH6",
+        "result_card_hVCrnK",
+        "result_card_TtGn73"
+      ],
+      "disabled": true,
+      "name": "GUMFORCE Real Results",
+      "settings": {
+        "bg_color": "#f4f4f4",
+        "pattern_url": "",
+        "pattern_size": 80,
+        "pattern_opacity": 12,
+        "heading": "Jaws Built By GUMFORCE.",
+        "heading_tag": "h2",
+        "heading_size": 32,
+        "heading_color": "#091208",
+        "subheading": "Verified customers. Verified gains.",
+        "subheading_size": 16,
+        "subheading_color": "#121212",
+        "card_grad_start": "#121212",
+        "card_grad_end": "#424242",
+        "card_radius": 28,
+        "card_shadow_color": "#0000000f",
+        "image_ratio": "2:3",
+        "cards_gap": 24,
+        "divider_color": "#ffffff",
+        "accent_color": "#39b0b3",
+        "pill_bg_color": "#f1f4f0",
+        "name_color": "#ffffff",
+        "meta_color": "#ffffff",
+        "quote_color": "#c0c0c0",
+        "star_color": "#f5a623",
+        "pill_text_color": "#000000",
+        "verified_color": "#f1f4f0",
+        "verified_badge_image": "shopify://shop_images/a_1.png",
+        "verified_badge_url": "",
+        "verified_badge_height": 16,
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48,
+        "enable_animations": true
+      }
+    },
+    "gumforce_image_text_dBi4VK": {
+      "type": "gumforce-image-text",
+      "name": "GUMFORCE Image + Text",
+      "settings": {
+        "image": "shopify://shop_images/hf_20260906_104300_ab7cca80-8350-4c6c-a9be-626212ecd8ef.jpg",
+        "image_ratio": "1:1",
+        "image_radius": 16,
+        "image_shadow": false,
+        "heading": "<p>Bientôt près de chez toi</p>",
+        "heading_tag": "h2",
+        "heading_size": 32,
+        "body_text": "<p>On arrive en rayon. GUMFORCE sera bientôt disponible en grande surface et dans les commerces de proximité.</p>",
+        "body_size": 14,
+        "cta_text": "ACHETER MAINTENANT →",
+        "cta_scroll_to_bundle": true,
+        "cta_link": "",
+        "cta_bg_color": "#1a1a1a",
+        "cta_text_color": "#ffffff",
+        "cta_radius": 30,
+        "cta_style": "filled",
+        "cta_width": "full",
+        "guarantee_text": "Satisfait ou remboursé sous 90 jours",
+        "guarantee_icon": "shopify://shop_images/Ontwerp_zonder_titel_79.png",
+        "guarantee_icon_size": 16,
+        "guarantee_font_size": 13,
+        "text_align": "center",
+        "mobile_layout": "text_image_cta",
+        "image_side": "left",
+        "column_split": "50/50",
+        "vertical_align": "center",
+        "content_gap": 48,
+        "text_gap": 24,
+        "heading_color": "#111111",
+        "text_color": "#6b6b6b",
+        "text_muted": "#6b6b6b",
+        "color_scheme": "scheme-1",
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "enable_animations": true
+      }
+    },
+    "gumforce_image_text_3NFVJt": {
+      "type": "gumforce-image-text",
+      "disabled": true,
+      "name": "GUMFORCE Image + Text",
+      "settings": {
+        "image": "shopify://shop_images/0d8009c9-7e26-4f6e-8c77-129883d00ef6_1.jpg",
+        "image_ratio": "1:1",
+        "image_radius": 16,
+        "image_shadow": false,
+        "heading": "<p>Your Jaw Is a Muscle. </p><p>Train It Like One.</p>",
+        "heading_tag": "h2",
+        "heading_size": 32,
+        "body_text": "<p>Your masseter muscle is <br/><strong>one of the strongest</strong> in your body. </p><p>GUMFORCE is <strong>10x harder than standard gum</strong>. <br/>Built to sculpt your jawline.</p>",
+        "body_size": 14,
+        "cta_text": "SHOP NOW",
+        "cta_scroll_to_bundle": true,
+        "cta_link": "",
+        "cta_bg_color": "#f4f4f4",
+        "cta_text_color": "#121212",
+        "cta_radius": 30,
+        "cta_style": "filled",
+        "cta_width": "full",
+        "guarantee_text": "90-Day Money Back Guarantee",
+        "guarantee_icon": "shopify://shop_images/Ontwerp_zonder_titel_63.png",
+        "guarantee_icon_size": 18,
+        "guarantee_font_size": 13,
+        "text_align": "center",
+        "mobile_layout": "image_text",
+        "image_side": "left",
+        "column_split": "50/50",
+        "vertical_align": "center",
+        "content_gap": 48,
+        "text_gap": 24,
+        "heading_color": "#111111",
+        "text_color": "#262626",
+        "text_muted": "#6b6b6b",
+        "color_scheme": "scheme-2",
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "enable_animations": true
+      }
+    },
+    "gumforce_image_text_V6LJGa": {
+      "type": "gumforce-image-text",
+      "disabled": true,
+      "name": "GUMFORCE Image + Text",
+      "settings": {
+        "image": "shopify://shop_images/0d0685cf-ee8e-4fb9-8c50-fe501134c912_1.jpg",
+        "image_ratio": "1:1",
+        "image_radius": 16,
+        "image_shadow": false,
+        "heading": "<p>Creatine: The Most Proven Supplement in Sports Nutrition</p>",
+        "heading_tag": "h2",
+        "heading_size": 32,
+        "body_text": "<p>Creatine monohydrate is one of the most researched performance compounds around. </p><p>Each GUMFORCE piece packs 500mg of the highest quality.</p>",
+        "body_size": 14,
+        "cta_text": "",
+        "cta_scroll_to_bundle": false,
+        "cta_link": "",
+        "cta_bg_color": "#2ab5b4",
+        "cta_text_color": "#121212",
+        "cta_radius": 8,
+        "cta_style": "filled",
+        "cta_width": "auto",
+        "guarantee_text": "90-Day Moneyback Guarantee",
+        "guarantee_icon_size": 18,
+        "guarantee_font_size": 13,
+        "text_align": "left",
+        "mobile_layout": "image_text",
+        "image_side": "right",
+        "column_split": "50/50",
+        "vertical_align": "center",
+        "content_gap": 48,
+        "text_gap": 24,
+        "heading_color": "#111111",
+        "text_color": "#262626",
+        "text_muted": "#6b6b6b",
+        "color_scheme": "scheme-2",
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "enable_animations": true
+      }
+    },
+    "gumforce_creatine_benefits_4nhTBj": {
+      "type": "gumforce-creatine-benefits",
+      "blocks": {
+        "benefit_binqtn": {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "strength",
+            "keyword": "Force",
+            "description": "Plus de répétitions, des charges plus lourdes."
+          }
+        },
+        "benefit_C4E7nL": {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "power",
+            "keyword": "Puissance",
+            "description": "De l'explosivité quand ça compte."
+          }
+        },
+        "benefit_y4Gmj6": {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "recovery",
+            "keyword": "Récupération",
+            "description": "Moins de courbatures entre les séances."
+          }
+        },
+        "benefit_bM48LL": {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "mind",
+            "keyword": "Mental",
+            "description": "Plus de concentration et d'endurance mentale."
+          }
+        }
+      },
+      "block_order": [
+        "benefit_binqtn",
+        "benefit_C4E7nL",
+        "benefit_y4Gmj6",
+        "benefit_bM48LL"
+      ],
+      "disabled": true,
+      "name": "Creatine Benefits",
+      "settings": {
+        "heading": "Pourquoi la créatine",
+        "subheading": "",
+        "bg_color": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "subheading_color": "#6b6b6b",
+        "keyword_color": "#000000",
+        "desc_color": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "divider_color": "#1e1e1e",
+        "icon_size": 34,
+        "heading_size": 32,
+        "mobile_layout": "grid",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48,
+        "enable_animations": true
+      }
+    },
+    "gumforce_reviews_cH4exD": {
+      "type": "gumforce-reviews",
+      "blocks": {
+        "avis_r01": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Alex M.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Ca fonctionne vraiment de ouf. J'en mâche 4 par jour, depuis 5 mois et ma mâchoire s'est complètement transformé. Mes joues sont hyper creuses et mon visage s'est affiné. Et à chaque commande je suis livré en moins de 24h.",
+            "highlight_text": "ma mâchoire s'est complètement transformé",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r01.jpg"
+          }
+        },
+        "avis_r02": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Denis P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je n’avais jamais testé de chewing-gum ultra dur et je m’attendais pas du tout à ça. La résistance est bluffante, la mastication est intense et on sent vraiment la différence avec un chewing-gum classique (comme on peut le voir dans la vidéo haha)",
+            "highlight_text": "La résistance est bluffante",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r02.mp4"
+          }
+        },
+        "avis_r03": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ethan P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Tous les jours avant d’aller a la salle j'ai pris l'habitude de prendre un gumforce pour les 15 minutes de trajet, c'est parfait et ça fonctionne de ouf mon visage s'est vraiment affiné",
+            "highlight_text": "ça fonctionne de ouf mon visage s'est vraiment affiné",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r03.mp4"
+          }
+        },
+        "avis_r04": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Elio P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Produit dingue, au bout de 3 semaines seulement je me trouve déjà plus beau en photo et sur les vidéos franchement allez y les yeux fermés",
+            "highlight_text": "au bout de 3 semaines seulement je me trouve déjà plus beau en photo",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r04.mp4"
+          }
+        },
+        "avis_r05": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ben T.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Pour avoir tester d’autres marques gumforce est clairement au dessus avec la créatine déjà intégrée, je recommande merci gumforce",
+            "highlight_text": "gumforce est clairement au dessus avec la créatine déjà intégrée",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r05.mp4"
+          }
+        },
+        "avis_r06": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Quentin B.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J'ai des résultats de fou après un mois, ma mâchoire est plus marquée et j’ai un visage plus attirant et masculin",
+            "highlight_text": "ma mâchoire est plus marquée",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r06.mp4"
+          }
+        },
+        "avis_r07": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Hugo P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Super produit en plus j’ai réussi à avoir l’édition limitée à la pastèque c’est très bon et ça change de la menthe",
+            "highlight_text": "",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r07.jpg"
+          }
+        },
+        "avis_r08": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Johan F.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je suis coach sportif et j’aurai jamais pensé entraîner ma mâchoire. J’ai voulu tester ce chewing-gum et franchement les résultats parlent d’eux-mêmes, en plus la livraison est hyper rapide bref tout s'est bien passé",
+            "highlight_text": "les résultats parlent d’eux-mêmes",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r08.mp4"
+          }
+        },
+        "avis_r09": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Lucas O.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’ai profité de l'offre 2 achetés = 2 offerts et j’ai reçu en plus un stickers + une carte avec un programme d’entraînement",
+            "highlight_text": "",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r09.jpg"
+          }
+        },
+        "avis_r10": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ronan E.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "En tant que coach j'ai suivi un programme de 1 mois avec gumforce pour muscler mon masseter, le muscle situé au niveau de la mâchoire et les résultats sont impressionnants, je vais repasser commande",
+            "highlight_text": "les résultats sont impressionnants",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r10-sdr.mp4"
+          }
+        },
+        "avis_r11": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Yanis I.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’ai bien reçu ma commande, je suis satisfait de gumforce et des résultats sur mon visage. J’ai même reçu un format pocket hyper pratique donc c’est top",
+            "highlight_text": "",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r11.jpg"
+          }
+        },
+        "avis_r12": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Christopher D.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je fais du télétravail et en général je mâche en travaillant. Pour l'instant, les résultats sont là mais je vais continuer et voir sur le long terme",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r12.mov"
+          }
+        },
+        "avis_r13": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Titouan M.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je viens de recevoir mon colis, j’ai aussi pris goût pastèque. J'ai déjà goûté et les chewing-gums sont vraiment durs c'est impressionnant. Pour l’instant c’est une bonne surprise, à voir sur le long terme",
+            "highlight_text": "les chewing-gums sont vraiment durs c'est impressionnant",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r13.jpg"
+          }
+        },
+        "avis_r14": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Christopher D.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je m'entraîne tous les jours et Gumforce vient compléter mon entraînement à la salle, j’en mâche 5 par jour depuis plus de 3 mois et l'évolution est incroyable les gars",
+            "highlight_text": "l'évolution est incroyable",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r14.mp4"
+          }
+        },
+        "avis_r15": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Yann Y.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Y'a personne qui entraîne sa mâchoire et à la salle un pote m’a parlé de Gumforce, j’ai passé 2 commandes, je comprends pas pourquoi on oublie tous de muscler sa mâchoire pourtant c’est la première chose que les autres regarde chez nous",
+            "highlight_text": "c’est la première chose que les autres regarde chez nous",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r15.mp4"
+          }
+        },
+        "avis_r16": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Pierre-Henri B.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je suis mannequin depuis 6 ans et je vous assure que tout les modèles utilisent Gumforce avant les défilés, j’ai vu tout le monde avec ça à la Fashion week en septembre 2026. Quand tu fais du modélisme la mâchoire c’est primordial donc perso c’est un hack très simple juste avant les shoots",
+            "highlight_text": "tout les modèles utilisent Gumforce avant les défilés",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r16.mp4"
+          }
+        },
+        "avis_r17": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Julien C.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je suis étudiant en médecine et je valide complètement Gumforce ! En fait le masséter c’est muscle comme un autre donc si tu le travaille, il se développe. A côté il faut évidemment réduire le sucre et le gras au maximum et j’essaie aussi de faire 10.000 pas par jour pour compléter ma routine. Super découverte en tout cas je recommande !",
+            "highlight_text": "Je suis étudiant en médecine et je valide complètement Gumforce !",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r17-sdr.mp4"
+          }
+        },
+        "avis_r18": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Mickael K.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Avec l’âge je commençais à perdre ma mâchoire (je fais beaucoup de rétention d’eau) mais grâce à Gumforce j’ai pu diminuer cette rétention et j’ai retrouvé ma mâchoire d’avant. J’évite le sel et je bouge tous les jours pour venir en complément de cette perte des joues.",
+            "highlight_text": "j’ai retrouvé ma mâchoire d’avant",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r18.mp4"
+          }
+        },
+        "avis_r19": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Antoine A.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je viens de commencer mon 2ème paquet et je vois déjà des résultats, perso j’ai plus confiance en moi donc c’est hyper motivant. Je recommande à 100%",
+            "highlight_text": "je vois déjà des résultats",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r19.jpg"
+          }
+        },
+        "avis_r20": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Alexis D.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Bon goût et la mâchoire travaille vraiment ! Très bonne surprise",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r20.mp4"
+          }
+        },
+        "avis_r21": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Nicolas D.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Superbe produit !! Plus l’ajout de la créatine qui donne l’originalité à ce chewing-gum. Une livraison qui fut très rapide en 48h.",
+            "highlight_text": "",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r21.jpg"
+          }
+        },
+        "avis_r22": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Jeremi A.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Coach de sport, je recommande à tous mes élèves de marcher gumforce et je vois une diff sur tous les jeunes franchement c top",
+            "highlight_text": "je vois une diff sur tous les jeunes",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r22.jpg"
+          }
+        },
+        "avis_r23": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Lucas C.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’utilise gumforce depuis 4 mois, un conseil qui a maximisé mes résultats c’est de réduire le sucre et de rester actif (privilégier la marche ect.)",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r23.mp4"
+          }
+        },
+        "avis_r24": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Cédric O.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je mâche en travaillant depuis la maison 3 gums par jour (matin midi aprem), si t’as l’habitude des chewing-gums classiques c’est impératif de passer des gums plus durs ! En plus ceux-là contribuent à ton apport et créatine et développe ta mâchoire donc y a pas photo, je recommande",
+            "highlight_text": "c’est impératif de passer des gums plus durs",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r24.mp4"
+          }
+        },
+        "avis_r25": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Gaëtan U.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Incroyable ce produit, ultra dur je m’attendais pas du tout à ça!! Les gars faut pas oublier la mâchoire personne pense à la muscler mais c’est trop important",
+            "highlight_text": "ultra dur je m’attendais pas du tout à ça",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r25.mp4"
+          }
+        },
+        "avis_r26": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Yannick P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’utilise Gumforce depuis plusieurs semaines et j’ai retrouvé une mâchoire plus dessinée et mes contours sont aussi plus définis. Je ne connaissais pas du tout ce produit, mais je trouve que c'est innovant.",
+            "highlight_text": "j’ai retrouvé une mâchoire plus dessinée",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r26.mp4"
+          }
+        },
+        "avis_r27": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Mathéo W.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "La résistance est dingue, la première fois j'ai pas tenu 5 min mais maintenant j'arrive à respecter des sessions d'environ 15 min à chaque fois",
+            "highlight_text": "La résistance est dingue",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r27.mp4"
+          }
+        },
+        "avis_r28": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Elliot P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "3ème commande chez gumforce, j'en prends tous les jours le secret c'est vraiment la régularité des entraînements",
+            "highlight_text": "le secret c'est vraiment la régularité",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r28.mov"
+          }
+        },
+        "avis_r29": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Myron U.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J'ai testé ces gums après avoir testé d'autres marques et c'est de loin la meilleure, j'ai jamais aimé mes joues mais là je vois une différence en quelques semaines d'utilisation",
+            "highlight_text": "c'est de loin la meilleure",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r29.mp4"
+          }
+        },
+        "avis_r30": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Laurent A.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Les galets sont vraiment ultra durs j'avais jamais testé avant, en plus tu peux t'entrainer ou tu veux defois j'en prends dans le métro, au boulot ou dans voiture pour des trajets courts. C'est simple à intégrer bred j'adore",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r30.mp4"
+          }
+        },
+        "avis_r31": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Nathan M.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je viens de recevoir mes sachets et j'ai jamais essayé la créatine sous cette forme, en tout cas ça reste un des meilleur compliment pour la prise de masse musculaire et la force donc j'ai hate de tester en complément",
+            "highlight_text": "",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r31.jpg"
+          }
+        },
+        "avis_r32": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Maxence N.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Les chewing-gum de chez GumForce sont vraiment top honnêtement. Que ce soit au niveau de la texture, de la résistance et du goût, c’est vraiment bon. Je recommande vivement",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r32.mp4"
+          }
+        },
+        "avis_r33": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Clément Z.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’ai trouvé GUMFORCE chez sport nutrition et dorénavant j’achète en ligne car l’offre meilleure (2 achetés/2 offerts) mais surtout ils sont toujours en rupture en magasin",
+            "highlight_text": "ils sont toujours en rupture en magasin",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r33.jpg"
+          }
+        },
+        "avis_r34": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Arthur L.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Hâte de tester les chewing-gum en plus livraison en moins de 24h, maintenant à voir sur le long terme",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r34.mp4"
+          }
+        },
+        "avis_r35": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Gaetan B.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’ai commencé par ceux à la menthe avec 3 à 4 chewing-gum par jour et je viens de recevoir 1 sachet pastèque. Le goût reste naturel et ça change, j’espère qu’ils vont sortir d’autres goûts",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r35.mp4"
+          }
+        },
+        "avis_r36": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Firmin A.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je pensais que c'était une grosse arnaque donc évidemment j’ai commandé et gros banger ça fonctionne vraiment, j’ai eu des résultats rapidement en 2/3 semaines et là ma mâchoire s’est complètement transformée, je sens que le chewing-gum est moins dur en bouche",
+            "highlight_text": "j’ai eu des résultats rapidement en 2/3 semaines",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r36.mp4"
+          }
+        },
+        "avis_r37": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Mathéo M.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J'ai testé sur 4 semaines et je viens de repassé commandes, je me sens mieux et les filles me remarquent plus en soirée ect",
+            "highlight_text": "les filles me remarquent plus en soirée",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r37.mp4"
+          }
+        },
+        "avis_r38": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ben D.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Incroyable ! Ca change vraiment la vie ! Et c’est super naturel !",
+            "highlight_text": "",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r38.jpg"
+          }
+        },
+        "avis_r39": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Sebastien L.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Très belle découverte que je recommande particulièrement aux personnes qui comme moi souhaitent conserver des traits du visage malgré les effets du temps. Une approche originale pour prendre soin de soi je recommande merci gumforce",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r39.mp4"
+          }
+        },
+        "avis_r40": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Léandre I.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J´ADORE ! C’est bon et en plus ça muscle la mâchoire. Plus jamais j’achèterai des chewing-gum classique 😂",
+            "highlight_text": "Plus jamais j’achèterai des chewing-gum classique",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r40.jpg"
+          }
+        },
+        "avis_r41": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Gaël W.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Honnêtement rien à redire, Gumforce c’est de la frappe, les résultats sont visibles rapidement 😉 La livraison et vraiment rapide en plus!",
+            "highlight_text": "les résultats sont visibles rapidement",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r41.jpg"
+          }
+        },
+        "avis_r42": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Robin M.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Super produit reçu rapidement, vraiment dur comme annoncé et efficace. Prêt à recommander plusieurs sachets",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r42.mp4"
+          }
+        },
+        "avis_r43": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Dorian V.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Très bonne expérience avec Gumforce ! Une équipe pro et à l’écoute et réactive. Le service est de qualité, je recommande sans hésiter !",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r43.mp4"
+          }
+        },
+        "avis_r44": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Louis B.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Super produit trouvé dans un magasin de nutrition sportive, ça faisait longtemps que j'avais pas vu un produit qualitatif avec cet effet immédiat en quelques jours",
+            "highlight_text": "cet effet immédiat en quelques jours",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r44.jpg"
+          }
+        },
+        "avis_r45": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Evan I.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "En plus de l’offre avantageuse, j’ai reçu quelques goodies sympas (sticker et une carte avec un programme d’entraînement) J’ai été agréablement surpris en plus livraison en 48h avec colissimo bravo !",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r45.mp4"
+          }
+        },
+        "avis_r46": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Lelya P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’ai commandé un display de Gumforce pocket dans mon magasin, c'est un produit qui cartonne, je suis vraiment surpris surtout par tous les jeunes qui connaissent ce produit. Les sachets partent comme des petits pains. Merci à Gumforce",
+            "highlight_text": "Les sachets partent comme des petits pains",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r46.mp4"
+          }
+        },
+        "avis_r51": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Matis K.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Bonne découverte mon magasin vient de recevoir ces produits je recommande",
+            "highlight_text": "",
+            "item_type": "",
+            "review_image": "shopify://shop_images/gf-avis-r51.jpg"
+          }
+        },
+        "avis_r48": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Molly P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Excellent chewing gum, depuis que je les utilise ma mâchoire est tellement plus dessinée c’est impressionnant. Super taff l'équipe Gumforce",
+            "highlight_text": "ma mâchoire est tellement plus dessinée",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r48-sdr.mp4"
+          }
+        },
+        "avis_r49": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Alexis R.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Suite à une erreur de commande j’ai commandé 3 fois la quantité voulu , heureusement j’ai été accompagné par Lou qui m’as permis d’être remboursé le plus rapidement possible ! Merci encore pour son professionnalisme et son efficacité",
+            "highlight_text": "",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r49.mp4"
+          }
+        },
+        "avis_r50": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Louis I.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "On m'a toujours dit que j'avais un visage d'enfant donc j'ai commandé sur le site et en plus de la livraison hyper rapide les chewing-gums marchent vraiment, les résultats arrivent hyper rapidement je suis trop content",
+            "highlight_text": "les chewing-gums marchent vraiment",
+            "item_type": "",
+            "review_video": "shopify://files/videos/gf-avis-r50.mp4"
+          }
+        }
+      },
+      "block_order": [
+        "avis_r07",
+        "avis_r13",
+        "avis_r35",
+        "avis_r01",
+        "avis_r02",
+        "avis_r03",
+        "avis_r04",
+        "avis_r05",
+        "avis_r06",
+        "avis_r08",
+        "avis_r09",
+        "avis_r10",
+        "avis_r11",
+        "avis_r12",
+        "avis_r14",
+        "avis_r15",
+        "avis_r16",
+        "avis_r17",
+        "avis_r18",
+        "avis_r19",
+        "avis_r20",
+        "avis_r21",
+        "avis_r22",
+        "avis_r23",
+        "avis_r24",
+        "avis_r25",
+        "avis_r26",
+        "avis_r27",
+        "avis_r28",
+        "avis_r29",
+        "avis_r30",
+        "avis_r31",
+        "avis_r32",
+        "avis_r33",
+        "avis_r34",
+        "avis_r36",
+        "avis_r37",
+        "avis_r38",
+        "avis_r39",
+        "avis_r40",
+        "avis_r41",
+        "avis_r42",
+        "avis_r43",
+        "avis_r44",
+        "avis_r45",
+        "avis_r46",
+        "avis_r51",
+        "avis_r48",
+        "avis_r49",
+        "avis_r50"
+      ],
+      "name": "GF Reviews Grid",
+      "settings": {
+        "show_header": true,
+        "heading_text": "Ils en parlent mieux que nous",
+        "header_rating": "theme",
+        "header_count": "[avis] avis Trustpilot",
+        "stars_img_5": "shopify://shop_images/trust5_1.svg",
+        "stars_img_4_5": "shopify://shop_images/trust_45_1.svg",
+        "stars_img_4": "shopify://shop_images/trust4_1.svg",
+        "stars_header_height": 16,
+        "stars_card_height": 13,
+        "verified_badge_url": "",
+        "verified_badge_height": 14,
+        "initial_count": 8,
+        "load_more_text": "Voir plus",
+        "columns_desktop": 4,
+        "columns_tablet": 3,
+        "columns_mobile": 2,
+        "column_gap": 14,
+        "card_gap": 14,
+        "bg_color": "#ffffff",
+        "card_bg": "#ffffff",
+        "card_border": "#2a2a2a",
+        "card_radius": 24,
+        "star_color": "#3d9f78",
+        "name_color": "#1a1a1a",
+        "date_color": "#888888",
+        "text_color": "#1a1a1a",
+        "verified_color": "#888888",
+        "highlight_bg": "#c5fe89",
+        "highlight_text_color": "#1a1a1a",
+        "meta_color": "#777777",
+        "header_color": "#1a1a1a",
+        "btn_bg": "#1a1a1a",
+        "btn_text_color": "#ffffff",
+        "btn_radius": 30,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "enable_animations": true
+      }
+    },
+    "gumforce_faq_9zyYPB": {
+      "type": "gumforce-faq",
+      "blocks": {
+        "faq_gnbWhW": {
+          "type": "faq",
+          "settings": {
+            "question": "Qu’est-ce que Gumforce ?",
+            "answer": "<p>Gumforce est un chewing-gum d’entraînement spécialement conçu pour développer les muscles de la mâchoire, affiner le visage et creuser les joues.</p><p>Il est 10 fois plus dur qu’un chewing-gum traditionnel et contient 500 mg de créatine par chewing-gum.</p><p>Sa dureté permet de solliciter intensément les muscles de la mâchoire, tandis que la créatine contribue à améliorer les performances physiques lors d’efforts, à développer les muscles plus rapidement, augmenter la force et à améliorer les facultés cognitives.</p>"
+          }
+        },
+        "faq_dgrBAD": {
+          "type": "faq",
+          "settings": {
+            "question": "Est-ce que ça marche vraiment ?",
+            "answer": "<p>Oui, et la science le confirme.</p><p>Ta mâchoire possède des muscles appelés <strong>masséters</strong>. Comme les autres muscles du corps, ils peuvent se renforcer et se développer lorsqu'ils sont sollicités régulièrement.</p><p>En entraînant tes masséters avec Gumforce, tu peux donc développer les muscles de ta mâchoire et, par la même occasion, affiner ton visage et creuser tes joues.</p>"
+          }
+        },
+        "faq_EUhDEd": {
+          "type": "faq",
+          "settings": {
+            "question": "Combien de chewing-gums faut-il mâcher par jour ?",
+            "answer": "<p>Notre protocole recommande de mâcher <strong>3 à 4 chewing-gums Gumforce par jour</strong>, en adaptant la fréquence et la durée à ton confort.</p><p>Il n'est pas obligatoire de prendre des jours de repos, sauf si tes courbatures sont trop intenses.</p><p><strong>La régularité est essentielle&nbsp;!</strong> Comme à la salle de sport, les résultats ne se construisent pas en quelques jours. L'important est d'adopter une routine progressive et adaptée.</p>"
+          }
+        },
+        "faq_eDrpCi": {
+          "type": "faq",
+          "settings": {
+            "question": "Combien de chewing-gums contient un sachet de 100 g  ?",
+            "answer": "<p>Chaque sachet Gumforce contient environ 35 chewing-gums, soit 100 g de produit.</p>"
+          }
+        },
+        "faq_qzQx7E": {
+          "type": "faq",
+          "settings": {
+            "question": "Combien de temps dure un entraînement ?",
+            "answer": "<p>Chaque session de mastication avec Gumforce dure entre 10 et 15 minutes maximum. Nous recommandons de répartir 3 à 4 chewing-gums par jour sur plusieurs sessions.</p>"
+          }
+        },
+        "faq_k3U3zJ": {
+          "type": "faq",
+          "settings": {
+            "question": "Combien de temps avant les premiers résultats ?",
+            "answer": "<p>Les premiers résultats peuvent apparaître après <strong>1 à 2 semaines</strong> et le vrai changement après <strong>3 à 4 semaines</strong>, mais cela varie d'une personne à l'autre.</p><p><strong>La régularité est essentielle !</strong> Comme à la salle de sport, les muscles se développent progressivement. Il est donc important de travailler ta mâchoire sur la durée et d'intégrer cet entraînement à ton quotidien, sans forcer.</p>"
+          }
+        },
+        "faq_Rk7pQa": {
+          "type": "faq",
+          "settings": {
+            "question": "Dois-je continuer une fois les résultats atteints ?",
+            "answer": "<p>Oui, c'est même impératif ! Il est très important de maintenir une certaine régularité pour préserver les résultats obtenus.</p><p><strong>C'est comme à la salle de sport !</strong> Si tu arrêtes complètement de solliciter un muscle, il peut progressivement perdre une partie de son développement. L'objectif est donc d'intégrer Gumforce à ta routine sur le long terme, tout en respectant les besoins de repos de ta mâchoire.</p>"
+          }
+        },
+        "faq_Vn2sLe": {
+          "type": "faq",
+          "settings": {
+            "question": "La mâchoire est-elle un os ou un muscle ?",
+            "answer": "<p>Les deux ! La mâchoire est composée d’os, mais également de muscles appelés <strong>masséters</strong>.</p><p>Comme les autres muscles du corps, les masséters peuvent se renforcer et se développer grâce à un entraînement régulier.</p><p><strong>C’est justement le principe de Gumforce !</strong> Grâce à sa dureté, notre chewing-gum sollicite intensément les masséters pour aider à les renforcer et à obtenir une mâchoire plus développée et mieux dessinée.</p>"
+          }
+        },
+        "faq_Tc9mHu": {
+          "type": "faq",
+          "settings": {
+            "question": "C'est quoi et pourquoi de la créatine ?",
+            "answer": "<p>La créatine est <strong>le complément alimentaire le plus étudié scientifiquement et le plus efficace pour le développement musculaire</strong>. Elle contribue à améliorer les performances physiques, à augmenter la force, à favoriser la prise de muscle et peut soutenir certaines fonctions cognitives.</p><p>Naturellement présente dans notre corps, principalement dans les muscles, elle joue un rôle essentiel dans la production d'énergie lors d'efforts physiques courts et intenses, comme la musculation.</p><p>C'est pourquoi nous avons intégré <strong>500 mg de créatine monohydrate dans chaque chewing-gum Gumforce</strong>, afin d'associer un entraînement ciblé de la mâchoire à un apport suffisant en créatine.</p><p><strong>Une combinaison pensée pour accompagner le développement des muscles de la mâchoire.</strong></p>"
+          }
+        },
+        "faq_gMMnPE": {
+          "type": "faq",
+          "settings": {
+            "question": "La créatine est-elle efficace en étant mâchée ?",
+            "answer": "<p>Oui. La créatine monohydrate est absorbée à la fois par les muqueuses buccales et par la digestion classique une fois avalée avec la salive. Chaque chewing-gum délivre une dose complète de 500 mg.</p>"
+          }
+        },
+        "faq_hTKgm3": {
+          "type": "faq",
+          "settings": {
+            "question": "Livraison et retours",
+            "answer": "<p>Nous livrons dans le monde entier. Les commandes sont expédiées sous 1 à 2 jours ouvrés. La livraison standard prend généralement 48h pour la France & Belgique. 7-10 jours pour le reste du monde. Suivi inclus avec chaque commande.</p><p>Garantie satisfait ou remboursé pendant 90 jours. Pas satisfait ? Contacte-nous et nous trouverons une solution.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_gnbWhW",
+        "faq_dgrBAD",
+        "faq_EUhDEd",
+        "faq_eDrpCi",
+        "faq_qzQx7E",
+        "faq_k3U3zJ",
+        "faq_Rk7pQa",
+        "faq_Vn2sLe",
+        "faq_Tc9mHu",
+        "faq_gMMnPE",
+        "faq_hTKgm3"
+      ],
+      "name": "GF FAQ",
+      "settings": {
+        "heading": "Questions fréquentes",
+        "subheading": "",
+        "open_first": false,
+        "one_at_a_time": true,
+        "icon_style": "plus",
+        "bg_color": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "subheading_color": "#6b6b6b",
+        "title_color": "#1a1a1a",
+        "body_color": "#6b6b6b",
+        "border_color": "#1e1e1e",
+        "icon_color": "#2ab5b4",
+        "heading_size": 32,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "enable_animations": true
+      }
+    },
+    "gumforce_guarantee_Rw4fDg": {
+      "type": "gumforce-guarantee",
+      "blocks": {
+        "detail_4XBMVN": {
+          "type": "detail",
+          "settings": {
+            "text": "Remboursement intégral sous 90 jours"
+          }
+        },
+        "detail_VekweV": {
+          "type": "detail",
+          "settings": {
+            "text": "Résultats garantis"
+          }
+        },
+        "detail_Fm4BT7": {
+          "type": "detail",
+          "settings": {
+            "text": "Sans poser de questions"
+          }
+        }
+      },
+      "block_order": [
+        "detail_4XBMVN",
+        "detail_VekweV",
+        "detail_Fm4BT7"
+      ],
+      "name": "GF Guarantee",
+      "settings": {
+        "layout_centered": true,
+        "badge_image": "shopify://shop_images/Ontwerp_zonder_titel_79.png",
+        "badge_url": "",
+        "badge_size": 72,
+        "heading": "Garantie de remboursement de 90 jours",
+        "body": "<p>Nous utilisons GUMFORCE nous-mêmes. Si tu n'es pas satisfait de tes résultats dans 90 jours, contacte-nous et on remboursera ta commande.</p>",
+        "cta_text": "J'EN PROFITE →",
+        "cta_link": "",
+        "cta_scroll_bundle": true,
+        "cta_radius": 30,
+        "bg_color": "#ffffff",
+        "heading_color": "#1a1a1a",
+        "body_color": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "cta_bg_color": "#1a1a1a",
+        "cta_text_color": "#ffffff",
+        "heading_size": 32,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 60,
+        "padding_top": 40,
+        "padding_bottom": 60,
+        "enable_animations": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "gumforce_stats_mosaic_6HaQjW",
+    "gumforce_video_stories_wNDBM4",
+    "gumforce_sticky_atc_9wJNA9",
+    "gumforce_influencers_grid_WkeiRW",
+    "gumforce_influencers_mCTQJn",
+    "gumforce_before_after_eyaDmY",
+    "gumforce_social_proof_Aeif3C",
+    "gumforce_results_8mpJyz",
+    "gumforce_reviews_cH4exD",
+    "gumforce_image_text_dBi4VK",
+    "gumforce_image_text_3NFVJt",
+    "gumforce_image_text_V6LJGa",
+    "gumforce_creatine_benefits_4nhTBj",
+    "gumforce_faq_9zyYPB",
+    "gumforce_guarantee_Rw4fDg"
+  ]
+}

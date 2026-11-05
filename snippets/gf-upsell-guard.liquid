@@ -28,6 +28,9 @@
         assign g_redirect = true
       endunless
     endif
+    comment — « autre » = un produit avec lequel l'upsell est proposé (Panier GUMFORCE › Proposé avec ces produits) ; liste vide = n'importe quel produit
+    endcomment
+    assign g_for = settings.gfc_up_for | remove: ' ' | split: ','
     assign g_up = 0
     assign g_other = 0
     assign g_vid = 0
@@ -35,7 +38,7 @@
       if item.product.handle == g_handle
         assign g_up = g_up | plus: item.quantity
         assign g_vid = item.variant_id
-      else
+      elsif g_for.size == 0 or g_for contains item.product.handle
         assign g_other = g_other | plus: item.quantity
       endif
     endfor
@@ -51,13 +54,13 @@
 {%- if g_on -%}
   <script>
     (function () {
-      var H = {{ g_handle | json }}, busy = false;
+      var H = {{ g_handle | json }}, F = {{ g_for | json }}, busy = false;
       var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
       document.addEventListener('cart:update', function (e) {
         var cart = e.detail && e.detail.resource;
         if (busy || !cart || !cart.items) return;
         var up = [], other = 0;
-        cart.items.forEach(function (i) { if (i.handle === H) up.push(i); else other += i.quantity; });
+        cart.items.forEach(function (i) { if (i.handle === H) up.push(i); else if (!F.length || F.indexOf(i.handle) > -1) other += i.quantity; });
         if (!up.length || other > 0) return;
         busy = true;
         var u = {}; up.forEach(function (i) { u[i.key] = 0; });

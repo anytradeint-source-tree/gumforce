@@ -33,6 +33,14 @@
   if s.target_product != blank
     if product == blank or product.id != s.target_product.id
       assign show_bar = false
+      comment — autres produits par identifiant (ex. la pastèque en plus de la menthe), séparés par des virgules
+      endcomment
+      if product != blank and s.also_handles != blank
+        assign also_list = s.also_handles | remove: ' ' | split: ','
+        if also_list contains product.handle
+          assign show_bar = true
+        endif
+      endif
     endif
   endif
 -%}
@@ -164,6 +172,7 @@
     { "type": "checkbox", "id": "sticky_bar", "label": "Rester en haut au scroll (sticky)", "default": true },
     { "type": "range", "id": "header_offset", "label": "Décalage sous le header (auto-ajusté si possible)", "min": 0, "max": 160, "step": 2, "default": 82, "unit": "px" },
     { "type": "product", "id": "target_product", "label": "Limiter à un produit", "info": "Vide = partout. Sinon, la barre n'apparaît que sur la page de ce produit." },
+    { "type": "text", "id": "also_handles", "label": "Aussi sur ces produits (identifiants)", "info": "Avec un produit choisi au-dessus : la barre apparaît aussi sur ces pages. Fin de l'adresse, séparés par des virgules (gumforce.co/products/gumforce-pasteque → gumforce-pasteque)." },
     { "type": "header", "content": "Couleurs" },
     { "type": "color", "id": "bg_color", "label": "Fond", "default": "#c5fff7" },
     { "type": "color", "id": "text_color", "label": "Texte + icône par défaut", "default": "#0a0a0a" },

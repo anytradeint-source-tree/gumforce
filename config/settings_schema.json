@@ -794,6 +794,13 @@
         "info": "Si l'offre est retirée du panier, la pastèque part avec ; restée seule au panier (ex. offre retirée sur la page /cart), elle est retirée au chargement suivant. Sa page produit renvoie vers le lien du bouton « panier vide » (Panier › Lien du bouton panier vide)."
       },
       {
+        "type": "text",
+        "id": "gfc_up_for",
+        "label": "Proposé avec ces produits (identifiants)",
+        "default": "gumforce",
+        "info": "L'upsell n'apparaît que si le panier contient un de ces produits (fin de l'adresse, séparés par des virgules : gumforce.co/products/gumforce → gumforce). Avec « Seulement avec une offre », sans eux l'upsell est retiré du panier. Vide = avec n'importe quel produit."
+      },
+      {
         "type": "range",
         "id": "gfc_up_discount",
         "label": "Remise de l'offre upsell",

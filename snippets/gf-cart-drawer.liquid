@@ -62,12 +62,15 @@
     endif
   endif
   assign up_max = settings.gfc_up_max | default: 4
+  comment — l'upsell n'est proposé qu'avec ces produits (ex. la pastèque avec la menthe, pas avec la pastèque) ; vide = avec tous
+  endcomment
+  assign up_for = settings.gfc_up_for | remove: ' ' | split: ','
   assign up_qty = 0
   assign has_main = false
   for item in cart.items
     if up_on and item.variant_id == up_v.id
       assign up_qty = up_qty | plus: item.quantity
-    else
+    elsif up_for.size == 0 or up_for contains item.product.handle
       assign has_main = true
     endif
   endfor
@@ -370,8 +373,14 @@
           if l_up
             assign l_max = up_max
           endif
+          assign l_for = false
+          if l_up == false
+            if up_for.size == 0 or up_for contains item.product.handle
+              assign l_for = true
+            endif
+          endif
         -%}
-        <li class="gfc-line{% if item.quantity == 1 %} is-one{% endif %}" data-gfc-line data-key="{{ item.key }}" data-vid="{{ item.variant_id }}" data-qty="{{ item.quantity }}" data-max="{{ l_max }}" data-unit="{{ item.final_price }}" data-unit-was="{{ l_unit_was }}">
+        <li class="gfc-line{% if item.quantity == 1 %} is-one{% endif %}" data-gfc-line data-key="{{ item.key }}" data-vid="{{ item.variant_id }}" data-qty="{{ item.quantity }}" data-max="{{ l_max }}" data-unit="{{ item.final_price }}" data-unit-was="{{ l_unit_was }}"{% if l_for %} data-up-for="1"{% endif %}>
           <a class="gfc-line__img" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
             {%- if item.image -%}<img src="{{ item.image | image_url: width: 160 }}" alt="" width="64" height="64" loading="lazy">{%- endif -%}
           </a>
@@ -497,6 +506,12 @@
     {
     {%- if product != blank -%}
       {%- assign d_name = product.title | split: ' - ' | first | strip -%}
+      {%- liquid
+        assign d_for = false
+        if up_for.size == 0 or up_for contains product.handle
+          assign d_for = true
+        endif
+      -%}
       {%- for v in product.variants -%}
         {%- liquid
           assign d_img = v.image | default: product.featured_image
@@ -511,7 +526,7 @@
             assign d_was_c = v.compare_at_price
           endif
         -%}
-        "{{ v.id }}": { "name": {{ d_name | json }}, "opt": {{ d_opt | json }}, "img": {% if d_img %}{{ d_img | image_url: width: 160 | json }}{% else %}""{% endif %}, "price": {{ v.price | money | json }}, "was": {{ d_was | json }}, "cents": {{ v.price }}, "was_cents": {{ d_was_c }} }{% unless forloop.last %},{% endunless %}
+        "{{ v.id }}": { "name": {{ d_name | json }}, "opt": {{ d_opt | json }}, "img": {% if d_img %}{{ d_img | image_url: width: 160 | json }}{% else %}""{% endif %}, "price": {{ v.price | money | json }}, "was": {{ d_was | json }}, "cents": {{ v.price }}, "was_cents": {{ d_was_c }}, "upfor": {{ d_for }} }{% unless forloop.last %},{% endunless %}
       {%- endfor -%}
     {%- endif -%}
     }
@@ -699,6 +714,7 @@
       if (d.opt) opt.textContent = d.opt; else opt.remove();
       li.setAttribute('data-unit', d.cents);
       li.setAttribute('data-unit-was', d.was_cents);
+      if (d.upfor) li.setAttribute('data-up-for', '1');
       var cc = r.classList.contains('gfc--cc');
       q('.gfc-line__price b', li).textContent = cc ? (qty === 1 ? d.price : '') : fmt(d.cents * qty);
       q('.gfc-line__price s', li).textContent = cc ? (qty === 1 ? d.was : '') : (d.was_cents > d.cents ? fmt(d.was_cents * qty) : '');
@@ -775,7 +791,7 @@
        plus aucune offre → la carte se cache et la pastèque part avec (upsell seulement) ;
        plus rien → panier vide tout de suite. */
     function mains(r, upv) {
-      return qa('[data-gfc-line]', r).filter(function (l) { return !l.classList.contains('is-gone') && l.getAttribute('data-vid') !== upv; });
+      return qa('[data-gfc-line][data-up-for]', r).filter(function (l) { return !l.classList.contains('is-gone') && l.getAttribute('data-vid') !== upv; });
     }
     function afterRemove(line, updates) {
       var r = root(), card = q('[data-gfc-up]', r), upv = card ? card.getAttribute('data-vid') : '';
@@ -857,7 +873,7 @@
       var empty = q('[data-gfc-empty]', r); if (empty) empty.hidden = true;
       var foot = q('[data-gfc-foot]', r); if (foot) foot.hidden = false;
       var up = q('[data-gfc-up]', r);
-      if (up) up.hidden = !!q('[data-gfc-line][data-vid="' + up.getAttribute('data-vid') + '"]:not(.is-gone)', list);
+      if (up) up.hidden = !!q('[data-gfc-line][data-vid="' + up.getAttribute('data-vid') + '"]:not(.is-gone)', list) || !mains(r, up.getAttribute('data-vid')).length;
       updateCount();
       tick();
     }
