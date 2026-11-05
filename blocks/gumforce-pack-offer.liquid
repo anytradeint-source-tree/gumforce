@@ -322,6 +322,21 @@
     #gfp-{{ gf_id }} .gfp-card { border:none; border-radius:0; box-shadow:none; background:transparent; padding:0; }
   }
 
+  /* sélecteur de goût : une carte par produit (lien vers sa page), même dessin que les cartes d'offre */
+  #gfp-{{ gf_id }} .gfp-flav { margin-bottom:22px; }
+  #gfp-{{ gf_id }} .gfp-flav-head { font-size:13.5px; line-height:1.3; color:var(--gfp-muted); font-weight:600; }
+  #gfp-{{ gf_id }} .gfp-flav-head b { color:var(--gfp-ink); font-weight:800; }
+  #gfp-{{ gf_id }} .gfp-flav-row { display:grid; grid-auto-columns:1fr; grid-auto-flow:column; gap:12px; margin-top:10px; }
+  #gfp-{{ gf_id }} .gfp-flav-opt {
+    display:flex; align-items:center; gap:10px; min-width:0;
+    padding:10px 12px; border:1.5px solid var(--gfp-line); border-radius:16px;
+    color:var(--gfp-ink); text-decoration:none; -webkit-tap-highlight-color:transparent;
+    transition:border-color .16s ease, background .16s ease, box-shadow .16s ease;
+  }
+  #gfp-{{ gf_id }} .gfp-flav-opt.gfp-sel { border-color:var(--gfp-accent); background:var(--gfp-accent-soft); box-shadow:0 0 0 3px var(--gfp-accent-ring); }
+  #gfp-{{ gf_id }} .gfp-flav-opt img { width:38px; height:38px; object-fit:contain; flex-shrink:0; display:block; }
+  #gfp-{{ gf_id }} .gfp-flav-name { font-size:14.5px; font-weight:700; line-height:1.15; min-width:0; }
+
   /* titre d'offre daté (remplace le compteur de stock) */
   #gfp-{{ gf_id }} .gfp-datehead { display:flex; align-items:center; gap:9px; margin-bottom:18px; }
   #gfp-{{ gf_id }} .gfp-dot { width:7px; height:7px; border-radius:50%; background:var(--gfp-accent); flex-shrink:0; animation:gfp-dotpulse 2s ease-in-out infinite; }
@@ -571,6 +586,53 @@
      {%- if request.design_mode %} data-design-mode="true"{% endif -%}>
   <div class="gfp-w">
     <div class="gfp-card">
+      {%- if s.flav_enabled -%}
+        {%- liquid
+          comment — goûts = produits choisis par identifiant ; affiché seulement si la page est l'un d'eux et qu'au moins 2 sont en ligne
+          endcomment
+          assign flav_n = 0
+          assign flav_cur = ''
+          for fi in (1..3)
+            assign fk = 'flav' | append: fi | append: '_handle'
+            assign fh = s[fk] | strip
+            if fh != blank and all_products[fh] != blank
+              assign flav_n = flav_n | plus: 1
+              if fh == pr.handle
+                assign fk = 'flav' | append: fi | append: '_name'
+                assign flav_cur = s[fk] | default: all_products[fh].title
+              endif
+            endif
+          endfor
+        -%}
+        {%- if flav_n > 1 and flav_cur != blank -%}
+        <div class="gfp-flav">
+          <p class="gfp-flav-head">{{ s.flav_label }} <b>{{ flav_cur }}</b></p>
+          <div class="gfp-flav-row">
+            {%- for fi in (1..3) -%}
+              {%- liquid
+                assign fk = 'flav' | append: fi | append: '_handle'
+                assign fh = s[fk] | strip
+                if fh == blank
+                  continue
+                endif
+                assign fp = all_products[fh]
+                if fp == blank
+                  continue
+                endif
+                assign fk = 'flav' | append: fi | append: '_name'
+                assign fname = s[fk] | default: fp.title
+                assign fk = 'flav' | append: fi | append: '_image'
+                assign fimg = s[fk] | default: fp.featured_image
+              -%}
+              <a class="gfp-flav-opt{% if fh == pr.handle %} gfp-sel{% endif %}" href="{{ fp.url }}"{% if fh == pr.handle %} aria-current="page"{% endif %}>
+                {%- if fimg -%}{{ fimg | image_url: width: 96 | image_tag: alt: '', width: 38, height: 38, loading: 'lazy' }}{%- endif -%}
+                <span class="gfp-flav-name">{{ fname }}</span>
+              </a>
+            {%- endfor -%}
+          </div>
+        </div>
+        {%- endif -%}
+      {%- endif -%}
 
       {%- if show_offer_date -%}
         <div class="gfp-datehead"{% if gauge_on %} hidden{% endif %}>
@@ -1446,6 +1508,18 @@
     { "type": "range", "id": "padding_top", "label": "Padding haut", "min": 0, "max": 100, "step": 4, "default": 32, "unit": "px" },
     { "type": "range", "id": "padding_bottom", "label": "Padding bas", "min": 0, "max": 100, "step": 4, "default": 32, "unit": "px" },
 
+    { "type": "header", "content": "── Sélecteur de goût ──" },
+    { "type": "checkbox", "id": "flav_enabled", "label": "Afficher le sélecteur de goût", "default": false, "info": "Une carte par goût, au-dessus des offres. Chaque carte ouvre la page de son produit. Visible seulement si cette page est l'un des goûts et qu'au moins 2 produits sont en ligne." },
+    { "type": "text", "id": "flav_label", "label": "Texte avant le goût choisi", "default": "Goût :" },
+    { "type": "text", "id": "flav1_handle", "label": "Goût 1 — produit (identifiant)", "default": "gumforce", "info": "Fin de l'adresse du produit (gumforce.co/products/gumforce → gumforce)." },
+    { "type": "text", "id": "flav1_name", "label": "Goût 1 — nom", "default": "Menthe fraîche" },
+    { "type": "image_picker", "id": "flav1_image", "label": "Goût 1 — vignette", "info": "Vide = photo principale du produit." },
+    { "type": "text", "id": "flav2_handle", "label": "Goût 2 — produit (identifiant)", "default": "pasteque" },
+    { "type": "text", "id": "flav2_name", "label": "Goût 2 — nom", "default": "Pastèque" },
+    { "type": "image_picker", "id": "flav2_image", "label": "Goût 2 — vignette" },
+    { "type": "text", "id": "flav3_handle", "label": "Goût 3 — produit (identifiant)" },
+    { "type": "text", "id": "flav3_name", "label": "Goût 3 — nom" },
+    { "type": "image_picker", "id": "flav3_image", "label": "Goût 3 — vignette" },
     { "type": "header", "content": "── Infos nutritionnelles (popup) ──" },
     { "type": "text", "id": "nut_label", "label": "Texte du lien (vide = masqué)", "default": "Informations nutritionnelles" },
     { "type": "text", "id": "nut_title", "label": "Titre du popup", "default": "Informations nutritionnelles" },
