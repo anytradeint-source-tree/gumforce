@@ -334,7 +334,13 @@
     transition:border-color .16s ease, background .16s ease, box-shadow .16s ease;
   }
   #gfp-{{ gf_id }} .gfp-flav-opt.gfp-sel { border-color:var(--gfp-accent); background:var(--gfp-accent-soft); box-shadow:0 0 0 3px var(--gfp-accent-ring); }
-  #gfp-{{ gf_id }} .gfp-flav-opt img { width:38px; height:38px; object-fit:contain; flex-shrink:0; display:block; }
+  #gfp-{{ gf_id }} .gfp-flav-thumb { position:relative; width:38px; height:38px; flex-shrink:0; }
+  #gfp-{{ gf_id }} .gfp-flav-thumb img { width:100%; height:100%; object-fit:contain; display:block; transition:opacity .2s ease; }
+  /* au tap : la carte se sélectionne tout de suite, petit cercle de chargement sur la vignette (comme les vidéos des avis) */
+  #gfp-{{ gf_id }} .gfp-flav-spin { position:absolute; inset:0; margin:auto; width:20px; height:20px; border-radius:50%; border:2px solid rgba({{ ar }},{{ ag }},{{ ab }},0.25); border-top-color:var(--gfp-accent); opacity:0; transition:opacity .2s ease; pointer-events:none; }
+  #gfp-{{ gf_id }} .gfp-flav-go .gfp-flav-thumb img { opacity:.35; }
+  #gfp-{{ gf_id }} .gfp-flav-go .gfp-flav-spin { opacity:1; animation:gfp-flav-rot .8s linear infinite; }
+  @keyframes gfp-flav-rot { to { transform:rotate(360deg); } }
   #gfp-{{ gf_id }} .gfp-flav-name { font-size:14.5px; font-weight:700; line-height:1.15; min-width:0; }
 
   /* titre d'offre daté (remplace le compteur de stock) */
@@ -624,12 +630,55 @@
                 assign fk = 'flav' | append: fi | append: '_image'
                 assign fimg = s[fk] | default: fp.featured_image
               -%}
-              <a class="gfp-flav-opt{% if fh == pr.handle %} gfp-sel{% endif %}" href="{{ fp.url }}"{% if fh == pr.handle %} aria-current="page"{% endif %}>
-                {%- if fimg -%}{{ fimg | image_url: width: 96 | image_tag: alt: '', width: 38, height: 38, loading: 'lazy' }}{%- endif -%}
+              <a class="gfp-flav-opt{% if fh == pr.handle %} gfp-sel{% endif %}" href="{{ fp.url }}"{% if fh == pr.handle %} aria-current="page"{% elsif fp.featured_image %} data-gfp-flav-img="{{ fp.featured_image | image_url }}"{% endif %}>
+                <span class="gfp-flav-thumb">
+                  {%- if fimg -%}{{ fimg | image_url: width: 96 | image_tag: alt: '', width: 38, height: 38, loading: 'lazy' }}{%- endif -%}
+                  <span class="gfp-flav-spin" aria-hidden="true"></span>
+                </span>
                 <span class="gfp-flav-name">{{ fname }}</span>
               </a>
             {%- endfor -%}
           </div>
+          <script>
+            (function () {
+              var box = document.currentScript.parentNode;
+              var opts = [].slice.call(box.querySelectorAll('.gfp-flav-opt'));
+              var head = box.querySelector('.gfp-flav-head b');
+              var first = opts.filter(function (o) { return o.classList.contains('gfp-sel'); })[0];
+              var firstName = head ? head.textContent : '';
+              /* 1re photo de l'autre goût chargée d'avance, à la largeur que la galerie de cette page a choisie (même gabarit, même taille) */
+              function warm() {
+                var g = document.querySelector('.product-media-container img, .product-media img');
+                var m = g && (g.currentSrc || '').match(/[?&]width=(\d+)/);
+                var w = m ? m[1] : (window.innerWidth > 749 ? '1920' : '1200');
+                opts.forEach(function (o) {
+                  var u = o.getAttribute('data-gfp-flav-img');
+                  if (u) { var i = new Image(); i.decoding = 'async'; i.src = u + (u.indexOf('?') > -1 ? '&' : '?') + 'width=' + w; }
+                });
+              }
+              window.addEventListener('load', function () {
+                if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 3000 }); else setTimeout(warm, 1500);
+              });
+              /* au tap : sélection immédiate + chargement visible ; pas de fondu entre les deux pages */
+              opts.forEach(function (o) {
+                o.addEventListener('click', function (e) {
+                  if (o.classList.contains('gfp-sel') || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button > 0) return;
+                  opts.forEach(function (x) { x.classList.remove('gfp-sel'); x.removeAttribute('aria-current'); });
+                  o.classList.add('gfp-sel', 'gfp-flav-go');
+                  var n = o.querySelector('.gfp-flav-name');
+                  if (head && n) head.textContent = n.textContent;
+                  window.addEventListener('pageswap', function (ev) { if (ev.viewTransition) ev.viewTransition.skipTransition(); }, { once: true });
+                });
+              });
+              /* retour arrière (page gardée en mémoire) : état d'origine */
+              window.addEventListener('pageshow', function (e) {
+                if (!e.persisted) return;
+                opts.forEach(function (x) { x.classList.remove('gfp-sel', 'gfp-flav-go'); x.removeAttribute('aria-current'); });
+                if (first) { first.classList.add('gfp-sel'); first.setAttribute('aria-current', 'page'); }
+                if (head) head.textContent = firstName;
+              });
+            })();
+          </script>
         </div>
         {%- endif -%}
       {%- endif -%}
