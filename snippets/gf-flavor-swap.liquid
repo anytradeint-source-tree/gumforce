@@ -11,6 +11,9 @@
   • Les scripts du contenu échangé sont relancés une fois, à sa première
     apparition ; ensuite le même contenu est simplement remis en place.
   • Le menu et les autres liens ne sont pas concernés.
+  • Produits de « hard » (réglage du bloc d'offre, ex. une page en test A/B
+    Intelligems) : navigation normale vers eux, sauf s'ils sont la page de
+    départ gardée en mémoire. Intelligems choisit alors la bonne version.
   • En cas d'erreur (réseau, page inattendue) : navigation normale.
 {%- endcomment -%}
 <script>
@@ -21,6 +24,8 @@
     if (!main || !window.fetch || !window.DOMParser || !history.pushState || !window.Promise) return;
 
     var pages = {}, cur = location.pathname;
+    var HARD = {{ hard | default: '' | remove: ' ' | split: ',' | json }}.filter(Boolean).map(function (h) { return '/products/' + h; });
+    function hard(p) { return HARD.indexOf(p) > -1 && !(pages[p] && pages[p].nodes); }
     function pathOf(u) { try { return new URL(u, location.href).pathname; } catch (e) { return ''; } }
     function drawerData() { return document.querySelector('[data-gfc-data]'); }
 
@@ -106,6 +111,7 @@
       var a = ev.target.closest && ev.target.closest('.gfp-flav-opt');
       if (!a || !main.contains(a) || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || ev.button > 0) return;
       var p = pathOf(a.getAttribute('href'));
+      if (p && p !== cur && hard(p)) return;   /* navigation normale (gérée par le sélecteur) */
       ev.preventDefault();
       ev.stopPropagation();
       if (!p || p === cur) return;
@@ -128,7 +134,7 @@
       if (navigator.connection && navigator.connection.saveData) return;
       [].forEach.call(main.querySelectorAll('.gfp-flav-opt'), function (a) {
         var p = pathOf(a.getAttribute('href'));
-        if (p && p !== cur) load(p).catch(function () {});
+        if (p && p !== cur && !hard(p)) load(p).catch(function () {});
       });
     }
     function idle() { if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 4000 }); else setTimeout(warm, 2000); }
