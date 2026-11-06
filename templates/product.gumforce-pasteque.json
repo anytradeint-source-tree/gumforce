@@ -337,6 +337,7 @@
               "type": "gumforce-pack-offer",
               "name": "GF Pack Offer",
               "settings": {
+                "product": "",
                 "product_handle": "",
                 "tier1_show": true,
                 "tier2_show": true,
@@ -381,7 +382,7 @@
                 "fg4_label": "MENTAL",
                 "show_offer_date": true,
                 "offer_prefix": "Offre [période]",
-                "gauge_enabled": true,
+                "gauge_enabled": false,
                 "gauge_text": "Plus que <strong>[nombre] sachets</strong>",
                 "gauge_from": "2026-11-01",
                 "gauge_to": "2026-11-30",
@@ -430,6 +431,16 @@
                 "text_muted": "#777777",
                 "padding_top": 0,
                 "padding_bottom": 24,
+                "flav_enabled": true,
+                "flav_label": "Goût :",
+                "flav1_handle": "gumforce",
+                "flav1_name": "Menthe fraîche",
+                "flav1_image": "shopify://shop_images/gumforce-menthe-vignette.png",
+                "flav2_handle": "pasteque",
+                "flav2_name": "Pastèque",
+                "flav2_image": "shopify://shop_images/gumforce-pasteque-vignette.png",
+                "flav3_handle": "",
+                "flav3_name": "",
                 "nut_label": "Informations nutritionnelles",
                 "nut_title": "Informations nutritionnelles",
                 "nut_portion": "Portion : 1 pièce (2,7 g)",
@@ -438,15 +449,7 @@
                 "nut_col2": "Pour 100g",
                 "nut_rows": "Énergie;12 kJ / 3 kcal;445 kJ / 106 kcal\nMatières grasses;0 g;0 g\n-dont saturées;0 g;0 g\nGlucides;1 g;37 g\n-dont sucres;0 g;0 g\nProtéines;0 g;0 g\nSel;0 g;0 g",
                 "nut_ref": "Apports de référence pour un adulte type (8400 kJ / 2000 kcal).",
-                "nut_notes": "<p>Une consommation excessive peut avoir des effets laxatifs.</p><p><strong>Créatine Monohydrate : 500 mg par pièce.</strong></p>",
-                "flav_enabled": true,
-                "flav_label": "Goût :",
-                "flav1_handle": "gumforce",
-                "flav1_name": "Menthe fraîche",
-                "flav1_image": "shopify://shop_images/gumforce-menthe-vignette.png",
-                "flav2_handle": "pasteque",
-                "flav2_name": "Pastèque",
-                "flav2_image": "shopify://shop_images/gumforce-pasteque-vignette.png"
+                "nut_notes": "<p>Une consommation excessive peut avoir des effets laxatifs.</p><p><strong>Créatine Monohydrate : 500 mg par pièce.</strong></p>"
               },
               "blocks": {}
             },
@@ -768,6 +771,7 @@
         "card_w": 270,
         "card_gap": 14,
         "player_radius": 22,
+        "neighbor_dim": 10,
         "autoplay": true,
         "loop_all": true,
         "restart_on_return": true,
@@ -1184,6 +1188,755 @@
         "enable_animations": true
       }
     },
+    "gumforce_reviews_cH4exD": {
+      "type": "gumforce-reviews",
+      "blocks": {
+        "avis_r07": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Hugo P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Super produit en plus j’ai réussi à avoir l’édition limitée à la pastèque c’est très bon et ça change de la menthe",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/gf-avis-r07.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r13": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Titouan M.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je viens de recevoir mon colis, j’ai aussi pris goût pastèque. J'ai déjà goûté et les chewing-gums sont vraiment durs c'est impressionnant. Pour l’instant c’est une bonne surprise, à voir sur le long terme",
+            "highlight_text": "les chewing-gums sont vraiment durs c'est impressionnant",
+            "review_image": "shopify://shop_images/gf-avis-r13.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r35": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Gaetan B.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’ai commencé par ceux à la menthe avec 3 à 4 chewing-gum par jour et je viens de recevoir 1 sachet pastèque. Le goût reste naturel et ça change, j’espère qu’ils vont sortir d’autres goûts",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r35.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r01": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Alex M.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Ca fonctionne vraiment de ouf. J'en mâche 4 par jour, depuis 5 mois et ma mâchoire s'est complètement transformé. Mes joues sont hyper creuses et mon visage s'est affiné. Et à chaque commande je suis livré en moins de 24h.",
+            "highlight_text": "ma mâchoire s'est complètement transformé",
+            "review_image": "shopify://shop_images/gf-avis-r01.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r02": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Denis P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je n’avais jamais testé de chewing-gum ultra dur et je m’attendais pas du tout à ça. La résistance est bluffante, la mastication est intense et on sent vraiment la différence avec un chewing-gum classique (comme on peut le voir dans la vidéo haha)",
+            "highlight_text": "La résistance est bluffante",
+            "review_video": "shopify://files/videos/gf-avis-r02.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r03": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ethan P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Tous les jours avant d’aller a la salle j'ai pris l'habitude de prendre un gumforce pour les 15 minutes de trajet, c'est parfait et ça fonctionne de ouf mon visage s'est vraiment affiné",
+            "highlight_text": "ça fonctionne de ouf mon visage s'est vraiment affiné",
+            "review_video": "shopify://files/videos/gf-avis-r03.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r04": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Elio P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Produit dingue, au bout de 3 semaines seulement je me trouve déjà plus beau en photo et sur les vidéos franchement allez y les yeux fermés",
+            "highlight_text": "au bout de 3 semaines seulement je me trouve déjà plus beau en photo",
+            "review_video": "shopify://files/videos/gf-avis-r04.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r05": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ben T.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Pour avoir tester d’autres marques gumforce est clairement au dessus avec la créatine déjà intégrée, je recommande merci gumforce",
+            "highlight_text": "gumforce est clairement au dessus avec la créatine déjà intégrée",
+            "review_video": "shopify://files/videos/gf-avis-r05.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r06": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Quentin B.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J'ai des résultats de fou après un mois, ma mâchoire est plus marquée et j’ai un visage plus attirant et masculin",
+            "highlight_text": "ma mâchoire est plus marquée",
+            "review_video": "shopify://files/videos/gf-avis-r06.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r08": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Johan F.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je suis coach sportif et j’aurai jamais pensé entraîner ma mâchoire. J’ai voulu tester ce chewing-gum et franchement les résultats parlent d’eux-mêmes, en plus la livraison est hyper rapide bref tout s'est bien passé",
+            "highlight_text": "les résultats parlent d’eux-mêmes",
+            "review_video": "shopify://files/videos/gf-avis-r08.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r09": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Lucas O.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’ai profité de l'offre 2 achetés = 2 offerts et j’ai reçu en plus un stickers + une carte avec un programme d’entraînement",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/gf-avis-r09.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r10": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ronan E.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "En tant que coach j'ai suivi un programme de 1 mois avec gumforce pour muscler mon masseter, le muscle situé au niveau de la mâchoire et les résultats sont impressionnants, je vais repasser commande",
+            "highlight_text": "les résultats sont impressionnants",
+            "review_video": "shopify://files/videos/gf-avis-r10-sdr.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r11": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Yanis I.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’ai bien reçu ma commande, je suis satisfait de gumforce et des résultats sur mon visage. J’ai même reçu un format pocket hyper pratique donc c’est top",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/gf-avis-r11.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r12": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Christopher D.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je fais du télétravail et en général je mâche en travaillant. Pour l'instant, les résultats sont là mais je vais continuer et voir sur le long terme",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r12.mov",
+            "item_type": ""
+          }
+        },
+        "avis_r14": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Christopher D.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je m'entraîne tous les jours et Gumforce vient compléter mon entraînement à la salle, j’en mâche 5 par jour depuis plus de 3 mois et l'évolution est incroyable les gars",
+            "highlight_text": "l'évolution est incroyable",
+            "review_video": "shopify://files/videos/gf-avis-r14.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r15": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Yann Y.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Y'a personne qui entraîne sa mâchoire et à la salle un pote m’a parlé de Gumforce, j’ai passé 2 commandes, je comprends pas pourquoi on oublie tous de muscler sa mâchoire pourtant c’est la première chose que les autres regarde chez nous",
+            "highlight_text": "c’est la première chose que les autres regarde chez nous",
+            "review_video": "shopify://files/videos/gf-avis-r15.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r16": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Pierre-Henri B.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je suis mannequin depuis 6 ans et je vous assure que tout les modèles utilisent Gumforce avant les défilés, j’ai vu tout le monde avec ça à la Fashion week en septembre 2026. Quand tu fais du modélisme la mâchoire c’est primordial donc perso c’est un hack très simple juste avant les shoots",
+            "highlight_text": "tout les modèles utilisent Gumforce avant les défilés",
+            "review_video": "shopify://files/videos/gf-avis-r16.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r17": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Julien C.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je suis étudiant en médecine et je valide complètement Gumforce ! En fait le masséter c’est muscle comme un autre donc si tu le travaille, il se développe. A côté il faut évidemment réduire le sucre et le gras au maximum et j’essaie aussi de faire 10.000 pas par jour pour compléter ma routine. Super découverte en tout cas je recommande !",
+            "highlight_text": "Je suis étudiant en médecine et je valide complètement Gumforce !",
+            "review_video": "shopify://files/videos/gf-avis-r17-sdr.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r18": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Mickael K.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Avec l’âge je commençais à perdre ma mâchoire (je fais beaucoup de rétention d’eau) mais grâce à Gumforce j’ai pu diminuer cette rétention et j’ai retrouvé ma mâchoire d’avant. J’évite le sel et je bouge tous les jours pour venir en complément de cette perte des joues.",
+            "highlight_text": "j’ai retrouvé ma mâchoire d’avant",
+            "review_video": "shopify://files/videos/gf-avis-r18.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r19": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Antoine A.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je viens de commencer mon 2ème paquet et je vois déjà des résultats, perso j’ai plus confiance en moi donc c’est hyper motivant. Je recommande à 100%",
+            "highlight_text": "je vois déjà des résultats",
+            "review_image": "shopify://shop_images/gf-avis-r19.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r20": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Alexis D.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Bon goût et la mâchoire travaille vraiment ! Très bonne surprise",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r20.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r21": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Nicolas D.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Superbe produit !! Plus l’ajout de la créatine qui donne l’originalité à ce chewing-gum. Une livraison qui fut très rapide en 48h.",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/gf-avis-r21.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r22": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Jeremi A.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Coach de sport, je recommande à tous mes élèves de marcher gumforce et je vois une diff sur tous les jeunes franchement c top",
+            "highlight_text": "je vois une diff sur tous les jeunes",
+            "review_image": "shopify://shop_images/gf-avis-r22.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r23": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Lucas C.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’utilise gumforce depuis 4 mois, un conseil qui a maximisé mes résultats c’est de réduire le sucre et de rester actif (privilégier la marche ect.)",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r23.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r24": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Cédric O.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je mâche en travaillant depuis la maison 3 gums par jour (matin midi aprem), si t’as l’habitude des chewing-gums classiques c’est impératif de passer des gums plus durs ! En plus ceux-là contribuent à ton apport et créatine et développe ta mâchoire donc y a pas photo, je recommande",
+            "highlight_text": "c’est impératif de passer des gums plus durs",
+            "review_video": "shopify://files/videos/gf-avis-r24.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r25": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Gaëtan U.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Incroyable ce produit, ultra dur je m’attendais pas du tout à ça!! Les gars faut pas oublier la mâchoire personne pense à la muscler mais c’est trop important",
+            "highlight_text": "ultra dur je m’attendais pas du tout à ça",
+            "review_video": "shopify://files/videos/gf-avis-r25.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r26": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Yannick P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’utilise Gumforce depuis plusieurs semaines et j’ai retrouvé une mâchoire plus dessinée et mes contours sont aussi plus définis. Je ne connaissais pas du tout ce produit, mais je trouve que c'est innovant.",
+            "highlight_text": "j’ai retrouvé une mâchoire plus dessinée",
+            "review_video": "shopify://files/videos/gf-avis-r26.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r27": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Mathéo W.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "La résistance est dingue, la première fois j'ai pas tenu 5 min mais maintenant j'arrive à respecter des sessions d'environ 15 min à chaque fois",
+            "highlight_text": "La résistance est dingue",
+            "review_video": "shopify://files/videos/gf-avis-r27.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r28": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Elliot P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "3ème commande chez gumforce, j'en prends tous les jours le secret c'est vraiment la régularité des entraînements",
+            "highlight_text": "le secret c'est vraiment la régularité",
+            "review_video": "shopify://files/videos/gf-avis-r28.mov",
+            "item_type": ""
+          }
+        },
+        "avis_r29": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Myron U.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J'ai testé ces gums après avoir testé d'autres marques et c'est de loin la meilleure, j'ai jamais aimé mes joues mais là je vois une différence en quelques semaines d'utilisation",
+            "highlight_text": "c'est de loin la meilleure",
+            "review_video": "shopify://files/videos/gf-avis-r29.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r30": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Laurent A.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Les galets sont vraiment ultra durs j'avais jamais testé avant, en plus tu peux t'entrainer ou tu veux defois j'en prends dans le métro, au boulot ou dans voiture pour des trajets courts. C'est simple à intégrer bred j'adore",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r30.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r31": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Nathan M.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je viens de recevoir mes sachets et j'ai jamais essayé la créatine sous cette forme, en tout cas ça reste un des meilleur compliment pour la prise de masse musculaire et la force donc j'ai hate de tester en complément",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/gf-avis-r31.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r32": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Maxence N.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Les chewing-gum de chez GumForce sont vraiment top honnêtement. Que ce soit au niveau de la texture, de la résistance et du goût, c’est vraiment bon. Je recommande vivement",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r32.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r33": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Clément Z.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’ai trouvé GUMFORCE chez sport nutrition et dorénavant j’achète en ligne car l’offre meilleure (2 achetés/2 offerts) mais surtout ils sont toujours en rupture en magasin",
+            "highlight_text": "ils sont toujours en rupture en magasin",
+            "review_image": "shopify://shop_images/gf-avis-r33.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r34": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Arthur L.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Hâte de tester les chewing-gum en plus livraison en moins de 24h, maintenant à voir sur le long terme",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r34.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r36": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Firmin A.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Je pensais que c'était une grosse arnaque donc évidemment j’ai commandé et gros banger ça fonctionne vraiment, j’ai eu des résultats rapidement en 2/3 semaines et là ma mâchoire s’est complètement transformée, je sens que le chewing-gum est moins dur en bouche",
+            "highlight_text": "j’ai eu des résultats rapidement en 2/3 semaines",
+            "review_video": "shopify://files/videos/gf-avis-r36.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r37": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Mathéo M.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J'ai testé sur 4 semaines et je viens de repassé commandes, je me sens mieux et les filles me remarquent plus en soirée ect",
+            "highlight_text": "les filles me remarquent plus en soirée",
+            "review_video": "shopify://files/videos/gf-avis-r37.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r38": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ben D.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Incroyable ! Ca change vraiment la vie ! Et c’est super naturel !",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/gf-avis-r38.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r39": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Sebastien L.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Très belle découverte que je recommande particulièrement aux personnes qui comme moi souhaitent conserver des traits du visage malgré les effets du temps. Une approche originale pour prendre soin de soi je recommande merci gumforce",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r39.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r40": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Léandre I.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J´ADORE ! C’est bon et en plus ça muscle la mâchoire. Plus jamais j’achèterai des chewing-gum classique 😂",
+            "highlight_text": "Plus jamais j’achèterai des chewing-gum classique",
+            "review_image": "shopify://shop_images/gf-avis-r40.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r41": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Gaël W.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Honnêtement rien à redire, Gumforce c’est de la frappe, les résultats sont visibles rapidement 😉 La livraison et vraiment rapide en plus!",
+            "highlight_text": "les résultats sont visibles rapidement",
+            "review_image": "shopify://shop_images/gf-avis-r41.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r42": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Robin M.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Super produit reçu rapidement, vraiment dur comme annoncé et efficace. Prêt à recommander plusieurs sachets",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r42.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r43": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Dorian V.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Très bonne expérience avec Gumforce ! Une équipe pro et à l’écoute et réactive. Le service est de qualité, je recommande sans hésiter !",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r43.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r44": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Louis B.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Super produit trouvé dans un magasin de nutrition sportive, ça faisait longtemps que j'avais pas vu un produit qualitatif avec cet effet immédiat en quelques jours",
+            "highlight_text": "cet effet immédiat en quelques jours",
+            "review_image": "shopify://shop_images/gf-avis-r44.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r45": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Evan I.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "En plus de l’offre avantageuse, j’ai reçu quelques goodies sympas (sticker et une carte avec un programme d’entraînement) J’ai été agréablement surpris en plus livraison en 48h avec colissimo bravo !",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r45.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r46": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Lelya P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "J’ai commandé un display de Gumforce pocket dans mon magasin, c'est un produit qui cartonne, je suis vraiment surpris surtout par tous les jeunes qui connaissent ce produit. Les sachets partent comme des petits pains. Merci à Gumforce",
+            "highlight_text": "Les sachets partent comme des petits pains",
+            "review_video": "shopify://files/videos/gf-avis-r46.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r51": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Matis K.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Bonne découverte mon magasin vient de recevoir ces produits je recommande",
+            "highlight_text": "",
+            "review_image": "shopify://shop_images/gf-avis-r51.jpg",
+            "item_type": ""
+          }
+        },
+        "avis_r48": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Molly P.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Excellent chewing gum, depuis que je les utilise ma mâchoire est tellement plus dessinée c’est impressionnant. Super taff l'équipe Gumforce",
+            "highlight_text": "ma mâchoire est tellement plus dessinée",
+            "review_video": "shopify://files/videos/gf-avis-r48-sdr.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r49": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Alexis R.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "Suite à une erreur de commande j’ai commandé 3 fois la quantité voulu , heureusement j’ai été accompagné par Lou qui m’as permis d’être remboursé le plus rapidement possible ! Merci encore pour son professionnalisme et son efficacité",
+            "highlight_text": "",
+            "review_video": "shopify://files/videos/gf-avis-r49.mp4",
+            "item_type": ""
+          }
+        },
+        "avis_r50": {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Louis I.",
+            "review_date": "",
+            "rating": 5,
+            "verified": true,
+            "review_text": "On m'a toujours dit que j'avais un visage d'enfant donc j'ai commandé sur le site et en plus de la livraison hyper rapide les chewing-gums marchent vraiment, les résultats arrivent hyper rapidement je suis trop content",
+            "highlight_text": "les chewing-gums marchent vraiment",
+            "review_video": "shopify://files/videos/gf-avis-r50.mp4",
+            "item_type": ""
+          }
+        }
+      },
+      "block_order": [
+        "avis_r07",
+        "avis_r13",
+        "avis_r35",
+        "avis_r01",
+        "avis_r02",
+        "avis_r03",
+        "avis_r04",
+        "avis_r05",
+        "avis_r06",
+        "avis_r08",
+        "avis_r09",
+        "avis_r10",
+        "avis_r11",
+        "avis_r12",
+        "avis_r14",
+        "avis_r15",
+        "avis_r16",
+        "avis_r17",
+        "avis_r18",
+        "avis_r19",
+        "avis_r20",
+        "avis_r21",
+        "avis_r22",
+        "avis_r23",
+        "avis_r24",
+        "avis_r25",
+        "avis_r26",
+        "avis_r27",
+        "avis_r28",
+        "avis_r29",
+        "avis_r30",
+        "avis_r31",
+        "avis_r32",
+        "avis_r33",
+        "avis_r34",
+        "avis_r36",
+        "avis_r37",
+        "avis_r38",
+        "avis_r39",
+        "avis_r40",
+        "avis_r41",
+        "avis_r42",
+        "avis_r43",
+        "avis_r44",
+        "avis_r45",
+        "avis_r46",
+        "avis_r51",
+        "avis_r48",
+        "avis_r49",
+        "avis_r50"
+      ],
+      "name": "GF Reviews Grid",
+      "settings": {
+        "show_header": true,
+        "heading_text": "Ils en parlent mieux que nous",
+        "header_rating": "theme",
+        "header_count": "[avis] avis Trustpilot",
+        "stars_img_5": "shopify://shop_images/trust5_1.svg",
+        "stars_img_4_5": "shopify://shop_images/trust_45_1.svg",
+        "stars_img_4": "shopify://shop_images/trust4_1.svg",
+        "stars_header_height": 16,
+        "stars_card_height": 13,
+        "verified_badge_url": "",
+        "verified_badge_height": 14,
+        "initial_count": 8,
+        "load_more_text": "Voir plus",
+        "columns_desktop": 4,
+        "columns_tablet": 3,
+        "columns_mobile": 2,
+        "column_gap": 14,
+        "card_gap": 14,
+        "bg_color": "#ffffff",
+        "card_bg": "#ffffff",
+        "card_border": "#2a2a2a",
+        "card_radius": 24,
+        "star_color": "#3d9f78",
+        "name_color": "#1a1a1a",
+        "date_color": "#888888",
+        "text_color": "#1a1a1a",
+        "verified_color": "#888888",
+        "highlight_bg": "#c5fe89",
+        "highlight_text_color": "#1a1a1a",
+        "meta_color": "#777777",
+        "header_color": "#1a1a1a",
+        "btn_bg": "#1a1a1a",
+        "btn_text_color": "#ffffff",
+        "btn_radius": 30,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "enable_animations": true
+      }
+    },
     "gumforce_image_text_dBi4VK": {
       "type": "gumforce-image-text",
       "name": "GUMFORCE Image + Text",
@@ -1375,755 +2128,6 @@
         "padding_bottom": 80,
         "padding_top_mobile": 48,
         "padding_bottom_mobile": 48,
-        "enable_animations": true
-      }
-    },
-    "gumforce_reviews_cH4exD": {
-      "type": "gumforce-reviews",
-      "blocks": {
-        "avis_r01": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Alex M.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Ca fonctionne vraiment de ouf. J'en mâche 4 par jour, depuis 5 mois et ma mâchoire s'est complètement transformé. Mes joues sont hyper creuses et mon visage s'est affiné. Et à chaque commande je suis livré en moins de 24h.",
-            "highlight_text": "ma mâchoire s'est complètement transformé",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r01.jpg"
-          }
-        },
-        "avis_r02": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Denis P.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je n’avais jamais testé de chewing-gum ultra dur et je m’attendais pas du tout à ça. La résistance est bluffante, la mastication est intense et on sent vraiment la différence avec un chewing-gum classique (comme on peut le voir dans la vidéo haha)",
-            "highlight_text": "La résistance est bluffante",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r02.mp4"
-          }
-        },
-        "avis_r03": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Ethan P.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Tous les jours avant d’aller a la salle j'ai pris l'habitude de prendre un gumforce pour les 15 minutes de trajet, c'est parfait et ça fonctionne de ouf mon visage s'est vraiment affiné",
-            "highlight_text": "ça fonctionne de ouf mon visage s'est vraiment affiné",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r03.mp4"
-          }
-        },
-        "avis_r04": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Elio P.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Produit dingue, au bout de 3 semaines seulement je me trouve déjà plus beau en photo et sur les vidéos franchement allez y les yeux fermés",
-            "highlight_text": "au bout de 3 semaines seulement je me trouve déjà plus beau en photo",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r04.mp4"
-          }
-        },
-        "avis_r05": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Ben T.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Pour avoir tester d’autres marques gumforce est clairement au dessus avec la créatine déjà intégrée, je recommande merci gumforce",
-            "highlight_text": "gumforce est clairement au dessus avec la créatine déjà intégrée",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r05.mp4"
-          }
-        },
-        "avis_r06": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Quentin B.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J'ai des résultats de fou après un mois, ma mâchoire est plus marquée et j’ai un visage plus attirant et masculin",
-            "highlight_text": "ma mâchoire est plus marquée",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r06.mp4"
-          }
-        },
-        "avis_r07": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Hugo P.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Super produit en plus j’ai réussi à avoir l’édition limitée à la pastèque c’est très bon et ça change de la menthe",
-            "highlight_text": "",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r07.jpg"
-          }
-        },
-        "avis_r08": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Johan F.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je suis coach sportif et j’aurai jamais pensé entraîner ma mâchoire. J’ai voulu tester ce chewing-gum et franchement les résultats parlent d’eux-mêmes, en plus la livraison est hyper rapide bref tout s'est bien passé",
-            "highlight_text": "les résultats parlent d’eux-mêmes",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r08.mp4"
-          }
-        },
-        "avis_r09": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Lucas O.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J’ai profité de l'offre 2 achetés = 2 offerts et j’ai reçu en plus un stickers + une carte avec un programme d’entraînement",
-            "highlight_text": "",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r09.jpg"
-          }
-        },
-        "avis_r10": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Ronan E.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "En tant que coach j'ai suivi un programme de 1 mois avec gumforce pour muscler mon masseter, le muscle situé au niveau de la mâchoire et les résultats sont impressionnants, je vais repasser commande",
-            "highlight_text": "les résultats sont impressionnants",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r10-sdr.mp4"
-          }
-        },
-        "avis_r11": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Yanis I.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J’ai bien reçu ma commande, je suis satisfait de gumforce et des résultats sur mon visage. J’ai même reçu un format pocket hyper pratique donc c’est top",
-            "highlight_text": "",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r11.jpg"
-          }
-        },
-        "avis_r12": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Christopher D.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je fais du télétravail et en général je mâche en travaillant. Pour l'instant, les résultats sont là mais je vais continuer et voir sur le long terme",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r12.mov"
-          }
-        },
-        "avis_r13": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Titouan M.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je viens de recevoir mon colis, j’ai aussi pris goût pastèque. J'ai déjà goûté et les chewing-gums sont vraiment durs c'est impressionnant. Pour l’instant c’est une bonne surprise, à voir sur le long terme",
-            "highlight_text": "les chewing-gums sont vraiment durs c'est impressionnant",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r13.jpg"
-          }
-        },
-        "avis_r14": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Christopher D.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je m'entraîne tous les jours et Gumforce vient compléter mon entraînement à la salle, j’en mâche 5 par jour depuis plus de 3 mois et l'évolution est incroyable les gars",
-            "highlight_text": "l'évolution est incroyable",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r14.mp4"
-          }
-        },
-        "avis_r15": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Yann Y.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Y'a personne qui entraîne sa mâchoire et à la salle un pote m’a parlé de Gumforce, j’ai passé 2 commandes, je comprends pas pourquoi on oublie tous de muscler sa mâchoire pourtant c’est la première chose que les autres regarde chez nous",
-            "highlight_text": "c’est la première chose que les autres regarde chez nous",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r15.mp4"
-          }
-        },
-        "avis_r16": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Pierre-Henri B.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je suis mannequin depuis 6 ans et je vous assure que tout les modèles utilisent Gumforce avant les défilés, j’ai vu tout le monde avec ça à la Fashion week en septembre 2026. Quand tu fais du modélisme la mâchoire c’est primordial donc perso c’est un hack très simple juste avant les shoots",
-            "highlight_text": "tout les modèles utilisent Gumforce avant les défilés",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r16.mp4"
-          }
-        },
-        "avis_r17": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Julien C.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je suis étudiant en médecine et je valide complètement Gumforce ! En fait le masséter c’est muscle comme un autre donc si tu le travaille, il se développe. A côté il faut évidemment réduire le sucre et le gras au maximum et j’essaie aussi de faire 10.000 pas par jour pour compléter ma routine. Super découverte en tout cas je recommande !",
-            "highlight_text": "Je suis étudiant en médecine et je valide complètement Gumforce !",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r17-sdr.mp4"
-          }
-        },
-        "avis_r18": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Mickael K.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Avec l’âge je commençais à perdre ma mâchoire (je fais beaucoup de rétention d’eau) mais grâce à Gumforce j’ai pu diminuer cette rétention et j’ai retrouvé ma mâchoire d’avant. J’évite le sel et je bouge tous les jours pour venir en complément de cette perte des joues.",
-            "highlight_text": "j’ai retrouvé ma mâchoire d’avant",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r18.mp4"
-          }
-        },
-        "avis_r19": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Antoine A.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je viens de commencer mon 2ème paquet et je vois déjà des résultats, perso j’ai plus confiance en moi donc c’est hyper motivant. Je recommande à 100%",
-            "highlight_text": "je vois déjà des résultats",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r19.jpg"
-          }
-        },
-        "avis_r20": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Alexis D.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Bon goût et la mâchoire travaille vraiment ! Très bonne surprise",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r20.mp4"
-          }
-        },
-        "avis_r21": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Nicolas D.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Superbe produit !! Plus l’ajout de la créatine qui donne l’originalité à ce chewing-gum. Une livraison qui fut très rapide en 48h.",
-            "highlight_text": "",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r21.jpg"
-          }
-        },
-        "avis_r22": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Jeremi A.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Coach de sport, je recommande à tous mes élèves de marcher gumforce et je vois une diff sur tous les jeunes franchement c top",
-            "highlight_text": "je vois une diff sur tous les jeunes",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r22.jpg"
-          }
-        },
-        "avis_r23": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Lucas C.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J’utilise gumforce depuis 4 mois, un conseil qui a maximisé mes résultats c’est de réduire le sucre et de rester actif (privilégier la marche ect.)",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r23.mp4"
-          }
-        },
-        "avis_r24": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Cédric O.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je mâche en travaillant depuis la maison 3 gums par jour (matin midi aprem), si t’as l’habitude des chewing-gums classiques c’est impératif de passer des gums plus durs ! En plus ceux-là contribuent à ton apport et créatine et développe ta mâchoire donc y a pas photo, je recommande",
-            "highlight_text": "c’est impératif de passer des gums plus durs",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r24.mp4"
-          }
-        },
-        "avis_r25": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Gaëtan U.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Incroyable ce produit, ultra dur je m’attendais pas du tout à ça!! Les gars faut pas oublier la mâchoire personne pense à la muscler mais c’est trop important",
-            "highlight_text": "ultra dur je m’attendais pas du tout à ça",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r25.mp4"
-          }
-        },
-        "avis_r26": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Yannick P.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J’utilise Gumforce depuis plusieurs semaines et j’ai retrouvé une mâchoire plus dessinée et mes contours sont aussi plus définis. Je ne connaissais pas du tout ce produit, mais je trouve que c'est innovant.",
-            "highlight_text": "j’ai retrouvé une mâchoire plus dessinée",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r26.mp4"
-          }
-        },
-        "avis_r27": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Mathéo W.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "La résistance est dingue, la première fois j'ai pas tenu 5 min mais maintenant j'arrive à respecter des sessions d'environ 15 min à chaque fois",
-            "highlight_text": "La résistance est dingue",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r27.mp4"
-          }
-        },
-        "avis_r28": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Elliot P.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "3ème commande chez gumforce, j'en prends tous les jours le secret c'est vraiment la régularité des entraînements",
-            "highlight_text": "le secret c'est vraiment la régularité",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r28.mov"
-          }
-        },
-        "avis_r29": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Myron U.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J'ai testé ces gums après avoir testé d'autres marques et c'est de loin la meilleure, j'ai jamais aimé mes joues mais là je vois une différence en quelques semaines d'utilisation",
-            "highlight_text": "c'est de loin la meilleure",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r29.mp4"
-          }
-        },
-        "avis_r30": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Laurent A.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Les galets sont vraiment ultra durs j'avais jamais testé avant, en plus tu peux t'entrainer ou tu veux defois j'en prends dans le métro, au boulot ou dans voiture pour des trajets courts. C'est simple à intégrer bred j'adore",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r30.mp4"
-          }
-        },
-        "avis_r31": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Nathan M.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je viens de recevoir mes sachets et j'ai jamais essayé la créatine sous cette forme, en tout cas ça reste un des meilleur compliment pour la prise de masse musculaire et la force donc j'ai hate de tester en complément",
-            "highlight_text": "",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r31.jpg"
-          }
-        },
-        "avis_r32": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Maxence N.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Les chewing-gum de chez GumForce sont vraiment top honnêtement. Que ce soit au niveau de la texture, de la résistance et du goût, c’est vraiment bon. Je recommande vivement",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r32.mp4"
-          }
-        },
-        "avis_r33": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Clément Z.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J’ai trouvé GUMFORCE chez sport nutrition et dorénavant j’achète en ligne car l’offre meilleure (2 achetés/2 offerts) mais surtout ils sont toujours en rupture en magasin",
-            "highlight_text": "ils sont toujours en rupture en magasin",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r33.jpg"
-          }
-        },
-        "avis_r34": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Arthur L.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Hâte de tester les chewing-gum en plus livraison en moins de 24h, maintenant à voir sur le long terme",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r34.mp4"
-          }
-        },
-        "avis_r35": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Gaetan B.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J’ai commencé par ceux à la menthe avec 3 à 4 chewing-gum par jour et je viens de recevoir 1 sachet pastèque. Le goût reste naturel et ça change, j’espère qu’ils vont sortir d’autres goûts",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r35.mp4"
-          }
-        },
-        "avis_r36": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Firmin A.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Je pensais que c'était une grosse arnaque donc évidemment j’ai commandé et gros banger ça fonctionne vraiment, j’ai eu des résultats rapidement en 2/3 semaines et là ma mâchoire s’est complètement transformée, je sens que le chewing-gum est moins dur en bouche",
-            "highlight_text": "j’ai eu des résultats rapidement en 2/3 semaines",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r36.mp4"
-          }
-        },
-        "avis_r37": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Mathéo M.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J'ai testé sur 4 semaines et je viens de repassé commandes, je me sens mieux et les filles me remarquent plus en soirée ect",
-            "highlight_text": "les filles me remarquent plus en soirée",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r37.mp4"
-          }
-        },
-        "avis_r38": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Ben D.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Incroyable ! Ca change vraiment la vie ! Et c’est super naturel !",
-            "highlight_text": "",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r38.jpg"
-          }
-        },
-        "avis_r39": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Sebastien L.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Très belle découverte que je recommande particulièrement aux personnes qui comme moi souhaitent conserver des traits du visage malgré les effets du temps. Une approche originale pour prendre soin de soi je recommande merci gumforce",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r39.mp4"
-          }
-        },
-        "avis_r40": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Léandre I.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J´ADORE ! C’est bon et en plus ça muscle la mâchoire. Plus jamais j’achèterai des chewing-gum classique 😂",
-            "highlight_text": "Plus jamais j’achèterai des chewing-gum classique",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r40.jpg"
-          }
-        },
-        "avis_r41": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Gaël W.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Honnêtement rien à redire, Gumforce c’est de la frappe, les résultats sont visibles rapidement 😉 La livraison et vraiment rapide en plus!",
-            "highlight_text": "les résultats sont visibles rapidement",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r41.jpg"
-          }
-        },
-        "avis_r42": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Robin M.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Super produit reçu rapidement, vraiment dur comme annoncé et efficace. Prêt à recommander plusieurs sachets",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r42.mp4"
-          }
-        },
-        "avis_r43": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Dorian V.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Très bonne expérience avec Gumforce ! Une équipe pro et à l’écoute et réactive. Le service est de qualité, je recommande sans hésiter !",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r43.mp4"
-          }
-        },
-        "avis_r44": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Louis B.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Super produit trouvé dans un magasin de nutrition sportive, ça faisait longtemps que j'avais pas vu un produit qualitatif avec cet effet immédiat en quelques jours",
-            "highlight_text": "cet effet immédiat en quelques jours",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r44.jpg"
-          }
-        },
-        "avis_r45": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Evan I.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "En plus de l’offre avantageuse, j’ai reçu quelques goodies sympas (sticker et une carte avec un programme d’entraînement) J’ai été agréablement surpris en plus livraison en 48h avec colissimo bravo !",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r45.mp4"
-          }
-        },
-        "avis_r46": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Lelya P.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "J’ai commandé un display de Gumforce pocket dans mon magasin, c'est un produit qui cartonne, je suis vraiment surpris surtout par tous les jeunes qui connaissent ce produit. Les sachets partent comme des petits pains. Merci à Gumforce",
-            "highlight_text": "Les sachets partent comme des petits pains",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r46.mp4"
-          }
-        },
-        "avis_r51": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Matis K.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Bonne découverte mon magasin vient de recevoir ces produits je recommande",
-            "highlight_text": "",
-            "item_type": "",
-            "review_image": "shopify://shop_images/gf-avis-r51.jpg"
-          }
-        },
-        "avis_r48": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Molly P.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Excellent chewing gum, depuis que je les utilise ma mâchoire est tellement plus dessinée c’est impressionnant. Super taff l'équipe Gumforce",
-            "highlight_text": "ma mâchoire est tellement plus dessinée",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r48-sdr.mp4"
-          }
-        },
-        "avis_r49": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Alexis R.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "Suite à une erreur de commande j’ai commandé 3 fois la quantité voulu , heureusement j’ai été accompagné par Lou qui m’as permis d’être remboursé le plus rapidement possible ! Merci encore pour son professionnalisme et son efficacité",
-            "highlight_text": "",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r49.mp4"
-          }
-        },
-        "avis_r50": {
-          "type": "review",
-          "settings": {
-            "reviewer_name": "Louis I.",
-            "review_date": "",
-            "rating": 5,
-            "verified": true,
-            "review_text": "On m'a toujours dit que j'avais un visage d'enfant donc j'ai commandé sur le site et en plus de la livraison hyper rapide les chewing-gums marchent vraiment, les résultats arrivent hyper rapidement je suis trop content",
-            "highlight_text": "les chewing-gums marchent vraiment",
-            "item_type": "",
-            "review_video": "shopify://files/videos/gf-avis-r50.mp4"
-          }
-        }
-      },
-      "block_order": [
-        "avis_r07",
-        "avis_r13",
-        "avis_r35",
-        "avis_r01",
-        "avis_r02",
-        "avis_r03",
-        "avis_r04",
-        "avis_r05",
-        "avis_r06",
-        "avis_r08",
-        "avis_r09",
-        "avis_r10",
-        "avis_r11",
-        "avis_r12",
-        "avis_r14",
-        "avis_r15",
-        "avis_r16",
-        "avis_r17",
-        "avis_r18",
-        "avis_r19",
-        "avis_r20",
-        "avis_r21",
-        "avis_r22",
-        "avis_r23",
-        "avis_r24",
-        "avis_r25",
-        "avis_r26",
-        "avis_r27",
-        "avis_r28",
-        "avis_r29",
-        "avis_r30",
-        "avis_r31",
-        "avis_r32",
-        "avis_r33",
-        "avis_r34",
-        "avis_r36",
-        "avis_r37",
-        "avis_r38",
-        "avis_r39",
-        "avis_r40",
-        "avis_r41",
-        "avis_r42",
-        "avis_r43",
-        "avis_r44",
-        "avis_r45",
-        "avis_r46",
-        "avis_r51",
-        "avis_r48",
-        "avis_r49",
-        "avis_r50"
-      ],
-      "name": "GF Reviews Grid",
-      "settings": {
-        "show_header": true,
-        "heading_text": "Ils en parlent mieux que nous",
-        "header_rating": "theme",
-        "header_count": "[avis] avis Trustpilot",
-        "stars_img_5": "shopify://shop_images/trust5_1.svg",
-        "stars_img_4_5": "shopify://shop_images/trust_45_1.svg",
-        "stars_img_4": "shopify://shop_images/trust4_1.svg",
-        "stars_header_height": 16,
-        "stars_card_height": 13,
-        "verified_badge_url": "",
-        "verified_badge_height": 14,
-        "initial_count": 8,
-        "load_more_text": "Voir plus",
-        "columns_desktop": 4,
-        "columns_tablet": 3,
-        "columns_mobile": 2,
-        "column_gap": 14,
-        "card_gap": 14,
-        "bg_color": "#ffffff",
-        "card_bg": "#ffffff",
-        "card_border": "#2a2a2a",
-        "card_radius": 24,
-        "star_color": "#3d9f78",
-        "name_color": "#1a1a1a",
-        "date_color": "#888888",
-        "text_color": "#1a1a1a",
-        "verified_color": "#888888",
-        "highlight_bg": "#c5fe89",
-        "highlight_text_color": "#1a1a1a",
-        "meta_color": "#777777",
-        "header_color": "#1a1a1a",
-        "btn_bg": "#1a1a1a",
-        "btn_text_color": "#ffffff",
-        "btn_radius": 30,
-        "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40,
-        "padding_top": 40,
-        "padding_bottom": 40,
         "enable_animations": true
       }
     },
