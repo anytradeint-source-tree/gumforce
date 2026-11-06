@@ -1,0 +1,456 @@
+{% comment %}
+  ============================================================================
+  GUMFORCE — CARTES À RETOURNER (landing)
+  ----------------------------------------------------------------------------
+  Grille de cartes noires (logo GUMFORCE). Le visiteur en retourne autant qu'il
+  y a d'avantages (blocs « Avantage ») ; chaque carte révèle le suivant, dans
+  l'ordre des blocs, quelle que soit la carte touchée. Une fois tout retourné :
+  confettis, cartes restantes estompées, récap, bouton qui descend à l'offre
+  (section « GF Offre (page) » placée en dessous : même bloc d'offre et même
+  panier que la fiche produit).
+  • Un avantage avec une date de fin disparaît après (heure de Paris), et le
+    nombre de cartes à retourner suit ([n] dans les textes).
+  • L'état est gardé si la page est rechargée (sessionStorage).
+  • Événements Meta (si fbq existe) : CarteRetournee, ToutesCartesRetournees.
+  ============================================================================
+{% endcomment %}
+
+{%- liquid
+  assign s = section.settings
+  assign sid = section.id
+  assign n_total = 0
+  for b in section.blocks
+    if b.type == 'gift'
+      assign n_total = n_total | plus: 1
+    endif
+  endfor
+  assign cards = s.card_count | default: 9 | plus: 0
+  assign logo = s.back_logo | default: settings.logo
+-%}
+
+<style>
+  {%- if s.hide_chrome %}
+  /* page à une seule action : ni menu ni pied de page (le logo et le panier restent) */
+  header-menu, header-drawer { display: none !important; }
+  .shopify-section-group-footer-group { display: none !important; }
+  {%- endif %}
+
+  #gff-{{ sid }} {
+    --gff-lime: #C5FE89;
+    --gff-ink: #121212;
+    --gff-teal: #2AB5B4;
+    --gff-head: var(--font-heading--family, 'Oswald', sans-serif);
+    --gff-body: var(--font-body--family, 'Manrope', sans-serif);
+    background: linear-gradient(180deg, #A6D4DA 0%, #F0FAF7 55%, #E3E7EA 100%);
+    padding: {{ s.padding_top }}px 16px {{ s.padding_bottom }}px;
+    font-family: var(--gff-body);
+    color: var(--gff-ink);
+  }
+  #gff-{{ sid }} *, #gff-{{ sid }} *::before, #gff-{{ sid }} *::after { box-sizing: border-box; }
+
+  /* carte blanche de la fiche produit */
+  #gff-{{ sid }} .gff-panel {
+    position: relative; max-width: 560px; margin: 0 auto; overflow: hidden;
+    background: #fff; border-radius: 28px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 20px 56px rgba(0,0,0,.10);
+  }
+  /* bandeau vert de la barre d'annonce */
+  #gff-{{ sid }} .gff-band {
+    display: flex; justify-content: center; align-items: center; gap: 14px;
+    padding: 9px 0; overflow: hidden; white-space: nowrap;
+    background: var(--gff-lime); color: #0a0a0a;
+    font: 600 13px/1 var(--gff-head); text-transform: uppercase; letter-spacing: .06em;
+  }
+  #gff-{{ sid }} .gff-band svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+  #gff-{{ sid }} .gff-body { padding: 22px 20px 24px; text-align: center; }
+  #gff-{{ sid }} .gff-h {
+    margin: 0; font-family: var(--gff-head); font-weight: 700; text-transform: uppercase;
+    font-size: clamp(34px, 10.4vw, 50px); line-height: .95; letter-spacing: -.005em; color: var(--gff-ink);
+  }
+  #gff-{{ sid }} .gff-sub { margin: 8px auto 18px; max-width: 360px; font-size: 15px; line-height: 1.35; font-weight: 500; color: #3f3f46; }
+
+  /* ── grille ── */
+  #gff-{{ sid }} .gff-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; perspective: 1000px; }
+  #gff-{{ sid }} .gff-card {
+    position: relative; display: block; width: 100%; aspect-ratio: 4 / 5; padding: 0; border: 0; border-radius: 14px;
+    background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; font: inherit; color: inherit;
+    transition: opacity .35s ease, transform .35s ease, filter .35s ease;
+  }
+  #gff-{{ sid }} .gff-card:focus-visible { outline: 2px solid var(--gff-teal); outline-offset: 3px; }
+  #gff-{{ sid }} .gff-in { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2, .8, .25, 1); }
+  #gff-{{ sid }} .gff-card.is-on .gff-in { transform: rotateY(180deg); }
+  /* pendant le geste : la carte se soulève */
+  #gff-{{ sid }} .gff-card.is-flipping { z-index: 2; }
+  #gff-{{ sid }} .gff-card.is-flipping .gff-in { animation: gff-lift-{{ sid | handleize }} .5s cubic-bezier(.2, .8, .25, 1); }
+  @keyframes gff-lift-{{ sid | handleize }} {
+    0%   { transform: rotateY(0) scale(1); }
+    45%  { transform: rotateY(90deg) scale(1.1); }
+    100% { transform: rotateY(180deg) scale(1); }
+  }
+  #gff-{{ sid }} .gff-face {
+    position: absolute; inset: 0; border-radius: 14px; overflow: hidden;
+    -webkit-backface-visibility: hidden; backface-visibility: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  /* dos : noir toucher doux, léger grain, logo */
+  #gff-{{ sid }} .gff-back {
+    background-color: #151515;
+    background-image:
+      radial-gradient(120% 90% at 30% 15%, rgba(255,255,255,.07) 0%, rgba(255,255,255,0) 55%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+    box-shadow: 0 6px 14px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.07);
+  }
+  #gff-{{ sid }} .gff-card.is-flipping .gff-back { box-shadow: 0 16px 30px rgba(0,0,0,.30); }
+  #gff-{{ sid }} .gff-logo { width: 74%; height: auto; display: block; }
+  #gff-{{ sid }} .gff-word { font: 700 15px/1 var(--gff-head); letter-spacing: .02em; color: #fff; }
+  #gff-{{ sid }} .gff-hint {
+    position: absolute; left: 0; right: 0; bottom: 9px;
+    font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.42);
+  }
+  /* face : vert GUMFORCE */
+  #gff-{{ sid }} .gff-front { transform: rotateY(180deg); background: var(--gff-lime); color: var(--gff-ink); box-shadow: 0 6px 16px rgba(0,0,0,.12); }
+
+  /* ── avantage révélé ── */
+  #gff-{{ sid }} .gff-gift { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; height: 100%; padding: 10px 6px; }
+  #gff-{{ sid }} .gff-vis { display: flex; align-items: center; justify-content: center; height: 42%; width: 100%; }
+  #gff-{{ sid }} .gff-vis img { max-width: 92%; max-height: 100%; width: auto; height: auto; display: block; object-fit: contain; }
+  #gff-{{ sid }} .gff-vis svg { width: 44%; height: auto; max-height: 100%; }
+  #gff-{{ sid }} .gff-big { font: 700 clamp(30px, 9vw, 42px)/.9 var(--gff-head); letter-spacing: -.01em; }
+  #gff-{{ sid }} .gff-t { font: 700 clamp(12px, 3.5vw, 15px)/1.02 var(--gff-head); text-transform: uppercase; letter-spacing: .01em; }
+  #gff-{{ sid }} .gff-s { font-size: clamp(9.5px, 2.7vw, 11.5px); line-height: 1.2; font-weight: 600; color: #2f3b26; }
+  /* avantage photo (ex. Bali) : la photo remplit la carte, texte sur bandeau vert */
+  #gff-{{ sid }} .gff-gift--photo { justify-content: flex-end; padding: 0; }
+  #gff-{{ sid }} .gff-gift--photo .gff-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  #gff-{{ sid }} .gff-gift--photo .gff-cap { position: relative; width: 100%; padding: 7px 6px 8px; background: var(--gff-lime); display: grid; gap: 2px; }
+
+  /* tout retourné : les autres cartes s'effacent */
+  #gff-{{ sid }}.is-done .gff-card:not(.is-on) { opacity: .25; filter: grayscale(1); transform: scale(.94); pointer-events: none; }
+
+  /* ── actions ── */
+  #gff-{{ sid }} .gff-actions { display: grid; justify-items: center; gap: 10px; margin-top: 18px; }
+  #gff-{{ sid }} .gff-btn {
+    width: 100%; max-width: 360px; min-height: 54px; padding: 0 22px; border: 0; border-radius: 999px; cursor: pointer;
+    background: var(--gff-ink); color: #fff; font: 800 16px/1 var(--gff-body); letter-spacing: .005em;
+    -webkit-tap-highlight-color: transparent; transition: transform .15s ease, background .2s ease, color .2s ease;
+  }
+  #gff-{{ sid }} .gff-btn:active { transform: scale(.98); }
+  #gff-{{ sid }} .gff-btn[disabled] { opacity: .6; cursor: default; }
+  #gff-{{ sid }}.is-done .gff-btn { background: var(--gff-lime); color: var(--gff-ink); box-shadow: inset 0 0 0 1.5px var(--gff-ink); }
+  #gff-{{ sid }} .gff-count { margin: 0; font-size: 14px; font-weight: 600; color: #52525b; }
+  #gff-{{ sid }} .gff-count b { color: var(--gff-ink); font-weight: 800; font-variant-numeric: tabular-nums; }
+  #gff-{{ sid }} .gff-skip { font-size: 13px; color: #71717a; text-decoration: underline; text-underline-offset: 3px; }
+  #gff-{{ sid }}.is-done .gff-skip { display: none; }
+
+  /* ── récap (après la dernière carte) ── */
+  #gff-{{ sid }} .gff-recap { margin: 20px auto 0; max-width: 380px; text-align: left; }
+  #gff-{{ sid }} .gff-recap[hidden] { display: none; }
+  #gff-{{ sid }} .gff-recap-h { margin: 0 0 10px; font: 700 18px/1.1 var(--gff-head); text-transform: uppercase; letter-spacing: .01em; }
+  #gff-{{ sid }} .gff-recap ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  #gff-{{ sid }} .gff-recap li { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; line-height: 1.35; font-weight: 600; }
+  #gff-{{ sid }} .gff-recap li svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; color: var(--gff-teal); }
+  #gff-{{ sid }} .gff-recap li a { color: #52525b; font-weight: 500; font-size: 13px; text-underline-offset: 3px; white-space: nowrap; }
+
+  /* confettis */
+  #gff-{{ sid }} .gff-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 3; }
+  #gff-{{ sid }} .gff-confetti i { position: absolute; top: -12px; width: 8px; height: 12px; border-radius: 2px; opacity: 0; }
+
+  @media (min-width: 750px) {
+    #gff-{{ sid }} .gff-body { padding: 30px 36px 32px; }
+    #gff-{{ sid }} .gff-grid { gap: 14px; }
+    #gff-{{ sid }} .gff-sub { font-size: 16px; margin-bottom: 22px; }
+  }
+  @media (max-width: 380px) {
+    #gff-{{ sid }} { padding-left: 12px; padding-right: 12px; }
+    #gff-{{ sid }} .gff-panel { border-radius: 20px; }
+    #gff-{{ sid }} .gff-body { padding: 18px 14px 20px; }
+    #gff-{{ sid }} .gff-grid { gap: 8px; }
+  }
+  /* mouvement réduit : simple fondu */
+  @media (prefers-reduced-motion: reduce) {
+    #gff-{{ sid }} .gff-in, #gff-{{ sid }} .gff-card.is-on .gff-in { transition: none; transform: none; animation: none !important; }
+    #gff-{{ sid }} .gff-front { transform: none; opacity: 0; transition: opacity .25s ease; }
+    #gff-{{ sid }} .gff-card.is-on .gff-front { opacity: 1; }
+    #gff-{{ sid }} .gff-card.is-on .gff-back { opacity: 0; }
+  }
+</style>
+
+<section id="gff-{{ sid }}" class="gff" data-key="gff:{{ page.handle | default: sid }}">
+  <div class="gff-panel">
+    {%- if s.band_text != blank -%}
+      <div class="gff-band" aria-hidden="true">
+        {%- for i in (1..6) -%}
+          <span>{{ s.band_text }}</span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/></svg>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="gff-body">
+      <h1 class="gff-h" data-gff-h data-tpl="{{ s.heading | escape }}" data-done="{{ s.done_heading | escape }}">{{ s.heading | replace: '[n]', n_total }}</h1>
+      {%- if s.subheading != blank -%}
+        <p class="gff-sub" data-gff-sub data-tpl="{{ s.subheading | escape }}" data-done="{{ s.done_sub | escape }}">{{ s.subheading | replace: '[n]', n_total }}</p>
+      {%- endif -%}
+
+      <div class="gff-grid">
+        {%- for i in (1..cards) -%}
+          <button type="button" class="gff-card" data-gff-card aria-label="{{ s.card_name | escape }} {{ i }}">
+            <span class="gff-in">
+              <span class="gff-face gff-back" aria-hidden="true">
+                {%- if logo -%}
+                  {{ logo | image_url: width: 240 | image_tag: class: 'gff-logo', alt: '', loading: 'eager', width: 120, height: 30 }}
+                {%- else -%}
+                  <span class="gff-word">GUMFORCE</span>
+                {%- endif -%}
+                {%- if s.back_text != blank -%}<span class="gff-hint">{{ s.back_text }}</span>{%- endif -%}
+              </span>
+              <span class="gff-face gff-front" data-gff-front></span>
+            </span>
+          </button>
+        {%- endfor -%}
+      </div>
+
+      <div class="gff-actions">
+        <button type="button" class="gff-btn" data-gff-auto data-go="{{ s.go_text | escape }}">{{ s.auto_text }}</button>
+        <p class="gff-count" aria-live="polite" data-gff-count data-tpl="{{ s.counter | escape }}"></p>
+        {%- if s.skip_text != blank -%}<a class="gff-skip" href="#" data-gff-skip>{{ s.skip_text }}</a>{%- endif -%}
+      </div>
+
+      <div class="gff-recap" data-gff-recap hidden>
+        {%- if s.recap_heading != blank -%}<p class="gff-recap-h">{{ s.recap_heading }}</p>{%- endif -%}
+        <ul>
+          {%- for b in section.blocks -%}
+            {%- if b.settings.recap != blank -%}
+              <li data-gff-li data-end="{{ b.settings.end | strip | escape }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>{{ b.settings.recap }}{% if b.settings.link_text != blank and b.settings.link_url != blank %} <a href="{{ b.settings.link_url }}" target="_blank" rel="noopener">{{ b.settings.link_text }}</a>{% endif %}</span>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} contenu de chaque avantage, copié dans la carte au moment où elle se retourne {%- endcomment -%}
+  {%- for b in section.blocks -%}
+    {%- liquid
+      assign bs = b.settings
+      assign vis = bs.visual
+      assign img = bs.image
+    -%}
+    <template data-gff-gift data-end="{{ bs.end | strip | escape }}">
+      {%- if vis == 'photo' -%}
+        <span class="gff-gift gff-gift--photo">
+          {%- if img -%}
+            {{ img | image_url: width: 400 | image_tag: class: 'gff-bg', alt: '', loading: 'lazy' }}
+          {%- else -%}
+            <img class="gff-bg" src="{{ 'gf-bf-bali.jpg' | asset_url }}" alt="" loading="lazy">
+          {%- endif -%}
+          <span class="gff-cap"><span class="gff-t">{{ bs.title }}</span>{% if bs.subtitle != blank %}<span class="gff-s">{{ bs.subtitle }}</span>{% endif %}</span>
+        </span>
+      {%- else -%}
+        <span class="gff-gift">
+          <span class="gff-vis">
+            {%- case vis -%}
+              {%- when 'big' -%}
+                <span class="gff-big">{{ bs.big }}</span>
+              {%- when 'truck' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+              {%- when 'shield' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+              {%- else -%}
+                {%- if img -%}
+                  {{ img | image_url: width: 300 | image_tag: alt: '', loading: 'lazy' }}
+                {%- elsif vis == 'pouches' -%}
+                  <img src="{{ 'gf-flip-2-sachets.png' | asset_url }}" alt="" loading="lazy" width="600" height="497">
+                {%- endif -%}
+            {%- endcase -%}
+          </span>
+          <span class="gff-t">{{ bs.title }}</span>
+          {%- if bs.subtitle != blank -%}<span class="gff-s">{{ bs.subtitle }}</span>{%- endif -%}
+        </span>
+      {%- endif -%}
+    </template>
+  {%- endfor -%}
+</section>
+
+<script>
+  (function () {
+    var root = document.getElementById({{ 'gff-' | append: sid | json }});
+    if (!root) return;
+    var cards = [].slice.call(root.querySelectorAll('[data-gff-card]'));
+    var h = root.querySelector('[data-gff-h]'), sub = root.querySelector('[data-gff-sub]');
+    var count = root.querySelector('[data-gff-count]'), auto = root.querySelector('[data-gff-auto]');
+    var recap = root.querySelector('[data-gff-recap]'), skip = root.querySelector('[data-gff-skip]');
+
+    /* heure de Paris « AAAA-MM-JJ HH:MM », comparée telle quelle aux dates de fin des avantages */
+    function parisNow() {
+      try {
+        var o = {};
+        new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+          .formatToParts(new Date()).forEach(function (x) { o[x.type] = x.value; });
+        return o.year + '-' + o.month + '-' + o.day + ' ' + o.hour + ':' + o.minute;
+      } catch (e) { return new Date().toISOString().slice(0, 16).replace('T', ' '); }
+    }
+    var now = parisNow();
+    function alive(el) { var e = (el.getAttribute('data-end') || '').trim(); return !e || now <= e; }
+    var gifts = [].slice.call(root.querySelectorAll('template[data-gff-gift]')).filter(alive);
+    [].slice.call(root.querySelectorAll('[data-gff-li]')).forEach(function (li) { if (!alive(li)) li.remove(); });
+    var N = Math.min(gifts.length, cards.length);
+
+    function fill(el, key) { if (el) el.textContent = (el.getAttribute(key) || '').replace(/\[n\]/g, N); }
+    fill(h, 'data-tpl'); fill(sub, 'data-tpl');
+
+    var KEY = root.getAttribute('data-key'), order = [], busy = false;
+    function track(name, data) { if (typeof window.fbq === 'function') { try { window.fbq('trackCustom', name, data || {}); } catch (e) {} } }
+    function save() { try { sessionStorage.setItem(KEY, JSON.stringify(order)); } catch (e) {} }
+    function render() {
+      var parts = (count.getAttribute('data-tpl') || '').split('[x]'), b = document.createElement('b');
+      b.textContent = order.length + '/' + N;
+      count.textContent = parts[0];
+      if (parts.length > 1) { count.appendChild(b); count.appendChild(document.createTextNode(parts.slice(1).join(''))); }
+      if (order.length >= N) auto.textContent = auto.getAttribute('data-go');
+    }
+
+    function target() { return document.querySelector('.gfof') || document.querySelector('[id^="gfp-"]'); }
+    function goOffer() {
+      var t = target(); if (!t) return;
+      var y = t.getBoundingClientRect().top + window.pageYOffset - 90;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+
+    function confetti() {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var panel = root.querySelector('.gff-panel'), box = document.createElement('div');
+      box.className = 'gff-confetti';
+      var colors = ['#C5FE89', '#2AB5B4', '#121212', '#C5FE89', '#ffffff'];
+      for (var i = 0; i < 46; i++) {
+        var c = document.createElement('i');
+        c.style.left = (Math.random() * 100) + '%';
+        c.style.background = colors[i % colors.length];
+        if (colors[i % colors.length] === '#ffffff') c.style.boxShadow = 'inset 0 0 0 1px #121212';
+        box.appendChild(c);
+        c.animate([
+          { transform: 'translate3d(0,0,0) rotate(0deg)', opacity: 1 },
+          { transform: 'translate3d(' + ((Math.random() - .5) * 120) + 'px,' + (260 + Math.random() * 420) + 'px,0) rotate(' + (Math.random() * 720 - 360) + 'deg)', opacity: 0 }
+        ], { duration: 1300 + Math.random() * 900, delay: Math.random() * 250, easing: 'cubic-bezier(.2,.6,.35,1)', fill: 'forwards' });
+      }
+      panel.appendChild(box);
+      setTimeout(function () { box.remove(); }, 2600);
+    }
+
+    function finish(anim) {
+      root.classList.add('is-done');
+      fill(h, 'data-done'); fill(sub, 'data-done');
+      if (recap) recap.hidden = false;
+      render();
+      if (anim) { confetti(); track('ToutesCartesRetournees', { cartes: N }); }
+    }
+
+    function reveal(card, anim) {
+      if (order.length >= N || card.classList.contains('is-on')) return;
+      var front = card.querySelector('[data-gff-front]');
+      front.innerHTML = '';
+      front.appendChild(gifts[order.length].content.cloneNode(true));
+      order.push(cards.indexOf(card));
+      card.setAttribute('aria-label', front.textContent.replace(/\s+/g, ' ').trim());
+      if (anim) {
+        card.classList.add('is-flipping');
+        setTimeout(function () { card.classList.remove('is-flipping'); }, 560);
+        if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) {} }
+        track('CarteRetournee', { numero: order.length });
+      }
+      card.classList.add('is-on');
+      save(); render();
+      if (order.length >= N) setTimeout(function () { finish(anim); }, anim ? 420 : 0);
+    }
+
+    /* état gardé au rechargement */
+    try {
+      JSON.parse(sessionStorage.getItem(KEY) || '[]').forEach(function (i) { if (cards[i]) reveal(cards[i], false); });
+    } catch (e) {}
+    render();
+
+    cards.forEach(function (c) { c.addEventListener('click', function () { if (!busy) reveal(c, true); }); });
+    auto.addEventListener('click', function () {
+      if (order.length >= N) { goOffer(); return; }
+      if (busy) return;
+      busy = true; auto.disabled = true;
+      (function next() {
+        var rest = cards.filter(function (c) { return !c.classList.contains('is-on'); });
+        if (order.length >= N || !rest.length) { busy = false; auto.disabled = false; return; }
+        reveal(rest[Math.floor(Math.random() * rest.length)], true);
+        setTimeout(next, 420);
+      })();
+    });
+    if (skip) skip.addEventListener('click', function (e) { e.preventDefault(); goOffer(); });
+    /* page revenue du cache (retour arrière) : bouton débloqué */
+    window.addEventListener('pageshow', function (e) { if (e.persisted) { busy = false; auto.disabled = false; } });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "GF Cartes à retourner",
+  "tag": "div",
+  "settings": [
+    { "type": "header", "content": "Textes" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Retourne [n] cartes", "info": "[n] = nombre d'avantages encore valables (un avantage dont la date est passée disparaît)." },
+    { "type": "text", "id": "subheading", "label": "Sous-titre", "default": "Chacune cache un avantage inclus dans ton offre." },
+    { "type": "text", "id": "done_heading", "label": "Titre une fois tout retourné", "default": "Tout est inclus" },
+    { "type": "text", "id": "done_sub", "label": "Sous-titre une fois tout retourné", "default": "Tes [n] avantages t'attendent avec l'offre 2+2." },
+    { "type": "text", "id": "counter", "label": "Compteur", "default": "Inclus : [x]", "info": "[x] = cartes retournées sur le total (ex. 2/4)." },
+    { "type": "text", "id": "auto_text", "label": "Bouton avant la fin", "default": "Retourne-les pour moi" },
+    { "type": "text", "id": "go_text", "label": "Bouton une fois tout retourné", "default": "Voir mon offre", "info": "Descend jusqu'à la section « GF Offre (page) »." },
+    { "type": "text", "id": "skip_text", "label": "Lien discret", "default": "Passer et voir l'offre" },
+    { "type": "text", "id": "recap_heading", "label": "Titre du récap", "default": "Inclus avec l'offre 2+2 :" },
+    { "type": "text", "id": "band_text", "label": "Bandeau vert (vide = masqué)", "default": "GUMFORCE" },
+    { "type": "header", "content": "Cartes" },
+    { "type": "select", "id": "card_count", "label": "Nombre de cartes", "options": [ { "value": "6", "label": "6" }, { "value": "9", "label": "9" }, { "value": "12", "label": "12" } ], "default": "9" },
+    { "type": "image_picker", "id": "back_logo", "label": "Logo au dos", "info": "Vide = logo du thème." },
+    { "type": "text", "id": "back_text", "label": "Texte au dos", "default": "Touche" },
+    { "type": "text", "id": "card_name", "label": "Nom d'une carte (lu par les lecteurs d'écran)", "default": "Carte" },
+    { "type": "header", "content": "Page" },
+    { "type": "checkbox", "id": "hide_chrome", "label": "Masquer le menu et le pied de page", "default": true, "info": "Le logo et le panier restent." },
+    { "type": "range", "id": "padding_top", "label": "Marge haut", "min": 0, "max": 80, "step": 4, "default": 16, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Marge bas", "min": 0, "max": 80, "step": 4, "default": 28, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "gift",
+      "name": "Avantage",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre sur la carte", "default": "Livraison offerte" },
+        { "type": "text", "id": "subtitle", "label": "Petite ligne sur la carte", "default": "en 48h" },
+        {
+          "type": "select", "id": "visual", "label": "Visuel",
+          "options": [
+            { "value": "truck", "label": "Camion" },
+            { "value": "shield", "label": "Bouclier" },
+            { "value": "big", "label": "Grand texte" },
+            { "value": "pouches", "label": "2 sachets" },
+            { "value": "photo", "label": "Photo plein cadre (Bali par défaut)" },
+            { "value": "image", "label": "Image" }
+          ],
+          "default": "truck"
+        },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Remplace l'image par défaut des visuels « 2 sachets » et « Photo »." },
+        { "type": "text", "id": "big", "label": "Grand texte", "info": "Pour le visuel « Grand texte », ex. 90 J." },
+        { "type": "text", "id": "recap", "label": "Ligne du récap", "default": "Livraison offerte, chez toi en 48h" },
+        { "type": "text", "id": "link_text", "label": "Lien après la ligne du récap" },
+        { "type": "url", "id": "link_url", "label": "Adresse du lien" },
+        { "type": "text", "id": "end", "label": "Visible jusqu'au", "placeholder": "2026-11-30 23:59", "info": "AAAA-MM-JJ HH:MM, heure de Paris. Vide = toujours." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "GF Cartes à retourner",
+      "blocks": [
+        { "type": "gift" }
+      ]
+    }
+  ]
+}
+{% endschema %}
