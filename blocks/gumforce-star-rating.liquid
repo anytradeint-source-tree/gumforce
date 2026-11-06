@@ -76,6 +76,11 @@
     display: block;
     flex-shrink: 0;
   }
+  {%- if mode_all %}
+  /* toutes plateformes : étoiles serrées (le dessin a 1,5 px de marge de chaque côté dans son carré) → ~1 px entre deux étoiles */
+  #gfsr-{{ gf_id }}.gfsr--all .gfsr-stars { gap: 0; }
+  #gfsr-{{ gf_id }}.gfsr--all .gfsr-stars svg { margin-inline: -1px; }
+  {%- endif %}
   #gfsr-{{ gf_id }} .gfsr-number {
     font-size: calc(var(--gfsr-size) * 0.83);
     font-weight: 700;
@@ -92,7 +97,7 @@
   }
 </style>
 
-<div id="gfsr-{{ gf_id }}" {{ block.shopify_attributes }}>
+<div id="gfsr-{{ gf_id }}"{% if mode_all %} class="gfsr--all"{% endif %} {{ block.shopify_attributes }}>
 
   <div class="gfsr-stars" role="img" aria-label="Rating: {{ rating_str }} out of 5">
 
