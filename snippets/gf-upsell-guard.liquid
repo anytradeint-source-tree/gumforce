@@ -1,69 +1,109 @@
 {%- comment -%}
-  GUMFORCE — l'upsell (pastèque) ne s'achète qu'avec une offre GUMFORCE
-  (Réglages du thème › Panier GUMFORCE › « Seulement avec une offre GUMFORCE »).
-  Rendu en tête de page (layout/theme.liquid), il ne sort rien dans le cas normal.
-  • Page produit de l'upsell : renvoi immédiat vers la page de l'offre (lien du
+  GUMFORCE — un upsell (pastèque avec la menthe, menthe avec la pastèque) ne
+  s'achète qu'avec son offre GUMFORCE (Réglages du thème › Panier GUMFORCE ›
+  « Seulement avec une offre GUMFORCE », produits de « Proposé avec » de
+  chaque upsell). Rendu en tête de page (layout/theme.liquid), il ne sort rien
+  dans le cas normal.
+  • Page produit d'un upsell : renvoi immédiat vers la page de l'offre (lien du
     bouton « panier vide »), et noindex.
   • Upsell resté seul au panier (offre retirée sur /cart, ancien panier…) :
     retiré au chargement, puis panier coulissant rafraîchi (ou page /cart
     rechargée). Dans le panier coulissant, il part déjà avec l'offre.
   • Offre retirée SANS rechargement (page /cart d'Horizon, retour du checkout) :
-    à chaque cart:update, si l'upsell reste seul il est retiré tout de suite
+    à chaque cart:update, si un upsell reste seul il est retiré tout de suite
     (puis /cart rechargée, ou panier coulissant rafraîchi).
 {%- endcomment -%}
 {%- liquid
   assign g_on = false
-  assign g_handle = settings.gfc_up_handle | strip
-  if settings.gfc_up_enabled and settings.gfc_up_only_with and g_handle != blank
+  if settings.gfc_up_only_with
     unless request.design_mode
       assign g_on = true
     endunless
   endif
   assign g_redirect = false
-  assign g_orphan = false
+  assign g_orphans = ''
+  assign g_js = ''
   if g_on
     assign g_target = settings.empty_cart_button_link | default: routes.root_url
-    if template.name == 'product' and product.handle == g_handle
-      unless g_target contains g_handle
-        assign g_redirect = true
-      endunless
-    endif
-    comment — « autre » = un produit avec lequel l'upsell est proposé (Panier GUMFORCE › Proposé avec ces produits) ; liste vide = n'importe quel produit
+    assign g_pres = 'gfc_up,gfc_up2' | split: ','
+    comment — handles de tous les upsells : une ligne d'upsell n'est jamais l'offre d'un autre upsell
     endcomment
-    assign g_for = settings.gfc_up_for | remove: ' ' | split: ','
-    assign g_up = 0
-    assign g_other = 0
-    assign g_vid = 0
-    for item in cart.items
-      if item.product.handle == g_handle
-        assign g_up = g_up | plus: item.quantity
-        assign g_vid = item.variant_id
-      elsif g_for.size == 0 or g_for contains item.product.handle
-        assign g_other = g_other | plus: item.quantity
+    assign g_all = ','
+    for pre in g_pres
+      assign k = pre | append: '_handle'
+      assign g_h = settings[k] | strip
+      assign k = pre | append: '_enabled'
+      if settings[k] and g_h != blank
+        assign g_all = g_all | append: g_h | append: ','
       endif
     endfor
-    if g_up > 0 and g_other == 0
-      assign g_orphan = true
-    endif
+    for pre in g_pres
+      assign k = pre | append: '_handle'
+      assign g_h = settings[k] | strip
+      assign k = pre | append: '_enabled'
+      unless settings[k] and g_h != blank
+        continue
+      endunless
+      if template.name == 'product' and product.handle == g_h
+        unless g_target contains g_h
+          assign g_redirect = true
+        endunless
+      endif
+      comment — « offre » = un produit avec lequel cet upsell est proposé (Proposé avec ces produits) ; liste vide = n'importe quel produit
+      endcomment
+      assign k = pre | append: '_for'
+      assign g_for = settings[k] | remove: ' ' | split: ','
+      assign g_up = 0
+      assign g_other = 0
+      assign g_ids = ''
+      for item in cart.items
+        assign i_h = ',' | append: item.product.handle | append: ','
+        if item.product.handle == g_h
+          assign g_up = g_up | plus: item.quantity
+          assign g_ids = g_ids | append: item.variant_id | append: ','
+        elsif g_all contains i_h
+          continue
+        elsif g_for.size == 0 or g_for contains item.product.handle
+          assign g_other = g_other | plus: item.quantity
+        endif
+      endfor
+      if g_up > 0 and g_other == 0
+        assign g_orphans = g_orphans | append: g_ids
+      endif
+      assign g_hj = g_h | json
+      assign g_fj = g_for | json
+      if g_js != ''
+        assign g_js = g_js | append: ','
+      endif
+      assign g_js = g_js | append: '{"h":' | append: g_hj | append: ',"f":' | append: g_fj | append: '}'
+    endfor
   endif
+  assign g_orphans = g_orphans | split: ','
 -%}
 {%- if g_redirect -%}
   <meta name="robots" content="noindex">
   <script>window.location.replace({{ g_target | json }});</script>
 {%- endif -%}
-{%- if g_on -%}
+{%- if g_js != '' -%}
   <script>
     (function () {
-      var H = {{ g_handle | json }}, F = {{ g_for | json }}, busy = false;
+      var S = [{{ g_js }}], busy = false;
+      var H = S.map(function (s) { return s.h; });
       var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
       document.addEventListener('cart:update', function (e) {
         var cart = e.detail && e.detail.resource;
         if (busy || !cart || !cart.items) return;
-        var up = [], other = 0;
-        cart.items.forEach(function (i) { if (i.handle === H) up.push(i); else if (!F.length || F.indexOf(i.handle) > -1) other += i.quantity; });
-        if (!up.length || other > 0) return;
+        var u = {}, n = 0;
+        S.forEach(function (s) {
+          var up = [], other = 0;
+          cart.items.forEach(function (i) {
+            if (i.handle === s.h) up.push(i);
+            else if (H.indexOf(i.handle) < 0 && (!s.f.length || s.f.indexOf(i.handle) > -1)) other += i.quantity;
+          });
+          if (up.length && !other) up.forEach(function (i) { u[i.key] = 0; n++; });
+        });
+        if (!n) return;
         busy = true;
-        var u = {}; up.forEach(function (i) { u[i.key] = 0; });
         fetch(root + 'cart/update.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -80,11 +120,11 @@
     })();
   </script>
 {%- endif -%}
-{%- if g_orphan -%}
+{%- if g_orphans.size > 0 -%}
   <script>
     (function () {
       var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
-      var u = {}; u[{{ g_vid | json }}] = 0;
+      var u = {}; {{ g_orphans | json }}.forEach(function (v) { u[v] = 0; });
       fetch(root + 'cart/update.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },

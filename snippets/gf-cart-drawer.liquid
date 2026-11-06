@@ -6,12 +6,14 @@
 
   • Articles compacts : vignette, nom court (avant « - »), options, prix barré,
     stepper − n + (− devient corbeille à 1).
-  • Upsell : un produit (handle en réglage), sélecteur − 1 + (plafond par
-    personne) et bouton « Ajouter · prix ». Une fois ajouté, il devient une
-    ligne du panier (après les autres articles, même plafond) et la carte
-    disparaît ; elle revient s'il est retiré. Carte photo (image d'ambiance en
-    fond) ou compacte (vignette). Carte masquée sans autre article au panier.
-  • Upsell seulement : si l'offre GUMFORCE est retirée, la pastèque part avec
+  • Upsells (2 emplacements : pastèque avec la menthe, menthe avec la
+    pastèque) : un produit (handle en réglage) proposé seulement avec certains
+    produits, sélecteur − 1 + (plafond par personne) et bouton « Ajouter ·
+    prix ». Une fois ajouté, il devient une ligne du panier (après les autres
+    articles, même plafond) et la carte disparaît ; elle revient s'il est
+    retiré. Une seule carte à la fois ; les deux offres au panier → aucune.
+    Carte photo (image d'ambiance en fond) ou compacte (vignette).
+  • Upsell seulement : si son offre est retirée, l'upsell part avec
     (réglage « Seulement avec une offre GUMFORCE » ; voir aussi gf-upsell-guard).
   • Pied : lignes Réductions (prix barrés + remises) et Livraison « Gratuite »
     (dès que les articles hors upsell atteignent le seuil réglé, comme la règle
@@ -48,35 +50,64 @@
     assign gfc_cc = true
   endif
 
-  comment — UPSELL : produit introuvable (pas sur la boutique en ligne), épuisé ou case décochée → rien
+  comment — UPSELLS : 2 emplacements (Upsell 1 = réglages gfc_up_*, Upsell 2 = gfc_up2_*), chacun proposé
+    seulement avec certains produits (ex. la pastèque avec la menthe, la menthe avec la pastèque).
+    Produit introuvable (pas sur la boutique en ligne), épuisé ou case décochée → pas de carte.
   endcomment
-  assign up_on = false
-  assign up_handle = settings.gfc_up_handle | strip
-  if settings.gfc_up_enabled and up_handle != blank
-    assign up_p = all_products[up_handle]
-    if up_p != blank
-      assign up_v = up_p.selected_or_first_available_variant
-      if up_v != blank and up_v.available
-        assign up_on = true
+  assign up_pres = 'gfc_up,gfc_up2' | split: ','
+  assign up_max = settings.gfc_up_max | default: 4
+  assign up_vids = ','
+  for pre in up_pres
+    assign k = pre | append: '_handle'
+    assign s_h = settings[k] | strip
+    assign k = pre | append: '_enabled'
+    if settings[k] and s_h != blank
+      assign s_p = all_products[s_h]
+      if s_p != blank and s_p.selected_or_first_available_variant.available
+        assign up_vids = up_vids | append: s_p.selected_or_first_available_variant.id | append: ','
       endif
     endif
-  endif
-  assign up_max = settings.gfc_up_max | default: 4
-  comment — l'upsell n'est proposé qu'avec ces produits (ex. la pastèque avec la menthe, pas avec la pastèque) ; vide = avec tous
+  endfor
+  comment — une seule carte à la fois : celle dont l'offre est au panier et l'upsell pas encore pris.
+    Deux upsells déclenchés (menthe + pastèque au panier) → aucune carte.
   endcomment
-  assign up_for = settings.gfc_up_for | remove: ' ' | split: ','
-  assign up_qty = 0
-  assign has_main = false
-  for item in cart.items
-    if up_on and item.variant_id == up_v.id
-      assign up_qty = up_qty | plus: item.quantity
-    elsif up_for.size == 0 or up_for contains item.product.handle
-      assign has_main = true
+  assign up_trig = 0
+  assign up_show = 0
+  for pre in up_pres
+    assign k = pre | append: '_handle'
+    assign s_h = settings[k] | strip
+    assign k = pre | append: '_enabled'
+    unless settings[k] and s_h != blank
+      continue
+    endunless
+    assign s_v = all_products[s_h].selected_or_first_available_variant
+    assign s_key = ',' | append: s_v.id | append: ','
+    unless up_vids contains s_key
+      continue
+    endunless
+    assign k = pre | append: '_for'
+    assign s_for = settings[k] | remove: ' ' | split: ','
+    assign s_qty = 0
+    assign s_main = false
+    for item in cart.items
+      assign i_key = ',' | append: item.variant_id | append: ','
+      if item.variant_id == s_v.id
+        assign s_qty = s_qty | plus: item.quantity
+      elsif up_vids contains i_key
+        continue
+      elsif s_for.size == 0 or s_for contains item.product.handle
+        assign s_main = true
+      endif
+    endfor
+    if s_main
+      assign up_trig = up_trig | plus: 1
+      if s_qty == 0
+        assign up_show = forloop.index
+      endif
     endif
   endfor
-  assign show_up = false
-  if up_on and has_main and up_qty == 0
-    assign show_up = true
+  if up_trig > 1
+    assign up_show = 0
   endif
 
   comment — économie totale = prix barrés (compare_at) + remises Shopify
@@ -94,47 +125,8 @@
     assign gfc_save_money = gfc_save | money
   endif
 
-  if up_on
-    assign up_short = up_p.title | split: ' - ' | first | strip
-    assign up_name = settings.gfc_up_name | default: up_short
-    assign up_img = settings.gfc_up_image | default: up_v.image | default: up_p.featured_image
-    comment — photo de fond : réglage, sinon 2e photo du produit upsell, sinon carte compacte
-    endcomment
-    assign up_bg = settings.gfc_up_bg
-    unless up_bg
-      if up_p.images.size > 1
-        assign up_bg = up_p.images[1]
-      endif
-    endunless
-    assign up_focus = settings.gfc_up_bg_focus | default: 75
-    comment — prix de l'offre : prix et prix barré Shopify (13,50 € barré 29,99 €).
-      Sans prix barré, le réglage « Remise de l'offre upsell » (0 % par défaut)
-      calcule un prix remisé, pour le cas d'une réduction Shopify au panier.
-    endcomment
-    assign up_off = settings.gfc_up_discount | default: 0
-    assign up_unit = up_v.price
-    assign up_was = up_v.price
-    if up_v.compare_at_price > up_v.price
-      assign up_was = up_v.compare_at_price
-    elsif up_off > 0
-      assign up_keep = 100 | minus: up_off
-      assign up_unit = up_v.price | times: up_keep | divided_by: 100.0 | round
-    endif
-    assign up_line_img = up_v.image | default: up_p.featured_image
-    assign up_price_money = up_unit | money
-    assign up_add_tpl = settings.gfc_up_add_text | default: 'Ajouter · [prix]'
-    assign up_pct = ''
-    if up_was > up_unit
-      assign up_pct = up_was | minus: up_unit | times: 100.0 | divided_by: up_was | round | prepend: '-' | append: '%'
-    endif
-    assign up_max_s = up_max | append: ''
-    assign up_badge = settings.gfc_up_badge | replace: '[remise]', up_pct | strip
-    assign up_sub = settings.gfc_up_sub | replace: '[max]', up_max_s | strip
-    assign up_head = settings.gfc_up_heading
-  endif
-
-  comment — livraison gratuite : articles hors upsell ≥ seuil (même règle que les
-    tarifs Shopify, où la pastèque ne compte pas). Devise étrangère : pas de ligne.
+  comment — livraison gratuite : articles hors upsells ≥ seuil (même règle que les
+    tarifs Shopify, où l'upsell ne compte pas). Devise étrangère : pas de ligne.
   endcomment
   assign gfc_ship_min = 0
   if gfc_cc == false and gfc_ship_lbl != blank and gfc_ship_free != blank
@@ -142,7 +134,8 @@
   endif
   assign gfc_ship_base = 0
   for item in cart.items
-    if up_on and item.variant_id == up_v.id
+    assign i_key = ',' | append: item.variant_id | append: ','
+    if up_vids contains i_key
       continue
     endif
     assign gfc_ship_base = gfc_ship_base | plus: item.final_line_price
@@ -342,7 +335,8 @@
       {%- for item in cart.items -%}
         {%- liquid
           assign l_up = false
-          if up_on and item.variant_id == up_v.id
+          assign i_key = ',' | append: item.variant_id | append: ','
+          if up_vids contains i_key
             assign l_up = true
           endif
         -%}
@@ -373,14 +367,8 @@
           if l_up
             assign l_max = up_max
           endif
-          assign l_for = false
-          if l_up == false
-            if up_for.size == 0 or up_for contains item.product.handle
-              assign l_for = true
-            endif
-          endif
         -%}
-        <li class="gfc-line{% if item.quantity == 1 %} is-one{% endif %}" data-gfc-line data-key="{{ item.key }}" data-vid="{{ item.variant_id }}" data-qty="{{ item.quantity }}" data-max="{{ l_max }}" data-unit="{{ item.final_price }}" data-unit-was="{{ l_unit_was }}"{% if l_for %} data-up-for="1"{% endif %}>
+        <li class="gfc-line{% if item.quantity == 1 %} is-one{% endif %}" data-gfc-line data-key="{{ item.key }}" data-vid="{{ item.variant_id }}" data-h="{{ item.product.handle }}" data-qty="{{ item.quantity }}" data-max="{{ l_max }}" data-unit="{{ item.final_price }}" data-unit-was="{{ l_unit_was }}">
           <a class="gfc-line__img" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
             {%- if item.image -%}<img src="{{ item.image | image_url: width: 160 }}" alt="" width="64" height="64" loading="lazy">{%- endif -%}
           </a>
@@ -417,8 +405,67 @@
       {%- endfor -%}
     </ul>
 
-    {%- if up_on -%}
-      <div class="gfc-up{% if up_bg %} gfc-up--photo{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-max="{{ up_max }}" data-pick="1" data-price="{{ up_unit }}" data-was="{{ up_was }}" data-name="{{ up_short | escape }}" data-img="{% if up_line_img %}{{ up_line_img | image_url: width: 160 }}{% endif %}"{% unless show_up %} hidden{% endunless %}>
+    {%- for pre in up_pres -%}
+      {%- liquid
+        assign k = pre | append: '_handle'
+        assign s_h = settings[k] | strip
+        assign k = pre | append: '_enabled'
+        unless settings[k] and s_h != blank
+          continue
+        endunless
+        assign up_p = all_products[s_h]
+        assign up_v = up_p.selected_or_first_available_variant
+        assign s_key = ',' | append: up_v.id | append: ','
+        unless up_vids contains s_key
+          continue
+        endunless
+        assign k = pre | append: '_for'
+        assign up_for = settings[k] | remove: ' '
+        assign up_short = up_p.title | split: ' - ' | first | strip
+        assign k = pre | append: '_name'
+        assign up_name = settings[k] | default: up_short
+        assign k = pre | append: '_image'
+        assign up_img = settings[k] | default: up_v.image | default: up_p.featured_image
+        comment — photo de fond : réglage, sinon 2e photo du produit upsell, sinon carte compacte
+        endcomment
+        assign k = pre | append: '_bg'
+        assign up_bg = settings[k]
+        unless up_bg
+          if up_p.images.size > 1
+            assign up_bg = up_p.images[1]
+          endif
+        endunless
+        assign k = pre | append: '_bg_focus'
+        assign up_focus = settings[k] | default: 75
+        comment — prix de l'offre : prix et prix barré Shopify (9,99 € barré 29,99 €).
+          Sans prix barré, le réglage « Remise de l'offre upsell » (0 % par défaut)
+          calcule un prix remisé, pour le cas d'une réduction Shopify au panier.
+        endcomment
+        assign up_off = settings.gfc_up_discount | default: 0
+        assign up_unit = up_v.price
+        assign up_was = up_v.price
+        if up_v.compare_at_price > up_v.price
+          assign up_was = up_v.compare_at_price
+        elsif up_off > 0
+          assign up_keep = 100 | minus: up_off
+          assign up_unit = up_v.price | times: up_keep | divided_by: 100.0 | round
+        endif
+        assign up_line_img = up_v.image | default: up_p.featured_image
+        assign up_price_money = up_unit | money
+        assign up_add_tpl = settings.gfc_up_add_text | default: 'Ajouter · [prix]'
+        assign up_pct = ''
+        if up_was > up_unit
+          assign up_pct = up_was | minus: up_unit | times: 100.0 | divided_by: up_was | round | prepend: '-' | append: '%'
+        endif
+        assign up_max_s = up_max | append: ''
+        assign k = pre | append: '_badge'
+        assign up_badge = settings[k] | replace: '[remise]', up_pct | strip
+        assign k = pre | append: '_sub'
+        assign up_sub = settings[k] | replace: '[max]', up_max_s | strip
+        assign k = pre | append: '_heading'
+        assign up_head = settings[k]
+      -%}
+      <div class="gfc-up{% if up_bg %} gfc-up--photo{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-for="{{ up_for | escape }}" data-max="{{ up_max }}" data-pick="1" data-price="{{ up_unit }}" data-was="{{ up_was }}" data-name="{{ up_short | escape }}" data-img="{% if up_line_img %}{{ up_line_img | image_url: width: 160 }}{% endif %}"{% unless up_show == forloop.index %} hidden{% endunless %}>
         <div class="gfc-up__card{% if up_badge != blank %} gfc-up__card--badge{% endif %}">
           {%- if up_bg -%}
             <img class="gfc-up__bg" src="{{ up_bg | image_url: width: 800 }}" srcset="{{ up_bg | image_url: width: 600 }} 600w, {{ up_bg | image_url: width: 800 }} 800w, {{ up_bg | image_url: width: 1000 }} 1000w" sizes="(min-width: 750px) 370px, calc(100vw - 32px)" alt="" width="800" height="800" loading="lazy" style="object-position:50% {{ up_focus }}%">
@@ -451,7 +498,7 @@
           </div>
         </div>
       </div>
-    {%- endif -%}
+    {%- endfor -%}
   </div>
 
   <div class="gfc__foot" data-gfc-foot{% if cart.empty? %} hidden{% endif %}>
@@ -506,12 +553,6 @@
     {
     {%- if product != blank -%}
       {%- assign d_name = product.title | split: ' - ' | first | strip -%}
-      {%- liquid
-        assign d_for = false
-        if up_for.size == 0 or up_for contains product.handle
-          assign d_for = true
-        endif
-      -%}
       {%- for v in product.variants -%}
         {%- liquid
           assign d_img = v.image | default: product.featured_image
@@ -526,7 +567,7 @@
             assign d_was_c = v.compare_at_price
           endif
         -%}
-        "{{ v.id }}": { "name": {{ d_name | json }}, "opt": {{ d_opt | json }}, "img": {% if d_img %}{{ d_img | image_url: width: 160 | json }}{% else %}""{% endif %}, "price": {{ v.price | money | json }}, "was": {{ d_was | json }}, "cents": {{ v.price }}, "was_cents": {{ d_was_c }}, "upfor": {{ d_for }} }{% unless forloop.last %},{% endunless %}
+        "{{ v.id }}": { "name": {{ d_name | json }}, "opt": {{ d_opt | json }}, "img": {% if d_img %}{{ d_img | image_url: width: 160 | json }}{% else %}""{% endif %}, "price": {{ v.price | money | json }}, "was": {{ d_was | json }}, "cents": {{ v.price }}, "was_cents": {{ d_was_c }}, "h": {{ product.handle | json }} }{% unless forloop.last %},{% endunless %}
       {%- endfor -%}
     {%- endif -%}
     }
@@ -674,15 +715,15 @@
       if (se) { se.hidden = s <= 0; var sv = q('[data-gfc-save-v]', se); if (sv) sv.textContent = '-' + fmt(s); }
       ship();
     }
-    /* « Livraison gratuite » : articles hors upsell (pastèque) ≥ seuil, comme Shopify */
+    /* « Livraison gratuite » : articles hors upsells ≥ seuil, comme Shopify */
     function ship() {
       var r = root(), row = r && q('[data-gfc-ship]', r);
       if (!row) return;
       var min = cents(r, 'data-ship-min');
       if (!min) { row.hidden = true; return; }
-      var up = q('[data-gfc-up]', r), upv = up ? up.getAttribute('data-vid') : '', base = 0;
+      var ups = upVids(r), base = 0;
       qa('[data-gfc-line]', r).forEach(function (l) {
-        if (l.classList.contains('is-gone') || l.getAttribute('data-vid') === upv) return;
+        if (!live(l) || ups.indexOf(l.getAttribute('data-vid')) > -1) return;
         base += cents(l, 'data-qty') * cents(l, 'data-unit');
       });
       row.hidden = base < min;
@@ -714,11 +755,35 @@
       if (d.opt) opt.textContent = d.opt; else opt.remove();
       li.setAttribute('data-unit', d.cents);
       li.setAttribute('data-unit-was', d.was_cents);
-      if (d.upfor) li.setAttribute('data-up-for', '1');
+      if (d.h) li.setAttribute('data-h', d.h);
       var cc = r.classList.contains('gfc--cc');
       q('.gfc-line__price b', li).textContent = cc ? (qty === 1 ? d.price : '') : fmt(d.cents * qty);
       q('.gfc-line__price s', li).textContent = cc ? (qty === 1 ? d.was : '') : (d.was_cents > d.cents ? fmt(d.was_cents * qty) : '');
       return li;
+    }
+
+    /* ── Upsells : une carte par emplacement ; data-for = produits qui la déclenchent ── */
+    function live(l) { return !l.classList.contains('is-gone'); }
+    function cards(r) { return qa('[data-gfc-up]', r); }
+    function upVids(r) { return cards(r).map(function (c) { return c.getAttribute('data-vid'); }); }
+    function upLines(r, card) { return qa('[data-gfc-line][data-vid="' + card.getAttribute('data-vid') + '"]', r).filter(live); }
+    /* offres au panier qui déclenchent cette carte (hors lignes d'upsell) */
+    function mains(r, card) {
+      var f = (card.getAttribute('data-for') || '').split(',').filter(Boolean), ups = upVids(r);
+      return qa('[data-gfc-line]', r).filter(function (l) {
+        return live(l) && ups.indexOf(l.getAttribute('data-vid')) < 0 && (!f.length || f.indexOf(l.getAttribute('data-h')) > -1);
+      });
+    }
+    /* une seule carte : celle dont l'offre est au panier et l'upsell pas encore pris ;
+       deux upsells déclenchés (menthe + pastèque au panier) → aucune carte */
+    function sync() {
+      var r = root(); if (!r) return;
+      var cs = cards(r), trig = cs.filter(function (c) { return mains(r, c).length > 0; });
+      cs.forEach(function (c) {
+        var on = trig.length === 1 && trig[0] === c && !upLines(r, c).length;
+        if (on && c.hidden) upPick(c, 1);
+        c.hidden = !on;
+      });
     }
 
     /* ── Upsell : sélecteur − 1 + (local), puis « Ajouter » = ligne du panier ── */
@@ -780,44 +845,36 @@
            dernière offre, la pastèque part dans la même requête */
         cancel('l:' + key);
         var updates = {}; updates[key] = 0;
-        afterRemove(line, updates);
+        afterRemove(updates);
         request('cart/update.js', { updates: updates }).catch(function () {});
       }
       updateCount();
     }
     function cancel(k) { if (waiting[k]) { clearTimeout(waiting[k].t); delete waiting[k]; setBusy(); } }
 
-    /* Après un retrait : pastèque retirée → la carte revient (s'il reste une offre) ;
-       plus aucune offre → la carte se cache et la pastèque part avec (upsell seulement) ;
-       plus rien → panier vide tout de suite. */
-    function mains(r, upv) {
-      return qa('[data-gfc-line][data-up-for]', r).filter(function (l) { return !l.classList.contains('is-gone') && l.getAttribute('data-vid') !== upv; });
-    }
-    function afterRemove(line, updates) {
-      var r = root(), card = q('[data-gfc-up]', r), upv = card ? card.getAttribute('data-vid') : '';
-      if (card) {
-        if (line.getAttribute('data-vid') === upv) {
-          if (mains(r, upv).length) { upPick(card, 1); card.hidden = false; }
-        } else if (!mains(r, upv).length) {
-          card.hidden = true;
-          var ups = qa('[data-gfc-line][data-vid="' + upv + '"]', r).filter(function (l) { return !l.classList.contains('is-gone'); });
-          if (ups.length && r.getAttribute('data-up-only') === '1') {
-            ups.forEach(function (l) {
-              var k = l.getAttribute('data-key');
-              cancel('l:' + k);
-              updates[k || upv] = 0;
-              var n0 = cents(l, 'data-qty'), u0 = cents(l, 'data-unit'), w0 = cents(l, 'data-unit-was') || u0;
-              addMoney(-n0 * u0, -n0 * Math.max(0, w0 - u0));
-              l.setAttribute('data-qty', 0);
-              l.classList.add('is-gone');
-            });
-          }
-        }
+    /* Après un retrait : un upsell qui n'a plus son offre part avec, dans la même
+       requête (upsell seulement) ; puis cartes recalculées (upsell retiré → sa carte
+       revient) ; plus rien → panier vide tout de suite. */
+    function afterRemove(updates) {
+      var r = root();
+      if (r.getAttribute('data-up-only') === '1') {
+        cards(r).forEach(function (card) {
+          if (mains(r, card).length) return;
+          upLines(r, card).forEach(function (l) {
+            var k = l.getAttribute('data-key');
+            cancel('l:' + k);
+            updates[k || card.getAttribute('data-vid')] = 0;
+            var n0 = cents(l, 'data-qty'), u0 = cents(l, 'data-unit'), w0 = cents(l, 'data-unit-was') || u0;
+            addMoney(-n0 * u0, -n0 * Math.max(0, w0 - u0));
+            l.setAttribute('data-qty', 0);
+            l.classList.add('is-gone');
+          });
+        });
       }
-      if (!qa('[data-gfc-line]', r).some(function (l) { return !l.classList.contains('is-gone'); })) {
+      sync();
+      if (!qa('[data-gfc-line]', r).some(live)) {
         var empty = q('[data-gfc-empty]', r); if (empty) empty.hidden = false;
         var foot = q('[data-gfc-foot]', r); if (foot) foot.hidden = true;
-        if (card) card.hidden = true;
       }
     }
 
@@ -872,8 +929,7 @@
       if (d) { dT += d.cents * qty; dS += Math.max(0, d.was_cents - d.cents) * qty; addMoney(dT, dS); } else ship();
       var empty = q('[data-gfc-empty]', r); if (empty) empty.hidden = true;
       var foot = q('[data-gfc-foot]', r); if (foot) foot.hidden = false;
-      var up = q('[data-gfc-up]', r);
-      if (up) up.hidden = !!q('[data-gfc-line][data-vid="' + up.getAttribute('data-vid') + '"]:not(.is-gone)', list) || !mains(r, up.getAttribute('data-vid')).length;
+      sync();
       updateCount();
       tick();
     }
@@ -923,11 +979,10 @@
     var CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function tick() {
-      var el = q('[data-gfc-timer]');
+      var r = root(), card = r && cards(r).filter(function (c) { return !c.hidden; })[0];
+      var el = card && q('[data-gfc-timer]', card);
       var dlg = el && el.closest('dialog');
       if (!el || !dlg || !dlg.open) return;
-      var card = el.closest('[data-gfc-up]');
-      if (!card || card.hidden) return;
       var min = parseFloat(el.getAttribute('data-min')) || 10, t0 = 0;
       try { t0 = parseInt(sessionStorage.getItem('gfc_t0'), 10) || 0; } catch (err) {}
       if (!t0) { t0 = Date.now(); try { sessionStorage.setItem('gfc_t0', t0); } catch (err) {} }
