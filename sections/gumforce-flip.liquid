@@ -2,7 +2,7 @@
   ============================================================================
   GUMFORCE — CARTES À RETOURNER (landing)
   ----------------------------------------------------------------------------
-  Grille de cartes noires (logo GUMFORCE). Le visiteur en retourne autant qu'il
+  Grille de cartes noires (symbole GUMFORCE). Le visiteur en retourne autant qu'il
   y a d'avantages (blocs « Avantage ») ; chaque carte révèle le suivant, dans
   l'ordre des blocs, quelle que soit la carte touchée. Une fois tout retourné :
   confettis, cartes restantes estompées, récap, bouton qui descend à l'offre
@@ -25,7 +25,6 @@
     endif
   endfor
   assign cards = s.card_count | default: 9 | plus: 0
-  assign logo = s.back_logo | default: settings.logo
 -%}
 
 <style>
@@ -93,7 +92,7 @@
     -webkit-backface-visibility: hidden; backface-visibility: hidden;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
-  /* dos : noir toucher doux, léger grain, logo */
+  /* dos : noir toucher doux, léger grain, symbole GUMFORCE */
   #gff-{{ sid }} .gff-back {
     background-color: #151515;
     background-image:
@@ -102,7 +101,7 @@
     box-shadow: 0 6px 14px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.07);
   }
   #gff-{{ sid }} .gff-card.is-flipping .gff-back { box-shadow: 0 16px 30px rgba(0,0,0,.30); }
-  #gff-{{ sid }} .gff-logo { width: 74%; height: auto; display: block; }
+  #gff-{{ sid }} .gff-logo { width: 58%; height: auto; display: block; }
   #gff-{{ sid }} .gff-word { font: 700 15px/1 var(--gff-head); letter-spacing: .02em; color: #fff; }
   #gff-{{ sid }} .gff-hint {
     position: absolute; left: 0; right: 0; bottom: 9px;
@@ -182,6 +181,7 @@
       <div class="gff-band" aria-hidden="true">
         {%- for i in (1..6) -%}
           <span>{{ s.band_text }}</span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/></svg>
+          {%- if s.band_text_2 != blank -%}<span>{{ s.band_text_2 }}</span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/></svg>{%- endif -%}
         {%- endfor -%}
       </div>
     {%- endif -%}
@@ -197,10 +197,10 @@
           <button type="button" class="gff-card" data-gff-card aria-label="{{ s.card_name | escape }} {{ i }}">
             <span class="gff-in">
               <span class="gff-face gff-back" aria-hidden="true">
-                {%- if logo -%}
-                  {{ logo | image_url: width: 240 | image_tag: class: 'gff-logo', alt: '', loading: 'eager', width: 120, height: 30 }}
+                {%- if s.back_logo -%}
+                  {{ s.back_logo | image_url: width: 240 | image_tag: class: 'gff-logo', alt: '', loading: 'eager' }}
                 {%- else -%}
-                  <span class="gff-word">GUMFORCE</span>
+                  <img class="gff-logo" src="{{ 'gf-flip-symbole.svg' | asset_url }}" alt="" width="151" height="150" loading="eager">
                 {%- endif -%}
                 {%- if s.back_text != blank -%}<span class="gff-hint">{{ s.back_text }}</span>{%- endif -%}
               </span>
@@ -406,11 +406,12 @@
     { "type": "text", "id": "go_text", "label": "Bouton une fois tout retourné", "default": "Voir mon offre", "info": "Descend jusqu'au bloc d'offre de la section « GF Offre (page) »." },
     { "type": "text", "id": "skip_text", "label": "Lien discret", "default": "Passer et voir l'offre" },
     { "type": "text", "id": "recap_heading", "label": "Titre du récap", "default": "Inclus avec l'offre 2+2 :" },
-    { "type": "text", "id": "band_text", "label": "Bandeau vert (vide = masqué)", "default": "GUMFORCE" },
+    { "type": "text", "id": "band_text", "label": "Bandeau vert : texte 1 (vide = bandeau masqué)", "default": "Black Friday" },
+    { "type": "text", "id": "band_text_2", "label": "Bandeau vert : texte 2, en alternance", "default": "GUMFORCE" },
     { "type": "header", "content": "Cartes" },
     { "type": "select", "id": "card_count", "label": "Nombre de cartes", "options": [ { "value": "6", "label": "6" }, { "value": "9", "label": "9" }, { "value": "12", "label": "12" } ], "default": "9" },
-    { "type": "image_picker", "id": "back_logo", "label": "Logo au dos", "info": "Vide = logo du thème." },
-    { "type": "text", "id": "back_text", "label": "Texte au dos", "default": "Touche" },
+    { "type": "image_picker", "id": "back_logo", "label": "Image au dos", "info": "Vide = symbole GUMFORCE." },
+    { "type": "text", "id": "back_text", "label": "Petit texte au dos (vide = aucun)" },
     { "type": "text", "id": "card_name", "label": "Nom d'une carte (lu par les lecteurs d'écran)", "default": "Carte" },
     { "type": "header", "content": "Page" },
     { "type": "checkbox", "id": "hide_chrome", "label": "Masquer le menu et le pied de page", "default": true, "info": "Le logo et le panier restent." },
