@@ -16,6 +16,16 @@
     assign gp = all_products[s.product_handle]
   endif
   assign img_max = s.images_max | default: 6
+  comment — 2e goût (ex. pastèque) : sa propre offre et ses photos, le sélecteur de goût bascule sur place
+  endcomment
+  assign gp2 = blank
+  if s.product_handle_2 != blank
+    assign gp2 = all_products[s.product_handle_2]
+  endif
+  assign rich = false
+  if s.show_videos or s.use_ab_photos or gp2 != blank
+    assign rich = true
+  endif
 -%}
 
 <style>
@@ -37,6 +47,13 @@
   #gfof-{{ sid }} .gfof-thumb { padding: 0; border: 1.5px solid transparent; border-radius: 12px; overflow: hidden; background: #f3f5f5; cursor: pointer; aspect-ratio: 1; display: block; }
   #gfof-{{ sid }} .gfof-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   #gfof-{{ sid }} .gfof-thumb.is-active { border-color: #1a1a1a; }
+  #gfof-{{ sid }} .gfof-main { position: relative; }
+  #gfof-{{ sid }} .gfof-main-video { position: absolute; inset: 0; background: #000; }
+  #gfof-{{ sid }} .gfof-main-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #gfof-{{ sid }} .gfof-thumb { position: relative; }
+  #gfof-{{ sid }} .gfof-thumbs[hidden] { display: none !important; }
+  #gfof-{{ sid }} .gfof-play { position: absolute; inset: 0; margin: auto; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.42); color: #fff; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  #gfof-{{ sid }} .gfof-play svg { width: 14px; height: 14px; margin-left: 2px; }
   @media (max-width: 989px) {
     #gfof-{{ sid }} .gfof-grid.has-media { grid-template-columns: minmax(0, 1fr); gap: 24px; max-width: {{ s.offer_width }}px; margin: 0 auto; }
     #gfof-{{ sid }} .gfof-grid.has-media .gfof-heading { text-align: center; }
@@ -54,8 +71,68 @@
 
 <section id="gfof-{{ sid }}" class="gfof">
   <div class="gfof-inner">
-    <div class="gfof-grid{% if gp != blank and gp.images.size > 0 %} has-media{% endif %}">
-      {%- if gp != blank and gp.images.size > 0 -%}
+    <div class="gfof-grid{% if gp != blank and gp.media.size > 0 %} has-media{% endif %}">
+      {%- if rich and gp != blank -%}
+        <div class="gfof-media" data-gfof-media data-gf-gallery data-gf-first="1">
+          <div class="gfof-main" data-gf-gallery-host>
+            {{ gp.featured_media.preview_image | image_url: width: 1100 | image_tag: class: 'gfof-main-img', widths: '500, 700, 900, 1100', sizes: '(min-width: 990px) 46vw, 92vw', alt: gp.title, loading: 'eager', fetchpriority: 'high' }}
+          </div>
+          {%- for fp in (1..2) -%}
+            {%- liquid
+              if forloop.index == 1
+                assign fprod = gp
+              else
+                assign fprod = gp2
+              endif
+              if fprod == blank
+                continue
+              endif
+              comment — mêmes photos que la fiche (version A du test photos) quand les métachamps existent, sinon toutes sauf #checkout
+              endcomment
+              assign allowed = ''
+              if s.use_ab_photos and fprod.metafields.custom.gf_ab_commun != blank
+                assign allowed = fprod.metafields.custom.gf_ab_commun.value | append: ',' | append: fprod.metafields.custom.gf_ab_a.value
+              endif
+              assign allowed_list = allowed | remove: ' ' | split: ','
+              assign shown = 0
+            -%}
+            <div class="gfof-thumbs" data-gfof-set="{{ fprod.handle }}"{% if forloop.index > 1 %} hidden{% endif %}>
+              {%- for m in fprod.media -%}
+                {%- liquid
+                  if shown >= img_max
+                    break
+                  endif
+                  if m.alt contains '#checkout'
+                    continue
+                  endif
+                  assign mid = m.id | append: ''
+                  if allowed_list.size > 0
+                    unless allowed_list contains mid
+                      continue
+                    endunless
+                  endif
+                  if m.media_type == 'video'
+                    unless s.show_videos
+                      continue
+                    endunless
+                  elsif m.media_type != 'image'
+                    continue
+                  endif
+                  assign shown = shown | plus: 1
+                -%}
+                <button type="button" class="gfof-thumb{% if shown == 1 %} is-active{% endif %}{% if m.media_type == 'video' %} is-video{% endif %}" data-src="{{ m.preview_image | image_url: width: 1100 }}" aria-label="{{ m.media_type | capitalize }} {{ shown }}">
+                  {{ m.preview_image | image_url: width: 180 | image_tag: alt: '', loading: 'lazy' }}
+                  {%- if m.media_type == 'video' -%}
+                    <span class="gfof-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.6v12.8a1 1 0 0 0 1.52.85l10.2-6.4a1 1 0 0 0 0-1.7L9.52 4.75A1 1 0 0 0 8 5.6Z"/></svg></span>
+                    <template>{{ m | video_tag: image_size: '1100x', autoplay: true, loop: true, muted: true, controls: true, playsinline: true }}</template>
+                  {%- endif -%}
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- endfor -%}
+          {%- if s.show_badge -%}{% content_for 'block', type: 'gumforce-image-badge', id: 'badge' %}{%- endif -%}
+        </div>
+      {%- elsif gp != blank and gp.images.size > 0 -%}
         {%- assign first = gp.images.first -%}
         {%- assign first_alt = first.alt | default: gp.title -%}
         <div class="gfof-media" data-gfof-media>
@@ -75,13 +152,61 @@
       {%- endif -%}
       <div class="gfof-buy">
         {%- if s.heading != blank -%}<h2 class="gfof-heading">{{ s.heading }}</h2>{%- endif -%}
-        {% content_for 'block', type: 'gumforce-pack-offer', id: 'offre' %}
+        {%- if gp2 != blank -%}
+          <div data-gfof-flavor="{{ s.product_handle }}">{% content_for 'block', type: 'gumforce-pack-offer', id: 'offre' %}</div>
+          <div data-gfof-flavor="{{ gp2.handle }}" hidden>{% content_for 'block', type: 'gumforce-pack-offer', id: 'offre2' %}</div>
+        {%- else -%}
+          {% content_for 'block', type: 'gumforce-pack-offer', id: 'offre' %}
+        {%- endif -%}
       </div>
     </div>
   </div>
 </section>
 
-{%- if gp != blank and gp.images.size > 1 -%}
+{%- if rich and gp != blank -%}
+<script>
+  (function () {
+    var sec = document.getElementById({{ 'gfof-' | append: sid | json }});
+    var root = sec && sec.querySelector('[data-gfof-media]');
+    if (!root) return;
+    var host = root.querySelector('[data-gf-gallery-host]'), img = host.querySelector('.gfof-main-img');
+    function select(t, isFirst) {
+      var old = host.querySelector('.gfof-main-video'); if (old) old.remove();
+      if (t.classList.contains('is-video')) {
+        var tpl = t.querySelector('template'), box = document.createElement('div');
+        box.className = 'gfof-main-video';
+        box.appendChild(document.importNode(tpl.content, true));
+        host.insertBefore(box, img.nextSibling);
+        var v = box.querySelector('video'); if (v) { v.muted = true; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+      } else {
+        img.removeAttribute('srcset');
+        img.src = t.getAttribute('data-src');
+      }
+      t.parentNode.querySelectorAll('.gfof-thumb').forEach(function (b) { b.classList.toggle('is-active', b === t); });
+      /* badge, bulle vidéo et bandeau seulement sur la 1re photo (GF Badge image observe cet attribut) */
+      root.setAttribute('data-gf-first', isFirst ? '1' : '0');
+    }
+    root.addEventListener('click', function (e) {
+      var t = e.target.closest('.gfof-thumb'); if (!t) return;
+      var list = [].slice.call(t.parentNode.querySelectorAll('.gfof-thumb'));
+      select(t, list.indexOf(t) === 0);
+    });
+    /* sélecteur de goût du bloc d'offre : ici on change de goût sur place (offre + photos) au lieu d'ouvrir l'autre page */
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('#' + sec.id + ' .gfp-flav-opt');
+      if (!a) return;
+      var h = (a.getAttribute('href') || '').split('/products/')[1];
+      h = h ? h.split(/[?#]/)[0] : '';
+      var set = h && root.querySelector('[data-gfof-set="' + h + '"]');
+      if (!set) return;
+      e.preventDefault(); e.stopPropagation();
+      sec.querySelectorAll('[data-gfof-flavor]').forEach(function (w) { w.hidden = w.getAttribute('data-gfof-flavor') !== h; });
+      root.querySelectorAll('[data-gfof-set]').forEach(function (x) { x.hidden = x !== set; });
+      var first = set.querySelector('.gfof-thumb'); if (first) select(first, true);
+    }, true);
+  })();
+</script>
+{%- elsif gp != blank and gp.images.size > 1 -%}
 <script>
   (function () {
     var root = document.querySelector('#gfof-{{ sid }} [data-gfof-media]');
@@ -113,6 +238,10 @@
     { "type": "checkbox", "id": "show_gallery", "label": "Afficher les photos à côté de l'offre", "default": true },
     { "type": "text", "id": "product_handle", "label": "Produit (identifiant)", "default": "gumforce", "info": "Les photos de ce produit. Mettre le même que dans le bloc d'offre." },
     { "type": "range", "id": "images_max", "label": "Nombre de photos", "min": 1, "max": 10, "step": 1, "default": 6 },
+    { "type": "checkbox", "id": "show_videos", "label": "Inclure les vidéos du produit", "default": false },
+    { "type": "checkbox", "id": "use_ab_photos", "label": "Mêmes photos que la fiche produit (version A du test photos)", "default": false },
+    { "type": "checkbox", "id": "show_badge", "label": "Badge, bulle vidéo et bandeau sur la 1re photo", "default": false, "info": "Réglages dans le bloc « GF Badge image » de cette section." },
+    { "type": "text", "id": "product_handle_2", "label": "2e goût (identifiant)", "info": "Ex. pasteque. Ajoute son offre (bloc « offre2 ») et ses photos ; le sélecteur de goût du bloc d'offre bascule sur place." },
     { "type": "header", "content": "Mise en page" },
     { "type": "range", "id": "max_width", "label": "Largeur maximale", "min": 360, "max": 1340, "step": 20, "unit": "px", "default": 1140 },
     { "type": "range", "id": "offer_width", "label": "Largeur de la colonne offre", "min": 360, "max": 560, "step": 20, "unit": "px", "default": 460 },

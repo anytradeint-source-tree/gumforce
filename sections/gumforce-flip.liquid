@@ -40,7 +40,7 @@
     --gff-teal: #2AB5B4;
     --gff-head: var(--font-heading--family, 'Oswald', sans-serif);
     --gff-body: var(--font-body--family, 'Manrope', sans-serif);
-    background: linear-gradient(180deg, #A6D4DA 0%, #F0FAF7 55%, #E3E7EA 100%);
+    background: linear-gradient(180deg, #A6D4DA 0%, #F0FAF7 62%, {{ s.end_color | default: '#ffffff' }} 100%);
     padding: {{ s.padding_top }}px 16px {{ s.padding_bottom }}px;
     font-family: var(--gff-body);
     color: var(--gff-ink);
@@ -313,7 +313,10 @@
       if (order.length >= N) auto.textContent = auto.getAttribute('data-go');
     }
 
-    function target() { return document.querySelector('[id^="gfp-"]') || document.querySelector('.gfof'); }
+    function target() {
+      var offers = [].slice.call(document.querySelectorAll('[id^="gfp-"]')).filter(function (o) { return o.offsetParent !== null; });
+      return offers[0] || document.querySelector('.gfof');
+    }
     function goOffer() {
       var t = target(); if (!t) return;
       var hd = document.querySelector('header'), off = (hd ? hd.getBoundingClientRect().height : 80) + 12;
@@ -415,6 +418,7 @@
     { "type": "text", "id": "card_name", "label": "Nom d'une carte (lu par les lecteurs d'écran)", "default": "Carte" },
     { "type": "header", "content": "Page" },
     { "type": "checkbox", "id": "hide_chrome", "label": "Masquer le menu et le pied de page", "default": true, "info": "Le logo et le panier restent." },
+    { "type": "color", "id": "end_color", "label": "Couleur du bas du fond", "default": "#ffffff", "info": "Mettre la couleur de fond de la section suivante : le passage se fait sans ligne." },
     { "type": "range", "id": "padding_top", "label": "Marge haut", "min": 0, "max": 80, "step": 4, "default": 16, "unit": "px" },
     { "type": "range", "id": "padding_bottom", "label": "Marge bas", "min": 0, "max": 80, "step": 4, "default": 28, "unit": "px" }
   ],

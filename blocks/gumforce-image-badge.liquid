@@ -297,13 +297,16 @@
         myWrap.style.cssText += ';position:absolute!important;width:0!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;';
       }
     }
-    function gallery() { return document.querySelector('media-gallery'); }
+    /* galerie de la fiche produit, sinon galerie d'une page (section « GF Offre (page) » : [data-gf-gallery]) */
+    function gallery() { return document.querySelector('media-gallery') || document.querySelector('[data-gf-gallery]'); }
     function host() {
       var g = gallery();
       if (!g) return null;
-      return g.querySelector('slideshow-container') || g.querySelector('.product-media-container') || g;
+      return g.querySelector('slideshow-container') || g.querySelector('.product-media-container') || g.querySelector('[data-gf-gallery-host]') || g;
     }
     function onFirstSlide() {
+      var gp = gallery();
+      if (gp && gp.hasAttribute('data-gf-gallery')) return gp.getAttribute('data-gf-first') !== '0';
       /* première slide VISIBLE (pas la première du DOM : elle peut être une
          image masquée #checkout dont l'aria-hidden ne passe jamais à false) */
       var g = gallery();
@@ -366,7 +369,7 @@
       if (v2) vbV.addEventListener('canplaythrough', function () { if (!v2.getAttribute('src')) { v2.preload = 'auto'; v2.src = vbV.currentSrc || src; } }, { once: true });
     }
     if (vbV) {
-      var vbImg = document.querySelector('media-gallery slideshow-slide img, media-gallery img');
+      var vbImg = document.querySelector('media-gallery slideshow-slide img, media-gallery img, [data-gf-gallery] img');
       var vbGo = function () { setTimeout(vbStart, 50); };
       if (!vbImg || vbImg.complete) vbGo();
       else { vbImg.addEventListener('load', vbGo, { once: true }); vbImg.addEventListener('error', vbGo, { once: true }); setTimeout(vbStart, 4000); }
@@ -476,7 +479,7 @@
         if (!document.contains(badge)) place();
         updateVis();
       });
-      mo.observe(g, { subtree: true, attributes: true, attributeFilter: ['aria-hidden'] });
+      mo.observe(g, { subtree: true, attributes: true, attributeFilter: ['aria-hidden', 'data-gf-first'] });
     }
     /* la galerie est déjà dans le HTML au-dessus : pose immédiate (attendre DOMContentLoaded
        = attendre tous les scripts du thème, jusqu'à 40 s sur réseau lent) */
