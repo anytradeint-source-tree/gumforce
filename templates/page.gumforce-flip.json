@@ -24,7 +24,7 @@
         "garantie": {
           "type": "gift",
           "settings": {
-            "title": "Garantie 90 jours",
+            "title": "Garantie",
             "subtitle": "satisfait ou remboursé",
             "visual": "big",
             "big": "90 J",
