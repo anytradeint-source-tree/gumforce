@@ -70,7 +70,8 @@
     margin: 0; font-family: var(--gff-head); font-weight: 700; text-transform: uppercase;
     font-size: clamp(30px, 9vw, 46px); line-height: .95; text-wrap: balance; letter-spacing: -.005em; color: var(--gff-ink);
   }
-  #gff-{{ sid }} .gff-sub { margin: 8px auto 18px; max-width: 360px; font-size: 15px; line-height: 1.35; font-weight: 500; color: #3f3f46; text-wrap: balance; }
+  #gff-{{ sid }} .gff-sub { margin: 8px auto 18px; max-width: 360px; min-height: 2.7em; font-size: 15px; line-height: 1.35; font-weight: 500; color: #3f3f46; text-wrap: balance; }
+  /* hauteur de 2 lignes réservée : le sous-titre de fin (1 ligne) ne fait plus sauter la grille */
 
   /* ── grille ── */
   #gff-{{ sid }} .gff-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; perspective: 1000px; }
