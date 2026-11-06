@@ -324,8 +324,9 @@
     fill(h, 'data-tpl'); fill(sub, 'data-tpl');
 
     {%- if s.remind_offer %}
-    /* les avantages en petites cartes sous le titre de l'offre, pour rappeler ce qui est inclus */
-    [].forEach.call(document.querySelectorAll('.gfof-heading'), function (hd) {
+    /* les avantages en petites cartes sous le titre de l'offre, pour rappeler ce qui est inclus
+       (la section offre est plus bas dans la page : on attend qu'elle soit lue) */
+    function remind() { [].forEach.call(document.querySelectorAll('.gfof-heading'), function (hd) {
       if (hd.nextElementSibling && hd.nextElementSibling.classList.contains('gff-remind')) return;
       var box = document.createElement('div');
       box.className = 'gff-remind';
@@ -333,7 +334,8 @@
       box.style.setProperty('--gff-n', Math.min(gifts.length, cards.length));
       gifts.slice(0, cards.length).forEach(function (t) { var c = document.createElement('div'); c.className = 'gff-mini'; c.appendChild(t.content.cloneNode(true)); box.appendChild(c); });
       hd.parentNode.insertBefore(box, hd.nextSibling);
-    });
+    }); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', remind); else remind();
     {%- endif %}
 
     var KEY = root.getAttribute('data-key'), order = [];
