@@ -16,9 +16,9 @@
           "type": "gift",
           "settings": {
             "title": "Livraison offerte",
-            "subtitle": "chez toi en 48h",
+            "subtitle": "en 48h",
             "visual": "truck",
-            "recap": "Livraison offerte, chez toi en 48h"
+            "recap": "Livraison offerte, en 48h"
           }
         },
         "garantie": {
