@@ -134,7 +134,8 @@
     -webkit-tap-highlight-color: transparent; transition: transform .15s ease, background .2s ease, color .2s ease;
   }
   #gff-{{ sid }} .gff-btn:active { transform: scale(.98); }
-  #gff-{{ sid }} .gff-btn[disabled] { opacity: .6; cursor: default; }
+  #gff-{{ sid }} .gff-btn[disabled] { opacity: .38; cursor: default; }
+  #gff-{{ sid }} .gff-btn[disabled]:active { transform: none; }
   #gff-{{ sid }}.is-done .gff-btn { background: var(--gff-lime); color: var(--gff-ink); box-shadow: inset 0 0 0 1.5px var(--gff-ink); }
   #gff-{{ sid }} .gff-count { margin: 0; font-size: 14px; font-weight: 600; color: #52525b; }
   #gff-{{ sid }} .gff-count b { color: var(--gff-ink); font-weight: 800; font-variant-numeric: tabular-nums; }
@@ -211,7 +212,7 @@
       </div>
 
       <div class="gff-actions">
-        <button type="button" class="gff-btn" data-gff-auto data-go="{{ s.go_text | escape }}">{{ s.auto_text }}</button>
+        <button type="button" class="gff-btn" data-gff-auto disabled data-left="{{ s.btn_left | escape }}" data-left-one="{{ s.btn_left_one | escape }}" data-go="{{ s.go_text | escape }}">{{ s.btn_left | replace: '[r]', n_total }}</button>
         <p class="gff-count" aria-live="polite" data-gff-count data-tpl="{{ s.counter | escape }}"></p>
         {%- if s.skip_text != blank -%}<a class="gff-skip" href="#" data-gff-skip>{{ s.skip_text }}</a>{%- endif -%}
       </div>
@@ -302,7 +303,7 @@
     function fill(el, key) { if (el) el.textContent = (el.getAttribute(key) || '').replace(/\[n\]/g, N); }
     fill(h, 'data-tpl'); fill(sub, 'data-tpl');
 
-    var KEY = root.getAttribute('data-key'), order = [], busy = false;
+    var KEY = root.getAttribute('data-key'), order = [];
     function track(name, data) { if (typeof window.fbq === 'function') { try { window.fbq('trackCustom', name, data || {}); } catch (e) {} } }
     function save() { try { sessionStorage.setItem(KEY, JSON.stringify(order)); } catch (e) {} }
     function render() {
@@ -310,7 +311,9 @@
       b.textContent = order.length + '/' + N;
       count.textContent = parts[0];
       if (parts.length > 1) { count.appendChild(b); count.appendChild(document.createTextNode(parts.slice(1).join(''))); }
-      if (order.length >= N) auto.textContent = auto.getAttribute('data-go');
+      var r = N - order.length;
+      if (r <= 0) { auto.textContent = auto.getAttribute('data-go'); auto.disabled = false; }
+      else { auto.textContent = (r === 1 ? auto.getAttribute('data-left-one') : auto.getAttribute('data-left')).replace('[r]', r); auto.disabled = true; }
     }
 
     function target() {
@@ -376,21 +379,11 @@
     } catch (e) {}
     render();
 
-    cards.forEach(function (c) { c.addEventListener('click', function () { if (!busy) reveal(c, true); }); });
-    auto.addEventListener('click', function () {
-      if (order.length >= N) { goOffer(); return; }
-      if (busy) return;
-      busy = true; auto.disabled = true;
-      (function next() {
-        var rest = cards.filter(function (c) { return !c.classList.contains('is-on'); });
-        if (order.length >= N || !rest.length) { busy = false; auto.disabled = false; return; }
-        reveal(rest[Math.floor(Math.random() * rest.length)], true);
-        setTimeout(next, 420);
-      })();
-    });
+    cards.forEach(function (c) { c.addEventListener('click', function () { reveal(c, true); }); });
+    auto.addEventListener('click', function () { if (order.length >= N) goOffer(); });
     if (skip) skip.addEventListener('click', function (e) { e.preventDefault(); goOffer(); });
     /* page revenue du cache (retour arrière) : bouton débloqué */
-    window.addEventListener('pageshow', function (e) { if (e.persisted) { busy = false; auto.disabled = false; } });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) render(); });
   })();
 </script>
 
@@ -404,8 +397,9 @@
     { "type": "text", "id": "subheading", "label": "Sous-titre", "default": "Chacune cache un avantage inclus dans ton offre." },
     { "type": "text", "id": "done_heading", "label": "Titre une fois tout retourné", "default": "Tout est inclus" },
     { "type": "text", "id": "done_sub", "label": "Sous-titre une fois tout retourné", "default": "Tes [n] avantages t'attendent avec l'offre 2+2." },
-    { "type": "text", "id": "counter", "label": "Compteur", "default": "Inclus : [x]", "info": "[x] = cartes retournées sur le total (ex. 2/4)." },
-    { "type": "text", "id": "auto_text", "label": "Bouton avant la fin", "default": "Retourne-les pour moi" },
+    { "type": "text", "id": "counter", "label": "Compteur", "default": "[x] avantages débloqués", "info": "[x] = cartes retournées sur le total (ex. 2/4)." },
+    { "type": "text", "id": "btn_left", "label": "Bouton tant qu'il reste des cartes (inactif)", "default": "Retourne [r] cartes", "info": "[r] = cartes qui restent à retourner." },
+    { "type": "text", "id": "btn_left_one", "label": "Bouton quand il reste 1 carte", "default": "Retourne 1 carte" },
     { "type": "text", "id": "go_text", "label": "Bouton une fois tout retourné", "default": "Voir mon offre", "info": "Descend jusqu'au bloc d'offre de la section « GF Offre (page) »." },
     { "type": "text", "id": "skip_text", "label": "Lien discret", "default": "Passer et voir l'offre" },
     { "type": "text", "id": "recap_heading", "label": "Titre du récap", "default": "Inclus avec l'offre 2+2 :" },
