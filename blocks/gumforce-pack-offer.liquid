@@ -679,6 +679,8 @@
               });
             })();
           </script>
+          {%- comment -%} fiche produit : le goût change sur place, sans recharger la page {%- endcomment -%}
+          {%- if template.name == 'product' -%}{%- render 'gf-flavor-swap' -%}{%- endif -%}
         </div>
         {%- endif -%}
       {%- endif -%}

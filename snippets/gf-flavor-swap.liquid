@@ -1,0 +1,137 @@
+{%- comment -%}
+  GUMFORCE — changement de goût sans recharger la page (fiche produit)
+  ----------------------------------------------------------------------------
+  Rendu par le sélecteur de goût du bloc d'offre, sur les fiches produit
+  seulement. Un clic sur l'autre goût échange le contenu de <main> avec celui
+  de la page de l'autre produit (téléchargée au repos), et l'adresse devient
+  celle de ce produit (history.pushState) : rechargement et partage tombent sur
+  la bonne page, le bouton retour repasse au goût précédent sans recharger.
+  • La page de départ est gardée telle quelle en mémoire (pas re-téléchargée) :
+    un visiteur dans un test A/B garde sa version.
+  • Les scripts du contenu échangé sont relancés une fois, à sa première
+    apparition ; ensuite le même contenu est simplement remis en place.
+  • Le menu et les autres liens ne sont pas concernés.
+  • En cas d'erreur (réseau, page inattendue) : navigation normale.
+{%- endcomment -%}
+<script>
+  (function () {
+    if (window.__gfFlavSwap) return;
+    window.__gfFlavSwap = true;
+    var main = document.getElementById('MainContent') || document.querySelector('main');
+    if (!main || !window.fetch || !window.DOMParser || !history.pushState || !window.Promise) return;
+
+    var pages = {}, cur = location.pathname;
+    function pathOf(u) { try { return new URL(u, location.href).pathname; } catch (e) { return ''; } }
+    function drawerData() { return document.querySelector('[data-gfc-data]'); }
+
+    function load(p) {
+      var e = pages[p];
+      if (e && e.nodes) return Promise.resolve(e);
+      if (e && e.wait) return e.wait;
+      e = pages[p] = {};
+      e.wait = fetch(p, { credentials: 'same-origin', headers: { 'Accept': 'text/html' } })
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var m = doc.getElementById('MainContent') || doc.querySelector('main');
+          if (!m || !m.querySelector('.gfp-flav')) throw new Error('page inattendue');
+          var d = doc.querySelector('[data-gfc-data]');
+          e.title = doc.title;
+          e.data = d ? d.textContent : null;
+          e.nodes = [].map.call(m.childNodes, function (n) { return document.importNode(n, true); });
+          e.fresh = true;
+          delete e.wait;
+          return e;
+        });
+      e.wait.catch(function () { delete pages[p]; });
+      return e.wait;
+    }
+
+    /* scripts importés = inertes : on les recrée, dans l'ordre, pour qu'ils s'exécutent */
+    function run(nodes) {
+      nodes.forEach(function (n) {
+        if (n.nodeType !== 1) return;
+        var list = n.tagName === 'SCRIPT' ? [n] : [].slice.call(n.querySelectorAll('script'));
+        list.forEach(function (old) {
+          var t = (old.getAttribute('type') || '').toLowerCase();
+          if (t && t !== 'text/javascript' && t !== 'application/javascript' && t !== 'module') return;
+          if (old.src && [].some.call(document.scripts, function (x) { return x !== old && x.src === old.src; })) return;
+          var s = document.createElement('script');
+          [].forEach.call(old.attributes, function (a) { s.setAttribute(a.name, a.value); });
+          s.text = old.textContent;
+          old.parentNode.replaceChild(s, old);
+        });
+      });
+    }
+
+    /* sélecteur remis dans l'état de sa page avant de la ranger (sinon, au retour, il montrerait l'autre goût en chargement) */
+    function resetPicker() {
+      [].forEach.call(main.querySelectorAll('.gfp-flav'), function (box) {
+        var head = box.querySelector('.gfp-flav-head b');
+        [].forEach.call(box.querySelectorAll('.gfp-flav-opt'), function (o) {
+          var on = pathOf(o.getAttribute('href')) === cur;
+          o.classList.toggle('gfp-sel', on);
+          o.classList.remove('gfp-flav-go');
+          if (on) { o.setAttribute('aria-current', 'page'); var n = o.querySelector('.gfp-flav-name'); if (head && n) head.textContent = n.textContent; }
+          else o.removeAttribute('aria-current');
+        });
+      });
+    }
+
+    function swap(p, push) {
+      return load(p).then(function (e) {
+        resetPicker();
+        var here = pages[cur] = pages[cur] || {}, d = drawerData();
+        here.nodes = [].slice.call(main.childNodes);
+        here.title = document.title;
+        here.data = d ? d.textContent : null;
+        var y = window.pageYOffset;
+        while (main.firstChild) main.removeChild(main.firstChild);
+        e.nodes.forEach(function (n) { main.appendChild(n); });
+        if (e.fresh) { e.fresh = false; run(e.nodes); }
+        if (e.title) document.title = e.title;
+        if (d && e.data) d.textContent = e.data;
+        cur = p;
+        if (push) {
+          var q = location.search.replace(/([?&])variant=[^&]*&?/, '$1').replace(/[?&]$/, '');
+          history.pushState({ gfFlav: p }, '', p + q + location.hash);
+        }
+        window.scrollTo(0, y);
+        document.dispatchEvent(new CustomEvent('gf:flavor', { detail: { path: p } }));
+      });
+    }
+
+    /* phase de capture : passe avant le gestionnaire du sélecteur (qui, lui, prépare une vraie navigation) */
+    document.addEventListener('click', function (ev) {
+      var a = ev.target.closest && ev.target.closest('.gfp-flav-opt');
+      if (!a || !main.contains(a) || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || ev.button > 0) return;
+      var p = pathOf(a.getAttribute('href'));
+      ev.preventDefault();
+      ev.stopPropagation();
+      if (!p || p === cur) return;
+      /* retour immédiat, comme avant : carte sélectionnée, cercle de chargement */
+      var box = a.closest('.gfp-flav'), head = box && box.querySelector('.gfp-flav-head b'), n = a.querySelector('.gfp-flav-name');
+      if (box) [].forEach.call(box.querySelectorAll('.gfp-flav-opt'), function (o) { o.classList.remove('gfp-sel'); });
+      a.classList.add('gfp-sel', 'gfp-flav-go');
+      if (head && n) head.textContent = n.textContent;
+      swap(p, true).catch(function () { window.location.href = a.href; });
+    }, true);
+
+    window.addEventListener('popstate', function () {
+      var p = location.pathname;
+      if (p === cur || !pages[p]) return;
+      swap(p, false).catch(function () { window.location.reload(); });
+    });
+
+    /* l'autre goût est téléchargé au repos : l'échange est instantané au clic */
+    function warm() {
+      if (navigator.connection && navigator.connection.saveData) return;
+      [].forEach.call(main.querySelectorAll('.gfp-flav-opt'), function (a) {
+        var p = pathOf(a.getAttribute('href'));
+        if (p && p !== cur) load(p).catch(function () {});
+      });
+    }
+    function idle() { if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 4000 }); else setTimeout(warm, 2000); }
+    if (document.readyState === 'complete') idle(); else window.addEventListener('load', idle);
+  })();
+</script>
