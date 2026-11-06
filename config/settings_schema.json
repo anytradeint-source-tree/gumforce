@@ -976,7 +976,7 @@
         "type": "text",
         "id": "gfc_up2_sub",
         "label": "Ligne sous le titre",
-        "default": "Le best-seller GUMFORCE · [max] max par personne",
+        "default": "Le best-seller · [max] max par personne",
         "info": "[max] = quantité maximum (réglage de l'upsell 1). Vide = pas de ligne."
       }
     ]
