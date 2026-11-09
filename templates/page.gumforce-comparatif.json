@@ -23,7 +23,7 @@
         "chapo": {
           "type": "text",
           "settings": {
-            "text": "<p><strong>Le comparatif des chewing-gums pour muscler la mâchoire.</strong></p><p>Prix au chewing-gum, garantie, livraison, ce qu'il y a dedans. Leurs chiffres, pris sur leurs sites. Les nôtres à côté. Va vérifier.</p>",
+            "text": "<p><strong>Le comparatif des chewing-gums pour muscler la mâchoire.</strong></p><p>On a comparé les quatre marques sur ce qui compte : le prix de chaque chewing-gum, la garantie, la livraison et ce qu'il y a dedans. Leurs chiffres viennent de leurs propres sites. Tu peux vérifier.</p>",
             "style": "lead",
             "align": "center"
           }
@@ -31,7 +31,7 @@
         "preuve": {
           "type": "text",
           "settings": {
-            "text": "<p><strong><a href=\"https://fr.trustpilot.com/review/gumforce.co\" target=\"_blank\">[note] sur 5 sur Trustpilot</a> · 15 000+ mâchoires entraînées</strong></p>",
+            "text": "<p><strong><a href=\"https://fr.trustpilot.com/review/gumforce.co\" target=\"_blank\">Noté [note] sur 5 sur Trustpilot</a> · Plus de 15 000 mâchoires entraînées</strong></p>",
             "style": "normal",
             "align": "center"
           }
@@ -54,7 +54,7 @@
         "t-silicone": {
           "type": "text",
           "settings": {
-            "text": "<p>Jawliner vend aussi des pièces en silicone. Le principe : tu poses deux bouts de silicone sur tes molaires et tu mords dedans. Les entraîneurs de mâchoire en silicone font le même travail, mais il faut les avoir sur soi et ça se voit.</p><p><strong>Le silicone :</strong> la même pièce pendant des mois, à laver avant chaque séance. Aucun goût. Et dans les avis Trustpilot de Jawliner, la plainte qui revient le plus, c'est le silicone qui casse. Essaie de mordre dans un bout de plastique en pleine réunion.</p><p><strong>GUMFORCE :</strong> un chewing-gum neuf à chaque fois, avec du goût. Tu le mâches au bureau, en voiture, devant ton écran, et personne ne voit rien. Avec 500 mg de créatine dans chaque chewing-gum.</p><p><strong>Le silicone, c'est un appareil. GUMFORCE, c'est un chewing-gum. Il est dans ta poche, tu mâches, c'est tout.</strong></p>",
+            "text": "<p>En plus de son chewing-gum, Jawliner vend des entraîneurs de mâchoire en silicone. Ce sont deux petites pièces que tu poses sur tes dents du fond. Tu mords dedans et ça fait travailler ta mâchoire. Ça marche, mais c'est pas pratique.</p><p>Déjà, il faut prendre un moment exprès pour t'entraîner. Mordre dans un bout de silicone en pleine réunion, ça le fait moyen. Ensuite, tu gardes les mêmes pièces pendant des mois et tu dois les laver avant chaque séance. Et dans les avis Trustpilot de Jawliner, le problème qui revient le plus, c'est le silicone qui casse.</p><p>Avec GUMFORCE, tu prends un chewing-gum neuf à chaque fois. Il a du goût et y a rien à laver. Tu le mâches au bureau, en voiture ou devant ton écran. Pour les gens autour de toi, tu mâches juste un chewing-gum. En plus, chaque chewing-gum contient 500 mg de créatine.</p><p><strong>Le silicone, c'est un appareil. GUMFORCE, c'est un chewing-gum : tu le sors de ta poche et tu mâches.</strong></p>",
             "style": "normal",
             "align": "left"
           }
@@ -79,7 +79,7 @@
         "r1-t": {
           "type": "text",
           "settings": {
-            "text": "<p>Le vrai changement arrive après 3 à 4 semaines. Avec 30 jours, ta garantie s'arrête pile quand ça commence à changer.</p><p><strong>GUMFORCE : remboursé pendant 90 jours.</strong></p><p>Jawliner, Fitgum, Grindlabs : 30 jours. Chez Fitgum, il faut renvoyer le paquet presque plein (35 chewing-gums sur 40), port à ta charge. Chez Grindlabs, le produit doit être non utilisé. Bonne chance pour juger un chewing-gum sans le mâcher.</p>",
+            "text": "<p>Le vrai changement arrive au bout de 3 à 4 semaines. Avec une garantie de 30 jours, t'es plus couvert au moment où tu commences à voir la différence.</p><p><strong>GUMFORCE : remboursé pendant 90 jours.</strong></p><p>Chez Jawliner, Fitgum et Grindlabs, c'est 30 jours. Chez Fitgum, pour être remboursé, tu dois renvoyer 35 chewing-gums sur 40. Et c'est toi qui paies le retour. Chez Grindlabs, il faut que t'aies pas touché au produit. Difficile de juger un chewing-gum sans l'avoir mâché.</p>",
             "style": "normal",
             "align": "left"
           }
@@ -87,7 +87,7 @@
         "r2": {
           "type": "heading",
           "settings": {
-            "text": "Le moins cher au chewing-gum, livraison comprise.",
+            "text": "Le moins cher par chewing-gum, livraison comprise.",
             "tag": "h3",
             "align": "left",
             "number": "2"
@@ -96,7 +96,7 @@
         "r2-t": {
           "type": "text",
           "settings": {
-            "text": "<p>Le prix du paquet, ça veut rien dire. Ce qui compte, c'est ce que te coûte chaque chewing-gum, livraison payée.</p><p><strong>GUMFORCE : 0,36 €.</strong></p><p>Jawliner : 0,40 €, sur leur offre « 6 mois » plus 7,95 € de livraison. Fitgum : 0,46 €. Grindlabs : ils ne disent même pas combien il y en a dans le paquet.</p>",
+            "text": "<p>Le prix du paquet, ça veut rien dire. Ce qui compte, c'est ce que te coûte chaque chewing-gum une fois la livraison payée.</p><p><strong>GUMFORCE : 0,36 € le chewing-gum.</strong></p><p>Jawliner : 0,40 € le chewing-gum. C'est le prix de leur offre « 6 mois », avec les 7,95 € de livraison comptés dedans. Fitgum : 0,46 € le chewing-gum. Grindlabs n'indique même pas combien il y a de chewing-gums dans le paquet, donc impossible de calculer.</p>",
             "style": "normal",
             "align": "left"
           }
@@ -113,7 +113,7 @@
         "r3-t": {
           "type": "text",
           "settings": {
-            "text": "<p>Sans sucre et vegan, tout le monde l'est. La différence, c'est ce qu'il y a en plus.</p><p><strong>GUMFORCE : 500 mg de créatine monohydrate dans chaque chewing-gum.</strong></p><p>Jawliner : rien. Grindlabs : rien. Fitgum : des vitamines B.</p>",
+            "text": "<p>Les quatre marques sont sans sucre et vegan. La différence se fait sur ce qu'il y a en plus.</p><p><strong>GUMFORCE : 500 mg de créatine monohydrate dans chaque chewing-gum.</strong></p><p>Jawliner et Grindlabs n'en mettent pas. Fitgum met des vitamines B.</p>",
             "style": "normal",
             "align": "left"
           }
@@ -130,7 +130,7 @@
         "r4-t": {
           "type": "text",
           "settings": {
-            "text": "<p>Jawliner expédie d'Allemagne : 7 à 12 jours ouvrés en livraison standard, ou 18,95 € pour l'express.</p><p><strong>GUMFORCE : 48h en France et en Belgique.</strong></p>",
+            "text": "<p>Jawliner envoie depuis l'Allemagne. En livraison standard, compte 7 à 12 jours ouvrés. L'express coûte 18,95 €.</p><p><strong>GUMFORCE : livré en 48h en France et en Belgique.</strong></p>",
             "style": "normal",
             "align": "left"
           }
@@ -147,7 +147,7 @@
         "r5-t": {
           "type": "text",
           "settings": {
-            "text": "<p><strong>GUMFORCE : [note] sur 5.</strong></p><p>Jawliner : 4,6. Fitgum : 4,6. Grindlabs n'a même pas de page Trustpilot.</p>",
+            "text": "<p><strong>GUMFORCE : [note] sur 5.</strong></p><p>Jawliner et Fitgum sont à 4,6 sur 5. Grindlabs n'a même pas de page Trustpilot.</p>",
             "style": "normal",
             "align": "left"
           }
@@ -175,7 +175,7 @@
             "col2": "Jawliner",
             "col3": "Grindlabs (ex‑Grindgum)",
             "col4": "Fitgum",
-            "hint": "Fais glisser pour voir les autres →"
+            "hint": "Glisse pour voir les autres marques →"
           }
         },
         "tab-prix": {
@@ -194,8 +194,8 @@
             "label": "Garantie",
             "c1": "Remboursé pendant 90 jours",
             "c2": "30 jours, conditions non communiquées",
-            "c3": "30 jours, produit non utilisé",
-            "c4": "30 jours, 35 chewing-gums sur 40 à renvoyer, port à ta charge"
+            "c3": "30 jours, produit pas ouvert",
+            "c4": "30 jours, 35 chewing-gums sur 40 à renvoyer à tes frais"
           }
         },
         "tab-creatine": {
@@ -251,7 +251,7 @@
         "tab-source": {
           "type": "text",
           "settings": {
-            "text": "<p>Relevé le 29 octobre 2026 sur les sites des marques et sur Trustpilot. Prix : offre mise en avant par chaque marque, livraison vers la France comprise.</p>",
+            "text": "<p>Chiffres relevés le 29 octobre 2026 sur le site de chaque marque et sur Trustpilot. Pour le prix, on a pris l'offre que chaque marque met en avant, livraison en France comprise.</p>",
             "style": "small",
             "align": "center"
           }
@@ -320,7 +320,7 @@
         "t-offre": {
           "type": "text",
           "settings": {
-            "text": "<p><strong>4 sachets. 140 chewing-gums. 49,99 €.</strong></p><p>5 à 6 semaines d'entraînement à 3 ou 4 chewing-gums par jour : t'as de quoi dépasser les 3 à 4 semaines, là où le vrai changement arrive.</p><p>Moins de 1,50 € par jour. Moins qu'un café.</p><p>Livraison 48h, offerte en point relais.</p>",
+            "text": "<p><strong>4 sachets, soit 140 chewing-gums, pour 49,99 €.</strong></p><p>Au rythme conseillé de 3 à 4 chewing-gums par jour, ça te fait 5 à 6 semaines d'entraînement. C'est plus que les 3 à 4 semaines qu'il faut pour voir le vrai changement.</p><p>Ça te revient à moins de 1,50 € par jour. Moins cher qu'un café.</p><p>Livré en 48h. La livraison est offerte en point relais.</p>",
             "style": "normal",
             "align": "left"
           }
@@ -331,7 +331,7 @@
             "bf_strip": true,
             "text": "Je prends l'offre",
             "link": "/products/gumforce?variant=54986619584817",
-            "note": "On a tellement confiance en GUMFORCE qu'on te laisse 90 jours pour juger. Pas de résultat ? On te rembourse l'intégralité."
+            "note": "On a tellement confiance en GUMFORCE qu'on te laisse 90 jours pour juger. Si t'as pas de résultat, on te rembourse tout."
           }
         },
         "h2-faq": {
@@ -345,16 +345,16 @@
         "faq-1": {
           "type": "faq",
           "settings": {
-            "question": "Combien par jour ?",
-            "answer": "<p>3 à 4 chewing-gums, 10 à 15 minutes chacun. Tu adaptes à ton confort.</p>",
+            "question": "Combien j'en mâche par jour ?",
+            "answer": "<p>3 à 4 chewing-gums par jour, 10 à 15 minutes chacun. Si ta mâchoire tire trop, prends-en moins.</p>",
             "open_default": false
           }
         },
         "faq-2": {
           "type": "faq",
           "settings": {
-            "question": "Quand est-ce que je vois un effet ?",
-            "answer": "<p>Ça dépend de chacun. En gros :</p><p><strong>Jour 1 :</strong> courbatures. Ta mâchoire tire le lendemain, comme après une séance de jambes.</p><p><strong>Semaines 1 à 2 :</strong> les premiers résultats. Les courbatures passent, ton masséter est plus dur sous tes doigts. C'est là que les autres lâchent. Toi, tu continues.</p><p><strong>Semaines 3 à 4 :</strong> le vrai changement. Ça se voit sur les photos.</p>",
+            "question": "Au bout de combien de temps je vois un résultat ?",
+            "answer": "<p>Ça dépend de chacun. En général :</p><p><strong>Le premier jour :</strong> des courbatures. Ta mâchoire tire le lendemain, comme tes jambes après une séance.</p><p><strong>Semaines 1 et 2 :</strong> ton masséter devient plus dur sous tes doigts et les courbatures passent. C'est là que beaucoup lâchent. Toi, tu continues.</p><p><strong>Semaines 3 et 4 :</strong> le vrai changement. Ça commence à se voir sur les photos.</p>",
             "open_default": false
           }
         },
@@ -362,7 +362,7 @@
           "type": "faq",
           "settings": {
             "question": "J'ai mal à la mâchoire : c'est normal ? Ça abîme l'articulation ?",
-            "answer": "<p>Des courbatures dans le muscle les premiers jours, oui, c'est même bon signe. Une douleur dans l'articulation, devant l'oreille, non : tu arrêtes et tu vas voir un médecin.</p><p>Pour l'articulation, c'est la dose qui fait le poison. D'où le rythme : 3 à 4 chewing-gums par jour, 15 minutes max. Si t'as déjà un souci à l'articulation, demande à ton médecin avant.</p>",
+            "answer": "<p>Des courbatures dans le muscle les premiers jours, c'est normal. C'est même bon signe. Une douleur juste devant l'oreille, c'est autre chose : ça vient de l'articulation. Là, tu arrêtes et tu vas voir un médecin.</p><p>Comme pour tout, c'est la dose qui fait le poison. Pour ménager ton articulation, respecte le rythme : 3 à 4 chewing-gums par jour, 15 minutes maximum chacun. Si t'as déjà un problème à l'articulation de la mâchoire, demande à ton médecin avant de commencer.</p>",
             "open_default": false
           }
         },
@@ -370,7 +370,7 @@
           "type": "faq",
           "settings": {
             "question": "Pourquoi cette offre maintenant ?",
-            "answer": "<p>C'est notre offre [période]. Profites-en tant qu'elle est là.</p>",
+            "answer": "<p>C'est notre offre [période], et elle dure pas. Profites-en tant qu'elle est là.</p>",
             "open_default": false
           }
         },
@@ -378,7 +378,7 @@
           "type": "faq",
           "settings": {
             "question": "Et si ça me plaît pas ?",
-            "answer": "<p>Tu nous écris, on te rembourse. 90 jours.</p>",
+            "answer": "<p>Tu nous envoies un message et on te rembourse. T'as 90 jours pour décider.</p>",
             "open_default": false
           }
         },
@@ -412,7 +412,7 @@
             "image1": "shopify://shop_images/4_e877a757-c4b9-4e86-907f-05335684f8e4.jpg",
             "image2": "shopify://shop_images/5_005fbd85-56a5-4bd6-9e8d-a490f939dcfb.jpg",
             "image3": "shopify://shop_images/6_bfddd004-9a25-48c0-9904-b39a18392503.jpg",
-            "caption": "Photos envoyées par des clients satisfaits."
+            "caption": "Photos envoyées par nos clients."
           }
         },
         "img-offre": {
@@ -428,7 +428,7 @@
           "settings": {
             "style": "normal",
             "align": "left",
-            "text": "<p><strong>GUMFORCE, c'est un chewing-gum dur, 10x plus dur qu'un classique, pour vraiment faire travailler ton masséter.</strong> Utilisé par ceux qui font de la musculation. Face aux autres, voilà ce qui fait la différence.</p>"
+            "text": "<p><strong>GUMFORCE est 10x plus dur qu'un chewing-gum classique.</strong> C'est cette dureté qui fait travailler ton masséter, le muscle de ta mâchoire. Voilà ce qu'on fait mieux que les autres.</p>"
           }
         },
         "faq-jawline": {
@@ -436,7 +436,7 @@
           "settings": {
             "question": "Est-ce que ça aide à avoir une jawline ?",
             "open_default": false,
-            "answer": "<p>C'est fait pour ça. Ta jawline, c'est d'abord ton masséter, le muscle sur le côté de ta mâchoire. Un chewing-gum 10x plus dur qu'un classique le fait bosser comme une charge à la salle, et un muscle qui bosse prend du volume. À 3 ou 4 chewing-gums par jour, les premiers résultats arrivent en 1 à 2 semaines, le vrai changement après 3 à 4 semaines.</p>"
+            "answer": "<p>Oui, c'est fait pour ça. Ta jawline, c'est la ligne de ta mâchoire. Ce qui la dessine, c'est surtout ton masséter, le muscle sur le côté. GUMFORCE est 10x plus dur qu'un chewing-gum classique, donc ton masséter doit forcer pour le mâcher. C'est comme une charge à la salle : le muscle travaille et il prend du volume. Au rythme conseillé, tu sens les premiers effets en 1 à 2 semaines. Le vrai changement arrive après 3 à 4 semaines.</p>"
           }
         }
       },
