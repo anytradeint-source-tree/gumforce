@@ -33,7 +33,7 @@
         "chapo": {
           "type": "text",
           "settings": {
-            "text": "<p>Pain de mie, steak haché, plats préparés : en 50 ans, l'industrie a fait disparaître tout ce qui se mâche. Un chercheur de Harvard a mesuré ce que ça fait au visage. Et une jeune marque a trouvé comment rendre du travail au muscle qui dessine la mâchoire.</p>",
+            "text": "<p>Pain de mie, steak haché, plats préparés : en 50 ans, l'industrie a fait disparaître tout ce qui se mâche. Un chercheur de Harvard a mesuré les dégâts sur le visage. Et une jeune marque a trouvé comment remettre au travail le muscle qui dessine la mâchoire.</p>",
             "style": "lead",
             "align": "left",
             "bf_only": false
@@ -87,7 +87,7 @@
         "t-nourriture": {
           "type": "text",
           "settings": {
-            "text": "<p>Pain de mie. Steak haché. Nuggets. Purée. Pâtes. Céréales qui ramollissent dans le lait. Plats préparés réchauffés en 3 minutes. Tout ce qui remplit nos assiettes a un point commun : c'est mou.</p><p>Avant d'arriver dans ton assiette, tout a déjà été haché, mixé, cuit et ramolli à l'usine. Le travail que faisaient nos dents, une machine le fait à leur place.</p><p>Compare avec l'assiette de nos grands-parents. Du pain de campagne avec la croûte. De la viande qu'il fallait vraiment mâcher. Des légumes crus, des pommes croquées. Chaque repas était une séance pour la mâchoire, sans qu'ils le sachent.</p>",
+            "text": "<p>Pain de mie. Steak haché. Nuggets. Purée. Pâtes. Céréales qui ramollissent dans le lait. Plats préparés réchauffés en 3 minutes. Tout ce qui remplit nos assiettes a un point commun : c'est mou.</p><p>Avant d'arriver dans ton assiette, tout a déjà été haché, mixé, cuit et ramolli à l'usine. Le travail que faisaient nos dents, une machine le fait à leur place.</p><p>Compare avec l'assiette de nos grands-parents. Du pain de campagne avec la croûte. De la viande qu'il fallait vraiment mâcher. Des légumes crus, des pommes qu'on croquait. Chaque repas, c'était une séance de muscu pour la mâchoire. Sans même qu'ils le sachent.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -105,7 +105,7 @@
         "t-pourquoi": {
           "type": "text",
           "settings": {
-            "text": "<p>Pourquoi ce changement ? Parce que le mou est plus rapide à produire, plus rapide à manger, et qu'il se vend mieux. L'industrie y a gagné. La mâchoire des hommes y a perdu.</p>",
+            "text": "<p>Pourquoi ce changement ? Parce que le mou, c'est plus rapide à produire, plus rapide à manger, et ça se vend mieux. L'industrie y a gagné. La mâchoire des hommes y a perdu.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -134,14 +134,14 @@
           "settings": {
             "image": "shopify://shop_images/gf-adv-labo.jpg",
             "size": "full",
-            "caption": "Nourris au mou, les animaux finissent avec le bas du visage environ 10 % moins développé.",
+            "caption": "Nourris au mou, les animaux ont le bas du visage environ 10 % moins développé.",
             "bf_only": false
           }
         },
         "t-harvard-2": {
           "type": "text",
           "settings": {
-            "text": "<p><strong>Premier résultat :</strong> mâcher du cru met jusqu'à 2 fois plus de contrainte sur la mâchoire que mâcher du cuit.</p><p><strong>Deuxième résultat :</strong> les animaux nourris au mou finissent avec le bas et l'arrière du visage environ 10 % moins développés. Exactement là où la mâchoire encaisse le plus d'effort.</p><p>Pour Lieberman, c'est la confirmation que la nourriture transformée a freiné le développement de la mâchoire chez l'homme moderne.</p><p>Chez un adulte, l'os ne bougera plus. Mais le muscle qui recouvre la mâchoire, lui, réagit à la charge à n'importe quel âge. Et c'est lui qui fait la différence qu'on voit.</p>",
+            "text": "<p><strong>Premier résultat :</strong> mâcher du cru fait forcer la mâchoire jusqu'à 2 fois plus que mâcher du cuit.</p><p><strong>Deuxième résultat :</strong> chez les animaux nourris au mou, le bas et l'arrière du visage sont environ 10 % moins développés. Pile là où la mâchoire force le plus.</p><p>Pour Lieberman, c'est la confirmation que la nourriture transformée a freiné le développement de la mâchoire chez l'homme moderne.</p><p>Chez un adulte, l'os ne bougera plus. Mais le muscle qui recouvre la mâchoire, lui, se muscle à n'importe quel âge. Et c'est lui qui fait la différence dans le miroir.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -195,7 +195,7 @@
         "t-masseter-2": {
           "type": "text",
           "settings": {
-            "text": "<p>Quand il est développé, la mâchoire a un angle net. Quand il ne travaille plus, le visage s'arrondit.</p><p>Il obéit à la même règle que n'importe quel muscle : sans charge, il ne grossit pas. Nos grands-pères le chargeaient à chaque repas. Aujourd'hui, il passe ses journées sur du pain de mie.</p>",
+            "text": "<p>Quand il est développé, la mâchoire a un angle net. Quand il ne travaille plus, le visage s'arrondit.</p><p>Il obéit à la même règle que n'importe quel muscle : sans charge, il ne grossit pas. Nos grands-pères le faisaient bosser à chaque repas. Aujourd'hui, il n'a plus que du pain de mie à se mettre sous la dent.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -213,7 +213,7 @@
         "t-salle-1": {
           "type": "text",
           "settings": {
-            "text": "<p>Le paradoxe saute aux yeux dans n'importe quelle salle de sport. Des hommes aux bras énormes et au dos large, avec un visage resté rond. Le corps a pris 10 ans, le visage est resté à 15.</p>",
+            "text": "<p>Le paradoxe saute aux yeux dans n'importe quelle salle de sport. Des hommes aux bras énormes et au dos large, avec un visage resté rond. Un corps d'homme, une tête d'ado.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -231,7 +231,7 @@
         "t-salle-2": {
           "type": "text",
           "settings": {
-            "text": "<p>L'explication est mécanique : aucun exercice de musculation ne charge la mâchoire. Pecs, dos et jambes progressent. Le masséter reste au point mort.</p><p>Le problème, c'est que le visage est la première chose qu'on voit chez un homme. Sur une photo, dans une conversation, sur un profil de rencontre. Avant les bras. Avant les vêtements.</p>",
+            "text": "<p>L'explication est mécanique : aucun exercice de muscu ne fait travailler la mâchoire. Pecs, dos et jambes progressent. Le masséter reste au point mort.</p><p>Le problème, c'est que le visage est la première chose qu'on voit chez un homme. Sur une photo, en face à face, sur Tinder. Avant les bras. Avant les vêtements.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -258,7 +258,7 @@
         "t-kine": {
           "type": "text",
           "settings": {
-            "text": "<p>Pour comprendre, on a posé la question à Guillaume Petit, kinésithérapeute du sport à Lyon.</p><p>« Le masséter, c'est un muscle comme les autres. Il suit la même règle que tes pecs ou tes cuisses : pour progresser, il lui faut une charge plus forte que ce dont il a l'habitude, et de la régularité. C'est la base de toute préparation physique. »</p><p>Pour lui, tout se joue sur la résistance. « Un chewing-gum classique, au bout de 30 secondes, il ne résiste plus. C'est comme faire des flexions de bras avec une bouteille vide. Le geste est là, mais le muscle ne reçoit rien. »</p><p>Sur les courbatures des premiers jours : « C'est le signe classique d'un muscle qui reçoit une charge dont il n'a pas l'habitude. Comme les jambes après une reprise du sport. Ça passe en quelques jours, ensuite le muscle s'adapte. »</p><p>Sur l'articulation de la mâchoire, qui inquiète certains : « Tout est une question de dose. Quinze minutes, c'est raisonnable. Une courbature dans la joue, c'est le muscle qui travaille. Une douleur dans l'articulation, un claquement qui fait mal, une mâchoire qui bloque : là, on arrête et on consulte. Comme pour n'importe quel entraînement. »</p><p>Et sur l'âge : « Un muscle répond à l'entraînement à 20 ans comme à 50 ans. Il faut juste lui donner de quoi travailler. »</p>",
+            "text": "<p>Pour comprendre, on a posé la question à Guillaume Petit, kinésithérapeute du sport à Lyon.</p><p>« Le masséter, c'est un muscle comme les autres. Il suit la même règle que tes pecs ou tes cuisses : pour progresser, il lui faut une charge plus forte que ce dont il a l'habitude, et de la régularité. C'est la base de toute préparation physique. »</p><p>Pour lui, tout se joue sur la résistance. « Un chewing-gum classique, au bout de 30 secondes, il ne résiste plus. C'est comme faire des curls avec une bouteille vide. Le geste est là, mais le muscle ne bosse pas. »</p><p>Sur les courbatures des premiers jours : « C'est le signe classique d'un muscle qui force plus que d'habitude. Comme les jambes après une reprise du sport. Ça passe en quelques jours, ensuite le muscle s'adapte. »</p><p>Sur l'articulation de la mâchoire, qui inquiète certains : « Tout est une question de dose. Quinze minutes, c'est raisonnable. Une courbature dans la joue, c'est le muscle qui travaille. Une douleur dans l'articulation, un claquement qui fait mal, une mâchoire qui bloque : là, on arrête et on consulte. Comme pour n'importe quel entraînement. »</p><p>Et sur l'âge : « Un muscle répond à l'entraînement à 20 ans comme à 50 ans. Il faut juste lui donner de quoi travailler. »</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -294,7 +294,7 @@
         "t-alternatives-2": {
           "type": "text",
           "settings": {
-            "text": "<p><strong>Le mewing</strong> consiste à coller sa langue au palais toute la journée. Ça ne met aucune charge sur le muscle. Rien ne résiste, donc rien ne muscle.</p><p><strong>Le chewing-gum classique</strong> s'écrase en 30 secondes. Ensuite, on mâche du vide.</p><p><strong>Les pièces en silicone à mordre</strong> demandent de prendre un moment exprès pour s'entraîner. Il faut aussi les laver et les avoir sur soi. Et impossible de s'en servir devant les autres.</p><p><strong>Les injections</strong> coûtent plusieurs centaines d'euros et sont à refaire. Et le muscle en dessous reste aussi mou qu'avant.</p>",
+            "text": "<p><strong>Le mewing</strong> consiste à coller sa langue au palais toute la journée. Le muscle ne force jamais. Rien ne résiste, donc rien ne se muscle.</p><p><strong>Le chewing-gum classique</strong> s'écrase en 30 secondes. Ensuite, on mâche du vide.</p><p><strong>Les pièces en silicone à mordre</strong> t'obligent à prendre un moment exprès pour t'entraîner. Il faut les laver, les avoir sur toi. Et devant les autres, oublie.</p><p><strong>Les injections</strong> coûtent plusieurs centaines d'euros et sont à refaire. Et le muscle en dessous reste aussi mou qu'avant.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -339,7 +339,7 @@
         "t-gumforce-1": {
           "type": "text",
           "settings": {
-            "text": "<p>C'est ce constat qui a donné naissance à GUMFORCE. L'idée : rendre à la mâchoire la charge que la nourriture industrielle lui a retirée. Avec le geste le plus simple qui existe, mâcher un chewing-gum.</p><p>Leur chewing-gum est 10x plus dur qu'un chewing-gum classique. Il ne s'écrase pas au bout de 30 secondes et tient toute la séance. Chaque coup de dent est une répétition. Un chewing-gum de 15 minutes, c'est des centaines de répétitions sous charge, comme une série à la salle.</p>",
+            "text": "<p>C'est ce constat qui a donné naissance à GUMFORCE. L'idée : redonner à la mâchoire le boulot que la nourriture industrielle lui a enlevé. Avec le geste le plus simple qui existe, mâcher un chewing-gum.</p><p>Leur chewing-gum est 10x plus dur qu'un chewing-gum classique. Il ne s'écrase pas au bout de 30 secondes et tient toute la séance. Chaque coup de dent est une répétition. Un chewing-gum de 15 minutes, c'est des centaines de répétitions sous charge, comme une série à la salle.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -393,7 +393,7 @@
         "t-zero-2": {
           "type": "text",
           "settings": {
-            "text": "<p>La marque conseille 3 chewing-gums par jour, 15 minutes chacun, pendant les temps morts. Des moments où tu ne fais rien de toute façon. Tu ne prends pas une minute de plus sur ta journée.</p>",
+            "text": "<p>La marque conseille 3 chewing-gums par jour, 15 minutes chacun, pendant les temps morts. Des moments où tu ne fais rien de toute façon. Ça ne te prend pas une minute de plus dans ta journée.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -494,7 +494,7 @@
         "t-attendre": {
           "type": "text",
           "settings": {
-            "text": "<p>La marque annonce la progression suivante.</p><p><strong>Les premiers jours :</strong> des courbatures. La mâchoire tire le lendemain, comme les jambes après une grosse séance. C'est la preuve que le muscle a travaillé, et c'est la première chose dont parlent les utilisateurs.</p><p><strong>Semaines 1 et 2 :</strong> les courbatures passent et le masséter devient plus dur sous les doigts. C'est là que beaucoup abandonnent. La suite, c'est pour ceux qui continuent.</p><p><strong>Semaines 3 et 4 :</strong> ça commence à se voir. Le bas du visage se dessine et l'angle sous l'oreille ressort.</p>",
+            "text": "<p>La marque annonce la progression suivante.</p><p><strong>Les premiers jours :</strong> des courbatures. La mâchoire tire le lendemain, comme les jambes après une grosse séance. C'est la preuve que le muscle a travaillé, et c'est la première chose dont parlent les utilisateurs.</p><p><strong>Semaines 1 et 2 :</strong> les courbatures passent et le masséter devient plus dur sous les doigts. C'est là que beaucoup abandonnent. Ceux qui tiennent voient la suite.</p><p><strong>Semaines 3 et 4 :</strong> ça commence à se voir. Le bas du visage se dessine et l'angle sous l'oreille ressort.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -521,7 +521,7 @@
         "t-miracles": {
           "type": "text",
           "settings": {
-            "text": "<p>Si c'est ce que tu te dis, t'es pas le seul. C'est la réaction de beaucoup d'acheteurs avant leur première commande.</p><p>La marque ne promet pas un nouveau visage en 3 jours. Elle promet une charge que ta mâchoire n'a plus reçue depuis des années. Et elle te laisse 90 jours pour juger sur pièce.</p>",
+            "text": "<p>Si c'est ce que tu te dis, t'es pas le seul. C'est la réaction de beaucoup d'acheteurs avant leur première commande.</p><p>La marque ne promet pas un nouveau visage en 3 jours. Elle promet de faire bosser ta mâchoire comme elle n'a pas bossé depuis des années. Et elle te laisse 90 jours pour juger sur pièce.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -605,7 +605,7 @@
         "t-test": {
           "type": "text",
           "settings": {
-            "text": "<p>Prends une photo de profil aujourd'hui. Range-la. Dans 90 jours, reprends exactement la même : même lumière, même angle.</p><p>Ensuite, compare.</p>",
+            "text": "<p>Aujourd'hui, prends-toi en photo de profil. Range-la. Dans 90 jours, reprends exactement la même : même lumière, même angle.</p><p>Ensuite, compare.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -623,7 +623,7 @@
         "t-cout": {
           "type": "text",
           "settings": {
-            "text": "<p>Une injection pour dessiner la mâchoire : plusieurs centaines d'euros, à refaire. Un abonnement en salle : plusieurs dizaines d'euros par mois, et ça ne touche pas au visage.</p><p>Avec l'offre du moment, un chewing-gum GUMFORCE revient à environ 36 centimes. Au rythme conseillé de 3 chewing-gums par jour, ça fait à peu près 1 € par jour. Moins qu'un café en terrasse.</p>",
+            "text": "<p>Pour se dessiner la mâchoire, certains passent par les injections. Ça coûte plusieurs centaines d'euros, et il faut recommencer quand l'effet s'en va.</p><p>D'autres paient la salle tous les mois. Mais comme on l'a vu, la salle ne fait pas travailler la mâchoire.</p><p>Avec l'offre du moment, un chewing-gum GUMFORCE coûte environ 36 centimes. Au rythme conseillé de 3 chewing-gums par jour, ça fait à peu près 1 € par jour. Moins cher qu'un café.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -722,7 +722,7 @@
         "faq-1": {
           "type": "faq",
           "settings": {
-            "question": "Est-ce que ça se voit quand je mâche ?",
+            "question": "Ça se voit quand je mâche ?",
             "answer": "<p>Non. Bouche fermée, seul le muscle bouge. Pour les gens autour, c'est un chewing-gum normal.</p>",
             "open_default": false,
             "bf_only": false
@@ -732,7 +732,7 @@
           "type": "faq",
           "settings": {
             "question": "J'ai plus de 40 ans, c'est trop tard ?",
-            "answer": "<p>Non. À l'âge adulte, l'os ne bouge plus, mais le muscle répond à la charge à tout âge. C'est lui qu'on entraîne.</p>",
+            "answer": "<p>Non. À l'âge adulte, l'os ne bouge plus, mais le muscle, lui, progresse à tout âge. C'est lui qu'on entraîne.</p>",
             "open_default": false,
             "bf_only": false
           }
@@ -758,7 +758,7 @@
         "faq-5": {
           "type": "faq",
           "settings": {
-            "question": "En combien de temps je vois un résultat ?",
+            "question": "Au bout de combien de temps je vois un résultat ?",
             "answer": "<p>Les courbatures arrivent dès les premiers jours. Selon la marque, le bas du visage commence à se dessiner vers la semaine 3 ou 4 au rythme conseillé.</p>",
             "open_default": false,
             "bf_only": false
@@ -794,7 +794,7 @@
         "t-fin": {
           "type": "text",
           "settings": {
-            "text": "<p>Nos grands-pères n'ont jamais eu besoin d'entraîner leur mâchoire. Leur assiette le faisait pour eux.</p><p>La nôtre ne le fera plus. Aujourd'hui, la différence se joue sur 3 chewing-gums par jour, pendant des moments où tu ne fais rien de toute façon.</p>",
+            "text": "<p>Nos grands-pères mâchaient à chaque repas. Nous, on mange mou.</p><p>Leur mâchoire travaillait toute seule. La tienne attend que tu lui donnes du boulot.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
