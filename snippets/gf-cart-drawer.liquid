@@ -387,6 +387,19 @@
               assign l_opts = l_opts | append: o.value
             endfor
           endunless
+          comment — upsell : sous-titre réglable (Réglages › Panier GUMFORCE), le produit upsell n'a pas d'option à afficher
+          endcomment
+          if l_up
+            for pre in up_pres
+              assign k = pre | append: '_handle'
+              assign s_h = settings[k] | strip
+              if s_h != blank and all_products[s_h].selected_or_first_available_variant.id == item.variant_id
+                assign k = pre | append: '_line_sub'
+                assign l_opts = settings[k] | strip
+                break
+              endif
+            endfor
+          endif
           assign l_was = 0
           if item.variant.compare_at_price > item.original_price
             assign l_was = item.variant.compare_at_price | times: item.quantity
@@ -498,6 +511,8 @@
         assign up_sub = settings[k] | replace: '[max]', up_max_s | strip
         assign k = pre | append: '_heading'
         assign up_head = settings[k]
+        assign k = pre | append: '_line_sub'
+        assign up_line_sub = settings[k] | strip
 
         comment — version « sachets à toucher » (Réglages › Panier GUMFORCE) : rendue à côté de la version classique,
           la classe gf-up-b (aperçu ?gf_up=b ou test A/B) ou le mode « pour tout le monde » choisit laquelle s'affiche
@@ -532,7 +547,7 @@
           assign upb_was_tot_money = up_was | times: upb_def | money
         endif
       -%}
-      <div class="gfc-up{% if up_bg %} gfc-up--photo{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-for="{{ up_for | escape }}" data-max="{{ up_max }}" data-pick="1" data-price="{{ up_unit }}" data-was="{{ up_was }}" data-name="{{ up_short | escape }}" data-img="{% if up_line_img %}{{ up_line_img | image_url: width: 160 }}{% endif %}"{% unless up_show == forloop.index %} hidden{% endunless %}>
+      <div class="gfc-up{% if up_bg %} gfc-up--photo{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-for="{{ up_for | escape }}" data-max="{{ up_max }}" data-pick="1" data-price="{{ up_unit }}" data-was="{{ up_was }}" data-name="{{ up_short | escape }}" data-sub="{{ up_line_sub | escape }}" data-img="{% if up_line_img %}{{ up_line_img | image_url: width: 160 }}{% endif %}"{% unless up_show == forloop.index %} hidden{% endunless %}>
         <div class="gfc-up__card{% if up_badge != blank %} gfc-up__card--badge{% endif %}">
           {%- if up_bg -%}
             <img class="gfc-up__bg" src="{{ up_bg | image_url: width: 800 }}" srcset="{{ up_bg | image_url: width: 600 }} 600w, {{ up_bg | image_url: width: 800 }} 800w, {{ up_bg | image_url: width: 1000 }} 1000w" sizes="(min-width: 750px) 370px, calc(100vw - 32px)" alt="" width="800" height="800" loading="lazy" style="object-position:50% {{ up_focus }}%">
@@ -945,7 +960,7 @@
       });
       var pb = q('.gfc-up__price b', card), ps = q('.gfc-up__price s', card);
       list.appendChild(makeLine(vid, n, {
-        img: card.getAttribute('data-img'), name: card.getAttribute('data-name'), opt: '',
+        img: card.getAttribute('data-img'), name: card.getAttribute('data-name'), opt: card.getAttribute('data-sub') || '',
         cents: unit, was_cents: was, price: pb ? pb.textContent : '', was: ps ? ps.textContent : ''
       }, cents(card, 'data-max')));
       card.hidden = true;
