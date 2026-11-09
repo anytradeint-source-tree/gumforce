@@ -5,7 +5,7 @@
   Landing éditoriale 100% modulaire : chaque élément est un bloc que l'on
   peut éditer, déplacer, dupliquer ou supprimer dans l'éditeur. Rien de figé.
   Blocs : Titre · Texte · Image · Bouton · Avant/Après ×3 · Puces · Question
-  FAQ · Espace · Tableau (en-tête + lignes) · Avis (texte). Identité GF : recette titre canonique (clamp ×0.78 mobile),
+  FAQ · Espace · Tableau (en-tête + lignes) · Avis (texte). Option « article de presse » (polices serif). Identité GF : recette titre canonique (clamp ×0.78 mobile),
   Manrope/Oswald du thème, accent teal, colonne de lecture 680px.
   S'utilise avec le template templates/page.gumforce-landing.json qui
   pré-remplit tout le contenu — modifiable ensuite librement.
@@ -34,10 +34,15 @@
   assign h1_size = s.h1_size | default: 40
   assign h2_size = s.h2_size | default: 28
 
-  assign gf_first_img = true
+  assign gf_first_img = s.eager_first_img | default: true, allow_false: true
 
   assign gfl_period = s.period | strip
   assign gfl_tbl = false
+
+  assign gfl_press = false
+  if s.typo == 'presse'
+    assign gfl_press = true
+  endif
 -%}
 {%- comment -%} [période] dans les textes = période en cours du calendrier des offres (Réglages du thème), ou le réglage « Nom de la période » s'il est rempli ; [note] = note Trustpilot du thème. Seuls les textes qui contiennent « [ » passent par gf-landing-ph : les landings existantes restent identiques. {%- endcomment -%}
 {%- comment -%} Mode Black Friday : éléments gf-bf-only / gf-nobf (Réglages du thème › Mode Black Friday) {%- endcomment -%}
@@ -56,6 +61,47 @@
   {%- endif %}
   {%- if s.hide_header %}
   #header-group .header-section { display:none !important; }
+  {%- endif %}
+  {%- if s.hide_announcement %}
+  #header-group .shopify-section-group-header-group { display:none !important; }
+  {%- endif %}
+  {%- if s.hide_footer %}
+  .shopify-section-group-footer-group { display:none !important; }
+  {%- endif %}
+  {%- if gfl_press %}
+  {%- assign gfl_ph = s.press_font_heading -%}
+  {%- assign gfl_pb = s.press_font_body -%}
+  {%- assign gfl_pb_bold = gfl_pb | font_modify: 'weight', 'bold' -%}
+  {{ gfl_ph | font_face: font_display: 'swap' }}
+  {{ gfl_pb | font_face: font_display: 'swap' }}
+  {%- if gfl_pb_bold %}
+  {{ gfl_pb_bold | font_face: font_display: 'swap' }}
+  {%- endif %}
+  /* ── Style « article de presse » : titres et texte en serif, métadonnées / boutons / avis restent dans la police du site ── */
+  #gfl-{{ sid }}.gfl--press {
+    --gfl-font-head: {{ gfl_ph.family }}, {{ gfl_ph.fallback_families }};
+    --gfl-press: {{ gfl_pb.family }}, {{ gfl_pb.fallback_families }};
+  }
+  #gfl-{{ sid }}.gfl--press .gfl-h { font-weight: {{ gfl_ph.weight }}; text-transform: none; letter-spacing: -0.005em; line-height: 1.18; }
+  #gfl-{{ sid }}.gfl--press .gfl-h--1 { line-height: 1.12; }
+  #gfl-{{ sid }}.gfl--press .gfl-t,
+  #gfl-{{ sid }}.gfl--press .gfl-chip,
+  #gfl-{{ sid }}.gfl--press .gfl-faq .gfl-q,
+  #gfl-{{ sid }}.gfl--press .gfl-faq .gfl-a { font-family: var(--gfl-press); }
+  #gfl-{{ sid }}.gfl--press .gfl-t { font-size: 18px; line-height: 1.68; }
+  #gfl-{{ sid }}.gfl--press .gfl-t--lead { font-size: 20px; line-height: 1.5; font-weight: 400; color: var(--gfl-hd); }
+  #gfl-{{ sid }}.gfl--press .gfl-t--punch { font-family: var(--gfl-font-head); font-weight: {{ gfl_ph.weight }}; font-size: 21px; line-height: 1.38; letter-spacing: 0; }
+  #gfl-{{ sid }}.gfl--press .gfl-t--small { font-family: var(--gfl-font); font-size: 13.5px; line-height: 1.5; }
+  #gfl-{{ sid }}.gfl--press .gfl-img figcaption { text-align: left; }
+  #gfl-{{ sid }}.gfl--press .gfl-chip { font-size: 16.5px; font-weight: 700; }
+  #gfl-{{ sid }}.gfl--press .gfl-faq .gfl-q { font-size: 17px; }
+  #gfl-{{ sid }}.gfl--press .gfl-faq .gfl-a { font-size: 17px; line-height: 1.65; }
+  @media (min-width: 750px) {
+    #gfl-{{ sid }}.gfl--press .gfl-t { font-size: 19px; }
+    #gfl-{{ sid }}.gfl--press .gfl-t--lead { font-size: 21px; }
+    #gfl-{{ sid }}.gfl--press .gfl-t--punch { font-size: 23px; }
+    #gfl-{{ sid }}.gfl--press .gfl-t--small { font-size: 14px; }
+  }
   {%- endif %}
   #gfl-{{ sid }},
   #gfl-{{ sid }} *,
@@ -305,10 +351,13 @@
   }
 </style>
 
-<section id="gfl-{{ sid }}">
+<section id="gfl-{{ sid }}"{% if gfl_press %} class="gfl--press"{% endif %}>
   <div class="gfl-w">
     {%- for block in section.blocks -%}
       {%- assign b = block.settings -%}
+      {%- comment -%} « Seulement pendant le mode Black Friday » : plus rendu du tout une fois le mode fini, masqué avant son début par la règle gf-bf-only {%- endcomment -%}
+      {%- if b.bf_only and gf_bf_on != '1' -%}{%- continue -%}{%- endif -%}
+      {%- capture gfl_bfc -%}{% if b.bf_only %} gf-bf-only{% endif %}{%- endcapture -%}
       {%- if gfl_tbl and block.type != 'cmp_row' -%}</tbody></table></div></div>{%- assign gfl_tbl = false -%}{%- endif -%}
       {%- case block.type -%}
 
@@ -316,15 +365,15 @@
           {%- assign h_tag = b.tag | default: 'h2' -%}
           {%- assign h_cls = 'gfl-h--2' -%}
           {%- if h_tag == 'h1' -%}{%- assign h_cls = 'gfl-h--1' -%}{%- endif -%}
-          <{{ h_tag }} class="gfl-h {{ h_cls }}{% if b.align == 'center' %} gfl-h--c{% endif %}" {{ block.shopify_attributes }}>{%- if b.number != blank -%}<span class="gfl-num">{{ b.number }}.</span> {% endif -%}{% render 'gf-landing-ph', text: b.text, period: gfl_period, bf: gf_bf_on %}</{{ h_tag }}>
+          <{{ h_tag }} class="gfl-h {{ h_cls }}{% if b.align == 'center' %} gfl-h--c{% endif %}{{ gfl_bfc }}" {{ block.shopify_attributes }}>{%- if b.number != blank -%}<span class="gfl-num">{{ b.number }}.</span> {% endif -%}{% render 'gf-landing-ph', text: b.text, period: gfl_period, bf: gf_bf_on %}</{{ h_tag }}>
 
         {%- when 'text' -%}
-          <div class="gfl-t{% if b.style == 'lead' %} gfl-t--lead{% elsif b.style == 'punch' %} gfl-t--punch{% elsif b.style == 'small' %} gfl-t--small{% endif %}{% if b.align == 'center' %} gfl-t--c{% endif %}" {{ block.shopify_attributes }}>{%- if b.text contains '[' -%}{% render 'gf-landing-ph', text: b.text, period: gfl_period, bf: gf_bf_on %}{%- else -%}{{ b.text }}{%- endif -%}</div>
+          <div class="gfl-t{% if b.style == 'lead' %} gfl-t--lead{% elsif b.style == 'punch' %} gfl-t--punch{% elsif b.style == 'small' %} gfl-t--small{% endif %}{% if b.align == 'center' %} gfl-t--c{% endif %}{{ gfl_bfc }}" {{ block.shopify_attributes }}>{%- if b.text contains '[' -%}{% render 'gf-landing-ph', text: b.text, period: gfl_period, bf: gf_bf_on %}{%- else -%}{{ b.text }}{%- endif -%}</div>
 
         {%- when 'image' -%}
           {%- comment -%} vide + hors éditeur → rien (pas de cadre gris en live) {%- endcomment -%}
           {%- if b.image != blank or request.design_mode -%}
-          <figure class="gfl-img{% if b.size == 'medium' %} gfl-img--medium{% elsif b.size == 'small' %} gfl-img--small{% endif %}" {{ block.shopify_attributes }}>
+          <figure class="gfl-img{% if b.size == 'medium' %} gfl-img--medium{% elsif b.size == 'small' %} gfl-img--small{% endif %}{{ gfl_bfc }}" {{ block.shopify_attributes }}>
             {%- if b.image != blank -%}
               <picture>
                 {%- if b.image_mobile != blank -%}
@@ -401,7 +450,7 @@
 
         {%- when 'chips' -%}
           {%- capture gf_check -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>{%- endcapture -%}
-          <div class="gfl-chips" {{ block.shopify_attributes }}>
+          <div class="gfl-chips{{ gfl_bfc }}" {{ block.shopify_attributes }}>
             {%- if b.chip1 != blank -%}<span class="gfl-chip">{{ gf_check }}{{ b.chip1 }}</span>{%- endif -%}
             {%- if b.chip2 != blank -%}<span class="gfl-chip">{{ gf_check }}{{ b.chip2 }}</span>{%- endif -%}
             {%- if b.chip3 != blank -%}<span class="gfl-chip">{{ gf_check }}{{ b.chip3 }}</span>{%- endif -%}
@@ -409,7 +458,7 @@
           </div>
 
         {%- when 'faq' -%}
-          <details class="gfl-faq" {{ block.shopify_attributes }}{% if b.open_default %} open{% endif %}>
+          <details class="gfl-faq{{ gfl_bfc }}" {{ block.shopify_attributes }}{% if b.open_default %} open{% endif %}>
             <summary class="gfl-q">{%- if b.question contains '[' -%}{% render 'gf-landing-ph', text: b.question, period: gfl_period, bf: gf_bf_on %}{%- else -%}{{ b.question }}{%- endif -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
             <div class="gfl-a">{%- if b.answer contains '[' -%}{% render 'gf-landing-ph', text: b.answer, period: gfl_period, bf: gf_bf_on %}{%- else -%}{{ b.answer }}{%- endif -%}</div>
           </details>
@@ -539,6 +588,11 @@
     { "type": "range", "id": "h1_size", "label": "Taille H1 (px)", "min": 26, "max": 64, "step": 2, "default": 40 },
     { "type": "range", "id": "h2_size", "label": "Taille H2 (px)", "min": 20, "max": 48, "step": 2, "default": 28 },
 
+    { "type": "header", "content": "── Typographie ──" },
+    { "type": "select", "id": "typo", "label": "Style du texte", "options": [ {"value":"site","label":"Site (polices du thème)"}, {"value":"presse","label":"Article de presse (serif)"} ], "default": "site", "info": "Article de presse : titres, texte, liste et FAQ dans les polices ci-dessous. Rubrique, légendes, boutons et avis restent dans la police du site." },
+    { "type": "font_picker", "id": "press_font_heading", "label": "Police des titres (article de presse)", "default": "pt_serif_n7" },
+    { "type": "font_picker", "id": "press_font_body", "label": "Police du texte (article de presse)", "default": "pt_serif_n4" },
+
     { "type": "header", "content": "── Apparence ──" },
     { "type": "checkbox", "id": "transparent_bg", "label": "Fond transparent", "default": false },
     { "type": "color", "id": "color_bg", "label": "Couleur de fond", "default": "#ffffff" },
@@ -564,6 +618,9 @@
 
     { "type": "header", "content": "── Mise en page ──" },
     { "type": "checkbox", "id": "hide_header", "label": "Masquer le header du site", "default": false, "info": "Retire la barre du haut (menu, logo, panier) sur les pages de ce template. Le footer reste." },
+    { "type": "checkbox", "id": "hide_announcement", "label": "Masquer les bandeaux d'annonce", "default": false, "info": "Retire les bandeaux au-dessus du header sur les pages de ce template." },
+    { "type": "checkbox", "id": "hide_footer", "label": "Masquer le footer du site", "default": false },
+    { "type": "checkbox", "id": "eager_first_img", "label": "Charger la 1re image en priorité", "default": true, "info": "Décoche sur une 2e section GF Landing placée plus bas dans la page : sa 1re image se chargera au scroll, comme les autres." },
     { "type": "range", "id": "padding_top", "label": "Padding haut", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
     { "type": "range", "id": "padding_bottom", "label": "Padding bas", "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" }
   ],
@@ -575,7 +632,8 @@
         { "type": "inline_richtext", "id": "text", "label": "Texte", "info": "Mets une partie du texte en italique (bouton I) → elle s'affiche en couleur accent.", "default": "Titre de section" },
         { "type": "text", "id": "number", "label": "Numéro (listicle, optionnel)", "info": "Ex. : 1 → affiche « 1. » en couleur accent devant le titre." },
         { "type": "select", "id": "tag", "label": "Niveau", "options": [ {"value":"h1","label":"H1 (grand)"}, {"value":"h2","label":"H2"}, {"value":"h3","label":"H3"} ], "default": "h2" },
-        { "type": "select", "id": "align", "label": "Alignement", "options": [ {"value":"left","label":"Gauche"}, {"value":"center","label":"Centré"} ], "default": "left" }
+        { "type": "select", "id": "align", "label": "Alignement", "options": [ {"value":"left","label":"Gauche"}, {"value":"center","label":"Centré"} ], "default": "left" },
+        { "type": "checkbox", "id": "bf_only", "label": "Seulement pendant le mode Black Friday", "default": false, "info": "Visible seulement pendant le mode Black Friday (Réglages du thème), puis disparaît tout seul. Pratique pour le concours Bali." }
       ]
     },
     {
@@ -584,7 +642,8 @@
       "settings": [
         { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Ton paragraphe.</p>" },
         { "type": "select", "id": "style", "label": "Style", "options": [ {"value":"normal","label":"Normal"}, {"value":"lead","label":"Chapô (plus grand)"}, {"value":"punch","label":"Punchline (Oswald)"}, {"value":"small","label":"Petit / note"} ], "default": "normal" },
-        { "type": "select", "id": "align", "label": "Alignement", "options": [ {"value":"left","label":"Gauche"}, {"value":"center","label":"Centré"} ], "default": "left" }
+        { "type": "select", "id": "align", "label": "Alignement", "options": [ {"value":"left","label":"Gauche"}, {"value":"center","label":"Centré"} ], "default": "left" },
+        { "type": "checkbox", "id": "bf_only", "label": "Seulement pendant le mode Black Friday", "default": false, "info": "Visible seulement pendant le mode Black Friday (Réglages du thème), puis disparaît tout seul. Pratique pour le concours Bali." }
       ]
     },
     {
@@ -594,7 +653,8 @@
         { "type": "image_picker", "id": "image", "label": "Image" },
         { "type": "image_picker", "id": "image_mobile", "label": "Image mobile (optionnel)", "info": "Vide = l'image principale s'affiche partout. Le navigateur ne télécharge que la bonne version." },
         { "type": "select", "id": "size", "label": "Largeur", "options": [ {"value":"full","label":"Pleine largeur"}, {"value":"medium","label":"Moyenne (75%)"}, {"value":"small","label":"Petite (55%)"} ], "default": "full" },
-        { "type": "text", "id": "caption", "label": "Légende (optionnel)" }
+        { "type": "text", "id": "caption", "label": "Légende (optionnel)" },
+        { "type": "checkbox", "id": "bf_only", "label": "Seulement pendant le mode Black Friday", "default": false, "info": "Visible seulement pendant le mode Black Friday (Réglages du thème), puis disparaît tout seul. Pratique pour le concours Bali." }
       ]
     },
     {
@@ -638,7 +698,8 @@
         { "type": "text", "id": "chip1", "label": "Puce 1", "default": "2 achetés = 4 sachets" },
         { "type": "text", "id": "chip2", "label": "Puce 2", "default": "1 pièce = 1 séance" },
         { "type": "text", "id": "chip3", "label": "Puce 3", "default": "Soit 0,36 € la séance" },
-        { "type": "text", "id": "chip4", "label": "Puce 4", "default": "Livraison 48 h offerte" }
+        { "type": "text", "id": "chip4", "label": "Puce 4", "default": "Livraison 48 h offerte" },
+        { "type": "checkbox", "id": "bf_only", "label": "Seulement pendant le mode Black Friday", "default": false, "info": "Visible seulement pendant le mode Black Friday (Réglages du thème), puis disparaît tout seul. Pratique pour le concours Bali." }
       ]
     },
     {
@@ -647,7 +708,8 @@
       "settings": [
         { "type": "text", "id": "question", "label": "Question", "default": "Ta question ?" },
         { "type": "richtext", "id": "answer", "label": "Réponse", "default": "<p>La réponse.</p>" },
-        { "type": "checkbox", "id": "open_default", "label": "Ouverte par défaut", "default": false }
+        { "type": "checkbox", "id": "open_default", "label": "Ouverte par défaut", "default": false },
+        { "type": "checkbox", "id": "bf_only", "label": "Seulement pendant le mode Black Friday", "default": false, "info": "Visible seulement pendant le mode Black Friday (Réglages du thème), puis disparaît tout seul. Pratique pour le concours Bali." }
       ]
     },
     {
