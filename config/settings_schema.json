@@ -863,6 +863,13 @@
       },
       {
         "type": "text",
+        "id": "gfc_up_line_sub",
+        "label": "Sous-titre de la ligne dans le panier",
+        "default": "Pastèque · Offre exclusive -65%",
+        "info": "Affiché sous le nom une fois l'upsell ajouté (comme « Menthe Fraîche · 2 Achetés = 2 Offerts » pour l'offre). Vide = pas de sous-titre."
+      },
+      {
+        "type": "text",
         "id": "gfc_up_add_text",
         "label": "Bouton d'ajout",
         "default": "Ajouter · [prix]",
@@ -978,6 +985,13 @@
         "label": "Ligne sous le titre",
         "default": "Le best-seller · [max] max par personne",
         "info": "[max] = quantité maximum (réglage de l'upsell 1). Vide = pas de ligne."
+      },
+      {
+        "type": "text",
+        "id": "gfc_up2_line_sub",
+        "label": "Sous-titre de la ligne dans le panier",
+        "default": "Menthe Fraîche · Offre exclusive -65%",
+        "info": "Affiché sous le nom une fois l'upsell ajouté. Vide = pas de sous-titre."
       },
       {
         "type": "header",
