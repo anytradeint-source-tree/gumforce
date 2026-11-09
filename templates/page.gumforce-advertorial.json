@@ -623,7 +623,7 @@
         "t-cout": {
           "type": "text",
           "settings": {
-            "text": "<p>Une injection pour dessiner la mâchoire : plusieurs centaines d'euros, à refaire. Un abonnement en salle : plusieurs dizaines d'euros par mois, et ça ne touche pas au visage.</p><p>Avec l'offre du moment, un chewing-gum GUMFORCE revient à environ 36 centimes. Au rythme conseillé de 3 chewing-gums par jour, ça fait à peu près 1 € par jour. Moins qu'un café en terrasse.</p>",
+            "text": "<p>Une injection pour dessiner la mâchoire : plusieurs centaines d'euros, à refaire. Un abonnement en salle : plusieurs dizaines d'euros par mois, et ça ne touche pas au visage.</p><p>Avec l'offre du moment, un chewing-gum GUMFORCE revient à environ 36 centimes. Au rythme conseillé de 3 chewing-gums par jour, ça fait à peu près 1 € par jour. Moins qu'un café en terrasse.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
@@ -697,14 +697,14 @@
           "settings": {
             "image": "shopify://shop_images/gf-adv-bali.jpg",
             "size": "full",
-            "caption": "Le voyage à gagner : 10 jours à Bali pour deux, d'une valeur de 3000 €.",
+            "caption": "Le voyage à gagner : 10 jours à Bali pour deux, d'une valeur de 3000 €.",
             "bf_only": true
           }
         },
         "t-bali": {
           "type": "text",
           "settings": {
-            "text": "<p>Jusqu'au 30 novembre, GUMFORCE ajoute un jeu concours à son offre : chaque commande participe au tirage d'un voyage de 10 jours à Bali pour deux, vols et logement compris. Valeur du voyage : 3000 €.</p><p>Pas de formulaire, pas de code à entrer : ta commande compte direct comme une participation. Et plus tu commandes, plus t'as de chances.</p><p>Le tirage a lieu le samedi 5 décembre. La marque filme la roue et publie la vidéo, pour que tout le monde voie que c'est réel.</p><p><a href=\"/pages/reglement-du-jeu-concours-gagne-10-jours-a-bali-pour-deux\">Règlement complet du jeu</a></p>",
+            "text": "<p>Jusqu'au 30 novembre, GUMFORCE ajoute un jeu concours à son offre : chaque commande participe au tirage d'un voyage de 10 jours à Bali pour deux, vols et logement compris. Valeur du voyage : 3000 €.</p><p>Pas de formulaire, pas de code à entrer : ta commande compte direct comme une participation. Et plus tu commandes, plus t'as de chances.</p><p>Le tirage a lieu le samedi 5 décembre. La marque filme la roue et publie la vidéo, pour que tout le monde voie que c'est réel.</p><p><a href=\"/pages/reglement-du-jeu-concours-gagne-10-jours-a-bali-pour-deux\">Règlement complet du jeu</a></p>",
             "style": "normal",
             "align": "left",
             "bf_only": true
