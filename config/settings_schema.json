@@ -978,6 +978,99 @@
         "label": "Ligne sous le titre",
         "default": "Le best-seller · [max] max par personne",
         "info": "[max] = quantité maximum (réglage de l'upsell 1). Vide = pas de ligne."
+      },
+      {
+        "type": "header",
+        "content": "Upsell : version « sachets à toucher »"
+      },
+      {
+        "type": "paragraph",
+        "content": "Au lieu du − 1 +, le client touche les sachets (jusqu'à la quantité maximum) et voit grimper chewing-gums, jours d'entraînement et économie. Aperçu : ajoute ?gf_up=b à l'adresse d'une page (?gf_up=a pour revenir)."
+      },
+      {
+        "type": "select",
+        "id": "gfc_upb_mode",
+        "label": "Version affichée",
+        "options": [
+          { "value": "test", "label": "Classique (− 1 +), sachets seulement en aperçu ou test A/B" },
+          { "value": "on", "label": "Sachets à toucher pour tout le monde" },
+          { "value": "off", "label": "Classique seulement (version sachets désactivée)" }
+        ],
+        "default": "test",
+        "info": "Test A/B : la version B d'Intelligems ajoute la classe gf-up-b sur la page (ou masque .gfc-up__va et affiche .gfc-up__vb)."
+      },
+      {
+        "type": "inline_richtext",
+        "id": "gfc_up_b_heading",
+        "label": "Titre (upsell 1)",
+        "default": "Nouveau : la <em>pastèque</em> à [prix] au lieu de [barré]",
+        "info": "[prix] = prix d'un sachet, [barré] = prix barré. Le mot en italique s'affiche en couleur."
+      },
+      {
+        "type": "inline_richtext",
+        "id": "gfc_up2_b_heading",
+        "label": "Titre (upsell 2)",
+        "default": "La <em>menthe fraîche</em> à [prix] au lieu de [barré]",
+        "info": "[prix] = prix d'un sachet, [barré] = prix barré."
+      },
+      {
+        "type": "text",
+        "id": "gfc_upb_one",
+        "label": "Ligne quantité (1 sachet)",
+        "default": "1 sachet · [cg] chewing-gums",
+        "info": "[cg] = nombre de chewing-gums."
+      },
+      {
+        "type": "text",
+        "id": "gfc_upb_many",
+        "label": "Ligne quantité (plusieurs sachets)",
+        "default": "[n] sachets · [cg] chewing-gums",
+        "info": "[n] = nombre de sachets, [cg] = nombre de chewing-gums."
+      },
+      {
+        "type": "text",
+        "id": "gfc_upb_days",
+        "label": "Ligne entraînement",
+        "default": "+[jours] jours d'entraînement",
+        "info": "[jours] = chewing-gums ÷ chewing-gums par jour, arrondi. Vide = pas de ligne."
+      },
+      {
+        "type": "text",
+        "id": "gfc_upb_save",
+        "label": "Économie",
+        "default": "Tu économises [eco]",
+        "info": "[eco] = (prix barré − prix) × nombre de sachets. Vide = pas d'économie affichée."
+      },
+      {
+        "type": "text",
+        "id": "gfc_upb_add_one",
+        "label": "Bouton (1 sachet)",
+        "default": "Ajouter 1 sachet · [prix]",
+        "info": "[prix] = total à payer. Le total barré s'affiche à côté."
+      },
+      {
+        "type": "text",
+        "id": "gfc_upb_add_many",
+        "label": "Bouton (plusieurs sachets)",
+        "default": "Ajouter [n] sachets · [prix]"
+      },
+      {
+        "type": "range",
+        "id": "gfc_upb_cg",
+        "label": "Chewing-gums par sachet",
+        "min": 5,
+        "max": 100,
+        "step": 1,
+        "default": 35
+      },
+      {
+        "type": "range",
+        "id": "gfc_upb_per_day",
+        "label": "Chewing-gums par jour (pour les jours d'entraînement)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "default": 3
       }
     ]
   },

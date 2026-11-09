@@ -260,6 +260,35 @@
   .gfc-up--photo .gfc-qty span { color:#fff; }
   .gfc-up--photo .gfc-up__add { background:var(--gfc-lime); color:#111; }
 
+  /* upsell, version « sachets à toucher » : rendue à côté de la classique, une seule des deux visible
+     (classe gf-up-b = aperçu ?gf_up=b ou version B du test A/B ; .gfc--upb = réglage « pour tout le monde ») */
+  .gfc-up__va { display:contents; }
+  .gfc-up__vb { display:none; }
+  html.gf-up-b .gfc-up__va, .gfc--upb .gfc-up__va { display:none; }
+  html.gf-up-b .gfc-up__vb, .gfc--upb .gfc-up__vb { display:block; }
+  .gfc-upb__title { margin:4px 0 16px !important; font-family:var(--gfc-head); font-size:19px; font-weight:700; line-height:1.15; text-transform:uppercase; letter-spacing:.02em; text-wrap:balance; }
+  .gfc-upb__title em { font-style:normal; color:var(--gfc-accent); }
+  .gfc-upb__row { display:grid; grid-template-columns:repeat(var(--gfc-upb-n,4), minmax(0,1fr)); gap:8px; }
+  .gfc-upb__s { appearance:none; position:relative; aspect-ratio:1 / 1.12; padding:0; border:1.5px dashed #cfd6d6; border-radius:14px; background:#f6f8f8; display:flex; align-items:center; justify-content:center; font:inherit; color:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .18s cubic-bezier(.22,1,.36,1), background .16s ease, border-color .16s ease, box-shadow .16s ease; }
+  .gfc-upb__s img { width:78%; height:auto; opacity:.22; filter:grayscale(1); transition:opacity .16s ease, filter .16s ease; }
+  .gfc-upb__ck { position:absolute; display:flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:#fff; border:1.5px solid #cfd6d6; color:#8a9494; }
+  .gfc-upb__ck svg { width:14px; height:14px; }
+  .gfc-upb__ok { display:none; }
+  .gfc-upb__s.is-on { border:2px solid var(--gfc-accent); background:#eefaf9; box-shadow:0 4px 12px rgba(42,181,180,.18); }
+  .gfc-upb__s.is-on img { opacity:1; filter:none; }
+  .gfc-upb__s.is-on .gfc-upb__ck { right:5px; bottom:5px; width:20px; height:20px; background:var(--gfc-accent); border:2px solid #fff; color:#fff; }
+  .gfc-upb__s.is-on .gfc-upb__ck svg { width:11px; height:11px; }
+  .gfc-upb__s.is-on .gfc-upb__ok { display:block; }
+  .gfc-upb__s.is-on .gfc-upb__plus { display:none; }
+  .gfc-upb__s.is-pop { transform:scale(1.07); }
+  .gfc-upb__out { margin-top:12px !important; display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .gfc-upb__lines { font-size:13px; line-height:1.4; color:var(--gfc-muted); }
+  .gfc-upb__lines b { display:block; color:var(--gfc-ink); font-weight:800; }
+  .gfc-upb__lines span { display:block; }
+  .gfc-upb__save { font-size:12.5px; font-weight:800; line-height:1.4; color:#16A34A; white-space:nowrap; }
+  .gfc-upb__add { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; height:46px; margin-top:12px; }
+  .gfc-upb__add s { font-size:13px; font-weight:500; opacity:.55; }
+
   /* pied fixe */
   .gfc__foot { flex-shrink:0; padding:10px 16px calc(12px + env(safe-area-inset-bottom)); border-top:1px solid var(--gfc-hair); background:#fff; }
   .gfc-sum { display:flex; flex-direction:column; gap:2px; }
@@ -310,13 +339,17 @@
     .gfc-up__price b, .gfc-up--photo .gfc-up__price b { font-size:17px; }
     .gfc-up--photo .gfc-up__title { font-size:21px; }
     .gfc-go { padding:14px 12px; }
+    .gfc-upb__title { font-size:17px; }
+    .gfc-upb__row { gap:6px; }
   }
   @media (prefers-reduced-motion:reduce) {
     .gfc-tot__amt, .gfc-sum__row b { animation:none !important; }
+    .gfc-upb__s, .gfc-upb__s img { transition:none; }
+    .gfc-upb__s.is-pop { transform:none; }
   }
 </style>
 
-<div class="gfc{% if gfc_cc %} gfc--cc{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}" data-up-only="{% if settings.gfc_up_only_with %}1{% endif %}">
+<div class="gfc{% if gfc_cc %} gfc--cc{% endif %}{% if settings.gfc_upb_mode == 'on' %} gfc--upb{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}" data-up-only="{% if settings.gfc_up_only_with %}1{% endif %}">
   <div class="gfc__head">
     <h2 class="gfc__title" id="gfc-title">{{ gfc_title | escape }} <span class="gfc__count" data-gfc-count{% if gfc_count == 0 %} hidden{% endif %}>({{ gfc_count }})</span></h2>
     <button type="button" ref="closeButton" on:click="cart-drawer-component/close" class="gfc__close" aria-label="{{ 'actions.close_dialog' | t }}">
@@ -464,6 +497,25 @@
         assign up_sub = settings[k] | replace: '[max]', up_max_s | strip
         assign k = pre | append: '_heading'
         assign up_head = settings[k]
+
+        comment — version « sachets à toucher » (Réglages › Panier GUMFORCE) : rendue à côté de la version classique,
+          la classe gf-up-b (aperçu ?gf_up=b ou test A/B) ou le mode « pour tout le monde » choisit laquelle s'affiche
+        endcomment
+        assign upb_on = false
+        if settings.gfc_upb_mode != 'off'
+          assign upb_on = true
+          assign upb_was_money = up_was | money
+          assign k = pre | append: '_b_heading'
+          assign upb_head = settings[k] | replace: '[prix]', up_price_money | replace: '[barré]', upb_was_money
+          assign upb_cg = settings.gfc_upb_cg | default: 35
+          assign upb_pd = settings.gfc_upb_per_day | default: 3
+          assign upb_days = upb_cg | times: 1.0 | divided_by: upb_pd | round
+          assign upb_line = settings.gfc_upb_one | replace: '[n]', '1' | replace: '[cg]', upb_cg
+          assign upb_d = settings.gfc_upb_days | replace: '[jours]', upb_days
+          assign upb_save_money = up_was | minus: up_unit | money
+          assign upb_s = settings.gfc_upb_save | replace: '[eco]', upb_save_money
+          assign upb_add = settings.gfc_upb_add_one | default: 'Ajouter 1 sachet · [prix]' | replace: '[n]', '1' | replace: '[prix]', up_price_money
+        endif
       -%}
       <div class="gfc-up{% if up_bg %} gfc-up--photo{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-for="{{ up_for | escape }}" data-max="{{ up_max }}" data-pick="1" data-price="{{ up_unit }}" data-was="{{ up_was }}" data-name="{{ up_short | escape }}" data-img="{% if up_line_img %}{{ up_line_img | image_url: width: 160 }}{% endif %}"{% unless up_show == forloop.index %} hidden{% endunless %}>
         <div class="gfc-up__card{% if up_badge != blank %} gfc-up__card--badge{% endif %}">
@@ -476,6 +528,7 @@
               <div class="gfc-up__tw" data-skip-subtree-update><p class="gfc-up__timer" data-gfc-timer data-min="{{ settings.gfc_up_timer_min | default: 10 }}" data-tpl="{{ settings.gfc_up_timer_text | escape }}" hidden></p></div>
             {%- endif -%}
           </div>
+          <div class="gfc-up__va">
           <div class="gfc-up__main">
             {%- unless up_bg -%}{%- if up_img -%}<div class="gfc-up__img"><img src="{{ up_img | image_url: width: 160 }}" alt="" width="56" height="56" loading="lazy"></div>{%- endif -%}{%- endunless -%}
             <div class="gfc-up__txt">
@@ -496,6 +549,25 @@
             </div>
             <button type="button" class="gfc-up__add" data-gfc-up-add><span data-gfc-up-label data-tpl="{{ up_add_tpl | escape }}">{{ up_add_tpl | escape | replace: '[prix]', up_price_money }}</span></button>
           </div>
+          </div>
+          {%- if upb_on -%}
+          <div class="gfc-up__vb" data-gfc-vb data-cg="{{ upb_cg }}" data-pd="{{ upb_pd }}" data-one="{{ settings.gfc_upb_one | escape }}" data-many="{{ settings.gfc_upb_many | escape }}" data-days="{{ settings.gfc_upb_days | escape }}" data-save="{{ settings.gfc_upb_save | escape }}" data-add1="{{ settings.gfc_upb_add_one | escape }}" data-addn="{{ settings.gfc_upb_add_many | escape }}">
+            {%- if upb_head != blank -%}<p class="gfc-upb__title">{{ upb_head }}</p>{%- endif -%}
+            <div class="gfc-upb__row" style="--gfc-upb-n:{{ up_max }}">
+              {%- for i in (1..up_max) -%}
+                <button type="button" class="gfc-upb__s{% if i == 1 %} is-on{% endif %}" data-gfc-slot="{{ i }}" aria-pressed="{% if i == 1 %}true{% else %}false{% endif %}" aria-label="{{ i }} × {{ up_name | escape }}">
+                  {%- if up_img -%}<img src="{{ up_img | image_url: width: 200 }}" alt="" width="64" height="64" loading="lazy">{%- endif -%}
+                  <span class="gfc-upb__ck" aria-hidden="true"><svg class="gfc-upb__ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><svg class="gfc-upb__plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+                </button>
+              {%- endfor -%}
+            </div>
+            <div class="gfc-upb__out">
+              <p class="gfc-upb__lines"><b data-gfc-vb-n>{{ upb_line | escape }}</b>{%- if upb_d != blank -%}<span data-gfc-vb-d>{{ upb_d | escape }}</span>{%- endif -%}</p>
+              {%- if upb_s != blank and up_was > up_unit -%}<span class="gfc-upb__save" data-gfc-vb-s>{{ upb_s | escape }}</span>{%- endif -%}
+            </div>
+            <button type="button" class="gfc-up__add gfc-upb__add" data-gfc-up-add><span data-gfc-vb-l>{{ upb_add | escape }}</span>{%- if up_was > up_unit -%}<s data-gfc-vb-w>{{ upb_was_money }}</s>{%- endif -%}</button>
+          </div>
+          {%- endif -%}
         </div>
       </div>
     {%- endfor -%}
@@ -575,6 +647,14 @@
 </div>
 
 <script>
+  /* aperçu de la version « sachets à toucher » : ?gf_up=b (gardé pour la visite), ?gf_up=a pour revenir */
+  (function () {
+    try {
+      var m = location.search.match(/[?&]gf_up=([ab])/);
+      if (m) sessionStorage.setItem('gf_up', m[1]);
+      if (sessionStorage.getItem('gf_up') === 'b') document.documentElement.classList.add('gf-up-b');
+    } catch (e) {}
+  })();
   (function () {
     if (window.gfCart) return;
     var ROOT = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
@@ -796,6 +876,42 @@
       var inc = q('[data-gfc-pick="1"]', card); if (inc) inc.disabled = n >= max;
       var lab = q('[data-gfc-up-label]', card);
       if (lab && !root().classList.contains('gfc--cc')) lab.textContent = (lab.getAttribute('data-tpl') || '').replace('[prix]', fmt(cents(card, 'data-price') * n));
+      upB(card, n);
+    }
+    /* ── Upsell, version « sachets à toucher » : sachets allumés, lignes et bouton suivent la quantité.
+       Autre devise que celle de la boutique (gfc--cc) : on garde les montants du serveur pour 1 sachet
+       et on n'affiche pas de montant recalculé au-delà. ── */
+    function upB(card, n) {
+      var vb = q('[data-gfc-vb]', card); if (!vb) return;
+      qa('[data-gfc-slot]', vb).forEach(function (sl) {
+        var on = cents(sl, 'data-gfc-slot') <= n;
+        sl.classList.toggle('is-on', on);
+        sl.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      var cc = root().classList.contains('gfc--cc');
+      var unit = cents(card, 'data-price'), was = cents(card, 'data-was') || unit;
+      var cg = cents(vb, 'data-cg') * n, pd = cents(vb, 'data-pd') || 3;
+      function fill(t) { return (t || '').replace('[n]', n).replace('[cg]', cg).replace('[jours]', Math.round(cg / pd)); }
+      function keep(el) { if (!el.hasAttribute('data-n1')) el.setAttribute('data-n1', el.textContent); return el.getAttribute('data-n1'); }
+      var el = q('[data-gfc-vb-n]', vb); if (el) el.textContent = fill(vb.getAttribute(n > 1 ? 'data-many' : 'data-one'));
+      el = q('[data-gfc-vb-d]', vb); if (el) el.textContent = fill(vb.getAttribute('data-days'));
+      el = q('[data-gfc-vb-s]', vb);
+      if (el) {
+        var sv = keep(el);
+        if (cc) { el.hidden = n > 1; el.textContent = sv; }
+        else el.textContent = fill(vb.getAttribute('data-save')).replace('[eco]', fmt((was - unit) * n));
+      }
+      el = q('[data-gfc-vb-l]', vb);
+      if (el) {
+        var l1 = keep(el), t = fill(vb.getAttribute(n > 1 ? 'data-addn' : 'data-add1'));
+        el.textContent = cc ? (n > 1 ? t.replace(/\s*·?\s*\[prix\]/, '') : l1) : t.replace('[prix]', fmt(unit * n));
+      }
+      el = q('[data-gfc-vb-w]', vb);
+      if (el) {
+        var w1 = keep(el);
+        if (cc) { el.hidden = n > 1; el.textContent = w1; }
+        else el.textContent = fmt(was * n);
+      }
     }
     function upAdd(card) {
       var r = root(), list = q('[data-gfc-lines]', r);
@@ -882,7 +998,7 @@
       var t = e.target;
       if (!t || !t.closest) return;
       var r = root();
-      var b = t.closest('[data-gfc-pick],[data-gfc-up-add],[data-gfc-inc],[data-gfc-dec],[data-gfc-go]');
+      var b = t.closest('[data-gfc-pick],[data-gfc-slot],[data-gfc-up-add],[data-gfc-inc],[data-gfc-dec],[data-gfc-go]');
       if (!b || !r || !r.contains(b) || b.disabled) return;
       if (b.hasAttribute('data-gfc-go')) {
         b.classList.add('is-loading');
@@ -891,6 +1007,12 @@
       }
       e.preventDefault();
       var card = b.closest('[data-gfc-up]');
+      if (card && b.hasAttribute('data-gfc-slot')) {
+        upPick(card, cents(b, 'data-gfc-slot'));
+        b.classList.add('is-pop');
+        setTimeout(function () { b.classList.remove('is-pop'); }, 180);
+        return;
+      }
       if (card && b.hasAttribute('data-gfc-pick')) { upPick(card, cents(card, 'data-pick') + cents(b, 'data-gfc-pick')); return; }
       if (card && b.hasAttribute('data-gfc-up-add')) { upAdd(card); return; }
       var line = b.closest('[data-gfc-line]');
