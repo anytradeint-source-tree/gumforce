@@ -508,14 +508,28 @@
           assign upb_was_money = up_was | money
           assign k = pre | append: '_b_heading'
           assign upb_head = settings[k] | replace: '[prix]', up_price_money | replace: '[barré]', upb_was_money
+          comment — rendu directement à la quantité cochée à l'ouverture (réglage, plafonnée au maximum)
+          endcomment
+          assign upb_def = settings.gfc_upb_default | default: 2 | at_most: up_max | at_least: 1
+          assign upb_def_s = upb_def | append: ''
           assign upb_cg = settings.gfc_upb_cg | default: 35
           assign upb_pd = settings.gfc_upb_per_day | default: 3
-          assign upb_days = upb_cg | times: 1.0 | divided_by: upb_pd | round
-          assign upb_line = settings.gfc_upb_one | replace: '[n]', '1' | replace: '[cg]', upb_cg
+          assign upb_cg_n = upb_cg | times: upb_def
+          assign upb_days = upb_cg_n | times: 1.0 | divided_by: upb_pd | round
+          if upb_def > 1
+            assign upb_line = settings.gfc_upb_many
+            assign upb_add = settings.gfc_upb_add_many | default: 'Ajouter [n] sachets · [prix]'
+          else
+            assign upb_line = settings.gfc_upb_one
+            assign upb_add = settings.gfc_upb_add_one | default: 'Ajouter 1 sachet · [prix]'
+          endif
+          assign upb_line = upb_line | replace: '[n]', upb_def_s | replace: '[cg]', upb_cg_n
           assign upb_d = settings.gfc_upb_days | replace: '[jours]', upb_days
-          assign upb_save_money = up_was | minus: up_unit | money
+          assign upb_save_money = up_was | minus: up_unit | times: upb_def | money
           assign upb_s = settings.gfc_upb_save | replace: '[eco]', upb_save_money
-          assign upb_add = settings.gfc_upb_add_one | default: 'Ajouter 1 sachet · [prix]' | replace: '[n]', '1' | replace: '[prix]', up_price_money
+          assign upb_tot_money = up_unit | times: upb_def | money
+          assign upb_add = upb_add | replace: '[n]', upb_def_s | replace: '[prix]', upb_tot_money
+          assign upb_was_tot_money = up_was | times: upb_def | money
         endif
       -%}
       <div class="gfc-up{% if up_bg %} gfc-up--photo{% endif %}" data-gfc-up data-vid="{{ up_v.id }}" data-for="{{ up_for | escape }}" data-max="{{ up_max }}" data-pick="1" data-price="{{ up_unit }}" data-was="{{ up_was }}" data-name="{{ up_short | escape }}" data-img="{% if up_line_img %}{{ up_line_img | image_url: width: 160 }}{% endif %}"{% unless up_show == forloop.index %} hidden{% endunless %}>
@@ -552,11 +566,11 @@
           </div>
           </div>
           {%- if upb_on -%}
-          <div class="gfc-up__vb" data-gfc-vb data-cg="{{ upb_cg }}" data-pd="{{ upb_pd }}" data-one="{{ settings.gfc_upb_one | escape }}" data-many="{{ settings.gfc_upb_many | escape }}" data-days="{{ settings.gfc_upb_days | escape }}" data-save="{{ settings.gfc_upb_save | escape }}" data-add1="{{ settings.gfc_upb_add_one | escape }}" data-addn="{{ settings.gfc_upb_add_many | escape }}">
+          <div class="gfc-up__vb" data-gfc-vb data-def="{{ upb_def }}" data-pick="{{ upb_def }}" data-cg="{{ upb_cg }}" data-pd="{{ upb_pd }}" data-one="{{ settings.gfc_upb_one | escape }}" data-many="{{ settings.gfc_upb_many | escape }}" data-days="{{ settings.gfc_upb_days | escape }}" data-save="{{ settings.gfc_upb_save | escape }}" data-add1="{{ settings.gfc_upb_add_one | escape }}" data-addn="{{ settings.gfc_upb_add_many | escape }}">
             {%- if upb_head != blank -%}<p class="gfc-upb__title">{{ upb_head }}</p>{%- endif -%}
             <div class="gfc-upb__row" style="--gfc-upb-n:{{ up_max }}">
               {%- for i in (1..up_max) -%}
-                <button type="button" class="gfc-upb__s{% if i == 1 %} is-on{% endif %}" data-gfc-slot="{{ i }}" aria-pressed="{% if i == 1 %}true{% else %}false{% endif %}" aria-label="{{ i }} × {{ up_name | escape }}">
+                <button type="button" class="gfc-upb__s{% if i <= upb_def %} is-on{% endif %}" data-gfc-slot="{{ i }}" aria-pressed="{% if i <= upb_def %}true{% else %}false{% endif %}" aria-label="{{ i }} × {{ up_name | escape }}">
                   {%- if up_img -%}<img src="{{ up_img | image_url: width: 200 }}" alt="" width="64" height="64" loading="lazy">{%- endif -%}
                   <span class="gfc-upb__ck" aria-hidden="true"><svg class="gfc-upb__ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><svg class="gfc-upb__plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
                 </button>
@@ -566,7 +580,7 @@
               <p class="gfc-upb__lines"><b data-gfc-vb-n>{{ upb_line | escape }}</b>{%- if upb_d != blank -%}<span data-gfc-vb-d>{{ upb_d | escape }}</span>{%- endif -%}</p>
               {%- if upb_s != blank and up_was > up_unit -%}<span class="gfc-upb__save" data-gfc-vb-s>{{ upb_s | escape }}</span>{%- endif -%}
             </div>
-            <button type="button" class="gfc-up__add gfc-upb__add" data-gfc-up-add><span data-gfc-vb-l>{{ upb_add | escape }}</span>{%- if up_was > up_unit -%}<s data-gfc-vb-w>{{ upb_was_money }}</s>{%- endif -%}</button>
+            <button type="button" class="gfc-up__add gfc-upb__add" data-gfc-up-add><span data-gfc-vb-l>{{ upb_add | escape }}</span>{%- if up_was > up_unit -%}<s data-gfc-vb-w>{{ upb_was_tot_money }}</s>{%- endif -%}</button>
           </div>
           {%- endif -%}
         </div>
@@ -862,7 +876,7 @@
       var cs = cards(r), trig = cs.filter(function (c) { return mains(r, c).length > 0; });
       cs.forEach(function (c) {
         var on = trig.length === 1 && trig[0] === c && !upLines(r, c).length;
-        if (on && c.hidden) upPick(c, 1);
+        if (on && c.hidden) { upPick(c, 1); var vb0 = vbOn(c); if (vb0) upB(c, cents(vb0, 'data-def') || 1); }
         c.hidden = !on;
       });
     }
@@ -882,8 +896,13 @@
     /* ── Upsell, version « sachets à toucher » : sachets allumés, lignes et bouton suivent la quantité.
        Autre devise que celle de la boutique (gfc--cc) : on garde les montants du serveur pour 1 sachet
        et on n'affiche pas de montant recalculé au-delà. ── */
+    /* version sachets visible ? (aperçu, classe du test, CSS injecté par Intelligems ou réglage « pour tout le monde ») */
+    function vbOn(card) { var vb = q('[data-gfc-vb]', card); return vb && getComputedStyle(vb).display !== 'none' ? vb : null; }
     function upB(card, n) {
       var vb = q('[data-gfc-vb]', card); if (!vb) return;
+      var max = cents(card, 'data-max') || 4, def = cents(vb, 'data-def') || 1;
+      n = Math.max(1, Math.min(max, n));
+      vb.setAttribute('data-pick', n);
       qa('[data-gfc-slot]', vb).forEach(function (sl) {
         var on = cents(sl, 'data-gfc-slot') <= n;
         sl.classList.toggle('is-on', on);
@@ -893,31 +912,31 @@
       var unit = cents(card, 'data-price'), was = cents(card, 'data-was') || unit;
       var cg = cents(vb, 'data-cg') * n, pd = cents(vb, 'data-pd') || 3;
       function fill(t) { return (t || '').replace('[n]', n).replace('[cg]', cg).replace('[jours]', Math.round(cg / pd)); }
-      function keep(el) { if (!el.hasAttribute('data-n1')) el.setAttribute('data-n1', el.textContent); return el.getAttribute('data-n1'); }
+      function keep(el) { if (!el.hasAttribute('data-n0')) el.setAttribute('data-n0', el.textContent); return el.getAttribute('data-n0'); }
       var el = q('[data-gfc-vb-n]', vb); if (el) el.textContent = fill(vb.getAttribute(n > 1 ? 'data-many' : 'data-one'));
       el = q('[data-gfc-vb-d]', vb); if (el) el.textContent = fill(vb.getAttribute('data-days'));
       el = q('[data-gfc-vb-s]', vb);
       if (el) {
         var sv = keep(el);
-        if (cc) { el.hidden = n > 1; el.textContent = sv; }
+        if (cc) { el.hidden = n !== def; el.textContent = sv; }
         else el.textContent = fill(vb.getAttribute('data-save')).replace('[eco]', fmt((was - unit) * n));
       }
       el = q('[data-gfc-vb-l]', vb);
       if (el) {
         var l1 = keep(el), t = fill(vb.getAttribute(n > 1 ? 'data-addn' : 'data-add1'));
-        el.textContent = cc ? (n > 1 ? t.replace(/\s*·?\s*\[prix\]/, '') : l1) : t.replace('[prix]', fmt(unit * n));
+        el.textContent = cc ? (n !== def ? t.replace(/\s*·?\s*\[prix\]/, '') : l1) : t.replace('[prix]', fmt(unit * n));
       }
       el = q('[data-gfc-vb-w]', vb);
       if (el) {
         var w1 = keep(el);
-        if (cc) { el.hidden = n > 1; el.textContent = w1; }
+        if (cc) { el.hidden = n !== def; el.textContent = w1; }
         else el.textContent = fmt(was * n);
       }
     }
     function upAdd(card) {
       var r = root(), list = q('[data-gfc-lines]', r);
       if (!list) return;
-      var vid = card.getAttribute('data-vid'), n = cents(card, 'data-pick') || 1;
+      var vbv = vbOn(card), vid = card.getAttribute('data-vid'), n = cents(vbv || card, 'data-pick') || 1;
       var unit = cents(card, 'data-price'), was = cents(card, 'data-was') || unit;
       /* un changement de quantité de cette ligne encore en attente ne doit pas passer après l'ajout */
       qa('[data-gfc-line][data-vid="' + vid + '"]', list).forEach(function (l) {
