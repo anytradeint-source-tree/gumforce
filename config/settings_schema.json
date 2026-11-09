@@ -1052,8 +1052,7 @@
         "type": "text",
         "id": "gfc_upb_save",
         "label": "Économie",
-        "default": "Tu économises [eco]",
-        "info": "[eco] = (prix barré − prix) × nombre de sachets. Vide = pas d'économie affichée."
+        "info": "Vide (par défaut) = rien d'affiché. Exemple : « Tu économises [eco] » ([eco] = (prix barré − prix) × nombre de sachets), en vert à droite."
       },
       {
         "type": "text",
