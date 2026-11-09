@@ -78,9 +78,9 @@
   {{ gfl_pb_bold | font_face: font_display: 'swap' }}
   {%- endif %}
   /* ── Style « article de presse » : titres et texte en serif, métadonnées / boutons / avis restent dans la police du site ── */
-  #gfl-{{ sid }} {
-    --gfl-font-head: "{{ gfl_ph.family }}", {{ gfl_ph.fallback_families }};
-    --gfl-press: "{{ gfl_pb.family }}", {{ gfl_pb.fallback_families }};
+  #gfl-{{ sid }}.gfl--press {
+    --gfl-font-head: {{ gfl_ph.family }}, {{ gfl_ph.fallback_families }};
+    --gfl-press: {{ gfl_pb.family }}, {{ gfl_pb.fallback_families }};
   }
   #gfl-{{ sid }}.gfl--press .gfl-h { font-weight: {{ gfl_ph.weight }}; text-transform: none; letter-spacing: -0.005em; line-height: 1.18; }
   #gfl-{{ sid }}.gfl--press .gfl-h--1 { line-height: 1.12; }
