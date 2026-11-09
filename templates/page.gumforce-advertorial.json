@@ -1,0 +1,890 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "enquete": {
+      "type": "gumforce-landing",
+      "blocks": {
+        "rubrique": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Santé homme · Enquête</p>",
+            "style": "small",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "titre": {
+          "type": "heading",
+          "settings": {
+            "text": "Nourriture industrielle : pourquoi les hommes d'aujourd'hui ont une mâchoire de gamin",
+            "tag": "h1",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "chapo": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pain de mie, steak haché, plats préparés : en 50 ans, l'industrie a fait disparaître tout ce qui se mâche. Un chercheur de Harvard a mesuré les dégâts sur le visage. Et une jeune marque a trouvé comment remettre au travail le muscle qui dessine la mâchoire.</p>",
+            "style": "lead",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "signature": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Par la rédaction · 6 min de lecture</p>",
+            "style": "small",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-generations": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-generations-v2.jpg",
+            "size": "full",
+            "caption": "Années 60 contre aujourd'hui. Même âge, pas la même mâchoire.",
+            "bf_only": false
+          }
+        },
+        "intro": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Il suffit de comparer.</p><p>Sur les photos des années 60, les hommes de 25 ans ont la mâchoire carrée et les joues creuses. Même ceux qui ne faisaient aucun sport.</p><p>Aujourd'hui, regarde les hommes du même âge dans le métro, au bureau ou à la salle. Le visage est plus rond. Le bas du visage est mou. L'angle sous l'oreille a disparu.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "intro-punch": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Ils ne sont pas devenus moins beaux. Ils ont arrêté de mâcher.</p><p>Et presque personne ne s'en est rendu compte.</p>",
+            "style": "punch",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-nourriture": {
+          "type": "heading",
+          "settings": {
+            "text": "Une nourriture déjà mâchée à ta place",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-nourriture": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pain de mie. Steak haché. Nuggets. Purée. Pâtes. Céréales qui ramollissent dans le lait. Plats préparés réchauffés en 3 minutes. Tout ce qui remplit nos assiettes a un point commun : c'est mou.</p><p>Avant d'arriver dans ton assiette, tout a déjà été haché, mixé, cuit et ramolli à l'usine. Le travail que faisaient nos dents, une machine le fait à leur place.</p><p>Compare avec l'assiette de nos grands-parents. Du pain de campagne avec la croûte. De la viande qu'il fallait vraiment mâcher. Des légumes crus, des pommes qu'on croquait. Chaque repas, c'était une séance de muscu pour la mâchoire. Sans même qu'ils le sachent.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-assiettes": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-assiettes.jpg",
+            "size": "full",
+            "caption": "À gauche, ce que mâchaient nos grands-parents. À droite, ce qu'on mange aujourd'hui.",
+            "bf_only": false
+          }
+        },
+        "t-pourquoi": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pourquoi ce changement ? Parce que le mou, c'est plus rapide à produire, plus rapide à manger, et ça se vend mieux. L'industrie y a gagné. La mâchoire des hommes y a perdu.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-harvard": {
+          "type": "heading",
+          "settings": {
+            "text": "Ce qu'un chercheur de Harvard a mesuré",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-harvard-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Ce n'est pas une théorie de forum. C'est testé en laboratoire.</p><p>En 2004, Daniel Lieberman, chercheur en biologie de l'évolution à Harvard, publie une expérience simple. Il élève deux groupes de jeunes animaux. Le premier mange cru et sec. Le second mange la même nourriture, mais cuite et ramollie.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-labo": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-labo.jpg",
+            "size": "full",
+            "caption": "Nourris au mou, les animaux ont le bas du visage environ 10 % moins développé.",
+            "bf_only": false
+          }
+        },
+        "t-harvard-2": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Premier résultat :</strong> mâcher du cru fait forcer la mâchoire jusqu'à 2 fois plus que mâcher du cuit.</p><p><strong>Deuxième résultat :</strong> chez les animaux nourris au mou, le bas et l'arrière du visage sont environ 10 % moins développés. Pile là où la mâchoire force le plus.</p><p>Pour Lieberman, c'est la confirmation que la nourriture transformée a freiné le développement de la mâchoire chez l'homme moderne.</p><p>Chez un adulte, l'os ne bougera plus. Mais le muscle qui recouvre la mâchoire, lui, se muscle à n'importe quel âge. Et c'est lui qui fait la différence dans le miroir.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-masseter": {
+          "type": "heading",
+          "settings": {
+            "text": "Le muscle oublié : le masséter",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-masseter-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Ce muscle s'appelle le masséter. La plupart des hommes n'ont jamais entendu ce mot. Pourtant, c'est lui qui dessine le bas du visage.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-masseter": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-masseter.jpg",
+            "size": "full",
+            "caption": "Le masséter part de la pommette et descend jusqu'à l'angle de la mâchoire.",
+            "bf_only": false
+          }
+        },
+        "t-masseter-test": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Fais le test : pose deux doigts juste devant ton oreille et serre les dents. La boule dure qui gonfle sous tes doigts, c'est lui.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-test": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-test-doigts.jpg",
+            "size": "medium",
+            "caption": "",
+            "bf_only": false
+          }
+        },
+        "t-masseter-2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Quand il est développé, la mâchoire a un angle net. Quand il ne travaille plus, le visage s'arrondit.</p><p>Il obéit à la même règle que n'importe quel muscle : sans charge, il ne grossit pas. Nos grands-pères le faisaient bosser à chaque repas. Aujourd'hui, il n'a plus que du pain de mie à se mettre sous la dent.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-salle": {
+          "type": "heading",
+          "settings": {
+            "text": "Pourquoi la salle ne change rien au visage",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-salle-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Le paradoxe saute aux yeux dans n'importe quelle salle de sport. Des hommes aux bras énormes et au dos large, avec un visage resté rond. Un corps d'homme, une tête d'ado.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-salle": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-salle.jpg",
+            "size": "full",
+            "caption": "",
+            "bf_only": false
+          }
+        },
+        "t-salle-2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>L'explication est mécanique : aucun exercice de muscu ne fait travailler la mâchoire. Pecs, dos et jambes progressent. Le masséter reste au point mort.</p><p>Le problème, c'est que le visage est la première chose qu'on voit chez un homme. Sur une photo, en face à face, sur Tinder. Avant les bras. Avant les vêtements.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-kine": {
+          "type": "heading",
+          "settings": {
+            "text": "L'avis d'un kiné du sport : « un muscle comme les autres »",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-kine": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-kine.jpg",
+            "size": "full",
+            "caption": "",
+            "bf_only": false
+          }
+        },
+        "t-kine": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pour comprendre, on a posé la question à Guillaume Petit, kinésithérapeute du sport à Lyon.</p><p>« Le masséter, c'est un muscle comme les autres. Il suit la même règle que tes pecs ou tes cuisses : pour progresser, il lui faut une charge plus forte que ce dont il a l'habitude, et de la régularité. C'est la base de toute préparation physique. »</p><p>Pour lui, tout se joue sur la résistance. « Un chewing-gum classique, au bout de 30 secondes, il ne résiste plus. C'est comme faire des curls avec une bouteille vide. Le geste est là, mais le muscle ne bosse pas. »</p><p>Sur les courbatures des premiers jours : « C'est le signe classique d'un muscle qui force plus que d'habitude. Comme les jambes après une reprise du sport. Ça passe en quelques jours, ensuite le muscle s'adapte. »</p><p>Sur l'articulation de la mâchoire, qui inquiète certains : « Tout est une question de dose. Quinze minutes, c'est raisonnable. Une courbature dans la joue, c'est le muscle qui travaille. Une douleur dans l'articulation, un claquement qui fait mal, une mâchoire qui bloque : là, on arrête et on consulte. Comme pour n'importe quel entraînement. »</p><p>Et sur l'âge : « Un muscle répond à l'entraînement à 20 ans comme à 50 ans. Il faut juste lui donner de quoi travailler. »</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-alternatives": {
+          "type": "heading",
+          "settings": {
+            "text": "Mewing, silicone, injections : ce qui ne marche pas",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-alternatives-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Sur les réseaux, les solutions se multiplient. La plupart passent à côté du problème.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-alternatives": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-alternatives.jpg",
+            "size": "full",
+            "caption": "",
+            "bf_only": false
+          }
+        },
+        "t-alternatives-2": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Le mewing</strong> consiste à coller sa langue au palais toute la journée. Le muscle ne force jamais. Rien ne résiste, donc rien ne se muscle.</p><p><strong>Le chewing-gum classique</strong> s'écrase en 30 secondes. Ensuite, on mâche du vide.</p><p><strong>Les pièces en silicone à mordre</strong> t'obligent à prendre un moment exprès pour t'entraîner. Il faut les laver, les avoir sur toi. Et devant les autres, oublie.</p><p><strong>Les injections</strong> coûtent plusieurs centaines d'euros et sont à refaire. Et le muscle en dessous reste aussi mou qu'avant.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-durete": {
+          "type": "heading",
+          "settings": {
+            "text": "Le détail qui change tout : la dureté",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-durete": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Une étude publiée en 2024 a mesuré ce qui se passe dans le masséter quand on mâche. Les chercheurs ont fait mâcher à 11 hommes trois chewing-gums de dureté différente.</p><p>Le résultat est net : plus le chewing-gum est dur, plus le muscle travaille, plus le cœur accélère et plus la mâchoire fatigue.</p><p>Leur conclusion : pour faire travailler la mâchoire, il faut choisir la bonne dureté.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-durete-punch": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Autrement dit, ce n'est pas le fait de mâcher qui compte. C'est ce que tu mâches.</p>",
+            "style": "punch",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-gumforce": {
+          "type": "heading",
+          "settings": {
+            "text": "Un chewing-gum 10x plus dur",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-gumforce-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>C'est ce constat qui a donné naissance à GUMFORCE. L'idée : redonner à la mâchoire le boulot que la nourriture industrielle lui a enlevé. Avec le geste le plus simple qui existe, mâcher un chewing-gum.</p><p>Leur chewing-gum est 10x plus dur qu'un chewing-gum classique. Il ne s'écrase pas au bout de 30 secondes et tient toute la séance. Chaque coup de dent est une répétition. Un chewing-gum de 15 minutes, c'est des centaines de répétitions sous charge, comme une série à la salle.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-sachet": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-sachet.jpg",
+            "size": "full",
+            "caption": "",
+            "bf_only": false
+          }
+        },
+        "t-gumforce-2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Chaque chewing-gum contient aussi 500 mg de créatine monohydrate, le complément le plus étudié de la nutrition sportive. Il est sans sucre et vegan.</p><p><strong>Plus de 15 000 hommes l'utilisent déjà.</strong></p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-zero": {
+          "type": "heading",
+          "settings": {
+            "text": "Zéro minute en plus dans ta journée",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-zero-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>C'est ce qui plaît le plus aux utilisateurs. Pas de salle, pas de matériel, rien à laver. Le sachet tient dans la poche.</p><p>Il se mâche dans le métro, en voiture, au bureau, devant un film. Bouche fermée, seul le muscle bouge. Pour les gens autour, c'est un simple chewing-gum. Personne ne sait que tu t'entraînes.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-bureau": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-bureau-v2.jpg",
+            "size": "full",
+            "caption": "",
+            "bf_only": false
+          }
+        },
+        "t-zero-2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>La marque conseille 3 chewing-gums par jour, 15 minutes chacun, pendant les temps morts. Des moments où tu ne fais rien de toute façon. Ça ne te prend pas une minute de plus dans ta journée.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "lien-offre": {
+          "type": "text",
+          "settings": {
+            "style": "normal",
+            "align": "center",
+            "text": "<p><strong><a href=\"/products/gumforce?variant=54986619584817\">Voir l'offre [période] →</a></strong></p>"
+          }
+        }
+      },
+      "block_order": [
+        "rubrique",
+        "titre",
+        "chapo",
+        "signature",
+        "img-generations",
+        "intro",
+        "intro-punch",
+        "h-nourriture",
+        "t-nourriture",
+        "img-assiettes",
+        "t-pourquoi",
+        "h-harvard",
+        "t-harvard-1",
+        "img-labo",
+        "t-harvard-2",
+        "h-masseter",
+        "t-masseter-1",
+        "img-masseter",
+        "t-masseter-test",
+        "img-test",
+        "t-masseter-2",
+        "h-salle",
+        "t-salle-1",
+        "img-salle",
+        "t-salle-2",
+        "h-kine",
+        "img-kine",
+        "t-kine",
+        "h-alternatives",
+        "t-alternatives-1",
+        "img-alternatives",
+        "t-alternatives-2",
+        "h-durete",
+        "t-durete",
+        "t-durete-punch",
+        "h-gumforce",
+        "t-gumforce-1",
+        "img-sachet",
+        "t-gumforce-2",
+        "h-zero",
+        "t-zero-1",
+        "img-bureau",
+        "t-zero-2",
+        "lien-offre"
+      ],
+      "settings": {
+        "h1_size": 40,
+        "h2_size": 28,
+        "transparent_bg": false,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#1c1c1e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "cta_bg": "#111111",
+        "cta_text_color": "#ffffff",
+        "img_radius": 16,
+        "sticky_enabled": false,
+        "enable_animation": true,
+        "typo": "presse",
+        "press_font_heading": "pt_serif_n7",
+        "press_font_body": "pt_serif_n4",
+        "hide_header": true,
+        "hide_announcement": true,
+        "hide_footer": true,
+        "eager_first_img": true,
+        "padding_top": 40,
+        "padding_bottom": 0
+      }
+    },
+    "offre": {
+      "type": "gumforce-landing",
+      "blocks": {
+        "h-attendre": {
+          "type": "heading",
+          "settings": {
+            "text": "À quoi s'attendre",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-attendre": {
+          "type": "text",
+          "settings": {
+            "text": "<p>La marque annonce la progression suivante.</p><p><strong>Les premiers jours :</strong> des courbatures. La mâchoire tire le lendemain, comme les jambes après une grosse séance. C'est la preuve que le muscle a travaillé, et c'est la première chose dont parlent les utilisateurs.</p><p><strong>Semaines 1 et 2 :</strong> les courbatures passent et le masséter devient plus dur sous les doigts. C'est là que beaucoup abandonnent. Ceux qui tiennent voient la suite.</p><p><strong>Semaines 3 et 4 :</strong> ça commence à se voir. Le bas du visage se dessine et l'angle sous l'oreille ressort.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "trio-clients": {
+          "type": "trio",
+          "settings": {
+            "image1": "shopify://shop_images/4_e877a757-c4b9-4e86-907f-05335684f8e4.jpg",
+            "image2": "shopify://shop_images/5_005fbd85-56a5-4bd6-9e8d-a490f939dcfb.jpg",
+            "image3": "shopify://shop_images/6_bfddd004-9a25-48c0-9904-b39a18392503.jpg",
+            "caption": "Photos envoyées par des clients GUMFORCE."
+          }
+        },
+        "h-miracles": {
+          "type": "heading",
+          "settings": {
+            "text": "« Encore un truc qui promet des miracles ? »",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-miracles": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Si c'est ce que tu te dis, t'es pas le seul. C'est la réaction de beaucoup d'acheteurs avant leur première commande.</p><p>La marque ne promet pas un nouveau visage en 3 jours. Elle promet de faire bosser ta mâchoire comme elle n'a pas bossé depuis des années. Et elle te laisse 90 jours pour juger sur pièce.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-avis": {
+          "type": "heading",
+          "settings": {
+            "text": "Ce qu'en disent les utilisateurs",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-avis": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Sur Trustpilot, GUMFORCE affiche une note de [note]/5. Les avis vont dans le même sens.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "avis-1": {
+          "type": "quote",
+          "settings": {
+            "text": "J'en ai essayé plusieurs mais c'est de loin de meilleur. La texture est top, comparé à d'autres. On sent vraiment des courbatures à la mâchoire le lendemain.",
+            "highlight": "On sent vraiment des courbatures à la mâchoire le lendemain.",
+            "name": "Alexis",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-2": {
+          "type": "quote",
+          "settings": {
+            "text": "Top chewing gum rien à dire ! J'étais un peu sceptique avant utilisation mais il n'y a que les c**** qui ne changent pas d'avis.",
+            "highlight": "J'étais un peu sceptique avant utilisation",
+            "name": "Alexandre",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-3": {
+          "type": "quote",
+          "settings": {
+            "text": "Pas trop dur pas trop mou fait bien travailler les muscles de la mâchoire. Au top.",
+            "highlight": "fait bien travailler les muscles de la mâchoire",
+            "name": "jerome",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "t-matchs": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Certains utilisateurs racontent même avoir plus de matchs sur les applis de rencontre depuis qu'ils s'y sont mis.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-test": {
+          "type": "heading",
+          "settings": {
+            "text": "Le test à faire chez soi",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-profil": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-profil.jpg",
+            "size": "medium",
+            "caption": "",
+            "bf_only": false
+          }
+        },
+        "t-test": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Aujourd'hui, prends-toi en photo de profil. Range-la. Dans 90 jours, reprends exactement la même : même lumière, même angle.</p><p>Ensuite, compare.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-cout": {
+          "type": "heading",
+          "settings": {
+            "text": "Combien ça coûte vraiment",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-cout": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pour se dessiner la mâchoire, certains passent par les injections. Ça coûte plusieurs centaines d'euros, et il faut recommencer quand l'effet s'en va.</p><p>D'autres paient la salle tous les mois. Mais comme on l'a vu, la salle ne fait pas travailler la mâchoire.</p><p>Avec l'offre du moment, un chewing-gum GUMFORCE coûte environ 36 centimes. Au rythme conseillé de 3 chewing-gums par jour, ça fait à peu près 1 € par jour. Moins cher qu'un café.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-offre": {
+          "type": "heading",
+          "settings": {
+            "text": "L'offre du moment",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-offre": {
+          "type": "text",
+          "settings": {
+            "text": "<p>En ce moment, GUMFORCE propose son offre [période] : <strong>tu en paies 2, tu en reçois 4.</strong></p><p>Pourquoi 4 sachets ? Parce qu'un sachet seul, c'est 35 chewing-gums, soit moins de 2 semaines au rythme conseillé. Tu t'arrêterais pile après les courbatures, juste avant que ça commence à se voir. Avec 4 sachets, tu as 140 chewing-gums, soit plus de 6 semaines d'entraînement. Assez pour passer le cap.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "img-offre": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/1_6c796416-5fa9-45da-9bbd-4c02d9525f0c.png",
+            "size": "small",
+            "caption": "",
+            "bf_only": false
+          }
+        },
+        "t-recois": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Ce que tu reçois :</strong></p>",
+            "style": "normal",
+            "align": "center",
+            "bf_only": false
+          }
+        },
+        "recois": {
+          "type": "chips",
+          "settings": {
+            "chip1": "4 sachets GUMFORCE, soit 140 chewing-gums",
+            "chip2": "La livraison offerte, chez toi en 48h",
+            "chip3": "Des e-mails de suivi : le mode d'emploi de ta première séance à la livraison, puis des conseils pour tenir les premières semaines",
+            "chip4": "La garantie 90 jours : aucun résultat, remboursé à 100 %"
+          }
+        },
+        "t-confiance": {
+          "type": "text",
+          "settings": {
+            "text": "<p>« On a tellement confiance en GUMFORCE qu'on rembourse tout », explique la marque. Le risque, c'est elle qui le prend.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "h-bali": {
+          "type": "heading",
+          "settings": {
+            "text": "En bonus : 10 jours à Bali pour 2 à gagner",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": true
+          }
+        },
+        "img-bali": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-adv-bali.jpg",
+            "size": "full",
+            "caption": "Le voyage à gagner : 10 jours à Bali pour deux, d'une valeur de 3000 €.",
+            "bf_only": true
+          }
+        },
+        "t-bali": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Jusqu'au 30 novembre, GUMFORCE ajoute un jeu concours à son offre : chaque commande participe au tirage d'un voyage de 10 jours à Bali pour deux, vols et logement compris. Valeur du voyage : 3000 €.</p><p>Pas de formulaire, pas de code à entrer : ta commande compte direct comme une participation. Et plus tu commandes, plus t'as de chances.</p><p>Le tirage a lieu le samedi 5 décembre. La marque filme la roue et publie la vidéo, pour que tout le monde voie que c'est réel.</p><p><a href=\"/pages/reglement-du-jeu-concours-gagne-10-jours-a-bali-pour-deux\">Règlement complet du jeu</a></p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": true
+          }
+        },
+        "h-faq": {
+          "type": "heading",
+          "settings": {
+            "text": "Questions fréquentes",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "faq-1": {
+          "type": "faq",
+          "settings": {
+            "question": "Ça se voit quand je mâche ?",
+            "answer": "<p>Non. Bouche fermée, seul le muscle bouge. Pour les gens autour, c'est un chewing-gum normal.</p>",
+            "open_default": false,
+            "bf_only": false
+          }
+        },
+        "faq-2": {
+          "type": "faq",
+          "settings": {
+            "question": "J'ai plus de 40 ans, c'est trop tard ?",
+            "answer": "<p>Non. À l'âge adulte, l'os ne bouge plus, mais le muscle, lui, progresse à tout âge. C'est lui qu'on entraîne.</p>",
+            "open_default": false,
+            "bf_only": false
+          }
+        },
+        "faq-3": {
+          "type": "faq",
+          "settings": {
+            "question": "Et si j'ai mal à la mâchoire ?",
+            "answer": "<p>Les courbatures des premiers jours sont normales : c'est le muscle qui travaille. Une douleur dans l'articulation, c'est différent : tu arrêtes et tu demandes conseil à un professionnel de santé.</p>",
+            "open_default": false,
+            "bf_only": false
+          }
+        },
+        "faq-4": {
+          "type": "faq",
+          "settings": {
+            "question": "C'est pour qui ?",
+            "answer": "<p>Pour les adultes. GUMFORCE n'est pas fait pour les enfants.</p>",
+            "open_default": false,
+            "bf_only": false
+          }
+        },
+        "faq-5": {
+          "type": "faq",
+          "settings": {
+            "question": "Au bout de combien de temps je vois un résultat ?",
+            "answer": "<p>Les courbatures arrivent dès les premiers jours. Selon la marque, le bas du visage commence à se dessiner vers la semaine 3 ou 4 au rythme conseillé.</p>",
+            "open_default": false,
+            "bf_only": false
+          }
+        },
+        "faq-6": {
+          "type": "faq",
+          "settings": {
+            "question": "Et si ça ne marche pas pour moi ?",
+            "answer": "<p>Tu as 90 jours. Aucun résultat, tu es remboursé à 100 %.</p>",
+            "open_default": false,
+            "bf_only": false
+          }
+        },
+        "faq-bali": {
+          "type": "faq",
+          "settings": {
+            "question": "Comment marche le concours Bali ?",
+            "open_default": false,
+            "bf_only": true,
+            "answer": "<p>Passe une commande entre le 1er et le 30 novembre : elle compte automatiquement comme une participation. Chaque commande = 1 participation. Le grand gagnant est tiré au sort le samedi 5 décembre et GUMFORCE l'appelle directement.</p>"
+          }
+        },
+        "h-fin": {
+          "type": "heading",
+          "settings": {
+            "text": "Le mot de la fin",
+            "tag": "h2",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "t-fin": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Nos grands-pères mâchaient à chaque repas. Nous, on mange mou.</p><p>Leur mâchoire travaillait toute seule. La tienne attend que tu lui donnes du boulot.</p>",
+            "style": "normal",
+            "align": "left",
+            "bf_only": false
+          }
+        },
+        "cta-fin": {
+          "type": "cta",
+          "settings": {
+            "text": "VOIR L'OFFRE [PÉRIODE]",
+            "link": "/products/gumforce?variant=54986619584817",
+            "bf_strip": true,
+            "note": "Livraison offerte en 48h · Remboursé à 100 % si aucun résultat en 90 jours"
+          }
+        },
+        "sources": {
+          "type": "text",
+          "settings": {
+            "style": "small",
+            "align": "left",
+            "text": "<p>Sources : <a href=\"https://doi.org/10.1016/j.jhevol.2004.03.005\" target=\"_blank\">D. E. Lieberman et al., « Effects of food processing on masticatory strain and craniofacial growth in a retrognathic face », Journal of Human Evolution, 2004</a> · <a href=\"https://pubmed.ncbi.nlm.nih.gov/39400845/\" target=\"_blank\">« Effects of Different Gum Hardness on Masseter Muscle Activity During Gum Chewing: An NIRS Oximetry Study », Advances in Experimental Medicine and Biology, 2024</a></p>"
+          }
+        }
+      },
+      "block_order": [
+        "h-attendre",
+        "t-attendre",
+        "trio-clients",
+        "h-miracles",
+        "t-miracles",
+        "h-avis",
+        "t-avis",
+        "avis-1",
+        "avis-2",
+        "avis-3",
+        "t-matchs",
+        "h-test",
+        "img-profil",
+        "t-test",
+        "h-cout",
+        "t-cout",
+        "h-offre",
+        "t-offre",
+        "img-offre",
+        "t-recois",
+        "recois",
+        "t-confiance",
+        "h-bali",
+        "img-bali",
+        "t-bali",
+        "h-faq",
+        "faq-1",
+        "faq-2",
+        "faq-3",
+        "faq-4",
+        "faq-5",
+        "faq-6",
+        "faq-bali",
+        "h-fin",
+        "t-fin",
+        "cta-fin",
+        "sources"
+      ],
+      "settings": {
+        "h1_size": 40,
+        "h2_size": 28,
+        "transparent_bg": false,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#1c1c1e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "cta_bg": "#111111",
+        "cta_text_color": "#ffffff",
+        "img_radius": 16,
+        "sticky_enabled": false,
+        "enable_animation": true,
+        "typo": "presse",
+        "press_font_heading": "pt_serif_n7",
+        "press_font_body": "pt_serif_n4",
+        "hide_header": true,
+        "hide_announcement": true,
+        "hide_footer": true,
+        "eager_first_img": false,
+        "padding_top": 0,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "enquete",
+    "offre"
+  ]
+}
