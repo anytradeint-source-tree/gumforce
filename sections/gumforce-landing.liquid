@@ -34,7 +34,7 @@
   assign h1_size = s.h1_size | default: 40
   assign h2_size = s.h2_size | default: 28
 
-  assign gf_first_img = true
+  assign gf_first_img = s.eager_first_img | default: true, allow_false: true
 
   assign gfl_period = s.period | strip
   assign gfl_tbl = false
@@ -564,6 +564,7 @@
 
     { "type": "header", "content": "── Mise en page ──" },
     { "type": "checkbox", "id": "hide_header", "label": "Masquer le header du site", "default": false, "info": "Retire la barre du haut (menu, logo, panier) sur les pages de ce template. Le footer reste." },
+    { "type": "checkbox", "id": "eager_first_img", "label": "Charger la 1re image en priorité", "default": true, "info": "Décoche sur une 2e section GF Landing placée plus bas dans la page : sa 1re image se chargera au scroll, comme les autres." },
     { "type": "range", "id": "padding_top", "label": "Padding haut", "min": 0, "max": 120, "step": 4, "default": 40, "unit": "px" },
     { "type": "range", "id": "padding_bottom", "label": "Padding bas", "min": 0, "max": 120, "step": 4, "default": 64, "unit": "px" }
   ],
