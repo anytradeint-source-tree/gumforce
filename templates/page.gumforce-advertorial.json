@@ -177,7 +177,7 @@
         "t-masseter-test": {
           "type": "text",
           "settings": {
-            "text": "<p>Fais le test : pose deux doigts juste devant ton oreille et serre les dents. La boule dure qui gonfle sous tes doigts, c'est lui.</p>",
+            "text": "<p>Fais le test : pose deux doigts sur l'angle de ta mâchoire et serre les dents. La boule dure qui gonfle sous tes doigts, c'est lui.</p>",
             "style": "normal",
             "align": "left",
             "bf_only": false
