@@ -204,6 +204,14 @@
   /* Wrapper hors du flux + badge invisible tant qu'il n'est pas posé sur la galerie (évite le saut de 22 px et le flash) */
   #shopify-block-{{ block.id }} { position:absolute !important; width:0 !important; height:0 !important; min-height:0 !important; margin:0 !important; padding:0 !important; border:0 !important; overflow:hidden !important; }
   #gfib-{{ uid }} { opacity:0; transition: opacity .25s ease; }
+  {%- liquid
+    comment — sans le bandeau du concours (site néerlandais, hors période) : la photo principale est recadrée pour recentrer le sachet
+    endcomment
+    assign gfib_z = block.settings.nobf_zoom | default: 100 | plus: 0
+  -%}
+  {%- if gfib_z > 100 %}
+  html:not(.gf-bf) media-gallery:has(#gfib-{{ uid }}) slideshow-slide:first-of-type .product-media__image { transform: scale({{ gfib_z | divided_by: 100.0 }}); transform-origin: 50% 0%; }
+  {%- endif %}
   {%- if settings.gf_hw_orange %}
   html.gf-hw #gfib-{{ uid }} .gfib-shape polygon { fill: var(--gf-hw); }
   {%- endif %}
@@ -521,6 +529,7 @@
     { "type": "range", "id": "offset_y", "label": "Decalage vertical (depuis le bord)", "min": 0, "max": 200, "step": 2, "default": 14, "unit": "px" },
     { "type": "checkbox", "id": "shadow", "label": "Ombre portee", "default": true },
     { "type": "header", "content": "Bulle vidéo (en haut à droite)" },
+    { "type": "range", "id": "nobf_zoom", "label": "Photo principale sans le bandeau du concours : zoom", "min": 100, "max": 140, "step": 5, "unit": "%", "default": 125, "info": "Recentre le sachet quand le bandeau Bali n'est pas affiché (site néerlandais, hors période). 100 % = pas de recadrage." },
     { "type": "checkbox", "id": "vb_enabled", "label": "Afficher la bulle vidéo", "default": false, "info": "Aperçu sans l'afficher : ajoute ?gf_rond=1 à l'adresse de la page produit." },
     { "type": "video", "id": "vb_video", "label": "Vidéo", "info": "Vide = le lien ci-dessous, sinon la première vidéo du produit." },
     { "type": "text", "id": "vb_video_url", "label": "Lien de la vidéo (MP4)", "info": "Utilisé seulement si aucune vidéo n'est choisie au-dessus." },

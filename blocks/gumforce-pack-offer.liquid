@@ -341,7 +341,7 @@
   #gfp-{{ gf_id }} .gfp-flav-go .gfp-flav-thumb img { opacity:.35; }
   #gfp-{{ gf_id }} .gfp-flav-go .gfp-flav-spin { opacity:1; animation:gfp-flav-rot .8s linear infinite; }
   @keyframes gfp-flav-rot { to { transform:rotate(360deg); } }
-  #gfp-{{ gf_id }} .gfp-flav-name { font-size:14.5px; font-weight:700; line-height:1.15; min-width:0; }
+  #gfp-{{ gf_id }} .gfp-flav-name { font-size:14.5px; font-weight:700; line-height:1.15; min-width:0; -webkit-hyphens:auto; hyphens:auto; overflow-wrap:break-word; }
 
   /* titre d'offre daté (remplace le compteur de stock) */
   #gfp-{{ gf_id }} .gfp-datehead { display:flex; align-items:center; gap:9px; margin-bottom:18px; }
@@ -1243,6 +1243,9 @@
     /* coupure 2 lignes garantie : si le texte n'a pas de « | », on le place
        automatiquement avant « pour » (point de coupure naturel) */
     if (TPL.indexOf('|') === -1) TPL = TPL.replace(' pour ', '|pour ');
+    /* format de la date et unités du compte à rebours : fichiers de langue (gumforce.dates.*) */
+    var LONG = {{ 'gumforce.dates.delivery_format' | t | json }} === 'long';
+    var U_H = {{ 'gumforce.dates.hour_short' | t | json }}, U_M = {{ 'gumforce.dates.minute_short' | t | json }};
     function gfpUrg() {
       var now = new Date();
       var cut = new Date(now.getFullYear(), now.getMonth(), now.getDate(), CUTOFF, 0, 0);
@@ -1250,14 +1253,14 @@
       if (now >= cut) { cut.setDate(cut.getDate() + 1); base.setDate(base.getDate() + 1); }
       var ms = cut - now;
       var h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000);
-      var t = h > 0 ? (h + 'h ' + (m < 10 ? '0' : '') + m + 'min') : (m + ' min');
+      var t = h > 0 ? (h + U_H + ' ' + (m < 10 ? '0' : '') + m + U_M) : (m + ' ' + U_M);
       var d = new Date(base), added = 0;
       while (added < OFFSET) {
         d.setDate(d.getDate() + 1);
         if (!(SKIP_SUN && d.getDay() === 0)) added++;
       }
       var fmt;
-      try { fmt = new Intl.DateTimeFormat({{ request.locale.iso_code | json }}, { weekday: 'short', day: 'numeric', month: 'short' }).format(d); }
+      try { fmt = new Intl.DateTimeFormat({{ request.locale.iso_code | json }}, LONG ? { weekday: 'long', day: 'numeric', month: 'long' } : { weekday: 'short', day: 'numeric', month: 'short' }).format(d); }
       catch (e) { fmt = d.toLocaleDateString(); }
       elDeliv.innerHTML = TPL
         .replace('[temps]', '<b>' + t + '</b>')

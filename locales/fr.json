@@ -450,7 +450,10 @@
     "dates": {
       "weekdays": "dimanche,lundi,mardi,mercredi,jeudi,vendredi,samedi",
       "months": "janvier,février,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre",
-      "first_day": "1er"
+      "first_day": "1er",
+      "delivery_format": "short",
+      "hour_short": "h",
+      "minute_short": "min"
     }
   }
 }

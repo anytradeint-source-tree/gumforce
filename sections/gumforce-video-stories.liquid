@@ -274,7 +274,8 @@
 
   <div class="gfvc-hd">
     {%- if s.badge_text != blank -%}<span class="gfvc-badge">{{ s.badge_text }}</span>{%- endif -%}
-    <{{ h_tag }} class="gfvc-title">{{ s.heading }}{% if s.heading_accent != blank %} <em>{{ s.heading_accent }}</em>{% endif %}</{{ h_tag }}>
+    {%- capture gfvc_em -%}{% if s.heading_accent != blank %}<em>{{ s.heading_accent }}</em>{% endif %}{%- endcapture -%}
+    <{{ h_tag }} class="gfvc-title">{%- if s.heading contains '[accent]' -%}{{ s.heading | replace: '[accent]', gfvc_em }}{%- else -%}{{ s.heading }}{% if gfvc_em != blank %} {{ gfvc_em }}{% endif %}{%- endif -%}</{{ h_tag }}>
     {%- if s.subheading != blank -%}<p>{{ s.subheading }}</p>{%- endif -%}
   </div>
 
@@ -842,7 +843,7 @@
   "settings": [
     { "type": "header", "content": "── Texte ──" },
     { "type": "text", "id": "badge_text", "label": "Badge (vide = masqué)", "default": "Ils l'utilisent" },
-    { "type": "text", "id": "heading", "label": "Titre", "default": "Ils ont testé" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Ils ont testé", "info": "[accent] = place du mot accentué dans la phrase (sinon il va à la fin)." },
     { "type": "text", "id": "heading_accent", "label": "Mot accentué (couleur accent)", "default": "GUMFORCE" },
     { "type": "range", "id": "heading_size", "label": "Taille titre (px)", "min": 20, "max": 56, "step": 2, "default": 32, "unit": "px" },
     {
