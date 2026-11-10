@@ -51,7 +51,7 @@
         "img-generations": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-adv40-generations.jpg",
+            "image": "shopify://shop_images/gf-adv40-generations-v2.jpg",
             "size": "full",
             "caption": "Années 60 contre aujourd'hui. Même âge, pas la même mâchoire.",
             "bf_only": false
@@ -258,7 +258,7 @@
         "img-sport": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-adv40-cycliste.jpg",
+            "image": "shopify://shop_images/gf-adv40-cycliste-v2.jpg",
             "size": "full",
             "caption": "",
             "bf_only": false
@@ -285,7 +285,7 @@
         "img-kine": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-adv40-kine.jpg",
+            "image": "shopify://shop_images/gf-adv40-kine-v2.jpg",
             "size": "full",
             "caption": "",
             "bf_only": false
@@ -678,7 +678,7 @@
         "img-profil": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-adv40-profil.jpg",
+            "image": "shopify://shop_images/gf-adv40-profil-v2.jpg",
             "size": "medium",
             "caption": "",
             "bf_only": false
