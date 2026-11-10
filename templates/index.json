@@ -1084,7 +1084,18 @@
         "padding_bottom_mobile": 40,
         "padding_top": 40,
         "padding_bottom": 40,
-        "enable_animations": true
+        "enable_animations": true,
+        "verified_label": "Achat vérifié",
+        "play_label": "Lire la vidéo",
+        "write_label": "Laisser un avis",
+        "cancel_label": "Annuler",
+        "form_name_ph": "Votre nom",
+        "form_email_ph": "Adresse email",
+        "star_one": "1 étoile",
+        "star_many": "[n] étoiles",
+        "form_review_ph": "Partagez votre expérience...",
+        "form_submit": "Envoyer mon avis",
+        "form_success": "Merci ! Votre avis a bien été envoyé."
       }
     },
     "gumforce_faq_home": {

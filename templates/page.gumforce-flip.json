@@ -59,7 +59,21 @@
         "sachets",
         "bali"
       ],
-      "settings": {}
+      "settings": {
+        "heading": "Retourne [n] cartes",
+        "subheading": "Chacune cache un avantage inclus dans ton offre.",
+        "done_heading": "Tout est inclus",
+        "done_sub": "Tes [n] avantages t'attendent avec l'offre 2+2.",
+        "counter": "[x] avantages débloqués",
+        "btn_left": "Retourne [r] cartes",
+        "btn_left_one": "Retourne 1 carte",
+        "go_text": "Voir mon offre",
+        "skip_text": "Passer et voir l'offre",
+        "recap_heading": "Inclus avec l'offre 2+2 :",
+        "band_text": "Black Friday",
+        "band_text_2": "GUMFORCE",
+        "card_name": "Carte"
+      }
     },
     "offre": {
       "type": "gumforce-offer",
@@ -1090,7 +1104,18 @@
         "padding_bottom_mobile": 40,
         "padding_top": 40,
         "padding_bottom": 40,
-        "enable_animations": true
+        "enable_animations": true,
+        "verified_label": "Achat vérifié",
+        "play_label": "Lire la vidéo",
+        "write_label": "Laisser un avis",
+        "cancel_label": "Annuler",
+        "form_name_ph": "Votre nom",
+        "form_email_ph": "Adresse email",
+        "star_one": "1 étoile",
+        "star_many": "[n] étoiles",
+        "form_review_ph": "Partagez votre expérience...",
+        "form_submit": "Envoyer mon avis",
+        "form_success": "Merci ! Votre avis a bien été envoyé."
       }
     },
     "garantie": {
