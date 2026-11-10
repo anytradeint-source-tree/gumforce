@@ -446,6 +446,11 @@
       "rating": "Note : {{ rating }} sur 5",
       "email_address": "Adresse email",
       "photo": "Photo {{ number }}"
+    },
+    "dates": {
+      "weekdays": "dimanche,lundi,mardi,mercredi,jeudi,vendredi,samedi",
+      "months": "janvier,février,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre",
+      "first_day": "1er"
     }
   }
 }

@@ -169,14 +169,14 @@
           comment — [date] = date du jour en toutes lettres (« samedi 30 novembre », « dimanche 1er novembre ») ; le script la recalcule à l'heure de Paris pour les pages en cache
           — un retour à la ligne dans le réglage devient un <br>
           endcomment
-          assign gfd_days = 'dimanche,lundi,mardi,mercredi,jeudi,vendredi,samedi' | split: ','
-          assign gfd_months = 'janvier,février,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre' | split: ','
+          assign gfd_days = 'gumforce.dates.weekdays' | t | split: ','
+          assign gfd_months = 'gumforce.dates.months' | t | split: ','
           assign gfd_w = 'now' | date: '%w' | plus: 0
           assign gfd_m = 'now' | date: '%m' | plus: 0 | minus: 1
           assign gfd_d = 'now' | date: '%d' | plus: 0
           assign gfd_day = gfd_d | append: ''
           if gfd_d == 1
-            assign gfd_day = '1er'
+            assign gfd_day = 'gumforce.dates.first_day' | t
           endif
           assign gfd_txt = gfd_days[gfd_w] | append: ' ' | append: gfd_day | append: ' ' | append: gfd_months[gfd_m]
           assign gfd_html = '<span class="gfib-bf-d" data-gf-bf-today>' | append: gfd_txt | append: '</span>'
@@ -278,9 +278,9 @@
     if (today) {
       try {
         var o = {};
-        new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long', day: 'numeric', month: 'long' })
+        new Intl.DateTimeFormat({{ request.locale.iso_code | json }}, { timeZone: 'Europe/Paris', weekday: 'long', day: 'numeric', month: 'long' })
           .formatToParts(new Date()).forEach(function (x) { o[x.type] = x.value; });
-        today.textContent = o.weekday + ' ' + (o.day === '1' ? '1er' : o.day) + ' ' + o.month;
+        today.textContent = o.weekday + ' ' + (o.day === '1' ? {{ 'gumforce.dates.first_day' | t | json }} : o.day) + ' ' + o.month;
       } catch (e) {}
     }
     /* bulle vidéo : en aperçu (?gf_rond=1), le <template> est copié dans la page */

@@ -416,6 +416,11 @@
       "rating": "Rating: {{ rating }} out of 5",
       "email_address": "Email address",
       "photo": "Photo {{ number }}"
+    },
+    "dates": {
+      "weekdays": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday",
+      "months": "January,February,March,April,May,June,July,August,September,October,November,December",
+      "first_day": "1"
     }
   }
 }

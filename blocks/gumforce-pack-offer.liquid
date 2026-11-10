@@ -1072,7 +1072,7 @@
   var dateEl = root.querySelector('[data-gfp-date]');
   if (dateEl) {
     try {
-      dateEl.textContent = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+      dateEl.textContent = new Intl.DateTimeFormat({{ request.locale.iso_code | json }}, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
     } catch (e) { /* fallback : la date serveur JJ/MM/AAAA reste affichée */ }
   }
 
@@ -1257,7 +1257,7 @@
         if (!(SKIP_SUN && d.getDay() === 0)) added++;
       }
       var fmt;
-      try { fmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }).format(d); }
+      try { fmt = new Intl.DateTimeFormat({{ request.locale.iso_code | json }}, { weekday: 'short', day: 'numeric', month: 'short' }).format(d); }
       catch (e) { fmt = d.toLocaleDateString(); }
       elDeliv.innerHTML = TPL
         .replace('[temps]', '<b>' + t + '</b>')
