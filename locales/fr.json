@@ -430,5 +430,22 @@
         "escape_confirmation": "Offre exclusive valable 3 minutes."
       }
     }
+  },
+  "gumforce": {
+    "a11y": {
+      "announcements": "Annonces",
+      "choose_offer": "Choisis ton offre",
+      "more_info": "Plus d'infos",
+      "whatsapp": "Nous écrire sur WhatsApp",
+      "email_us": "Nous écrire par email",
+      "order": "Commander",
+      "customer_videos": "Vidéos clients",
+      "toggle_sound": "Activer ou couper le son",
+      "previous_video": "Vidéo précédente",
+      "next_video": "Vidéo suivante",
+      "rating": "Note : {{ rating }} sur 5",
+      "email_address": "Adresse email",
+      "photo": "Photo {{ number }}"
+    }
   }
 }

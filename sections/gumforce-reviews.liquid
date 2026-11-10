@@ -45,11 +45,7 @@
   assign header_count    = s.header_count | replace: '[avis]', settings.gf_tp_count | replace: '[note]', header_rating
   assign heading_text    = s.heading_text
   assign initial_count   = s.initial_count | default: 8
-  if request.locale.iso_code == 'fr'
-    assign load_more_text = s.load_more_text | default: 'Voir plus d&#39;avis'
-  else
-    assign load_more_text = s.load_more_text | default: 'Show more reviews'
-  endif
+  assign load_more_text = s.load_more_text | default: 'Voir plus d&#39;avis'
   assign btn_bg          = s.btn_bg | default: '#ffffff'
   assign btn_text_color  = s.btn_text_color | default: '#0e0e0e'
   assign btn_radius      = s.btn_radius | default: 0
@@ -58,13 +54,10 @@
   assign verified_image_url = s.verified_badge_url
   assign verified_height    = s.verified_badge_height | default: 14
 
-  if request.locale.iso_code == 'fr'
-    assign verified_label = 'Achat vérifié'
-    assign play_label = 'Lire la vidéo'
-  else
-    assign verified_label = 'Verified'
-    assign play_label = 'Play video'
-  endif
+  assign verified_label = s.verified_label | default: 'Achat vérifié'
+  assign play_label     = s.play_label | default: 'Lire la vidéo'
+  assign write_label    = s.write_label | default: 'Laisser un avis'
+  assign cancel_label   = s.cancel_label | default: 'Annuler'
 
   assign pad_top         = s.padding_top | default: 40
   assign pad_bottom      = s.padding_bottom | default: 40
@@ -680,7 +673,7 @@
 
       <div class="gfrev-summary">
         <span class="gfrev-avg">{{ header_rating }}/5</span>
-        <span class="gfrev-stars" role="img" aria-label="Rating: {{ header_rating }} out of 5">
+        <span class="gfrev-stars" role="img" aria-label="{{ 'gumforce.a11y.rating' | t: rating: header_rating }}">
           {%- liquid
             assign header_star_img = nil
             if full_stars == 5 and stars_img_5 != blank
@@ -711,26 +704,26 @@
         {%- endif -%}
       </div>
 
-      <button type="button" class="gfrev-write-toggle" data-gfrev-toggle-form="{{ sid }}">Laisser un avis</button>
+      <button type="button" class="gfrev-write-toggle" data-gfrev-toggle-form="{{ sid }}" data-label-open="{{ write_label | escape }}" data-label-close="{{ cancel_label | escape }}">{{ write_label }}</button>
 
       <div class="gfrev-form-wrap" id="gfrev-form-{{ sid }}">
         <form class="gfrev-form" data-gfrev-form="{{ sid }}" novalidate>
           <div class="gfrev-form-row">
-            <input type="text" class="gfrev-input" name="name" placeholder="Votre nom" required autocomplete="name">
-            <input type="email" class="gfrev-input" name="email" placeholder="Adresse email" required autocomplete="email">
+            <input type="text" class="gfrev-input" name="name" placeholder="{{ s.form_name_ph | default: 'Votre nom' | escape }}" required autocomplete="name">
+            <input type="email" class="gfrev-input" name="email" placeholder="{{ s.form_email_ph | default: 'Adresse email' | escape }}" required autocomplete="email">
           </div>
           <div class="gfrev-star-pick" data-gfrev-stars>
             {%- for i in (1..5) -%}
-              <button type="button" data-star="{{ i }}" aria-label="{{ i }} étoile{% if i > 1 %}s{% endif %}">
+              <button type="button" data-star="{{ i }}" aria-label="{% if i > 1 %}{{ s.star_many | default: '[n] étoiles' | replace: '[n]', i | escape }}{% else %}{{ s.star_one | default: '1 étoile' | escape }}{% endif %}">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               </button>
             {%- endfor -%}
           </div>
           <input type="hidden" name="rating" value="5">
-          <textarea class="gfrev-input" name="review" placeholder="Partagez votre expérience..." required></textarea>
-          <button type="submit" class="gfrev-submit">Envoyer mon avis</button>
+          <textarea class="gfrev-input" name="review" placeholder="{{ s.form_review_ph | default: 'Partagez votre expérience...' | escape }}" required></textarea>
+          <button type="submit" class="gfrev-submit">{{ s.form_submit | default: 'Envoyer mon avis' }}</button>
         </form>
-        <div class="gfrev-form-success">Merci ! Votre avis a bien été envoyé.</div>
+        <div class="gfrev-form-success">{{ s.form_success | default: 'Merci ! Votre avis a bien été envoyé.' }}</div>
       </div>
 
     </div>
@@ -863,7 +856,7 @@
               <div class="gfrev-date">{{ r_date }}</div>
             {%- endif -%}
 
-            <div class="gfrev-card-stars" role="img" aria-label="Rating: {{ r_rating }} out of 5">
+            <div class="gfrev-card-stars" role="img" aria-label="{{ 'gumforce.a11y.rating' | t: rating: r_rating }}">
               {%- liquid
                 assign card_star_img = nil
                 if r_rating == 5 and stars_img_5 != blank
@@ -1164,7 +1157,7 @@
     formToggle.addEventListener('click', function(){
       if (scrolling) return;
       formWrap.classList.toggle('gfrev-form-open');
-      formToggle.textContent = formWrap.classList.contains('gfrev-form-open') ? 'Annuler' : 'Laisser un avis';
+      formToggle.textContent = formWrap.classList.contains('gfrev-form-open') ? formToggle.getAttribute('data-label-close') : formToggle.getAttribute('data-label-open');
     });
 
     var starPick = formWrap.querySelector('[data-gfrev-stars]');
@@ -1190,7 +1183,7 @@
         if (successMsg) successMsg.style.display = 'block';
         setTimeout(function(){
           formWrap.classList.remove('gfrev-form-open');
-          formToggle.textContent = 'Laisser un avis';
+          formToggle.textContent = formToggle.getAttribute('data-label-open');
           setTimeout(function(){
             form.style.display = '';
             form.reset();
@@ -1353,7 +1346,73 @@
       "type": "text",
       "id": "load_more_text",
       "label": "Show more button text",
-      "default": "Show more reviews"
+      "default": "Voir plus d'avis"
+    },
+    {
+      "type": "text",
+      "id": "verified_label",
+      "label": "Libellé « achat vérifié »",
+      "default": "Achat vérifié"
+    },
+    {
+      "type": "text",
+      "id": "play_label",
+      "label": "Libellé du bouton vidéo (lecteurs d'écran)",
+      "default": "Lire la vidéo"
+    },
+    {
+      "type": "text",
+      "id": "write_label",
+      "label": "Bouton « laisser un avis »",
+      "default": "Laisser un avis"
+    },
+    {
+      "type": "text",
+      "id": "cancel_label",
+      "label": "Bouton « annuler » du formulaire",
+      "default": "Annuler"
+    },
+    {
+      "type": "text",
+      "id": "form_name_ph",
+      "label": "Formulaire : champ nom",
+      "default": "Votre nom"
+    },
+    {
+      "type": "text",
+      "id": "form_email_ph",
+      "label": "Formulaire : champ email",
+      "default": "Adresse email"
+    },
+    {
+      "type": "text",
+      "id": "star_one",
+      "label": "Formulaire : 1 étoile (lecteurs d'écran)",
+      "default": "1 étoile"
+    },
+    {
+      "type": "text",
+      "id": "star_many",
+      "label": "Formulaire : plusieurs étoiles (lecteurs d'écran, [n] = nombre)",
+      "default": "[n] étoiles"
+    },
+    {
+      "type": "textarea",
+      "id": "form_review_ph",
+      "label": "Formulaire : champ avis",
+      "default": "Partagez votre expérience..."
+    },
+    {
+      "type": "text",
+      "id": "form_submit",
+      "label": "Formulaire : bouton d'envoi",
+      "default": "Envoyer mon avis"
+    },
+    {
+      "type": "text",
+      "id": "form_success",
+      "label": "Formulaire : message de confirmation",
+      "default": "Merci ! Votre avis a bien été envoyé."
     },
     {
       "type": "range",

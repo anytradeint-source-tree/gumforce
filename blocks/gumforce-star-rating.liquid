@@ -99,7 +99,7 @@
 
 <div id="gfsr-{{ gf_id }}"{% if mode_all %} class="gfsr--all"{% endif %} {{ block.shopify_attributes }}>
 
-  <div class="gfsr-stars" role="img" aria-label="Rating: {{ rating_str }} out of 5">
+  <div class="gfsr-stars" role="img" aria-label="{{ 'gumforce.a11y.rating' | t: rating: rating_str }}">
 
     {%- if s.stars_image != blank and mode_all == false -%}
 

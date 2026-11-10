@@ -747,7 +747,7 @@
       {%- endif -%}
 
       {%- comment -%} ── Sélecteur 2 tiers ── {%- endcomment -%}
-      <div class="gfp-tiers{% if gf_solo %} gfp-tiers--solo{% endif %}" role="radiogroup" aria-label="Choisis ton offre">
+      <div class="gfp-tiers{% if gf_solo %} gfp-tiers--solo{% endif %}" role="radiogroup" aria-label="{{ 'gumforce.a11y.choose_offer' | t }}">
         {%- assign t1_sel = false -%}{%- if default_tier == '1' -%}{%- assign t1_sel = true -%}{%- endif -%}
         {%- assign t2_sel = false -%}{%- if default_tier == '2' -%}{%- assign t2_sel = true -%}{%- endif -%}
       {%- assign t3_sel = false -%}{%- if default_tier == '3' -%}{%- assign t3_sel = true -%}{%- endif -%}
@@ -875,9 +875,9 @@
         <div class="gfp-qty-row">
           <span class="gfp-qt">{{ s.qty_label | default: 'Quantité' }}</span>
           <span class="gfp-qty">
-            <button type="button" data-gfp-minus aria-label="Diminuer la quantité" disabled>−</button>
+            <button type="button" data-gfp-minus aria-label="{{ 'accessibility.decrease_quantity' | t }}" disabled>−</button>
             <span class="gfp-qval" data-gfp-qval>{{ q_lab }}</span>
-            <button type="button" data-gfp-plus aria-label="Augmenter la quantité">+</button>
+            <button type="button" data-gfp-plus aria-label="{{ 'accessibility.increase_quantity' | t }}">+</button>
           </span>
         </div>
       {%- endif -%}
@@ -891,7 +891,7 @@
             <svg class="gfp-guarantee-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
             <span class="gfp-guarantee-text">{{ s.guarantee_text | default: 'Garantie 90 jours : résultat ou 100 % remboursé' }}</span>
             {%- if s.guarantee_expanded != blank -%}
-              <button type="button" class="gfp-guarantee-info" data-gfp-guarantee-info aria-label="Plus d'infos">
+              <button type="button" class="gfp-guarantee-info" data-gfp-guarantee-info aria-label="{{ 'gumforce.a11y.more_info' | t }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </button>
             {%- endif -%}
@@ -962,14 +962,14 @@
           </div>
           {%- if s.contact_sub != blank -%}<p class="gfp-ct-sub">{{ s.contact_sub | escape }}</p>{%- endif -%}
           {%- if wa_link != '' -%}
-            <a class="gfp-ct-row" href="https://wa.me/{{ wa_link }}" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">
+            <a class="gfp-ct-row" href="https://wa.me/{{ wa_link }}" target="_blank" rel="noopener" aria-label="{{ 'gumforce.a11y.whatsapp' | t }}">
               <span class="gfp-ct-ic gfp-ct-ic--wa"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span>
               <span class="gfp-ct-col"><span class="gfp-ct-lbl">WhatsApp</span><span class="gfp-ct-val">{{ s.contact_whatsapp | escape }}</span></span>
               <svg class="gfp-ct-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
             </a>
           {%- endif -%}
           {%- if s.contact_email != blank -%}
-            <a class="gfp-ct-row" href="mailto:{{ s.contact_email | strip }}" aria-label="Nous écrire par email">
+            <a class="gfp-ct-row" href="mailto:{{ s.contact_email | strip }}" aria-label="{{ 'gumforce.a11y.email_us' | t }}">
               <span class="gfp-ct-ic gfp-ct-ic--em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg></span>
               <span class="gfp-ct-col"><span class="gfp-ct-lbl">Email</span><span class="gfp-ct-val">{{ s.contact_email | escape }}</span></span>
               <svg class="gfp-ct-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1015,7 +1015,7 @@
         <button type="button" class="gfp-nut-link" aria-haspopup="dialog">{{ s.nut_label }}</button>
         <div class="gfp-nut-ov" role="dialog" aria-modal="true" hidden>
           <div class="gfp-nut-md">
-            <button type="button" class="gfp-nut-x" aria-label="Fermer">&times;</button>
+            <button type="button" class="gfp-nut-x" aria-label="{{ 'actions.close' | t }}">&times;</button>
             <h3 class="gfp-nut-t">{{ s.nut_title | default: 'Informations nutritionnelles' }}</h3>
             {%- if s.nut_portion != blank or s.nut_perpack != blank -%}<p class="gfp-nut-p">{{ s.nut_portion }}{% if s.nut_portion != blank and s.nut_perpack != blank %} &middot; {% endif %}{{ s.nut_perpack }}</p>{%- endif -%}
             {%- assign nlines = s.nut_rows | newline_to_br | split: '<br />' -%}

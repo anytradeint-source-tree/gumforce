@@ -70,7 +70,10 @@
     "active_filters": "Actieve filters:",
     "product_details": "Productgegevens",
     "show_product_details": "Productgegevens voor {{ product_name }} weergeven",
-    "featured_product": "Uitgelicht product"
+    "featured_product": "Uitgelicht product",
+    "search_suggestions_available": "Zoeksuggesties beschikbaar voor \"{{ query }}\"",
+    "price_filter_low": "Lage prijs",
+    "price_filter_high": "Hoge prijs"
   },
   "actions": {
     "add_to_cart": "Aan winkelwagen toevoegen",
@@ -110,7 +113,9 @@
     "open_image_in_full_screen": "Afbeelding openen in volledig scherm",
     "sort": "Sorteren",
     "show_all_options": "Alle opties tonen",
-    "open": "Openen"
+    "open": "Openen",
+    "back_to": "Terug naar {{ title }}",
+    "zoom_media": "Media {{ index }} inzoomen"
   },
   "content": {
     "reviews": "recensies",
@@ -266,7 +271,8 @@
       "one": "1 artikel verwijderd uit winkelwagen",
       "other": "{{ count }} artikelen toegevoegd aan winkelwagen"
     },
-    "item_count_cutoff": "Meer dan {{ count }} artikelen"
+    "item_count_cutoff": "Meer dan {{ count }} artikelen",
+    "quick_order_list": "Snelle bestellijst"
   },
   "gift_cards": {
     "issued": {
@@ -377,6 +383,23 @@
       "signup_form_email_label": "Email",
       "signup_form_success": "We will send you an email right before we open!",
       "password_link": "Enter using password"
+    }
+  },
+  "gumforce": {
+    "a11y": {
+      "announcements": "Aankondigingen",
+      "choose_offer": "Kies je deal",
+      "more_info": "Meer info",
+      "whatsapp": "Stuur ons een WhatsApp",
+      "email_us": "Stuur ons een e-mail",
+      "order": "Bestellen",
+      "customer_videos": "Video's van klanten",
+      "toggle_sound": "Geluid aan of uit",
+      "previous_video": "Vorige video",
+      "next_video": "Volgende video",
+      "rating": "Beoordeling: {{ rating }} van 5",
+      "email_address": "E-mailadres",
+      "photo": "Foto {{ number }}"
     }
   }
 }

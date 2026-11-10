@@ -111,7 +111,7 @@
     #gfab-{{ uid }} .gfab-track { animation: none; transform: translateX(0); }
   }
 </style>
-<div id="gfab-{{ uid }}" role="region" aria-label="Annonces">
+<div id="gfab-{{ uid }}" role="region" aria-label="{{ 'gumforce.a11y.announcements' | t }}">
   <div class="gfab-track">
     {%- for pass in (1..6) -%}
       {%- for m in msg_list -%}

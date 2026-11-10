@@ -400,5 +400,22 @@
         "optional_first_name_label": "First name"
       }
     }
+  },
+  "gumforce": {
+    "a11y": {
+      "announcements": "Announcements",
+      "choose_offer": "Choose your offer",
+      "more_info": "More info",
+      "whatsapp": "Message us on WhatsApp",
+      "email_us": "Email us",
+      "order": "Order",
+      "customer_videos": "Customer videos",
+      "toggle_sound": "Sound on or off",
+      "previous_video": "Previous video",
+      "next_video": "Next video",
+      "rating": "Rating: {{ rating }} out of 5",
+      "email_address": "Email address",
+      "photo": "Photo {{ number }}"
+    }
   }
 }

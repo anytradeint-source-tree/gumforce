@@ -313,7 +313,7 @@
                 placeholder="{{ s.input_placeholder | default: 'Email address' }}"
                 required
                 autocomplete="email"
-                aria-label="Email address"
+                aria-label="{{ 'gumforce.a11y.email_address' | t }}"
               >
               <button class="gff-submit" type="submit">{{ s.btn_label | default: 'Sign up' }}</button>
             </div>
