@@ -363,6 +363,13 @@
         "info": "Le mode s'éteint tout seul le lendemain."
       },
       {
+        "type": "text",
+        "id": "gf_bf_locales",
+        "label": "Langues où le concours s'affiche",
+        "default": "fr",
+        "info": "Codes de langue séparés par des virgules (fr). Sur le site dans une autre langue (néerlandais…), le mode Black Friday ne s'affiche pas. Vide = toutes les langues."
+      },
+      {
         "type": "checkbox",
         "id": "gf_bf_editor",
         "label": "Voir le mode dans l'éditeur avant le premier jour",
