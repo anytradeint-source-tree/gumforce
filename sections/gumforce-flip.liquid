@@ -18,8 +18,16 @@
 {%- liquid
   assign s = section.settings
   assign sid = section.id
+  comment — avantage « Seulement avec le concours » : ignoré quand le concours n'est pas affiché (site en néerlandais…)
+  endcomment
+  capture gff_bf
+    render 'gf-bf-on'
+  endcapture
   assign n_total = 0
   for b in section.blocks
+    if b.settings.bf_only and gff_bf != '1'
+      continue
+    endif
     if b.type == 'gift'
       assign n_total = n_total | plus: 1
     endif
@@ -242,6 +250,7 @@
         {%- if s.recap_heading != blank -%}<p class="gff-recap-h">{{ s.recap_heading }}</p>{%- endif -%}
         <ul>
           {%- for b in section.blocks -%}
+            {%- if b.settings.bf_only and gff_bf != '1' -%}{%- continue -%}{%- endif -%}
             {%- if b.settings.recap != blank -%}
               <li data-gff-li data-end="{{ b.settings.end | strip | escape }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
@@ -256,6 +265,7 @@
 
   {%- comment -%} contenu de chaque avantage, copié dans la carte au moment où elle se retourne {%- endcomment -%}
   {%- for b in section.blocks -%}
+    {%- if b.settings.bf_only and gff_bf != '1' -%}{%- continue -%}{%- endif -%}
     {%- liquid
       assign bs = b.settings
       assign vis = bs.visual
@@ -478,7 +488,8 @@
         { "type": "text", "id": "recap", "label": "Ligne du récap", "default": "Livraison offerte, en 48h" },
         { "type": "text", "id": "link_text", "label": "Lien après la ligne du récap" },
         { "type": "url", "id": "link_url", "label": "Adresse du lien" },
-        { "type": "text", "id": "end", "label": "Visible jusqu'au", "placeholder": "2026-11-30 23:59", "info": "AAAA-MM-JJ HH:MM, heure de Paris. Vide = toujours." }
+        { "type": "text", "id": "end", "label": "Visible jusqu'au", "placeholder": "2026-11-30 23:59", "info": "AAAA-MM-JJ HH:MM, heure de Paris. Vide = toujours." },
+        { "type": "checkbox", "id": "bf_only", "label": "Seulement avec le concours", "default": false, "info": "Avantage masqué là où le concours ne s'affiche pas (Réglages du thème › Mode Black Friday › Langues où le concours s'affiche)." }
       ]
     }
   ],
