@@ -261,6 +261,44 @@
     assign sorted_media = gf_first | concat: gf_rest
   endif
 
+  comment
+    GUMFORCE : PHOTOS ET VIDÉOS TRADUITES (ex. site néerlandais).
+    1 métachamp produit custom.gf_media_traduits (texte) : entrées « langue:id_média_français:id_média_traduit »
+    séparées par des virgules, ex. « nl:48761076384049:50624148013361,nl:48761126682929:50624148046129 ».
+    Dans cette langue, le média français est remplacé, à la même place, par sa version traduite.
+    Dans les autres langues, les médias traduits sont masqués.
+    Métachamp vide = aucun effet.
+  endcomment
+  assign gf_tr = selected_product.metafields.custom.gf_media_traduits.value | default: '' | remove: ' ' | split: ','
+  if gf_tr.size > 0
+    assign gf_tr_lang = request.locale.iso_code
+    assign gf_tr_media = '' | split: ','
+    for media in sorted_media
+      assign gf_mid = media.id | append: ''
+      assign gf_found = sorted_media | where: 'id', media.id
+      assign gf_tr_skip = false
+      for gf_t in gf_tr
+        assign gf_tp = gf_t | split: ':'
+        if gf_tp[2] == gf_mid
+          assign gf_tr_skip = true
+          break
+        endif
+        if gf_tp[0] == gf_tr_lang and gf_tp[1] == gf_mid
+          assign gf_tid = gf_tp[2] | plus: 0
+          assign gf_tm = selected_product.media | where: 'id', gf_tid
+          if gf_tm.size > 0
+            assign gf_found = gf_tm
+          endif
+        endif
+      endfor
+      if gf_tr_skip
+        continue
+      endif
+      assign gf_tr_media = gf_tr_media | concat: gf_found
+    endfor
+    assign sorted_media = gf_tr_media
+  endif
+
   assign has_image_drop = sorted_media | has: 'media_type', 'image'
 
   # Determine if we're in single column mode (carousel or grid with one column)
