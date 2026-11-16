@@ -2,12 +2,35 @@
   Mode Black Friday : fenêtre « Comment ça marche ? » du jeu Bali, rendue une fois par page (layout/theme.liquid).
   S'ouvre depuis tout élément [data-gf-bf-open] (la bande verte de l'offre). Centrée sur ordinateur,
   ouverte depuis le bas sur mobile. Textes : Réglages du thème › Mode Black Friday.
+  Paramètre k : préfixe des réglages, 'gf_bf_' par défaut (Bali) ou 'gf_gta_' (Réglages du thème › Concours GTA 6, pages du concours GTA).
 {%- endcomment -%}
 {%- liquid
-  if settings.gf_bf_photo != blank
-    assign gfbfp_img = settings.gf_bf_photo | image_url: width: 920
+  assign gfk = k | default: 'gf_bf_'
+  assign gfk_s = gfk | append: 'photo'
+  assign gfbfp_photo = settings[gfk_s]
+  if gfbfp_photo != blank
+    assign gfbfp_img = gfbfp_photo | image_url: width: 920
+  elsif gfk == 'gf_gta_'
+    assign gfbfp_img = 'gf-gta6.jpg' | asset_img_url: '920x'
   else
     assign gfbfp_img = 'gf-bf-bali.jpg' | asset_img_url: '920x'
+  endif
+  assign gfk_s = gfk | append: 'pop_title'
+  assign gfbfp_title = settings[gfk_s] | default: 'Comment ça marche ?'
+  assign gfk_s = gfk | append: 'rules_url'
+  assign gfbfp_rules = settings[gfk_s] | strip
+  assign gfk_s = gfk | append: 'rules_label'
+  assign gfbfp_rules_l = settings[gfk_s] | default: 'Règlement complet du jeu'
+  assign gfk_s = gfk | append: 'cta_label'
+  assign gfbfp_cta = settings[gfk_s] | default: 'Je participe'
+  assign gfk_s = gfk | append: 'cta_link'
+  assign gfbfp_cta_url = settings[gfk_s] | strip
+  if gfbfp_cta_url == blank
+    if gfk == 'gf_gta_'
+      assign gfbfp_cta_url = request.path
+    else
+      assign gfbfp_cta_url = '/products/gumforce'
+    endif
   endif
 -%}
 <style>
@@ -45,14 +68,14 @@
 <dialog class="gfbfp" id="gf-bf-pop" aria-labelledby="gf-bf-pop-t">
   <div class="gfbfp-hero">
     <img src="{{ gfbfp_img }}" alt="" loading="lazy" width="920" height="613">
-    <h2 id="gf-bf-pop-t">{{ settings.gf_bf_pop_title | default: 'Comment ça marche ?' }}</h2>
+    <h2 id="gf-bf-pop-t">{{ gfbfp_title }}</h2>
     <button type="button" class="gfbfp-x" data-gf-bf-close aria-label="{{ 'actions.close' | t }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <div class="gfbfp-body">
     <ul class="gfbfp-list">
       {%- for i in (1..5) -%}
-        {%- assign k_t = 'gf_bf_pop_t' | append: i -%}
-        {%- assign k_x = 'gf_bf_pop_x' | append: i -%}
+        {%- assign k_t = gfk | append: 'pop_t' | append: i -%}
+        {%- assign k_x = gfk | append: 'pop_x' | append: i -%}
         {%- if settings[k_t] != blank -%}
           <li>
             <span class="gfbfp-ic" aria-hidden="true">
@@ -71,10 +94,10 @@
     </ul>
   </div>
   <div class="gfbfp-foot">
-    {%- if settings.gf_bf_rules_url != blank -%}
-      <a class="gfbfp-rules" href="{{ settings.gf_bf_rules_url | strip }}" target="_blank" rel="noopener">{{ settings.gf_bf_rules_label | default: 'Règlement complet du jeu' }}</a>
+    {%- if gfbfp_rules != blank -%}
+      <a class="gfbfp-rules" href="{{ gfbfp_rules }}" target="_blank" rel="noopener">{{ gfbfp_rules_l }}</a>
     {%- else -%}<span></span>{%- endif -%}
-    <a class="gfbfp-cta" href="{{ settings.gf_bf_cta_link | default: '/products/gumforce' | strip }}" data-gf-bf-go>{{ settings.gf_bf_cta_label | default: 'Je participe' }}</a>
+    <a class="gfbfp-cta" href="{{ gfbfp_cta_url }}" data-gf-bf-go>{{ gfbfp_cta }}</a>
   </div>
 </dialog>
 <script>

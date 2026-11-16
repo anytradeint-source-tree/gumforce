@@ -18,6 +18,14 @@
     render 'gf-bf-on'
   endcapture
   assign gffo_rules = settings.gf_bf_rules_url | strip | split: '?' | first | split: '/' | last
+  comment — pages du concours GTA 6 : pas de lien vers le règlement Bali
+  endcomment
+  capture gffo_gta
+    render 'gf-gta-page'
+  endcapture
+  if gffo_gta == '1'
+    assign gffo_bf = ''
+  endif
   assign menu_1         = s.menu_1
   assign menu_1_title   = s.menu_1_title
   assign menu_2         = s.menu_2

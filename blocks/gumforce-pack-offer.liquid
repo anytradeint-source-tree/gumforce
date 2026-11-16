@@ -260,6 +260,11 @@
   capture gf_bf_on
     render 'gf-bf-on'
   endcapture
+  comment — pages du concours GTA 6 (snippet gf-gta-page) : bande verte du concours GTA à la place de celle de Bali, sans les créneaux x2
+  endcomment
+  capture gf_gta
+    render 'gf-gta-page'
+  endcapture
   assign offer_prefix = s.offer_prefix | default: 'Offre valable le'
 
   assign per_text = s.per_sachet_text | default: 'par sachet'
@@ -819,7 +824,19 @@
         {%- endif -%}
       </div>
 
-      {%- if gf_bf_on == '1' and settings.gf_bf_strip_title != blank -%}
+      {%- if gf_bf_on == '1' and gf_gta == '1' -%}
+        {%- if settings.gf_gta_strip_title != blank -%}
+        <button type="button" class="gfp-bfstrip gfp-bfstrip--gta gf-bf-only" data-gf-bf-open aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59C2.6 9.42 2 14.46 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.41-1.41A2 2 0 0 1 9.83 16h4.34a2 2 0 0 1 1.41.59L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.54-.6-6.58-.69-7.26A4 4 0 0 0 17.32 5z"/></svg>
+          <span class="gfp-bfstrip-txt">
+            <span class="gfp-bfstrip-t">{{ settings.gf_gta_strip_title }}</span>
+            {%- if settings.gf_gta_strip_text != blank or settings.gf_gta_strip_link != blank -%}
+              <span class="gfp-bfstrip-s">{{ settings.gf_gta_strip_text }}{% if settings.gf_gta_strip_text != blank and settings.gf_gta_strip_link != blank %} · {% endif %}{% if settings.gf_gta_strip_link != blank %}<u>{{ settings.gf_gta_strip_link }}</u>{% endif %}</span>
+            {%- endif -%}
+          </span>
+        </button>
+        {%- endif -%}
+      {%- elsif gf_bf_on == '1' and settings.gf_bf_strip_title != blank -%}
         <button type="button" class="gfp-bfstrip gf-bf-only" data-gf-bf-open aria-haspopup="dialog">
           <svg class="gfp-bfv gfp-bfv-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8c0-2.76-2.46-5-5.5-5S2 5.24 2 8h2l1-1 1 1h4"/><path d="M13 7.14A5.82 5.82 0 0 1 16.5 6c3.04 0 5.5 2.24 5.5 5h-3l-1-1-1 1h-3"/><path d="M5.89 9.71c-2.15 2.15-2.3 5.47-.35 7.43l4.24-4.25.7-.7.71-.71 2.12-2.12c-1.95-1.96-5.27-1.8-7.42.35"/><path d="M11 15.5c.5 2.5-.17 4.5-1 6.5h4c2-5.5-.5-12-1-14"/></svg>
           <span class="gfp-bfstrip-txt gfp-bfv gfp-bfv-0">
