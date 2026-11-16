@@ -1,0 +1,16 @@
+{%- comment -%}
+  Concours GTA 6 (test, Réglages du thème › Concours GTA 6) : affiche « 1 » sur les pages produit du concours,
+  c'est-à-dire quand la case est cochée et que la fin de l'adresse de la page est dans la liste des produits du concours.
+  Sur ces pages, le mode Black Friday reste le même ; seul le contenu du concours change (Bali → GTA 6) :
+  bandeau de la photo, bande verte, fenêtre « Comment ça marche ? », message de la barre d'annonce, lien du règlement Bali masqué.
+  Sortie sans espace : elle est capturée et comparée à '1'.
+{%- endcomment -%}
+{%- liquid
+  if settings.gf_gta_enabled and template.name == 'product'
+    assign gf_gta_h = request.path | split: '/' | last | downcase
+    assign gf_gta_l = settings.gf_gta_handles | downcase | remove: ' ' | split: ','
+    if gf_gta_h != blank and gf_gta_l contains gf_gta_h
+      echo '1'
+    endif
+  endif
+-%}

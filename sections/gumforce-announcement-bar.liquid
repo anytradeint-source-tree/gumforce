@@ -28,6 +28,14 @@
   assign gf_bf_msg = ''
   if gf_bf_on == '1'
     assign gf_bf_msg = settings.gf_bf_bar_msg | strip
+    comment — pages du concours GTA 6 : message du concours GTA à la place de Bali
+    endcomment
+    capture gf_gta
+      render 'gf-gta-page'
+    endcapture
+    if gf_gta == '1'
+      assign gf_bf_msg = settings.gf_gta_bar_msg | strip
+    endif
   endif
   assign show_bar = true
   if s.target_product != blank
