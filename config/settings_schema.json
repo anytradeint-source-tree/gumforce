@@ -707,7 +707,7 @@
         "type": "image_picker",
         "id": "gf_gta_photo",
         "label": "Photo",
-        "info": "Aussi en haut de la fenêtre « Comment ça marche ? ». Vide = coucher de soleil sur une ville en bord de mer, façon Vice City."
+        "info": "Aussi en haut de la fenêtre « Comment ça marche ? ». Vide = voiture rouge devant les hôtels néon d’Ocean Drive au coucher du soleil, façon Vice City (image panoramique 3:1, pour que rien ne soit coupé dans le bandeau)."
       },
       {
         "type": "inline_richtext",
