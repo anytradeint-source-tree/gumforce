@@ -357,7 +357,9 @@
         "hide_footer": true,
         "eager_first_img": true,
         "padding_top": 40,
-        "padding_bottom": 0
+        "padding_bottom": 0,
+        "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
+        "sticky_cta": "J'en profite"
       }
     },
     "solution": {
@@ -557,7 +559,9 @@
         "hide_footer": true,
         "eager_first_img": false,
         "padding_top": 0,
-        "padding_bottom": 0
+        "padding_bottom": 0,
+        "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
+        "sticky_cta": "J'en profite"
       }
     },
     "offre": {
@@ -971,7 +975,9 @@
         "hide_footer": true,
         "eager_first_img": false,
         "padding_top": 0,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
+        "sticky_cta": "J'en profite"
       }
     }
   },

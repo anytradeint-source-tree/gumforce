@@ -142,7 +142,7 @@
           {%- if gp.images.size > 1 -%}
             <div class="gfof-thumbs">
               {%- for img in gp.images limit: img_max -%}
-                <button type="button" class="gfof-thumb{% if forloop.first %} is-active{% endif %}" data-src="{{ img | image_url: width: 1100 }}" aria-label="Photo {{ forloop.index }}">
+                <button type="button" class="gfof-thumb{% if forloop.first %} is-active{% endif %}" data-src="{{ img | image_url: width: 1100 }}" aria-label="{{ 'gumforce.a11y.photo' | t: number: forloop.index }}">
                   {{ img | image_url: width: 180 | image_tag: alt: '', loading: 'lazy' }}
                 </button>
               {%- endfor -%}

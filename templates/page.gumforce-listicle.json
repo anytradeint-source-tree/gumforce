@@ -336,7 +336,9 @@
         "img_radius": 16,
         "enable_animation": true,
         "padding_top": 40,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
+        "sticky_cta": "J'en profite"
       }
     }
   },

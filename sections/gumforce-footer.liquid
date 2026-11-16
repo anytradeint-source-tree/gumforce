@@ -12,6 +12,20 @@
   assign sid = section.id
   assign s   = section.settings
 
+  comment — lien vers le règlement du concours masqué là où le concours ne s'affiche pas (site en néerlandais…)
+  endcomment
+  capture gffo_bf
+    render 'gf-bf-on'
+  endcapture
+  assign gffo_rules = settings.gf_bf_rules_url | strip | split: '?' | first | split: '/' | last
+  comment — pages du concours GTA 6 : pas de lien vers le règlement Bali
+  endcomment
+  capture gffo_gta
+    render 'gf-gta-page'
+  endcapture
+  if gffo_gta == '1'
+    assign gffo_bf = ''
+  endif
   assign menu_1         = s.menu_1
   assign menu_1_title   = s.menu_1_title
   assign menu_2         = s.menu_2
@@ -277,6 +291,7 @@
             {%- endif -%}
             <ul class="gff-menu-list">
               {%- for link in menu_1.links -%}
+                {%- if gffo_bf != '1' and gffo_rules != blank and link.url contains gffo_rules -%}{%- continue -%}{%- endif -%}
                 <li><a href="{{ link.url }}">{{ link.title }}</a></li>
               {%- endfor -%}
             </ul>
@@ -290,6 +305,7 @@
             {%- endif -%}
             <ul class="gff-menu-list">
               {%- for link in menu_2.links -%}
+                {%- if gffo_bf != '1' and gffo_rules != blank and link.url contains gffo_rules -%}{%- continue -%}{%- endif -%}
                 <li><a href="{{ link.url }}">{{ link.title }}</a></li>
               {%- endfor -%}
             </ul>
@@ -313,7 +329,7 @@
                 placeholder="{{ s.input_placeholder | default: 'Email address' }}"
                 required
                 autocomplete="email"
-                aria-label="Email address"
+                aria-label="{{ 'gumforce.a11y.email_address' | t }}"
               >
               <button class="gff-submit" type="submit">{{ s.btn_label | default: 'Sign up' }}</button>
             </div>

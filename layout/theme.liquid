@@ -192,7 +192,12 @@
       {% render 'quick-add-modal' %}
     {% endif %}
     {%- if gf_bf_on == '1' -%}
-      {%- render 'gf-bf-popup' -%}
+      {%- capture gf_gta -%}{%- render 'gf-gta-page' -%}{%- endcapture -%}
+      {%- if gf_gta == '1' -%}
+        {%- render 'gf-bf-popup', k: 'gf_gta_' -%}
+      {%- else -%}
+        {%- render 'gf-bf-popup' -%}
+      {%- endif -%}
     {%- endif %}
 
 

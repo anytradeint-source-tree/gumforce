@@ -547,7 +547,7 @@
 
     var d = new Date(); d.setDate(d.getDate() + DAYS);
     var dateStr;
-    try { dateStr = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' }).format(d); }
+    try { dateStr = new Intl.DateTimeFormat({{ request.locale.iso_code | json }}, { day: 'numeric', month: 'long' }).format(d); }
     catch (e) { dateStr = d.getDate() + '/' + (d.getMonth() + 1); }
     q('[data-gfq-r2title]').textContent = R2TPL.replace('[date]', dateStr);
 
