@@ -669,6 +669,181 @@
     ]
   },
   {
+    "name": "Concours GTA 6 (test)",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Test en parallèle du concours Bali, seulement sur les pages produit de la liste ci-dessous (copies de la menthe et de la pastèque, hors menu). Sur ces pages, le mode Black Friday reste le même ; le concours Bali y est remplacé par GTA 6 : bandeau de la photo, bande verte, fenêtre « Comment ça marche ? » et message de la barre d'annonce. Mêmes dates que le mode Black Friday."
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_gta_enabled",
+        "label": "Activer le concours GTA 6",
+        "default": true,
+        "info": "Décoché = ces pages montrent le concours Bali comme les autres."
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_handles",
+        "label": "Produits du concours (identifiants)",
+        "default": "gumforce-gta6, pasteque-gta6",
+        "info": "Fin de l'adresse de la page, séparés par des virgules (gumforce.co/products/gumforce-gta6 → gumforce-gta6)."
+      },
+      {
+        "type": "header",
+        "content": "Barre d'annonce"
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_bar_msg",
+        "label": "Message en plus pendant le mode",
+        "default": "10 jeux GTA 6 à gagner"
+      },
+      {
+        "type": "header",
+        "content": "Bandeau GTA 6 sur la photo principale"
+      },
+      {
+        "type": "image_picker",
+        "id": "gf_gta_photo",
+        "label": "Photo",
+        "info": "Aussi en haut de la fenêtre « Comment ça marche ? ». Vide = voiture rouge devant les hôtels néon d’Ocean Drive au coucher du soleil, façon Vice City (image panoramique 3:1, pour que rien ne soit coupé dans le bandeau)."
+      },
+      {
+        "type": "inline_richtext",
+        "id": "gf_gta_band_title",
+        "label": "Titre",
+        "default": "Gagne <b>GTA 6</b>",
+        "info": "Le texte en gras s'affiche en vert."
+      },
+      {
+        "type": "inline_richtext",
+        "id": "gf_gta_band_value",
+        "label": "Deuxième ligne",
+        "default": "<b>10 grands gagnants</b> tirés au sort"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_gta_band_note",
+        "label": "Conditions",
+        "default": "Passe commande ce [date].\nAnnonce des gagnants le mardi 1er décembre.",
+        "info": "[date] = la date du jour, par exemple « lundi 16 novembre ». Un retour à la ligne reste un retour à la ligne. Reste sur 2 lignes : plus haut, le bandeau cache le bas du sachet."
+      },
+      {
+        "type": "header",
+        "content": "Bande verte au-dessus du bouton"
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_strip_title",
+        "label": "Titre",
+        "default": "10 jeux GTA 6 à gagner",
+        "info": "Toute la bande ouvre la fenêtre « Comment ça marche ? ». Vide = pas de bande."
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_strip_text",
+        "label": "Texte",
+        "default": "Chaque sachet = 1 participation, le 2+2 = 4"
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_strip_link",
+        "label": "Lien souligné",
+        "default": "Plus d’infos"
+      },
+      {
+        "type": "header",
+        "content": "Fenêtre « Comment ça marche ? »"
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_pop_title",
+        "label": "Titre",
+        "default": "Comment ça marche ?"
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_pop_t1",
+        "label": "Partie 1 : titre (icône cadeau)",
+        "default": "Ce que tu peux gagner"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_gta_pop_x1",
+        "label": "Partie 1 : texte",
+        "default": "GTA 6, le jeu le plus attendu de l’année, sur PS5 ou Xbox Series : c’est toi qui choisis. 10 jeux à gagner, donc 10 grands gagnants."
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_pop_t2",
+        "label": "Partie 2 : titre (icône sac)",
+        "default": "Comment participer"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_gta_pop_x2",
+        "label": "Partie 2 : texte",
+        "default": "Passe commande sur cette page avant le 30 novembre à 23h59. C’est tout. Pas de formulaire à remplir, pas de code à entrer : ta commande compte direct."
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_pop_t3",
+        "label": "Partie 3 : titre (icône ticket)",
+        "default": "Plus t’as de sachets, plus t’as de chances"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_gta_pop_x3",
+        "label": "Partie 3 : texte",
+        "default": "Chaque sachet acheté = 1 participation. Avec le 2+2, t’as 4 sachets, donc 4 participations."
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_pop_t4",
+        "label": "Partie 4 : titre (icône roue)",
+        "default": "Le tirage"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_gta_pop_x4",
+        "label": "Partie 4 : texte",
+        "default": "Le 1er décembre, on tire au sort les 10 gagnants parmi toutes les participations. On filme tout et on publie la vidéo, pour que tout le monde voie que c’est réel."
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_pop_t5",
+        "label": "Partie 5 : titre (icône téléphone)",
+        "default": "Si tu gagnes"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_gta_pop_x5",
+        "label": "Partie 5 : texte",
+        "default": "Ton téléphone sonne : t’as gagné. Tu choisis PS5 ou Xbox, et GUMFORCE t’envoie ton jeu chez toi, livraison offerte."
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_rules_label",
+        "label": "Lien du règlement : texte",
+        "default": "Règlement complet du jeu"
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_rules_url",
+        "label": "Lien du règlement : adresse",
+        "default": "/pages/reglement-du-jeu-concours-gta-6"
+      },
+      {
+        "type": "text",
+        "id": "gf_gta_cta_label",
+        "label": "Bouton",
+        "default": "Je participe",
+        "info": "Le bouton ferme la fenêtre et descend jusqu'à l'offre."
+      }
+    ]
+  },
+  {
     "name": "Panier GUMFORCE",
     "settings": [
       {
