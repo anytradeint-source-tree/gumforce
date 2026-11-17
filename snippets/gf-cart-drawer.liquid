@@ -15,9 +15,10 @@
     Carte photo (image d'ambiance en fond) ou compacte (vignette).
   • Upsell seulement : si son offre est retirée, l'upsell part avec
     (réglage « Seulement avec une offre GUMFORCE » ; voir aussi gf-upsell-guard).
-  • Pied : lignes Réductions (prix barrés + remises) et Livraison « Gratuite »
-    (dès que les articles hors upsell atteignent le seuil réglé, comme la règle
-    Shopify), Total, bouton Commander → et boutons de paiement rapide.
+  • Pied : Total avec l'économie en vert (prix barrés + remises) et le prix
+    barré, puis 3 colonnes Livraison / Garantie / Retours (la livraison dès que
+    les articles hors upsell atteignent le seuil réglé, comme la règle
+    Shopify), bouton Commander → et boutons de paiement rapide.
   • Total, réductions, livraison et prix des lignes recalculés au tap (centimes
     en data-*), puis remplacés par la réponse du serveur.
   • Tout est rendu même panier vide (masqué) : le bloc d'offre peut ouvrir le
@@ -34,7 +35,7 @@
   assign gfc_empty_url = settings.empty_cart_button_link | default: routes.all_products_collection_url
   assign gfc_total_lbl = settings.gfc_total_label | default: 'Total'
   assign gfc_cta       = settings.gfc_cta | default: 'Commander'
-  assign gfc_disc_lbl  = settings.gfc_discount_label | strip
+  assign gfc_save_txt  = settings.gfc_save_text | strip
   assign gfc_ship_lbl  = settings.gfc_shipping_label | strip
   assign gfc_ship_free = settings.gfc_shipping_free | strip
   assign gfc_gar_lbl   = settings.gfc_guarantee_label | strip
@@ -292,14 +293,24 @@
 
   /* pied fixe */
   .gfc__foot { flex-shrink:0; padding:10px 16px calc(12px + env(safe-area-inset-bottom)); border-top:1px solid var(--gfc-hair); background:#fff; }
-  .gfc-sum { display:flex; flex-direction:column; gap:2px; }
-  .gfc-sum__row { display:flex; align-items:baseline; justify-content:space-between; gap:12px; font-size:13.5px; font-weight:500; line-height:1.25; color:var(--gfc-muted); }
-  .gfc-sum__row b { font-weight:700; color:var(--gfc-green); font-variant-numeric:tabular-nums; }
-  .gfc-tot { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
-  .gfc-sum:has(.gfc-sum__row:not([hidden])) .gfc-tot { margin-top:2px; padding-top:6px; border-top:1px solid var(--gfc-hair); }
-  .gfc-tot__lbl { font-size:15px; font-weight:800; }
-  .gfc-tot__amt { font-size:20px; font-weight:800; letter-spacing:-.01em; font-variant-numeric:tabular-nums; }
-  .gfc--cc.is-busy .gfc-tot__amt, .gfc--cc.is-busy .gfc-sum__row b, .gfc.is-busy.is-approx .gfc-tot__amt, .gfc.is-busy.is-approx .gfc-sum__row b { animation:gfc-shim .8s ease-in-out infinite alternate; }
+  /* total : « Total » + économie en vert à gauche, prix barré + prix payé à droite */
+  .gfc-tot { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+  .gfc-tot__l { display:flex; flex-direction:column; gap:1px; min-width:0; }
+  .gfc-tot__lbl { font-size:15px; font-weight:800; line-height:1.25; }
+  .gfc-tot__save { font-size:12.5px; font-weight:700; line-height:1.3; color:var(--gfc-green); }
+  .gfc-tot__save b { font-weight:800; font-variant-numeric:tabular-nums; }
+  .gfc-tot__r { display:flex; align-items:baseline; gap:8px; white-space:nowrap; }
+  .gfc-tot__r s { font-size:14px; font-weight:500; color:var(--gfc-faint); font-variant-numeric:tabular-nums; }
+  .gfc-tot__amt { font-size:20px; font-weight:800; line-height:1.2; letter-spacing:-.01em; font-variant-numeric:tabular-nums; }
+  .gfc--cc.is-busy .gfc-tot__amt, .gfc--cc.is-busy .gfc-tot__save b, .gfc--cc.is-busy .gfc-tot__r s, .gfc.is-busy.is-approx .gfc-tot__amt, .gfc.is-busy.is-approx .gfc-tot__save b, .gfc.is-busy.is-approx .gfc-tot__r s { animation:gfc-shim .8s ease-in-out infinite alternate; }
+  /* réassurances : 3 colonnes centrées (icône, intitulé, « Gratuite » en vert), filets entre les colonnes */
+  .gfc-trust { display:flex; margin-top:8px; padding:6px 0; border-top:1px solid var(--gfc-hair); border-bottom:1px solid var(--gfc-hair); }
+  .gfc-trust:not(:has(> :not([hidden]))) { display:none; }
+  .gfc-trust > div { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:1px; padding:0 4px; text-align:center; line-height:1.2; }
+  .gfc-trust > :not([hidden]) ~ :not([hidden]) { border-left:1px solid var(--gfc-hair); }
+  .gfc-trust svg { width:16px; height:16px; margin-bottom:2px; flex-shrink:0; color:var(--gfc-accent); }
+  .gfc-trust span { font-size:11.5px; font-weight:600; color:var(--gfc-ink); }
+  .gfc-trust b { font-size:11.5px; font-weight:700; color:var(--gfc-green); }
   @keyframes gfc-shim { from { opacity:1; } to { opacity:.35; } }
   .gfc-go-form { margin:10px 0 0; }
   .gfc-go { width:100%; padding:14px; border:none; border-radius:30px; background:var(--gfc-ink); color:#fff; font-family:var(--gfc-font); font-size:16px; font-weight:700; line-height:1.3; letter-spacing:.01em; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; text-decoration:none; box-shadow:0 1px 3px rgba(0,0,0,.1); -webkit-appearance:none; appearance:none; }
@@ -336,7 +347,7 @@
     .gfc-upb__out { margin-top:10px !important; }
     .gfc-upb__add { height:44px; margin-top:10px; }
     .gfc__foot { padding-top:8px; }
-    .gfc-sum__row { line-height:1.18; }
+    .gfc-trust { padding:5px 0; }
     .gfc-go-form { margin-top:8px; }
     .gfc-go { padding-top:12px; padding-bottom:12px; }
     .gfc-express { margin-top:6px; }
@@ -363,12 +374,17 @@
     .gfc-up__add { padding:0 10px; font-size:14px; }
     .gfc-up__price b, .gfc-up--photo .gfc-up__price b { font-size:17px; }
     .gfc-up--photo .gfc-up__title { font-size:21px; }
-    .gfc-go { padding:14px 12px; }
+    .gfc-go { padding-left:12px; padding-right:12px; }
+    .gfc-trust > div { padding:0 2px; }
     .gfc-upb__title { font-size:17px; }
     .gfc-upb__row { gap:6px; }
   }
+  /* très étroit (320 px) : intitulés des réassurances un peu plus petits pour tenir sur une ligne */
+  @media (max-width:340px) {
+    .gfc-trust span, .gfc-trust b { font-size:10.5px; }
+  }
   @media (prefers-reduced-motion:reduce) {
-    .gfc-tot__amt, .gfc-sum__row b { animation:none !important; }
+    .gfc-tot__amt, .gfc-tot__save b, .gfc-tot__r s { animation:none !important; }
     .gfc-upb__s, .gfc-upb__s img { transition:none; }
     .gfc-upb__s.is-pop { transform:none; }
   }
@@ -628,24 +644,57 @@
   </div>
 
   <div class="gfc__foot" data-gfc-foot{% if cart.empty? %} hidden{% endif %}>
-    <div class="gfc-sum">
-      {%- if gfc_disc_lbl != blank -%}
-        <p class="gfc-sum__row" data-gfc-save{% if gfc_save <= 0 %} hidden{% endif %}><span>{{ gfc_disc_lbl | escape }}</span><b data-gfc-save-v>-{{ gfc_save_money }}</b></p>
-      {%- endif -%}
-      {%- if gfc_ship_lbl != blank and gfc_ship_free != blank -%}
-        <p class="gfc-sum__row" data-gfc-ship{% unless gfc_ship_ok %} hidden{% endunless %}><span>{{ gfc_ship_lbl | escape }}</span><b>{{ gfc_ship_free | escape }}</b></p>
-      {%- endif -%}
-      {%- if gfc_gar_lbl != blank and gfc_gar_val != blank -%}
-        <p class="gfc-sum__row"><span>{{ gfc_gar_lbl | escape }}</span><b>{{ gfc_gar_val | escape }}</b></p>
-      {%- endif -%}
-      {%- if gfc_ret_lbl != blank and gfc_ret_val != blank -%}
-        <p class="gfc-sum__row"><span>{{ gfc_ret_lbl | escape }}</span><b>{{ gfc_ret_val | escape }}</b></p>
-      {%- endif -%}
-      <p class="gfc-tot">
+    {%- liquid
+      comment — économie (prix barrés + remises) : texte avec [montant], ou montant ajouté à la fin
+      endcomment
+      assign was_money = cart.total_price | plus: gfc_save | money
+      assign save_v = gfc_save_money | prepend: '<b data-gfc-save-v>' | append: '</b>'
+      assign save_html = gfc_save_txt | escape
+      if save_html contains '[montant]'
+        assign save_html = save_html | replace: '[montant]', save_v
+      else
+        assign save_html = save_html | append: ' ' | append: save_v
+      endif
+      assign t_ship = false
+      if gfc_ship_lbl != blank and gfc_ship_free != blank
+        assign t_ship = true
+      endif
+      assign t_gar = false
+      if gfc_gar_lbl != blank and gfc_gar_val != blank
+        assign t_gar = true
+      endif
+      assign t_ret = false
+      if gfc_ret_lbl != blank and gfc_ret_val != blank
+        assign t_ret = true
+      endif
+    -%}
+    <div class="gfc-tot">
+      <p class="gfc-tot__l">
         <span class="gfc-tot__lbl">{{ gfc_total_lbl | escape }}</span>
+        {%- if gfc_save_txt != blank -%}
+          <span class="gfc-tot__save" data-gfc-save{% if gfc_save <= 0 %} hidden{% endif %}>{{ save_html }}</span>
+        {%- endif -%}
+      </p>
+      <p class="gfc-tot__r">
+        {%- if gfc_save_txt != blank -%}
+          <s data-gfc-was{% if gfc_save <= 0 %} hidden{% endif %}>{{ was_money }}</s>
+        {%- endif -%}
         <span class="gfc-tot__amt" data-gfc-total>{% if gfc_cc %}{{ cart.total_price | money_with_currency }}{% else %}{{ cart.total_price | money }}{% endif %}</span>
       </p>
     </div>
+    {%- if t_ship or t_gar or t_ret -%}
+      <div class="gfc-trust">
+        {%- if t_ship -%}
+          <div data-gfc-ship{% unless gfc_ship_ok %} hidden{% endunless %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h12v10H2z"/><path d="M14 9.5h4.2L22 13v3h-8"/><circle cx="6" cy="17.5" r="1.9" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.9" fill="#fff"/></svg><span>{{ gfc_ship_lbl | escape }}</span><b>{{ gfc_ship_free | escape }}</b></div>
+        {%- endif -%}
+        {%- if t_gar -%}
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg><span>{{ gfc_gar_lbl | escape }}</span><b>{{ gfc_gar_val | escape }}</b></div>
+        {%- endif -%}
+        {%- if t_ret -%}
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span>{{ gfc_ret_lbl | escape }}</span><b>{{ gfc_ret_val | escape }}</b></div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
     <form class="gfc-go-form" action="{{ routes.cart_url }}" method="post">
       <button type="submit" name="checkout" class="gfc-go" data-gfc-go>
         <span class="gfc-go__main">{{ gfc_cta | escape }}<svg class="gfc-go__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
@@ -846,7 +895,9 @@
       r.setAttribute('data-save', s);
       var te = q('[data-gfc-total]', r); if (te) te.textContent = fmt(t);
       var se = q('[data-gfc-save]', r);
-      if (se) { se.hidden = s <= 0; var sv = q('[data-gfc-save-v]', se); if (sv) sv.textContent = '-' + fmt(s); }
+      if (se) { se.hidden = s <= 0; var sv = q('[data-gfc-save-v]', se); if (sv) sv.textContent = fmt(s); }
+      var we = q('[data-gfc-was]', r);
+      if (we) { we.hidden = s <= 0; we.textContent = fmt(t + s); }
       ship();
     }
     /* « Livraison gratuite » : articles hors upsells ≥ seuil, comme Shopify */

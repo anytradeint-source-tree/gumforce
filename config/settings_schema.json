@@ -864,15 +864,15 @@
       },
       {
         "type": "text",
-        "id": "gfc_discount_label",
-        "label": "Ligne des réductions",
-        "default": "Réductions",
-        "info": "Montant = prix barrés + codes promo et remises Shopify. Vide = ligne masquée."
+        "id": "gfc_save_text",
+        "label": "Économie sous le total",
+        "default": "Tu économises [montant]",
+        "info": "[montant] = prix barrés + codes promo et remises Shopify, aussi ajouté en prix barré à côté du total. Vide = économie et prix barré masqués."
       },
       {
         "type": "text",
         "id": "gfc_shipping_label",
-        "label": "Ligne de livraison",
+        "label": "Colonne livraison",
         "default": "Livraison 48h"
       },
       {
@@ -880,7 +880,7 @@
         "id": "gfc_shipping_free",
         "label": "Livraison : texte quand elle est gratuite",
         "default": "Gratuite",
-        "info": "La ligne n'apparaît que quand la livraison est gratuite (sinon son prix dépend du pays). Vide = ligne jamais affichée."
+        "info": "La colonne n'apparaît que quand la livraison est gratuite (sinon son prix dépend du pays). Vide = colonne jamais affichée."
       },
       {
         "type": "range",
@@ -891,33 +891,33 @@
         "step": 1,
         "unit": "€",
         "default": 40,
-        "info": "Montant des articles hors pastèque. Règle relevée dans Shopify le 11/10/2026 : 1 sachet = payante, 2 sachets, 2 + 2 et 4 + 4 = gratuite en point relais (France, Belgique, Suisse, Allemagne, Espagne, Italie, Pays-Bas, Royaume-Uni, États-Unis, Canada) ; la pastèque ne compte pas. 0 = ligne jamais affichée."
+        "info": "Montant des articles hors pastèque. Règle relevée dans Shopify le 11/10/2026 : 1 sachet = payante, 2 sachets, 2 + 2 et 4 + 4 = gratuite en point relais (France, Belgique, Suisse, Allemagne, Espagne, Italie, Pays-Bas, Royaume-Uni, États-Unis, Canada) ; la pastèque ne compte pas. 0 = colonne livraison jamais affichée."
       },
       {
         "type": "text",
         "id": "gfc_guarantee_label",
-        "label": "Ligne de garantie",
+        "label": "Colonne garantie",
         "default": "Garantie 90 jours"
       },
       {
         "type": "text",
         "id": "gfc_guarantee_value",
-        "label": "Garantie : texte à droite",
+        "label": "Garantie : texte en vert",
         "default": "Gratuite",
-        "info": "Toujours affichée sous la livraison. Un des deux champs vide = ligne masquée."
+        "info": "Toujours affichée, à côté de la livraison. Un des deux champs vide = colonne masquée."
       },
       {
         "type": "text",
         "id": "gfc_returns_label",
-        "label": "Ligne des retours",
+        "label": "Colonne retours",
         "default": "Retours"
       },
       {
         "type": "text",
         "id": "gfc_returns_value",
-        "label": "Retours : texte à droite",
+        "label": "Retours : texte en vert",
         "default": "Gratuits",
-        "info": "Toujours affichée sous la garantie. Un des deux champs vide = ligne masquée."
+        "info": "Toujours affichée, à côté de la garantie. Un des deux champs vide = colonne masquée."
       },
       {
         "type": "text",
