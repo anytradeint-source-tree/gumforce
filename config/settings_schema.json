@@ -929,7 +929,8 @@
         "type": "text",
         "id": "gfc_cta",
         "label": "Bouton de paiement",
-        "default": "Commander"
+        "default": "Commander · [prix]",
+        "info": "[prix] = total du panier, mis à jour à chaque changement. Retire [prix] pour un bouton sans montant."
       },
       {
         "type": "checkbox",

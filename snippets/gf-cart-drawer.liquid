@@ -302,7 +302,7 @@
   .gfc-tot__r { display:flex; align-items:baseline; gap:8px; white-space:nowrap; }
   .gfc-tot__r s { font-size:14px; font-weight:500; color:var(--gfc-faint); font-variant-numeric:tabular-nums; }
   .gfc-tot__amt { font-size:20px; font-weight:800; line-height:1.2; letter-spacing:-.01em; font-variant-numeric:tabular-nums; }
-  .gfc--cc.is-busy .gfc-tot__amt, .gfc--cc.is-busy .gfc-tot__save b, .gfc--cc.is-busy .gfc-tot__r s, .gfc.is-busy.is-approx .gfc-tot__amt, .gfc.is-busy.is-approx .gfc-tot__save b, .gfc.is-busy.is-approx .gfc-tot__r s { animation:gfc-shim .8s ease-in-out infinite alternate; }
+  .gfc--cc.is-busy .gfc-tot__amt, .gfc--cc.is-busy [data-gfc-go-total], .gfc.is-busy.is-approx [data-gfc-go-total], .gfc--cc.is-busy .gfc-tot__save b, .gfc--cc.is-busy .gfc-tot__r s, .gfc.is-busy.is-approx .gfc-tot__amt, .gfc.is-busy.is-approx .gfc-tot__save b, .gfc.is-busy.is-approx .gfc-tot__r s { animation:gfc-shim .8s ease-in-out infinite alternate; }
   /* réassurances : 3 colonnes centrées (icône, intitulé, « Gratuite » en vert), filets entre les colonnes */
   .gfc-trust { display:flex; margin-top:8px; padding:6px 0; border-top:1px solid var(--gfc-hair); border-bottom:1px solid var(--gfc-hair); }
   .gfc-trust:not(:has(> :not([hidden]))) { display:none; }
@@ -384,7 +384,7 @@
     .gfc-trust span, .gfc-trust b { font-size:10.5px; }
   }
   @media (prefers-reduced-motion:reduce) {
-    .gfc-tot__amt, .gfc-tot__save b, .gfc-tot__r s { animation:none !important; }
+    .gfc-tot__amt, .gfc-tot__save b, .gfc-tot__r s, [data-gfc-go-total] { animation:none !important; }
     .gfc-upb__s, .gfc-upb__s img { transition:none; }
     .gfc-upb__s.is-pop { transform:none; }
   }
@@ -696,8 +696,19 @@
       </div>
     {%- endif -%}
     <form class="gfc-go-form" action="{{ routes.cart_url }}" method="post">
+      {%- liquid
+        comment — [prix] dans le texte du bouton = total du panier (suit les taps comme le total)
+        endcomment
+        if gfc_cc
+          assign go_total = cart.total_price | money_with_currency
+        else
+          assign go_total = cart.total_price | money
+        endif
+        assign go_total = go_total | prepend: '<span data-gfc-go-total>' | append: '</span>'
+        assign go_html = gfc_cta | escape | replace: '[prix]', go_total
+      -%}
       <button type="submit" name="checkout" class="gfc-go" data-gfc-go>
-        <span class="gfc-go__main">{{ gfc_cta | escape }}<svg class="gfc-go__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        <span class="gfc-go__main"><span>{{ go_html }}</span><svg class="gfc-go__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </button>
     </form>
     {%- if settings.gfc_express and additional_checkout_buttons -%}
@@ -900,6 +911,7 @@
       r.setAttribute('data-total', t);
       r.setAttribute('data-save', s);
       var te = q('[data-gfc-total]', r); if (te) te.textContent = fmt(t);
+      var ge = q('[data-gfc-go-total]', r); if (ge) ge.textContent = fmt(t);
       var se = q('[data-gfc-save]', r);
       if (se) { se.hidden = s <= 0; var sv = q('[data-gfc-save-v]', se); if (sv) sv.textContent = fmt(s); }
       var we = q('[data-gfc-was]', r);
