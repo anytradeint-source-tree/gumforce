@@ -756,6 +756,11 @@
       var m = location.search.match(/[?&]gf_up=([ab])/);
       if (m) sessionStorage.setItem('gf_up', m[1]);
       if (sessionStorage.getItem('gf_up') === 'b') document.documentElement.classList.add('gf-up-b');
+      /* aperçu du test « sachets cochés à l'ouverture » : ?gf_upb=4 (ou 1 à 4), ?gf_upb=0 pour revenir au réglage */
+      var d = location.search.match(/[?&]gf_upb=([0-4])/);
+      if (d) sessionStorage.setItem('gf_upb', d[1]);
+      var dn = sessionStorage.getItem('gf_upb');
+      if (dn && dn !== '0') document.documentElement.style.setProperty('--gf-upb-def', dn);
     } catch (e) {}
   })();
   (function () {
@@ -818,6 +823,7 @@
           if (fresh && cur) cur.replaceWith(fresh);
         }
         setBusy();
+        upDef();
         tick();
         warm();
       });
@@ -966,8 +972,28 @@
       var cs = cards(r), trig = cs.filter(function (c) { return mains(r, c).length > 0; });
       cs.forEach(function (c) {
         var on = trig.length === 1 && trig[0] === c && !upLines(r, c).length;
-        if (on && c.hidden) { upPick(c, 1); var vb0 = vbOn(c); if (vb0) upB(c, cents(vb0, 'data-def') || 1); }
+        if (on && c.hidden) { upPick(c, 1); var vb0 = vbOn(c); if (vb0) { vb0.setAttribute('data-def-css', ''); upB(c, defOf(c, vb0)); } }
         c.hidden = !on;
+      });
+      upDef();
+    }
+    /* Test A/B « sachets cochés à l'ouverture » : la variable CSS --gf-upb-def (CSS injecté par Intelligems,
+       ou aperçu ?gf_upb=4) remplace le réglage « Sachets cochés à l'ouverture ». Appliquée une fois par rendu
+       du serveur (data-def-css), donc jamais par-dessus les sachets que le client vient de toucher. */
+    function cssDef() {
+      try { return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gf-upb-def'), 10) || 0; } catch (e) { return 0; }
+    }
+    function defOf(card, vb) {
+      var v = cssDef(), max = cents(card, 'data-max') || 4;
+      return Math.max(1, Math.min(max, v || cents(vb, 'data-def') || 1));
+    }
+    function upDef() {
+      var r = root(); if (!r || !cssDef()) return;
+      qa('[data-gfc-vb]', r).forEach(function (vb) {
+        var card = vb.closest('[data-gfc-up]');
+        if (!card || vb.hasAttribute('data-def-css')) return;
+        vb.setAttribute('data-def-css', '');
+        upB(card, defOf(card, vb));
       });
     }
 
@@ -1003,23 +1029,23 @@
       var unit = cents(card, 'data-price'), was = cents(card, 'data-was') || unit;
       var cg = cents(vb, 'data-cg') * n, pd = cents(vb, 'data-pd') || 3;
       function fill(t) { return (t || '').replace('[n]', n).replace('[cg]', cg).replace('[jours]', Math.round(cg / pd)); }
-      function keep(el) { if (!el.hasAttribute('data-n0')) el.setAttribute('data-n0', el.textContent); return el.getAttribute('data-n0'); }
+      function orig(el) { if (!el.hasAttribute('data-n0')) el.setAttribute('data-n0', el.textContent); return el.getAttribute('data-n0'); }
       var el = q('[data-gfc-vb-n]', vb); if (el) el.textContent = fill(vb.getAttribute(n > 1 ? 'data-many' : 'data-one'));
       el = q('[data-gfc-vb-d]', vb); if (el) el.textContent = fill(vb.getAttribute('data-days'));
       el = q('[data-gfc-vb-s]', vb);
       if (el) {
-        var sv = keep(el);
+        var sv = orig(el);
         if (cc) { el.hidden = n !== def; el.textContent = sv; }
         else el.textContent = fill(vb.getAttribute('data-save')).replace('[eco]', fmt((was - unit) * n));
       }
       el = q('[data-gfc-vb-l]', vb);
       if (el) {
-        var l1 = keep(el), t = fill(vb.getAttribute(n > 1 ? 'data-addn' : 'data-add1'));
+        var l1 = orig(el), t = fill(vb.getAttribute(n > 1 ? 'data-addn' : 'data-add1'));
         el.textContent = cc ? (n !== def ? t.replace(/\s*·?\s*\[prix\]/, '') : l1) : t.replace('[prix]', fmt(unit * n));
       }
       el = q('[data-gfc-vb-w]', vb);
       if (el) {
-        var w1 = keep(el);
+        var w1 = orig(el);
         if (cc) { el.hidden = n !== def; el.textContent = w1; }
         else el.textContent = fmt(was * n);
       }
@@ -1235,7 +1261,9 @@
     }
     setInterval(tick, 1000);
     var dc = drawer();
-    if (dc) dc.addEventListener('dialog:open', tick);
+    if (dc) dc.addEventListener('dialog:open', function () { upDef(); tick(); });
+    upDef();
+    if (document.readyState === 'complete') upDef(); else window.addEventListener('load', upDef);
 
     /* Images du panier préchargées après le chargement de la page : à
        l'ouverture, tout est déjà en cache (une image lazy dans un dialog
