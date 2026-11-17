@@ -269,6 +269,17 @@
   html.gf-up-b .gfc-up__vb, .gfc--upb .gfc-up__vb { display:block; }
   .gfc-upb__title { margin:4px 0 16px !important; font-family:var(--gfc-head); font-size:19px; font-weight:700; line-height:1.15; text-transform:uppercase; letter-spacing:.02em; text-wrap:balance; }
   .gfc-upb__title em { font-style:normal; color:var(--gfc-accent); }
+  /* photo derrière le titre (test A/B : classe gf-upb-photo posée par le JS quand --gf-upb-photo vaut 1,
+     aperçu ?gf_photo=1 ; .gfc--photo = réglage « pour tout le monde ») : sachet de la photo calé à droite,
+     fond sombre prolongé à gauche, titre blanc sur les trois quarts gauches */
+  .gfc-upb__hero { display:none; position:relative; margin:-18px -14px 12px; padding:19px 14px 9px; min-height:78px; border-radius:14.5px 14.5px 0 0; overflow:hidden; align-items:flex-end; background:var(--gfc-hero-bg, #011013); }
+  html.gf-upb-photo .gfc-upb__hero, .gfc--photo .gfc-upb__hero { display:flex; }
+  .gfc-up__card:not(.gfc-up__card--badge) .gfc-upb__hero { margin-top:-14px; }
+  html.gf-upb-photo .gfc-upb__title--plain, .gfc--photo .gfc-upb__title--plain { display:none; }
+  .gfc-upb__hero img { position:absolute; top:50%; right:0; height:120%; width:auto; max-width:none; transform:translateY(-50%); }
+  .gfc-upb__hero::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,.6) 50%, rgba(0,0,0,.15) 78%, rgba(0,0,0,0) 100%); }
+  .gfc-upb__hero .gfc-upb__title { position:relative; z-index:1; margin:0 !important; max-width:76%; color:#fff; }
+  .gfc-upb__hero .gfc-upb__title em { color:var(--gfc-lime); }
   .gfc-upb__row { display:grid; grid-template-columns:repeat(var(--gfc-upb-n,4), minmax(0,1fr)); gap:8px; }
   .gfc-upb__s { appearance:none; position:relative; aspect-ratio:1 / 1.12; padding:0; border:1.5px dashed #cfd6d6; border-radius:14px; background:#f6f8f8; display:flex; align-items:center; justify-content:center; font:inherit; color:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .18s cubic-bezier(.22,1,.36,1), background .16s ease, border-color .16s ease, box-shadow .16s ease; }
   .gfc-upb__s img { width:78%; height:auto; opacity:.22; filter:grayscale(1); transition:opacity .16s ease, filter .16s ease; }
@@ -346,6 +357,11 @@
     .gfc-upb__s img { width:auto; height:84%; max-width:78%; }
     .gfc-upb__out { margin-top:10px !important; }
     .gfc-upb__add { height:44px; margin-top:10px; }
+    .gfc-upb__hero { margin-top:-16px; margin-bottom:10px; }
+    .gfc-up__card:not(.gfc-up__card--badge) .gfc-upb__hero { margin-top:-14px; }
+    html.gf-upb-photo .gfc-upb__s, .gfc--photo .gfc-upb__s { height:58px; }
+    html.gf-upb-photo .gfc-upb__out, .gfc--photo .gfc-upb__out { margin-top:8px !important; }
+    html.gf-upb-photo .gfc-upb__add, .gfc--photo .gfc-upb__add { margin-top:8px; }
     .gfc__foot { padding-top:8px; }
     .gfc-trust { padding:5px 0; }
     .gfc-go-form { margin-top:8px; }
@@ -356,6 +372,7 @@
   @media (max-height:645px) {
     .gfc-upb__title { font-size:17px; }
     .gfc-upb__s { height:56px; }
+    html.gf-upb-photo .gfc-upb__s, .gfc--photo .gfc-upb__s { height:52px; }
     .gfc-upb__lines span { display:none; }
   }
   /* écrans bas : la carte photo se resserre pour garder les boutons au-dessus du pied */
@@ -390,7 +407,7 @@
   }
 </style>
 
-<div class="gfc{% if gfc_cc %} gfc--cc{% endif %}{% if settings.gfc_upb_mode == 'on' %} gfc--upb{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}" data-up-only="{% if settings.gfc_up_only_with %}1{% endif %}">
+<div class="gfc{% if gfc_cc %} gfc--cc{% endif %}{% if settings.gfc_upb_mode == 'on' %} gfc--upb{% endif %}{% if settings.gfc_upb_photo_all %} gfc--photo{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}" data-up-only="{% if settings.gfc_up_only_with %}1{% endif %}">
   <div class="gfc__head">
     <h2 class="gfc__title" id="gfc-title">{{ gfc_title | escape }} <span class="gfc__count" data-gfc-count{% if gfc_count == 0 %} hidden{% endif %}>({{ gfc_count }})</span></h2>
     <button type="button" ref="closeButton" on:click="cart-drawer-component/close" class="gfc__close" aria-label="{{ 'actions.close_dialog' | t }}">
@@ -563,6 +580,8 @@
           assign upb_was_money = up_was | money
           assign k = pre | append: '_b_heading'
           assign upb_head = settings[k] | replace: '[prix]', up_price_money | replace: '[barré]', upb_was_money
+          assign k = pre | append: '_b_photo'
+          assign upb_photo = settings[k]
           comment — rendu directement à la quantité cochée à l'ouverture (réglage, plafonnée au maximum)
           endcomment
           assign upb_def = settings.gfc_upb_default | default: 2 | at_most: up_max | at_least: 1
@@ -622,7 +641,12 @@
           </div>
           {%- if upb_on -%}
           <div class="gfc-up__vb" data-gfc-vb data-def="{{ upb_def }}" data-pick="{{ upb_def }}" data-cg="{{ upb_cg }}" data-pd="{{ upb_pd }}" data-one="{{ settings.gfc_upb_one | escape }}" data-many="{{ settings.gfc_upb_many | escape }}" data-days="{{ settings.gfc_upb_days | escape }}" data-save="{{ settings.gfc_upb_save | escape }}" data-add1="{{ settings.gfc_upb_add_one | escape }}" data-addn="{{ settings.gfc_upb_add_many | escape }}">
-            {%- if upb_head != blank -%}<p class="gfc-upb__title">{{ upb_head }}</p>{%- endif -%}
+            {%- if upb_head != blank -%}
+              {%- if upb_photo -%}
+                <div class="gfc-upb__hero"><img src="{{ upb_photo | image_url: width: 700 }}" srcset="{{ upb_photo | image_url: width: 500 }} 500w, {{ upb_photo | image_url: width: 700 }} 700w, {{ upb_photo | image_url: width: 900 }} 900w" sizes="240px" alt="" width="{{ upb_photo.width }}" height="{{ upb_photo.height }}" loading="lazy" data-gfc-hero><p class="gfc-upb__title">{{ upb_head }}</p></div>
+              {%- endif -%}
+              <p class="gfc-upb__title{% if upb_photo %} gfc-upb__title--plain{% endif %}">{{ upb_head }}</p>
+            {%- endif -%}
             <div class="gfc-upb__row" style="--gfc-upb-n:{{ up_max }}">
               {%- for i in (1..up_max) -%}
                 <button type="button" class="gfc-upb__s{% if i <= upb_def %} is-on{% endif %}" data-gfc-slot="{{ i }}" aria-pressed="{% if i <= upb_def %}true{% else %}false{% endif %}" aria-label="{{ i }} × {{ up_name | escape }}">
@@ -772,6 +796,10 @@
       if (d) sessionStorage.setItem('gf_upb', d[1]);
       var dn = sessionStorage.getItem('gf_upb');
       if (dn && dn !== '0') document.documentElement.style.setProperty('--gf-upb-def', dn);
+      /* aperçu de la photo derrière le titre : ?gf_photo=1, ?gf_photo=0 pour revenir */
+      var ph = location.search.match(/[?&]gf_photo=([01])/);
+      if (ph) sessionStorage.setItem('gf_photo', ph[1]);
+      if (sessionStorage.getItem('gf_photo') === '1') document.documentElement.style.setProperty('--gf-upb-photo', '1');
     } catch (e) {}
   })();
   (function () {
@@ -999,7 +1027,19 @@
       var v = cssDef(), max = cents(card, 'data-max') || 4;
       return Math.max(1, Math.min(max, v || cents(vb, 'data-def') || 1));
     }
+    /* Test A/B « photo derrière le titre » : --gf-upb-photo = 1 (CSS injecté par Intelligems, ou aperçu
+       ?gf_photo=1) pose la classe gf-upb-photo ; la photo ne se charge que dans ce cas */
+    function upPhoto() {
+      var on = false;
+      try { on = getComputedStyle(document.documentElement).getPropertyValue('--gf-upb-photo').trim() === '1'; } catch (e) {}
+      var r = root();
+      if (r && r.classList.contains('gfc--photo')) on = true;
+      if (!on) return;
+      document.documentElement.classList.add('gf-upb-photo');
+      if (r) qa('img[data-gfc-hero]', r).forEach(function (img) { img.loading = 'eager'; });
+    }
     function upDef() {
+      upPhoto();
       var r = root(); if (!r || !cssDef()) return;
       qa('[data-gfc-vb]', r).forEach(function (vb) {
         var card = vb.closest('[data-gfc-up]');
@@ -1283,7 +1323,7 @@
     var warmed = false;
     function warm() {
       var r = root(); if (!r || !q('[id^="gfp-cta-"]')) return;
-      qa('img[loading="lazy"]', r).forEach(function (img) { img.loading = 'eager'; });
+      qa('img[loading="lazy"]:not([data-gfc-hero])', r).forEach(function (img) { img.loading = 'eager'; });
       if (warmed) return;
       warmed = true;
       var d = data();

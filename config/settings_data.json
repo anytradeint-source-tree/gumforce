@@ -378,6 +378,8 @@
     "gfc_up_b_heading": "Nouveau : la <em>pastèque</em> à [prix] au lieu de [barré]",
     "gfc_up2_b_heading": "La <em>menthe fraîche</em> à [prix] au lieu de [barré]",
     "gfc_upb_mode": "on",
+    "gfc_up_b_photo": "shopify://shop_images/gf-upsell-splash-pasteque.jpg",
+    "gfc_up2_b_photo": "shopify://shop_images/gf-upsell-splash-menthe.jpg",
     "gfc_upb_one": "1 sachet · [cg] chewing-gums",
     "gfc_upb_many": "[n] sachets · [cg] chewing-gums",
     "gfc_upb_days": "+[jours] jours d'entraînement",

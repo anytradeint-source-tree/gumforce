@@ -1211,6 +1211,23 @@
         "info": "[prix] = prix d'un sachet, [barré] = prix barré."
       },
       {
+        "type": "image_picker",
+        "id": "gfc_up_b_photo",
+        "label": "Photo derrière le titre (upsell 1)",
+        "info": "Photo large (sachet à droite, côté gauche sombre). Visible en aperçu ?gf_photo=1, pour la moitié des visiteurs pendant un test A/B, ou pour tout le monde avec la case ci-dessous. Vide = titre sur fond blanc."
+      },
+      {
+        "type": "image_picker",
+        "id": "gfc_up2_b_photo",
+        "label": "Photo derrière le titre (upsell 2)"
+      },
+      {
+        "type": "checkbox",
+        "id": "gfc_upb_photo_all",
+        "label": "Photo derrière le titre pour tout le monde",
+        "default": false
+      },
+      {
         "type": "text",
         "id": "gfc_upb_one",
         "label": "Ligne quantité (1 sachet)",
