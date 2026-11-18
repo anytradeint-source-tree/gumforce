@@ -319,6 +319,8 @@
   /* champ code promo (fin de la liste) */
   .gfc .gfc-code { display:none; margin-top:16px; }
   html.gf-promo-vis .gfc .gfc-code, .gfc .gfc-code--all { display:block; }
+  /* panier vide (bloc « Ton panier est vide » affiché, aussi au retrait du dernier article) : pas de champ code promo */
+  html .gfc:has([data-gfc-empty]:not([hidden])) .gfc-code { display:none !important; }
   .gfc .gfc-code__f { display:flex; gap:8px; }
   .gfc .gfc-code__in { flex:1; min-width:0; height:46px; padding:0 14px; border:1.5px solid var(--gfc-line) !important; border-radius:12px !important; background:#fff !important; box-shadow:none !important; color:var(--gfc-ink); font-family:var(--gfc-font); font-size:16px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; -webkit-appearance:none; appearance:none; }
   .gfc .gfc-code__in::placeholder { color:var(--gfc-faint); font-weight:500; letter-spacing:0; text-transform:none; }
