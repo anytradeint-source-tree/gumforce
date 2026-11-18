@@ -385,17 +385,41 @@
         "info": "Montré seulement quand le bandeau est visible. Vide = pas de rappel."
       },
       {
-        "type": "text",
-        "id": "gf_promo_cart_text",
-        "label": "Bouton dans le panier (en haut)",
-        "default": "-15 % [code]",
-        "info": "Vide = pas de bouton."
+        "type": "checkbox",
+        "id": "gf_promo_field_all",
+        "label": "Champ « Code promo » dans le panier pour tout le monde",
+        "default": false,
+        "info": "Décoché : le champ n'apparaît qu'avec le bandeau (test A/B, aperçu)."
       },
       {
         "type": "text",
-        "id": "gf_promo_cart_applied",
-        "label": "Bouton dans le panier, après le clic",
-        "default": "[code] appliqué"
+        "id": "gf_promo_field_ph",
+        "label": "Panier : texte du champ",
+        "default": "Code promo"
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_field_btn",
+        "label": "Panier : bouton",
+        "default": "Appliquer"
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_field_ok",
+        "label": "Panier : code accepté",
+        "default": "Code [code] appliqué"
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_field_rm",
+        "label": "Panier : retirer le code",
+        "default": "Retirer"
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_field_err",
+        "label": "Panier : code refusé",
+        "default": "Le code [code] n'est pas valable"
       },
       {
         "type": "checkbox",

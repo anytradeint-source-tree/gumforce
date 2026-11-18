@@ -2,24 +2,18 @@
   Rappel du code promo (Réglages du thème › Bandeau code promo), montré seulement quand le bandeau du haut est visible
   (classe html.gf-promo-vis posée par gf-promo-bar : test A/B, aperçu ?gf_promo=1 ou « pour tout le monde »).
   where: 'cta'  → barre au-dessus du bouton « Ajouter au panier » (bloc d'offre)
-  where: 'cart' → bouton dans l'en-tête du panier coulissant
   Un appui applique le code (logique dans gf-promo-bar) ; ensuite « Code … appliqué » (classe html.gf-promo-applied).
 {%- endcomment -%}
 {%- liquid
   assign gpi_code = settings.gf_promo_code | strip
   if settings.gf_promo_enabled and gpi_code != blank
     assign gpi_code_b = gpi_code | escape | prepend: '<b>' | append: '</b>'
-    if where == 'cart'
-      assign gpi_go = settings.gf_promo_cart_text | escape | replace: '[code]', gpi_code_b
-      assign gpi_ok = settings.gf_promo_cart_applied | escape | replace: '[code]', gpi_code_b
-    else
-      assign gpi_go = settings.gf_promo_cta_text | escape | replace: '[code]', gpi_code_b
-      assign gpi_ok = settings.gf_promo_applied | escape | replace: '[code]', gpi_code_b
-    endif
+    assign gpi_go = settings.gf_promo_cta_text | escape | replace: '[code]', gpi_code_b
+    assign gpi_ok = settings.gf_promo_applied | escape | replace: '[code]', gpi_code_b
   endif
 -%}
 {%- if gpi_go != blank -%}
-<button type="button" class="gfpi gfpi--{{ where | default: 'cta' }}" data-gf-promo-apply>
+<button type="button" class="gfpi gfpi--cta" data-gf-promo-apply>
   <span class="gfpi__go">{{ gpi_go }}</span>
   <span class="gfpi__ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>{{ gpi_ok }}</span>
 </button>
@@ -37,18 +31,10 @@
   /* au-dessus du bouton d'achat : même bande noire que le haut de page */
   html .gfpi--cta { width:100%; height:46px; margin-top:12px; padding:0 14px; border-radius:16px; background:#111; color:#fff; font-size:16px; }
   .gfpi--cta .gfpi__go b { height:28px; margin-left:7px; padding:1px 10px 0; }
-  /* en-tête du panier : petit bouton à côté du titre (hauteur de l'en-tête inchangée) */
-  html .gfpi--cart { height:32px; margin-left:auto; padding:0 10px; border-radius:8px; background:#111; color:#fff; font-size:13px; }
-  .gfpi--cart .gfpi__go b { height:22px; margin-left:6px; padding:1px 7px 0; border-radius:5px; }
-  .gfpi--cart .gfpi__ok svg { width:12px; height:12px; margin-right:5px; }
-  @media (max-width:389px) { html .gfpi--cta { font-size:14.5px; height:44px; } .gfpi--cta .gfpi__go b { height:26px; } html .gfpi--cart { font-size:12px; padding:0 8px; } }
-  /* très petits écrans : dans le panier, seulement le code encadré (le titre reste sur une ligne) */
-  @media (max-width:359px) { .gfpi--cart .gfpi__go { font-size:0; } .gfpi--cart .gfpi__go b { font-size:12px; margin-left:0; } html .gfpi--cart { padding:0 6px; } }
+  @media (max-width:389px) { html .gfpi--cta { font-size:14.5px; height:44px; } .gfpi--cta .gfpi__go b { height:26px; } }
   /* le bloc d'offre remet marges et paddings à zéro (#gfp-… *) et le thème met les svg en bloc : on garde nos valeurs */
   html .gfpi--cta { margin:12px 0 0 !important; padding:0 14px !important; }
   html .gfpi--cta .gfpi__go b { margin-left:7px !important; padding:1px 10px 0 !important; }
-  html .gfpi--cart .gfpi__go b { margin-left:6px !important; padding:1px 7px 0 !important; }
   html .gfpi__ok svg { display:inline-block !important; margin:0 6px 0 0 !important; padding:0 !important; }
-  @media (max-width:359px) { html .gfpi--cart .gfpi__go b { margin-left:0 !important; } }
 </style>
 {%- endif -%}

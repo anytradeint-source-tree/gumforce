@@ -302,6 +302,21 @@
   .gfc-upb__add { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; height:46px; margin-top:12px; }
   .gfc-upb__add s { font-size:13px; font-weight:500; opacity:.55; }
 
+  /* champ code promo (fin de la liste) */
+  .gfc .gfc-code { display:none; margin-top:16px; }
+  html.gf-promo-vis .gfc .gfc-code, .gfc .gfc-code--all { display:block; }
+  .gfc .gfc-code__f { display:flex; gap:8px; }
+  .gfc .gfc-code__in { flex:1; min-width:0; height:46px; padding:0 14px; border:1.5px solid var(--gfc-line) !important; border-radius:12px !important; background:#fff !important; box-shadow:none !important; color:var(--gfc-ink); font-family:var(--gfc-font); font-size:16px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; -webkit-appearance:none; appearance:none; }
+  .gfc .gfc-code__in::placeholder { color:var(--gfc-faint); font-weight:500; letter-spacing:0; text-transform:none; }
+  .gfc .gfc-code__in:focus { outline:none; border-color:var(--gfc-ink) !important; }
+  .gfc .gfc-code__btn { flex-shrink:0; height:46px; padding:0 18px; border:none; border-radius:12px; background:var(--gfc-ink); color:#fff; font-family:var(--gfc-font); font-size:15px; font-weight:700; cursor:pointer; }
+  .gfc .gfc-code__btn[disabled] { opacity:.55; }
+  .gfc .gfc-code__err { margin-top:6px !important; font-size:13px; font-weight:600; color:#d92d20; }
+  .gfc .gfc-code__ok { display:flex; align-items:center; gap:8px; height:46px; padding:0 14px; border-radius:12px; background:var(--gfc-accent-soft); font-size:14.5px; font-weight:700; color:var(--gfc-ink); }
+  .gfc .gfc-code__ok svg { display:block; width:16px; height:16px; flex-shrink:0; color:var(--gfc-green); }
+  .gfc .gfc-code__ok span { flex:1; min-width:0; }
+  .gfc .gfc-code__rm { border:none; background:none; padding:0; font-size:13px; font-weight:600; color:var(--gfc-muted); text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+
   /* pied fixe */
   .gfc__foot { flex-shrink:0; padding:10px 16px calc(12px + env(safe-area-inset-bottom)); border-top:1px solid var(--gfc-hair); background:#fff; }
   /* total : « Total » + économie en vert à gauche, prix barré + prix payé à droite */
@@ -410,7 +425,6 @@
 <div class="gfc{% if gfc_cc %} gfc--cc{% endif %}{% if settings.gfc_upb_mode == 'on' %} gfc--upb{% endif %}{% if settings.gfc_upb_photo_all %} gfc--photo{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}" data-up-only="{% if settings.gfc_up_only_with %}1{% endif %}">
   <div class="gfc__head">
     <h2 class="gfc__title" id="gfc-title">{{ gfc_title | escape }} <span class="gfc__count" data-gfc-count{% if gfc_count == 0 %} hidden{% endif %}>({{ gfc_count }})</span></h2>
-    {%- render 'gf-promo-inline', where: 'cart' -%}
     <button type="button" ref="closeButton" on:click="cart-drawer-component/close" class="gfc__close" aria-label="{{ 'actions.close_dialog' | t }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
@@ -666,6 +680,31 @@
         </div>
       </div>
     {%- endfor -%}
+
+    {%- comment -%} Champ « Code promo » (Réglages du thème › Bandeau code promo) : visible avec le bandeau du haut
+      (html.gf-promo-vis : test A/B, aperçu ?gf_promo=1) ou pour tout le monde (case « Champ code promo pour tout le monde »).
+      Code appliqué via /cart/update.js { discount } ; un code refusé est retiré aussitôt avec un message. {%- endcomment -%}
+    {%- liquid
+      assign gfc_code_on = cart.discount_applications | where: 'type', 'discount_code' | first
+      if gfc_code_on
+        assign gfc_code_t = gfc_code_on.title | escape
+      endif
+    -%}
+    <div class="gfc-code{% if settings.gf_promo_field_all %} gfc-code--all{% endif %}" data-gfc-code data-err="{{ settings.gf_promo_field_err | escape }}">
+      {%- if gfc_code_on -%}
+        <p class="gfc-code__ok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>{{ settings.gf_promo_field_ok | escape | replace: '[code]', gfc_code_t }}</span>
+          <button type="button" class="gfc-code__rm" data-gfc-code-rm>{{ settings.gf_promo_field_rm | escape }}</button>
+        </p>
+      {%- else -%}
+        <form class="gfc-code__f" data-gfc-code-form novalidate>
+          <input class="gfc-code__in" type="text" name="code" placeholder="{{ settings.gf_promo_field_ph | escape }}" aria-label="{{ settings.gf_promo_field_ph | escape }}" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done">
+          <button type="submit" class="gfc-code__btn">{{ settings.gf_promo_field_btn | escape }}</button>
+        </form>
+        <p class="gfc-code__err" data-gfc-code-err hidden></p>
+      {%- endif -%}
+    </div>
   </div>
 
   <div class="gfc__foot" data-gfc-foot{% if cart.empty? %} hidden{% endif %}>
@@ -1184,6 +1223,38 @@
       }
     }
 
+    /* Champ « Code promo » : appliqué via /cart/update.js { discount } ; refusé → retiré + message */
+    document.addEventListener('submit', function (e) {
+      var f = e.target.closest && e.target.closest('[data-gfc-code-form]'); if (!f) return;
+      e.preventDefault();
+      var inp = q('input', f), btn = q('button', f), code = (inp.value || '').trim(), box = f.closest('[data-gfc-code]'), err = box && q('[data-gfc-code-err]', box);
+      if (!code) { inp.focus(); return; }
+      btn.disabled = true; if (err) err.hidden = true;
+      post('cart/update.js', { discount: code }).then(function (cart) {
+        var c = (cart.discount_codes || []).filter(function (d) { return d.code.toLowerCase() === code.toLowerCase(); })[0];
+        if (c && c.applicable) {
+          var pr = document.querySelector('[data-gf-promo]');
+          if (pr && (pr.getAttribute('data-code') || '').toLowerCase() === code.toLowerCase()) {
+            document.documentElement.classList.add('gf-promo-applied');
+            try { sessionStorage.setItem('gf_promo_applied', pr.getAttribute('data-code')); } catch (x) {}
+          }
+          return render(cart);
+        }
+        return post('cart/update.js', { discount: '' }).then(function () {
+          btn.disabled = false;
+          if (err) { err.textContent = (box.getAttribute('data-err') || '').replace('[code]', code.toUpperCase()); err.hidden = false; }
+        });
+      }).catch(function () { btn.disabled = false; });
+    });
+    document.addEventListener('click', function (e) {
+      var rm = e.target.closest && e.target.closest('[data-gfc-code-rm]');
+      if (rm) {
+        rm.disabled = true;
+        document.documentElement.classList.remove('gf-promo-applied');
+        try { sessionStorage.removeItem('gf_promo_applied'); } catch (x) {}
+        post('cart/update.js', { discount: '' }).then(render).catch(function () { rm.disabled = false; });
+      }
+    });
     document.addEventListener('click', function (e) {
       var t = e.target;
       if (!t || !t.closest) return;
