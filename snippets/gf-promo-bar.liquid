@@ -6,9 +6,10 @@
   • l'aperçu ?gf_promo=1 (gardé pour la visite, ?gf_promo=0 pour revenir) ;
   • la case « Pour tout le monde » (Réglages du thème › Bandeau code promo).
   Quand le bandeau est visible, la classe html.gf-promo-vis montre aussi les rappels (snippet gf-promo-inline :
-  au-dessus du bouton « Ajouter au panier » et dans l'en-tête du panier).
-  Au clic sur un élément [data-gf-promo-apply] : code appliqué au panier (lien /discount/CODE de Shopify) et copié,
-  puis html.gf-promo-applied (« Code BLACK15 appliqué » partout) pour le reste de la visite.
+  au-dessus du bouton « Ajouter au panier ») et le champ « Code promo » du panier.
+  Au toucher d'un élément [data-gf-promo-apply] : il s'enfonce tout de suite (classe is-press), puis « Code BLACK15 appliqué »
+  apparaît sans attendre le serveur (html.gf-promo-applied + coche animée) ; le code part au panier en arrière-plan
+  (une seule requête /cart/update.js { discount }, dans la file du panier) et est copié. Code refusé ou réseau coupé → retour à l'état de départ.
   Hauteur fixe (pas de saut au clic) ; chiffres du compte à rebours dans des cases de largeur fixe (rien ne bouge).
 {%- endcomment -%}
 {%- liquid
@@ -42,7 +43,7 @@
   assign gp_applied = settings.gf_promo_applied | escape | replace: '[code]', gp_code_b
 -%}
 {%- if gp_ok -%}
-<div class="gf-promo{% if settings.gf_promo_all %} gf-promo--all{% endif %}" data-gf-promo data-gf-promo-apply data-code="{{ gp_code_e }}" data-from="{{ settings.gf_promo_from | strip | escape }}" data-to="{{ gp_to | escape }}" role="button" tabindex="0">
+<div class="gf-promo{% if settings.gf_promo_all %} gf-promo--all{% endif %}" data-gf-promo data-gf-promo-apply data-code="{{ gp_code_e }}" data-pct="{{ settings.gf_promo_pct | default: 0 }}" data-from="{{ settings.gf_promo_from | strip | escape }}" data-to="{{ gp_to | escape }}" role="button" tabindex="0">
   <span class="gf-promo__t gfpr-go">{{ gp_text }}</span>
   <span class="gf-promo__t gfpr-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>{{ gp_applied }}</span>
   {%- if settings.gf_promo_timer -%}
@@ -51,17 +52,27 @@
   {%- endif -%}
 </div>
 <style>
-  .gf-promo { --gfpr-lime:#C5FE89; display:none; box-sizing:border-box; height:46px; align-items:center; justify-content:center; gap:14px; padding:0 16px; background:#111; color:#fff; font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; font-size:16px; line-height:1; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap; cursor:pointer; overflow:hidden; -webkit-tap-highlight-color:transparent; }
+  .gf-promo { --gfpr-lime:#C5FE89; display:none; box-sizing:border-box; height:46px; align-items:center; justify-content:center; gap:14px; padding:0 16px; background:#111; color:#fff; font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; font-size:16px; line-height:1; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap; cursor:pointer; overflow:hidden; -webkit-tap-highlight-color:transparent; touch-action:manipulation; user-select:none; -webkit-user-select:none; transition:background-color .15s; }
   .gf-promo--all, html.gf-promo-on .gf-promo { display:flex; }
   html.gf-promo-off .gf-promo { display:none !important; }
   .gf-promo b { font-weight:700; color:var(--gfpr-lime); }
   .gf-promo__t { display:inline-flex; align-items:center; }
   /* code à toucher : encadré en pointillés ; après le clic, texte « Code … appliqué » (même hauteur de bande) */
-  .gfpr-go b { display:inline-flex; align-items:center; height:28px; box-sizing:border-box; margin-left:7px; padding:1px 10px 0; border:1.5px dashed var(--gfpr-lime); border-radius:6px; }
+  .gfpr-go b { display:inline-flex; align-items:center; height:28px; box-sizing:border-box; margin-left:7px; padding:1px 10px 0; border:1.5px dashed var(--gfpr-lime); border-radius:6px; transition:transform .12s cubic-bezier(.2,.8,.2,1), background-color .12s, color .12s; }
   .gfpr-ok { display:none; }
   .gfpr-ok svg { display:inline-block; width:15px; height:15px; margin-right:7px; vertical-align:-1px; color:var(--gfpr-lime); }
   html.gf-promo-applied .gfpr-go { display:none; }
-  html.gf-promo-applied .gfpr-ok { display:inline; }
+  /* inline-block (pas flex : les espaces autour du code resteraient collés) ; bloc pour que l'animation puisse le déplacer */
+  html.gf-promo-applied .gfpr-ok { display:inline-block; }
+  /* doigt posé : la bande s'éclaircit, le code se remplit de vert et s'enfonce */
+  .gf-promo.is-press { background:#262626; }
+  .gf-promo.is-press .gfpr-go b { transform:scale(.92); background:var(--gfpr-lime); color:#111; }
+  /* code appliqué : le texte monte, la coche apparaît en rebondissant */
+  @keyframes gfprIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+  @keyframes gfprCheck { 0% { transform:scale(0); } 55% { transform:scale(1.45); } 100% { transform:scale(1); } }
+  html.gf-promo-pop .gfpr-ok { animation:gfprIn .3s cubic-bezier(.2,.8,.2,1) both; }
+  html.gf-promo-pop .gfpr-ok svg, html.gf-promo-pop .gfpi__ok svg { animation:gfprCheck .45s cubic-bezier(.2,.8,.2,1) .06s both; }
+  @media (prefers-reduced-motion:reduce) { html.gf-promo-pop .gfpr-ok, html.gf-promo-pop .gfpr-ok svg, html.gf-promo-pop .gfpi__ok svg { animation:none; } }
   .gf-promo__sep { width:1px; height:16px; flex-shrink:0; background:rgba(255,255,255,.25); }
   .gf-promo__c { display:inline-flex; align-items:center; gap:6px; color:var(--gfpr-lime); font-size:18px; }
   .gf-promo__c svg { width:16px; height:16px; flex-shrink:0; }
@@ -115,26 +126,68 @@
       for (var i = 0; i < str.length; i++) if (cells[i].textContent !== str[i]) cells[i].textContent = str[i];
     }
     tick(); setInterval(tick, 1000);
-    /* clic sur le bandeau ou un rappel : code appliqué au panier (lien /discount/ de Shopify) + copié */
-    var busy = false;
+    /* Appui : retour visuel dès que le doigt touche (avant le clic), gardé au moins 120 ms pour qu'un tap rapide se voie */
+    function pressOff(b) {
+      var left = 120 - (Date.now() - (b.__gfpr || 0));
+      setTimeout(function () { b.classList.remove('is-press'); }, left > 0 ? left : 0);
+    }
+    document.addEventListener('pointerdown', function (e) {
+      var b = e.target.closest && e.target.closest('[data-gf-promo-apply]');
+      if (!b || (e.button && e.button !== 0)) return;
+      b.__gfpr = Date.now();
+      b.classList.add('is-press');
+    }, { passive: true });
+    ['pointerup', 'pointercancel'].forEach(function (ev) {
+      document.addEventListener(ev, function () {
+        Array.prototype.forEach.call(document.querySelectorAll('[data-gf-promo-apply].is-press'), pressOff);
+      }, { passive: true, capture: true });
+    });
+    /* coche animée : elle joue d'elle-même quand « appliqué » apparaît ; déjà appliqué → relancée à l'image suivante
+       (pas de recalcul forcé de la page, qui retarderait le retour visuel) */
+    var popT;
+    function pop(again) {
+      clearTimeout(popT);
+      function on() { html.classList.add('gf-promo-pop'); popT = setTimeout(function () { html.classList.remove('gf-promo-pop'); }, 700); }
+      if (again && html.classList.contains('gf-promo-pop')) { html.classList.remove('gf-promo-pop'); requestAnimationFrame(function () { requestAnimationFrame(on); }); }
+      else on();
+    }
+    function setApplied(on) {
+      html.classList.toggle('gf-promo-applied', on);
+      try { if (on) sessionStorage.setItem('gf_promo_applied', code); else sessionStorage.removeItem('gf_promo_applied'); } catch (e) {}
+    }
+    /* code bien au panier : accepté, ou en attente si le panier est vide (Shopify l'applique dès le 1er article) */
+    function hasCode(cart) {
+      return ((cart && cart.discount_codes) || []).some(function (d) {
+        return (d.code || '').toLowerCase() === code.toLowerCase() && (d.applicable || !cart.item_count);
+      });
+    }
+    /* Tap : « appliqué » tout de suite, le serveur confirme derrière (≈ 0,7 s) ; refus ou réseau coupé → on revient */
     function apply() {
-      if (busy || html.classList.contains('gf-promo-applied')) return;
-      busy = true;
+      if (html.classList.contains('gf-promo-applied')) { pop(true); return; }
+      setApplied(true);
+      pop();
+      try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {}
       try { if (navigator.clipboard) navigator.clipboard.writeText(code).catch(function () {}); } catch (e) {}
       var root = (window.Shopify && Shopify.routes && Shopify.routes.root) || '/';
-      fetch(root + 'discount/' + encodeURIComponent(code) + '?redirect=' + encodeURIComponent(root + 'cart.js'), { credentials: 'same-origin' })
-        .then(function (r) {
-          busy = false;
-          if (!r.ok) return;
-          html.classList.add('gf-promo-applied');
-          try { sessionStorage.setItem('gf_promo_applied', code); } catch (e) {}
-          if (window.gfCart && typeof gfCart.refresh === 'function') gfCart.refresh();
-        }).catch(function () { busy = false; });
+      var req = window.gfCart && typeof gfCart.discount === 'function'
+        ? gfCart.discount(code)
+        : fetch(root + 'cart/update.js', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ discount: code }) })
+            .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+      req.then(function (cart) { if (!hasCode(cart)) setApplied(false); }, function () { setApplied(false); });
     }
-    document.addEventListener('click', function (e) {
+    /* écouteur en capture sur window, posé avant les scripts tiers (pixels, suivi) : notre réaction passe en premier */
+    window.addEventListener('click', function (e) {
       if (e.target.closest && e.target.closest('[data-gf-promo-apply]')) { e.preventDefault(); apply(); }
-    });
+    }, true);
     el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); apply(); } });
+    /* « appliqué » gardé de la visite mais le panier n'a plus le code (commande passée, code retiré ailleurs) → on revient */
+    if (html.classList.contains('gf-promo-applied')) {
+      setTimeout(function () {
+        fetch(((window.Shopify && Shopify.routes && Shopify.routes.root) || '/') + 'cart.js', { credentials: 'same-origin' })
+          .then(function (r) { return r.json(); })
+          .then(function (cart) { if (!hasCode(cart)) setApplied(false); }).catch(function () {});
+      }, 1500);
+    }
   })();
 </script>
 {%- endif -%}

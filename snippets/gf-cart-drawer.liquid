@@ -120,6 +120,20 @@
       assign gfc_save = gfc_save | plus: gfc_d
     endif
   endfor
+  comment — code promo en % sur tout le panier (ex. BLACK15) : les totaux recalculés au tap appliquent le même %
+    (arrondi comme Shopify : remise = plancher(sous-total × %)). Autre remise de panier → montants « approximatifs » (clignotent).
+  endcomment
+  assign gfc_pct = 0
+  assign gfc_off = 0
+  assign gfc_approx = false
+  for gfc_da in cart.cart_level_discount_applications
+    if gfc_da.type == 'discount_code' and gfc_da.value_type == 'percentage' and gfc_da.target_selection == 'all' and gfc_pct == 0
+      assign gfc_pct = gfc_da.value
+      assign gfc_off = gfc_da.total_allocated_amount
+    else
+      assign gfc_approx = true
+    endif
+  endfor
   if gfc_cc
     assign gfc_save_money = gfc_save | money_with_currency
   else
@@ -310,7 +324,14 @@
   .gfc .gfc-code__in::placeholder { color:var(--gfc-faint); font-weight:500; letter-spacing:0; text-transform:none; }
   .gfc .gfc-code__in:focus { outline:none; border-color:var(--gfc-ink) !important; }
   .gfc .gfc-code__btn { flex-shrink:0; height:46px; padding:0 18px; border:none; border-radius:12px; background:var(--gfc-ink); color:#fff; font-family:var(--gfc-font); font-size:15px; font-weight:700; cursor:pointer; }
-  .gfc .gfc-code__btn[disabled] { opacity:.55; }
+  .gfc .gfc-code__btn { position:relative; transition:transform .12s cubic-bezier(.2,.8,.2,1), opacity .15s; touch-action:manipulation; }
+  .gfc .gfc-code__btn:active { transform:scale(.95); }
+  .gfc .gfc-code__btn[disabled] { cursor:default; }
+  /* envoi : texte caché (largeur gardée), petit cercle qui tourne à la place */
+  .gfc .gfc-code__btn.is-loading { color:transparent; }
+  .gfc .gfc-code__btn.is-loading::after { content:''; position:absolute; top:50%; left:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border:2.5px solid rgba(255,255,255,.35); border-top-color:#fff; border-radius:50%; animation:gfc-spin .7s linear infinite; }
+  @keyframes gfc-spin { to { transform:rotate(360deg); } }
+  .gfc .gfc-code__ok.is-loading { opacity:.5; transition:opacity .15s; }
   .gfc .gfc-code__err { margin-top:6px !important; font-size:13px; font-weight:600; color:#d92d20; }
   .gfc .gfc-code__ok { display:flex; align-items:center; gap:8px; height:46px; padding:0 14px; border-radius:12px; background:var(--gfc-accent-soft); font-size:14.5px; font-weight:700; color:var(--gfc-ink); }
   .gfc .gfc-code__ok svg { display:block; width:16px; height:16px; flex-shrink:0; color:var(--gfc-green); }
@@ -422,7 +443,7 @@
   }
 </style>
 
-<div class="gfc{% if gfc_cc %} gfc--cc{% endif %}{% if settings.gfc_upb_mode == 'on' %} gfc--upb{% endif %}{% if settings.gfc_upb_photo_all %} gfc--photo{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}" data-up-only="{% if settings.gfc_up_only_with %}1{% endif %}">
+<div class="gfc{% if gfc_cc %} gfc--cc{% endif %}{% if settings.gfc_upb_mode == 'on' %} gfc--upb{% endif %}{% if settings.gfc_upb_photo_all %} gfc--photo{% endif %}{% if gfc_approx %} is-approx{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-pct="{{ gfc_pct }}" data-off="{{ gfc_off }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}" data-up-only="{% if settings.gfc_up_only_with %}1{% endif %}">
   <div class="gfc__head">
     <h2 class="gfc__title" id="gfc-title">{{ gfc_title | escape }} <span class="gfc__count" data-gfc-count{% if gfc_count == 0 %} hidden{% endif %}>({{ gfc_count }})</span></h2>
     <button type="button" ref="closeButton" on:click="cart-drawer-component/close" class="gfc__close" aria-label="{{ 'actions.close_dialog' | t }}">
@@ -972,10 +993,28 @@
       parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, th);
       return f.replace(/\{\{\s*\w+\s*\}\}/, (c < 0 ? '-' : '') + parts.join(ds));
     }
+    /* % du code promo : celui du panier (serveur), sinon celui du bandeau quand son code vient d'être tapé (panier vide) */
+    function codePct(r) {
+      var p = parseFloat(r.getAttribute('data-pct')) || 0;
+      if (!p && document.documentElement.classList.contains('gf-promo-applied')) {
+        var bar = q('[data-gf-promo]'); p = bar ? parseFloat(bar.getAttribute('data-pct')) || 0 : 0;
+      }
+      return p > 0 && p < 100 ? p : 0;
+    }
     function addMoney(dTotal, dSave) {
       var r = root(); if (!r || r.classList.contains('gfc--cc')) return;
-      var t = (parseInt(r.getAttribute('data-total'), 10) || 0) + dTotal;
-      var s = (parseInt(r.getAttribute('data-save'), 10) || 0) + dSave;
+      var t = parseInt(r.getAttribute('data-total'), 10) || 0;
+      var s = parseInt(r.getAttribute('data-save'), 10) || 0;
+      var pct = codePct(r);
+      if (pct) {
+        /* sous-total avant le code → nouvelle remise (plancher, comme Shopify) → total et économie */
+        var off = parseInt(r.getAttribute('data-off'), 10) || 0;
+        var sub = Math.max(0, t + off + dTotal), off2 = Math.floor(sub * pct / 100 + 1e-6);
+        t = sub - off2; s = s + dSave + (off2 - off);
+        r.setAttribute('data-off', off2);
+      } else {
+        t += dTotal; s += dSave;
+      }
       r.setAttribute('data-total', t);
       r.setAttribute('data-save', s);
       var te = q('[data-gfc-total]', r); if (te) te.textContent = fmt(t);
@@ -1227,9 +1266,10 @@
     document.addEventListener('submit', function (e) {
       var f = e.target.closest && e.target.closest('[data-gfc-code-form]'); if (!f) return;
       e.preventDefault();
-      var inp = q('input', f), btn = q('button', f), code = (inp.value || '').trim(), box = f.closest('[data-gfc-code]'), err = box && q('[data-gfc-code-err]', box);
+      var inp = q('input', f), btn = q('button', f), code = (inp.value || '').trim().toUpperCase(), box = f.closest('[data-gfc-code]'), err = box && q('[data-gfc-code-err]', box);
       if (!code) { inp.focus(); return; }
-      btn.disabled = true; if (err) err.hidden = true;
+      if (btn.disabled) return;
+      btn.disabled = true; btn.classList.add('is-loading'); if (err) err.hidden = true;
       post('cart/update.js', { discount: code }).then(function (cart) {
         var c = (cart.discount_codes || []).filter(function (d) { return d.code.toLowerCase() === code.toLowerCase(); })[0];
         if (c && c.applicable) {
@@ -1241,18 +1281,20 @@
           return render(cart);
         }
         return post('cart/update.js', { discount: '' }).then(function () {
-          btn.disabled = false;
+          btn.disabled = false; btn.classList.remove('is-loading');
           if (err) { err.textContent = (box.getAttribute('data-err') || '').replace('[code]', code.toUpperCase()); err.hidden = false; }
         });
-      }).catch(function () { btn.disabled = false; });
+      }).catch(function () { btn.disabled = false; btn.classList.remove('is-loading'); });
     });
     document.addEventListener('click', function (e) {
       var rm = e.target.closest && e.target.closest('[data-gfc-code-rm]');
       if (rm) {
+        if (rm.disabled) return;
         rm.disabled = true;
+        var okRow = rm.closest('.gfc-code__ok'); if (okRow) okRow.classList.add('is-loading');
         document.documentElement.classList.remove('gf-promo-applied');
         try { sessionStorage.removeItem('gf_promo_applied'); } catch (x) {}
-        post('cart/update.js', { discount: '' }).then(render).catch(function () { rm.disabled = false; });
+        post('cart/update.js', { discount: '' }).then(render).catch(function () { rm.disabled = false; if (okRow) okRow.classList.remove('is-loading'); });
       }
     });
     document.addEventListener('click', function (e) {
@@ -1404,6 +1446,8 @@
     function later() { (window.requestIdleCallback || function (f) { setTimeout(f, 1); })(function () { setTimeout(warm, 1200); }); }
     if (document.readyState === 'complete') later(); else window.addEventListener('load', later);
 
-    window.gfCart = { setMain: setMain, open: open, refresh: refresh };
+    /* Code promo (bandeau, rappel) : une seule requête dans la file ; le panier se redessine avec la remise */
+    function discount(code) { return request('cart/update.js', { discount: code }); }
+    window.gfCart = { setMain: setMain, open: open, refresh: refresh, discount: discount };
   })();
 </script>

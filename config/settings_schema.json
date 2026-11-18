@@ -365,6 +365,13 @@
         "info": "Doit exister dans Shopify (Réductions)."
       },
       {
+        "type": "number",
+        "id": "gf_promo_pct",
+        "label": "Remise du code (%)",
+        "default": 15,
+        "info": "Le même % que la réduction Shopify. Sert à afficher tout de suite le bon total du panier après un tap sur le code (le total exact de Shopify arrive ensuite)."
+      },
+      {
         "type": "text",
         "id": "gf_promo_text",
         "label": "Texte",
