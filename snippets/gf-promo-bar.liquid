@@ -1,0 +1,116 @@
+{%- comment -%}
+  Bandeau code promo en haut de page (sous la barre d'annonce) : « -15 % avec le code BLACK15 | ⏱ 12:16:15 ».
+  Compte à rebours jusqu'à minuit (heure de Paris), relancé chaque jour.
+  Masqué par défaut. Montré par :
+  • le test A/B (CSS injecté par Intelligems : .gf-promo{display:flex!important}) ;
+  • l'aperçu ?gf_promo=1 (gardé pour la visite, ?gf_promo=0 pour revenir) ;
+  • la case « Pour tout le monde » (Réglages du thème › Bandeau code promo).
+  Au clic : le code est appliqué au panier (lien /discount/CODE de Shopify) et copié, puis le bandeau affiche
+  « Code BLACK15 appliqué » pour le reste de la visite. Hors des dates réglées : jamais affiché.
+{%- endcomment -%}
+{%- liquid
+  assign gp_code = settings.gf_promo_code | strip
+  assign gp_ok = false
+  if settings.gf_promo_enabled and gp_code != blank
+    assign gp_ok = true
+  endif
+  comment — langue du site hors de la liste → pas de bandeau (vide = toutes les langues)
+  endcomment
+  assign gp_langs = settings.gf_promo_locales | downcase | remove: ' '
+  if gp_ok and gp_langs != blank
+    assign gp_langs_l = gp_langs | split: ','
+    unless gp_langs_l contains request.locale.iso_code
+      assign gp_ok = false
+    endunless
+  endif
+  comment — date de fin passée (date du serveur) → rien ; l'heure exacte est revérifiée en JS (pages en cache)
+  endcomment
+  assign gp_to = settings.gf_promo_to | strip
+  if gp_ok and gp_to != blank
+    assign gp_to_d = gp_to | slice: 0, 10 | remove: '-' | plus: 0
+    assign gp_now_d = 'now' | date: '%Y%m%d' | plus: 0
+    if gp_to_d > 0 and gp_now_d > gp_to_d
+      assign gp_ok = false
+    endif
+  endif
+  assign gp_code_e = gp_code | escape
+  assign gp_code_b = gp_code_e | prepend: '<b>' | append: '</b>'
+  assign gp_text = settings.gf_promo_text | escape | replace: '[code]', gp_code_b
+  assign gp_applied = settings.gf_promo_applied | escape | replace: '[code]', gp_code_b
+-%}
+{%- if gp_ok -%}
+<div class="gf-promo{% if settings.gf_promo_all %} gf-promo--all{% endif %}" data-gf-promo data-code="{{ gp_code_e }}" data-from="{{ settings.gf_promo_from | strip | escape }}" data-to="{{ gp_to | escape }}" role="button" tabindex="0">
+  <span class="gf-promo__t" data-gf-promo-txt>{{ gp_text }}</span>
+  <span class="gf-promo__t gf-promo__ok" data-gf-promo-ok hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>{{ gp_applied }}</span>
+  {%- if settings.gf_promo_timer -%}
+    <span class="gf-promo__sep" aria-hidden="true"></span>
+    <span class="gf-promo__c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-gf-promo-time>--:--:--</span></span>
+  {%- endif -%}
+</div>
+<style>
+  .gf-promo { --gfpr-lime:#C5FE89; display:none; align-items:center; justify-content:center; gap:14px; padding:10px 16px; background:#111; color:#fff; font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; font-size:16px; line-height:1; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .gf-promo--all, html.gf-promo-on .gf-promo { display:flex; }
+  html.gf-promo-off .gf-promo { display:none !important; }
+  .gf-promo b { font-weight:700; color:var(--gfpr-lime); }
+  .gf-promo [hidden] { display:none !important; }
+  .gf-promo__ok { display:inline-flex; align-items:center; gap:6px; }
+  .gf-promo__ok svg { width:15px; height:15px; color:var(--gfpr-lime); }
+  .gf-promo__sep { width:1px; height:16px; background:rgba(255,255,255,.25); }
+  .gf-promo__c { display:inline-flex; align-items:center; gap:6px; color:var(--gfpr-lime); font-size:18px; font-variant-numeric:tabular-nums; }
+  .gf-promo__c svg { width:16px; height:16px; }
+  @media (max-width:359px) { .gf-promo { gap:10px; font-size:14.5px; padding-left:12px; padding-right:12px; } .gf-promo__c { font-size:16px; } }
+  @media (min-width:750px) { .gf-promo { gap:18px; padding:11px 24px; font-size:17px; } .gf-promo__c { font-size:19px; } }
+</style>
+<script>
+  (function () {
+    var el = document.querySelector('[data-gf-promo]'), html = document.documentElement;
+    if (!el) return;
+    /* aperçu : ?gf_promo=1 (gardé pour la visite), ?gf_promo=0 pour revenir */
+    try {
+      var m = location.search.match(/[?&]gf_promo=([01])/);
+      if (m) sessionStorage.setItem('gf_promo', m[1]);
+      if (sessionStorage.getItem('gf_promo') === '1') html.classList.add('gf-promo-on');
+    } catch (e) {}
+    /* heure de Paris (le compte à rebours et les dates suivent Paris, quel que soit le pays du visiteur) */
+    function paris() {
+      var p = {};
+      new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' })
+        .formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+      return p;
+    }
+    function stamp(s) { return (s || '').replace(/[^0-9]/g, '').slice(0, 12); }
+    function inWindow(p) {
+      var now = p.year + p.month + p.day + p.hour + p.minute, from = stamp(el.getAttribute('data-from')), to = stamp(el.getAttribute('data-to'));
+      if (from.length === 8) from += '0000';
+      if (to.length === 8) to += '2359';
+      return (!from || now >= from) && (!to || now <= to);
+    }
+    var t = el.querySelector('[data-gf-promo-time]');
+    function tick() {
+      var p = paris();
+      if (!inWindow(p)) { html.classList.add('gf-promo-off'); return; }
+      if (!t) return;
+      var left = 86400 - (+p.hour * 3600 + +p.minute * 60 + +p.second), h = Math.floor(left / 3600), mn = Math.floor(left % 3600 / 60), s = left % 60;
+      t.textContent = [h, mn, s].map(function (n) { return n < 10 ? '0' + n : '' + n; }).join(':');
+    }
+    tick(); setInterval(tick, 1000);
+    /* clic : code appliqué au panier (lien /discount/ de Shopify) + copié, puis « Code … appliqué » pour la visite */
+    var code = el.getAttribute('data-code'), ok = el.querySelector('[data-gf-promo-ok]'), txt = el.querySelector('[data-gf-promo-txt]');
+    function applied() { if (ok && txt) { txt.hidden = true; ok.hidden = false; } }
+    try { if (sessionStorage.getItem('gf_promo_applied') === code) applied(); } catch (e) {}
+    function apply() {
+      try { if (navigator.clipboard) navigator.clipboard.writeText(code).catch(function () {}); } catch (e) {}
+      var root = (window.Shopify && Shopify.routes && Shopify.routes.root) || '/';
+      fetch(root + 'discount/' + encodeURIComponent(code) + '?redirect=' + encodeURIComponent(root + 'cart.js'), { credentials: 'same-origin' })
+        .then(function (r) {
+          if (!r.ok) return;
+          applied();
+          try { sessionStorage.setItem('gf_promo_applied', code); } catch (e) {}
+          if (window.gfCart && typeof gfCart.refresh === 'function') gfCart.refresh();
+        }).catch(function () {});
+    }
+    el.addEventListener('click', apply);
+    el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); apply(); } });
+  })();
+</script>
+{%- endif -%}

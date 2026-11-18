@@ -339,6 +339,72 @@
     ]
   },
   {
+    "name": "Bandeau code promo",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Bande noire sous la barre d'annonce : code promo + compte à rebours jusqu'à minuit (heure de Paris), relancé chaque jour. Au clic, le code est appliqué au panier et copié. Caché tant que la case « Pour tout le monde » est décochée, sauf pendant un test A/B ou en aperçu (?gf_promo=1)."
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_promo_enabled",
+        "label": "Activer le bandeau",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_promo_all",
+        "label": "Pour tout le monde",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_code",
+        "label": "Code promo",
+        "default": "BLACK15",
+        "info": "Doit exister dans Shopify (Réductions)."
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_text",
+        "label": "Texte",
+        "default": "-15 % avec le code [code]",
+        "info": "[code] = le code, en vert."
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_applied",
+        "label": "Texte après le clic",
+        "default": "Code [code] appliqué"
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_promo_timer",
+        "label": "Compte à rebours jusqu'à minuit",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_from",
+        "label": "Début (AAAA-MM-JJ HH:MM, heure de Paris)",
+        "info": "Vide = tout de suite."
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_to",
+        "label": "Fin (AAAA-MM-JJ HH:MM, heure de Paris)",
+        "info": "Après cette date, le bandeau n'apparaît plus. Vide = pas de fin."
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_locales",
+        "label": "Langues où le bandeau s'affiche",
+        "default": "fr",
+        "info": "Codes de langue séparés par des virgules. Vide = toutes les langues."
+      }
+    ]
+  },
+  {
     "name": "Mode Black Friday",
     "settings": [
       {
