@@ -921,6 +921,7 @@
         </div>
       {%- endif -%}
 
+      {%- render 'gf-promo-inline', where: 'cta' -%}
       <button class="gfp-cta" id="gfp-cta-{{ gf_id }}">
         <span class="gfp-cta-main"><span data-gfp-ctalabel>{{ s.cta_text | default: 'Ajouter au panier' }}</span><span class="gfp-ctaprice" data-gfp-ctaprice></span></span>
         {%- if s.show_cta_guarantee -%}

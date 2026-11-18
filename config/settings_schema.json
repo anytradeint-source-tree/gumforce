@@ -378,6 +378,26 @@
         "default": "Code [code] appliqué"
       },
       {
+        "type": "text",
+        "id": "gf_promo_cta_text",
+        "label": "Rappel au-dessus du bouton « Ajouter au panier »",
+        "default": "-15 % en plus : appuie ici [code]",
+        "info": "Montré seulement quand le bandeau est visible. Vide = pas de rappel."
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_cart_text",
+        "label": "Bouton dans le panier (en haut)",
+        "default": "-15 % [code]",
+        "info": "Vide = pas de bouton."
+      },
+      {
+        "type": "text",
+        "id": "gf_promo_cart_applied",
+        "label": "Bouton dans le panier, après le clic",
+        "default": "[code] appliqué"
+      },
+      {
         "type": "checkbox",
         "id": "gf_promo_timer",
         "label": "Compte à rebours jusqu'à minuit",

@@ -410,6 +410,7 @@
 <div class="gfc{% if gfc_cc %} gfc--cc{% endif %}{% if settings.gfc_upb_mode == 'on' %} gfc--upb{% endif %}{% if settings.gfc_upb_photo_all %} gfc--photo{% endif %}" id="gfc" data-gfc data-total="{{ cart.total_price }}" data-save="{{ gfc_save }}" data-fmt="{{ shop.money_format | strip_html | escape }}" data-ship-min="{{ gfc_ship_min }}" data-up-only="{% if settings.gfc_up_only_with %}1{% endif %}">
   <div class="gfc__head">
     <h2 class="gfc__title" id="gfc-title">{{ gfc_title | escape }} <span class="gfc__count" data-gfc-count{% if gfc_count == 0 %} hidden{% endif %}>({{ gfc_count }})</span></h2>
+    {%- render 'gf-promo-inline', where: 'cart' -%}
     <button type="button" ref="closeButton" on:click="cart-drawer-component/close" class="gfc__close" aria-label="{{ 'actions.close_dialog' | t }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
