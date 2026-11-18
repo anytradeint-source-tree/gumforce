@@ -368,8 +368,8 @@
         "type": "text",
         "id": "gf_promo_text",
         "label": "Texte",
-        "default": "-15 % avec le code [code]",
-        "info": "[code] = le code, en vert."
+        "default": "-15 % : appuie ici [code]",
+        "info": "[code] = le code, en vert dans un cadre en pointillés (à toucher)."
       },
       {
         "type": "text",

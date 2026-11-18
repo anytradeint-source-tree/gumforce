@@ -358,7 +358,7 @@
     "gf_promo_enabled": true,
     "gf_promo_all": false,
     "gf_promo_code": "BLACK15",
-    "gf_promo_text": "-15 % avec le code [code]",
+    "gf_promo_text": "-15 % : appuie ici [code]",
     "gf_promo_applied": "Code [code] appliqué",
     "gf_promo_timer": true,
     "gf_promo_from": "",
