@@ -44,5 +44,11 @@
   @media (max-width:389px) { html .gfpi--cta { font-size:14.5px; height:44px; } .gfpi--cta .gfpi__go b { height:26px; } html .gfpi--cart { font-size:12px; padding:0 8px; } }
   /* très petits écrans : dans le panier, seulement le code encadré (le titre reste sur une ligne) */
   @media (max-width:359px) { .gfpi--cart .gfpi__go { font-size:0; } .gfpi--cart .gfpi__go b { font-size:12px; margin-left:0; } html .gfpi--cart { padding:0 6px; } }
+  /* le bloc d'offre remet marges et paddings à zéro (#gfp-… *) et le thème met les svg en bloc : on garde nos valeurs */
+  html .gfpi--cta { margin:12px 0 0 !important; padding:0 14px !important; }
+  html .gfpi--cta .gfpi__go b { margin-left:7px !important; padding:1px 10px 0 !important; }
+  html .gfpi--cart .gfpi__go b { margin-left:6px !important; padding:1px 7px 0 !important; }
+  html .gfpi__ok svg { display:inline-block !important; margin:0 6px 0 0 !important; padding:0 !important; }
+  @media (max-width:359px) { html .gfpi--cart .gfpi__go b { margin-left:0 !important; } }
 </style>
 {%- endif -%}
