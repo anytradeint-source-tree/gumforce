@@ -22,12 +22,6 @@
             "align": "center"
           }
         },
-        "spacer_XFfWUt": {
-          "type": "spacer",
-          "settings": {
-            "size": "s"
-          }
-        },
         "intro": {
           "type": "text",
           "settings": {
@@ -73,7 +67,7 @@
         "t-ecrase": {
           "type": "text",
           "settings": {
-            "text": "<p>Un chewing-gum de supermarché, tu le tues en une minute. La texture cède, tu mâches du vide.</p><p>GUMFORCE est formulé 10x plus dur pour tenir toute la séance.</p><p><strong>C'est comme soulever une haltère pour la mâchoire.</strong></p>",
+            "text": "<p>Un chewing-gum de supermarché, tu le tues en une minute. La texture cède, tu mâches du vide.</p><p>GUMFORCE est formulé 10x plus dur pour tenir toute la séance.</p><p><strong>C'est comme soulever un haltère pour la mâchoire.</strong></p>",
             "style": "normal",
             "align": "left"
           }
@@ -260,36 +254,30 @@
             "align": "center"
           }
         },
-        "h2-offre": {
-          "type": "heading",
+        "rating-top": {
+          "type": "rating",
           "settings": {
-            "text": "Offre [période]: Tu en paies 2, tu en reçois 4",
-            "number": "",
-            "tag": "h2",
-            "align": "center"
+            "stars": "shopify://shop_images/trust5_1.svg",
+            "text": "[note]/5 Excellent · [avis] avis Trustpilot",
+            "align": "center",
+            "bf_only": false
           }
         },
-        "t-offre": {
-          "type": "text",
+        "img-hero": {
+          "type": "image",
           "settings": {
-            "text": "<p>Livraison offerte en 48 h. On a tellement confiance en GUMFORCE qu'on te <strong>rembourse à 100 % si tu ne vois rien au bout de 90 jours.</strong></p>",
-            "style": "normal",
-            "align": "center"
-          }
-        },
-        "cta-fin": {
-          "type": "cta",
-          "settings": {
-            "bf_strip": true,
-            "text": "Offre [période]",
-            "link": "shopify://products/gumforce",
-            "note": "Livraison offerte en 48 h · Remboursé 90 jours"
+            "image": "shopify://shop_images/gf-lp-visage-avant-apres.jpg",
+            "image_mobile": "shopify://shop_images/gf-lp-visage-avant-apres-mobile.jpg",
+            "size": "full",
+            "caption": "",
+            "bf_only": false
           }
         }
       },
       "block_order": [
         "h1",
-        "spacer_XFfWUt",
+        "rating-top",
+        "img-hero",
         "intro",
         "h2-visible",
         "t-visible",
@@ -317,7 +305,351 @@
         "t-changer",
         "t-photo",
         "img-changer",
-        "t-rejoins",
+        "t-rejoins"
+      ],
+      "settings": {
+        "h1_size": 40,
+        "h2_size": 28,
+        "transparent_bg": false,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#1c1c1e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "cta_bg": "#111111",
+        "cta_text_color": "#ffffff",
+        "img_radius": 16,
+        "enable_animation": true,
+        "padding_top": 40,
+        "padding_bottom": 0,
+        "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
+        "sticky_cta": "J'en profite"
+      }
+    },
+    "avis-offre": {
+      "type": "gumforce-landing",
+      "blocks": {
+        "h2-avis": {
+          "type": "heading",
+          "settings": {
+            "text": "Ils en parlent mieux que nous",
+            "number": "",
+            "tag": "h2",
+            "align": "center",
+            "bf_only": false
+          }
+        },
+        "rating-avis": {
+          "type": "rating",
+          "settings": {
+            "stars": "shopify://shop_images/trust5_1.svg",
+            "text": "[note]/5 Excellent · [avis] avis Trustpilot",
+            "align": "center",
+            "bf_only": false
+          }
+        },
+        "avis-defilent": {
+          "type": "marquee",
+          "settings": {
+            "rows": "2",
+            "speed": "8"
+          }
+        },
+        "avis-r06": {
+          "type": "quote",
+          "settings": {
+            "text": "J'ai des résultats de fou après un mois, ma mâchoire est plus marquée et j’ai un visage plus attirant et masculin",
+            "highlight": "ma mâchoire est plus marquée",
+            "name": "Quentin B.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r01": {
+          "type": "quote",
+          "settings": {
+            "text": "Ca fonctionne vraiment de ouf. J'en mâche 4 par jour, depuis 5 mois et ma mâchoire s'est complètement transformé. Mes joues sont hyper creuses et mon visage s'est affiné. Et à chaque commande je suis livré en moins de 24h.",
+            "highlight": "ma mâchoire s'est complètement transformé",
+            "name": "Alex M.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r03": {
+          "type": "quote",
+          "settings": {
+            "text": "Tous les jours avant d’aller a la salle j'ai pris l'habitude de prendre un gumforce pour les 15 minutes de trajet, c'est parfait et ça fonctionne de ouf mon visage s'est vraiment affiné",
+            "highlight": "ça fonctionne de ouf mon visage s'est vraiment affiné",
+            "name": "Ethan P.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r26": {
+          "type": "quote",
+          "settings": {
+            "text": "J’utilise Gumforce depuis plusieurs semaines et j’ai retrouvé une mâchoire plus dessinée et mes contours sont aussi plus définis. Je ne connaissais pas du tout ce produit, mais je trouve que c'est innovant.",
+            "highlight": "j’ai retrouvé une mâchoire plus dessinée",
+            "name": "Yannick P.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r04": {
+          "type": "quote",
+          "settings": {
+            "text": "Produit dingue, au bout de 3 semaines seulement je me trouve déjà plus beau en photo et sur les vidéos franchement allez y les yeux fermés",
+            "highlight": "au bout de 3 semaines seulement je me trouve déjà plus beau en photo",
+            "name": "Elio P.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r48": {
+          "type": "quote",
+          "settings": {
+            "text": "Excellent chewing gum, depuis que je les utilise ma mâchoire est tellement plus dessinée c’est impressionnant. Super taff l'équipe Gumforce",
+            "highlight": "ma mâchoire est tellement plus dessinée",
+            "name": "Molly P.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r10": {
+          "type": "quote",
+          "settings": {
+            "text": "En tant que coach j'ai suivi un programme de 1 mois avec gumforce pour muscler mon masseter, le muscle situé au niveau de la mâchoire et les résultats sont impressionnants, je vais repasser commande",
+            "highlight": "les résultats sont impressionnants",
+            "name": "Ronan E.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r15": {
+          "type": "quote",
+          "settings": {
+            "text": "Y'a personne qui entraîne sa mâchoire et à la salle un pote m’a parlé de Gumforce, j’ai passé 2 commandes, je comprends pas pourquoi on oublie tous de muscler sa mâchoire pourtant c’est la première chose que les autres regarde chez nous",
+            "highlight": "c’est la première chose que les autres regarde chez nous",
+            "name": "Yann Y.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r14": {
+          "type": "quote",
+          "settings": {
+            "text": "Je m'entraîne tous les jours et Gumforce vient compléter mon entraînement à la salle, j’en mâche 5 par jour depuis plus de 3 mois et l'évolution est incroyable les gars",
+            "highlight": "l'évolution est incroyable",
+            "name": "Christopher D.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r50": {
+          "type": "quote",
+          "settings": {
+            "text": "On m'a toujours dit que j'avais un visage d'enfant donc j'ai commandé sur le site et en plus de la livraison hyper rapide les chewing-gums marchent vraiment, les résultats arrivent hyper rapidement je suis trop content",
+            "highlight": "les chewing-gums marchent vraiment",
+            "name": "Louis I.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r37": {
+          "type": "quote",
+          "settings": {
+            "text": "J'ai testé sur 4 semaines et je viens de repassé commandes, je me sens mieux et les filles me remarquent plus en soirée ect",
+            "highlight": "les filles me remarquent plus en soirée",
+            "name": "Mathéo M.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r41": {
+          "type": "quote",
+          "settings": {
+            "text": "Honnêtement rien à redire, Gumforce c’est de la frappe, les résultats sont visibles rapidement 😉 La livraison et vraiment rapide en plus!",
+            "highlight": "les résultats sont visibles rapidement",
+            "name": "Gaël W.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r19": {
+          "type": "quote",
+          "settings": {
+            "text": "Je viens de commencer mon 2ème paquet et je vois déjà des résultats, perso j’ai plus confiance en moi donc c’est hyper motivant. Je recommande à 100%",
+            "highlight": "je vois déjà des résultats",
+            "name": "Antoine A.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r29": {
+          "type": "quote",
+          "settings": {
+            "text": "J'ai testé ces gums après avoir testé d'autres marques et c'est de loin la meilleure, j'ai jamais aimé mes joues mais là je vois une différence en quelques semaines d'utilisation",
+            "highlight": "c'est de loin la meilleure",
+            "name": "Myron U.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r22": {
+          "type": "quote",
+          "settings": {
+            "text": "Coach de sport, je recommande à tous mes élèves de marcher gumforce et je vois une diff sur tous les jeunes franchement c top",
+            "highlight": "je vois une diff sur tous les jeunes",
+            "name": "Jeremi A.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r25": {
+          "type": "quote",
+          "settings": {
+            "text": "Incroyable ce produit, ultra dur je m’attendais pas du tout à ça!! Les gars faut pas oublier la mâchoire personne pense à la muscler mais c’est trop important",
+            "highlight": "ultra dur je m’attendais pas du tout à ça",
+            "name": "Gaëtan U.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r27": {
+          "type": "quote",
+          "settings": {
+            "text": "La résistance est dingue, la première fois j'ai pas tenu 5 min mais maintenant j'arrive à respecter des sessions d'environ 15 min à chaque fois",
+            "highlight": "La résistance est dingue",
+            "name": "Mathéo W.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r08": {
+          "type": "quote",
+          "settings": {
+            "text": "Je suis coach sportif et j’aurai jamais pensé entraîner ma mâchoire. J’ai voulu tester ce chewing-gum et franchement les résultats parlent d’eux-mêmes, en plus la livraison est hyper rapide bref tout s'est bien passé",
+            "highlight": "les résultats parlent d’eux-mêmes",
+            "name": "Johan F.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r05": {
+          "type": "quote",
+          "settings": {
+            "text": "Pour avoir tester d’autres marques gumforce est clairement au dessus avec la créatine déjà intégrée, je recommande merci gumforce",
+            "highlight": "gumforce est clairement au dessus avec la créatine déjà intégrée",
+            "name": "Ben T.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r44": {
+          "type": "quote",
+          "settings": {
+            "text": "Super produit trouvé dans un magasin de nutrition sportive, ça faisait longtemps que j'avais pas vu un produit qualitatif avec cet effet immédiat en quelques jours",
+            "highlight": "cet effet immédiat en quelques jours",
+            "name": "Louis B.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r28": {
+          "type": "quote",
+          "settings": {
+            "text": "3ème commande chez gumforce, j'en prends tous les jours le secret c'est vraiment la régularité des entraînements",
+            "highlight": "le secret c'est vraiment la régularité",
+            "name": "Elliot P.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r40": {
+          "type": "quote",
+          "settings": {
+            "text": "J´ADORE ! C’est bon et en plus ça muscle la mâchoire. Plus jamais j’achèterai des chewing-gum classique 😂",
+            "highlight": "Plus jamais j’achèterai des chewing-gum classique",
+            "name": "Léandre I.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r32": {
+          "type": "quote",
+          "settings": {
+            "text": "Les chewing-gum de chez GumForce sont vraiment top honnêtement. Que ce soit au niveau de la texture, de la résistance et du goût, c’est vraiment bon. Je recommande vivement",
+            "highlight": "",
+            "name": "Maxence N.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r21": {
+          "type": "quote",
+          "settings": {
+            "text": "Superbe produit !! Plus l’ajout de la créatine qui donne l’originalité à ce chewing-gum. Une livraison qui fut très rapide en 48h.",
+            "highlight": "",
+            "name": "Nicolas D.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "h2-offre": {
+          "type": "heading",
+          "settings": {
+            "text": "Offre [période] : tu en paies 2, tu en reçois 4",
+            "number": "",
+            "tag": "h2",
+            "align": "center"
+          }
+        },
+        "t-offre": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Livraison offerte en 48 h. On a tellement confiance en GUMFORCE qu'on te <strong>rembourse à 100 % si tu ne vois rien au bout de 90 jours.</strong></p>",
+            "style": "normal",
+            "align": "center"
+          }
+        },
+        "cta-fin": {
+          "type": "cta",
+          "settings": {
+            "bf_strip": true,
+            "text": "Offre [période]",
+            "link": "shopify://products/gumforce",
+            "note": "Livraison offerte en 48 h · Remboursé 90 jours"
+          }
+        }
+      },
+      "block_order": [
+        "h2-avis",
+        "rating-avis",
+        "avis-defilent",
+        "avis-r06",
+        "avis-r01",
+        "avis-r03",
+        "avis-r26",
+        "avis-r04",
+        "avis-r48",
+        "avis-r10",
+        "avis-r15",
+        "avis-r14",
+        "avis-r50",
+        "avis-r37",
+        "avis-r41",
+        "avis-r19",
+        "avis-r29",
+        "avis-r22",
+        "avis-r25",
+        "avis-r27",
+        "avis-r08",
+        "avis-r05",
+        "avis-r44",
+        "avis-r28",
+        "avis-r40",
+        "avis-r32",
+        "avis-r21",
         "h2-offre",
         "t-offre",
         "cta-fin"
@@ -335,14 +667,18 @@
         "cta_text_color": "#ffffff",
         "img_radius": 16,
         "enable_animation": true,
-        "padding_top": 40,
+        "padding_top": 0,
         "padding_bottom": 64,
         "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
-        "sticky_cta": "J'en profite"
+        "sticky_cta": "J'en profite",
+        "eager_first_img": false,
+        "sticky_enabled": true,
+        "sticky_mode": "always"
       }
     }
   },
   "order": [
-    "main"
+    "main",
+    "avis-offre"
   ]
 }
