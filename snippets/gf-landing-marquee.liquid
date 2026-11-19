@@ -1,0 +1,20 @@
+{%- comment -%}
+  GF Landing : bandeau « Avis qui défilent » (bloc marquee de la section gumforce-landing + les blocs « Avis (texte) » placés juste après).
+  Chaque rangée contient ses cartes puis leur copie (aria-hidden) : l'animation recule d'exactement une moitié, la boucle ne se voit pas.
+  Paramètres : a / ac = cartes de la rangée 1 et leur copie, b / bc = rangée 2 (vide si 1 rangée), na / nb = nombre de cartes par rangée,
+  sec = secondes par carte (vitesse), attrs = attributs de l'éditeur du bloc.
+{%- endcomment -%}
+{%- liquid
+  assign gfl_mq_da = na | times: sec
+  assign gfl_mq_db = nb | times: sec
+-%}
+{%- if na > 0 -%}
+<div class="gfl-mq" {{ attrs }}>
+  <div class="gfl-mq-row" style="--gfl-mq-d:{{ gfl_mq_da }}s"><div class="gfl-mq-set">{{ a }}</div><div class="gfl-mq-set" aria-hidden="true">{{ ac }}</div></div>
+  {%- if nb > 0 %}
+  <div class="gfl-mq-row gfl-mq-row--rev" style="--gfl-mq-d:{{ gfl_mq_db }}s"><div class="gfl-mq-set">{{ b }}</div><div class="gfl-mq-set" aria-hidden="true">{{ bc }}</div></div>
+  {%- endif %}
+</div>
+{%- elsif request.design_mode -%}
+<div class="gfl-mq" {{ attrs }}></div>
+{%- endif -%}

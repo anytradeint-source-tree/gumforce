@@ -43,6 +43,22 @@
   if s.typo == 'presse'
     assign gfl_press = true
   endif
+
+  comment — avis qui défilent : le bloc « Avis qui défilent » ouvre un bandeau, les blocs « Avis (texte) » qui le suivent s'y rangent
+  endcomment
+  assign gfl_mq = false
+  assign gfl_has_mq = false
+  for gfl_bl in section.blocks
+    if gfl_bl.type == 'marquee'
+      assign gfl_has_mq = true
+      break
+    endif
+  endfor
+
+  assign gfl_stk_all = false
+  if s.sticky_mode == 'always'
+    assign gfl_stk_all = true
+  endif
 -%}
 {%- comment -%} [période] dans les textes = période en cours du calendrier des offres (Réglages du thème), ou le réglage « Nom de la période » s'il est rempli ; [note] = note Trustpilot du thème. Seuls les textes qui contiennent « [ » passent par gf-landing-ph : les landings existantes restent identiques. {%- endcomment -%}
 {%- comment -%} Mode Black Friday : éléments gf-bf-only / gf-nobf (Réglages du thème › Mode Black Friday) {%- endcomment -%}
@@ -293,27 +309,69 @@
   #gfl-{{ sid }} .gfl-quote-txt { font-size: 15.5px; line-height: 1.6; color: var(--gfl-text); }
   #gfl-{{ sid }} .gfl-quote-txt mark { background: #c5fe89; color: #1a1a1a; padding: 0 2px; }
 
-  /* ── Bouton collant mobile (recette de la barre collante de la page produit, style noir) ── */
-  #gfl-{{ sid }} .gfl-stk { display: none; }
-  @media (max-width: 749px) {
-    #gfl-{{ sid }} .gfl-stk {
-      display: flex; align-items: center; gap: 12px;
-      position: fixed; z-index: 9990; left: 50%;
-      bottom: calc(16px + env(safe-area-inset-bottom));
-      width: calc(100% - 32px); max-width: 680px; padding: 10px 10px 10px 16px;
-      background: #161616; color: #f4f4f4;
-      border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.30), 0 0 0 0.5px rgba(0,0,0,0.10);
-      opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(20px);
-      transition: opacity .45s cubic-bezier(.22,1,.36,1), transform .45s cubic-bezier(.22,1,.36,1);
-    }
-    #gfl-{{ sid }} .gfl-stk.is-visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
-    #gfl-{{ sid }} .gfl-stk-t { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 700; line-height: 1.3; }
-    #gfl-{{ sid }} .gfl-stk-b {
-      flex-shrink: 0; background: #fff; color: #0a0a0a; text-decoration: none;
-      font-size: 14px; font-weight: 700; padding: 12px 18px; border-radius: 20px;
-      -webkit-tap-highlight-color: transparent;
-    }
+  /* ── Note Trustpilot (étoiles + texte, recette de la note sous le titre de la page produit) ── */
+  #gfl-{{ sid }} .gfl-rate {
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+    gap: 6px 10px; margin: 0 0 6px;
+  }
+  #gfl-{{ sid }} .gfl-rate--l { justify-content: flex-start; }
+  #gfl-{{ sid }} .gfl-rate-stars { display: block; height: 18px; width: auto; }
+  #gfl-{{ sid }} .gfl-rate-t { font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--gfl-hd); }
+
+  /* ── Avis qui défilent (cartes d'avis de la page produit, en bandeau continu ; pause au doigt / au survol) ── */
+  {%- if gfl_has_mq %}
+  #gfl-{{ sid }} { overflow-x: hidden; overflow-x: clip; }
+  #gfl-{{ sid }} .gfl-mq { display: flex; flex-direction: column; gap: 12px; margin: 22px -16px 8px; overflow: hidden; }
+  #gfl-{{ sid }} .gfl-mq-row {
+    display: flex; width: max-content;
+    animation: gfl-mq-{{ sid }} var(--gfl-mq-d, 80s) linear infinite;
+  }
+  #gfl-{{ sid }} .gfl-mq-row--rev { animation-direction: reverse; }
+  #gfl-{{ sid }} .gfl-mq.is-paused .gfl-mq-row,
+  #gfl-{{ sid }} .gfl-mq.is-off .gfl-mq-row { animation-play-state: paused; }
+  @media (hover: hover) and (pointer: fine) {
+    #gfl-{{ sid }} .gfl-mq:hover .gfl-mq-row { animation-play-state: paused; }
+  }
+  #gfl-{{ sid }} .gfl-mq-set { display: flex; align-items: flex-start; }
+  #gfl-{{ sid }} .gfl-mq-card { flex: 0 0 auto; width: 272px; margin: 0 12px 0 0; }
+  #gfl-{{ sid }} .gfl-mq-card .gfl-quote-txt { font-size: 14.5px; line-height: 1.55; }
+  @keyframes gfl-mq-{{ sid }} { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+  @media (min-width: 750px) {
+    #gfl-{{ sid }} .gfl-mq { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
+    #gfl-{{ sid }} .gfl-mq-card { width: 320px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #gfl-{{ sid }} .gfl-mq-row { animation: none; }
+    #gfl-{{ sid }} .gfl-mq { overflow-x: auto; scrollbar-width: none; }
+    #gfl-{{ sid }} .gfl-mq-set[aria-hidden] { display: none; }
+  }
+  {%- endif %}
+
+  /* ── Bouton collant (recette de la barre collante de la page produit, style noir) :
+     mobile seulement, sauf en mode « toujours visible » (aussi sur ordinateur) ── */
+  #gfl-{{ sid }} .gfl-stk {
+    display: flex; align-items: center; gap: 12px;
+    position: fixed; z-index: 9990; left: 50%;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    width: calc(100% - 32px); max-width: 680px; padding: 10px 10px 10px 16px;
+    background: #161616; color: #f4f4f4;
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.30), 0 0 0 0.5px rgba(0,0,0,0.10);
+    opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(20px);
+    transition: opacity .45s cubic-bezier(.22,1,.36,1), transform .45s cubic-bezier(.22,1,.36,1);
+  }
+  #gfl-{{ sid }} .gfl-stk.is-visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+  #gfl-{{ sid }} .gfl-stk-t { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 700; line-height: 1.3; }
+  #gfl-{{ sid }} .gfl-stk-b {
+    flex-shrink: 0; background: #fff; color: #0a0a0a; text-decoration: none;
+    font-size: 14px; font-weight: 700; padding: 12px 18px; border-radius: 20px;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .12s ease;
+  }
+  #gfl-{{ sid }} .gfl-stk-b:active { transform: scale(.96); }
+  @media (min-width: 750px) {
+    #gfl-{{ sid }} .gfl-stk:not(.gfl-stk--all) { display: none; }
+    #gfl-{{ sid }} .gfl-stk-t { font-size: 15px; }
   }
 
   /* ── Espace ── */
@@ -359,6 +417,10 @@
       {%- if b.bf_only and gf_bf_on != '1' -%}{%- continue -%}{%- endif -%}
       {%- capture gfl_bfc -%}{% if b.bf_only %} gf-bf-only{% endif %}{%- endcapture -%}
       {%- if gfl_tbl and block.type != 'cmp_row' -%}</tbody></table></div></div>{%- assign gfl_tbl = false -%}{%- endif -%}
+      {%- if gfl_mq and block.type != 'quote' -%}
+        {%- render 'gf-landing-marquee', a: gfl_mq_a, ac: gfl_mq_ac, b: gfl_mq_b, bc: gfl_mq_bc, na: gfl_mq_na, nb: gfl_mq_nb, sec: gfl_mq_sec, attrs: gfl_mq_attrs -%}
+        {%- assign gfl_mq = false -%}
+      {%- endif -%}
       {%- case block.type -%}
 
         {%- when 'heading' -%}
@@ -489,12 +551,53 @@
             <td>{% render 'gf-landing-ph', text: b.c4, period: gfl_period, bf: gf_bf_on %}</td>
           </tr>
 
+        {%- when 'rating' -%}
+          {%- assign r_txt = b.text | replace: '[avis]', settings.gf_tp_count -%}
+          <div class="gfl-rate{% if b.align == 'left' %} gfl-rate--l{% endif %}{{ gfl_bfc }}" {{ block.shopify_attributes }}>
+            {%- if b.stars != blank -%}{{ b.stars | image_url: height: 54 | image_tag: class: 'gfl-rate-stars', loading: 'eager', alt: '' }}{%- endif -%}
+            {%- if r_txt != blank -%}<span class="gfl-rate-t">{% render 'gf-landing-ph', text: r_txt, period: gfl_period, bf: gf_bf_on %}</span>{%- endif -%}
+          </div>
+
+        {%- when 'marquee' -%}
+          {%- liquid
+            assign gfl_mq = true
+            assign gfl_mq_a = ''
+            assign gfl_mq_ac = ''
+            assign gfl_mq_b = ''
+            assign gfl_mq_bc = ''
+            assign gfl_mq_na = 0
+            assign gfl_mq_nb = 0
+            assign gfl_mq_two = false
+            if b.rows == '2'
+              assign gfl_mq_two = true
+            endif
+            assign gfl_mq_sec = b.speed | default: '8'
+          -%}
+          {%- capture gfl_mq_attrs -%}{{ block.shopify_attributes }}{%- endcapture -%}
+
         {%- when 'quote' -%}
           {%- assign q_txt = b.text | escape | newline_to_br -%}
           {%- if b.highlight != blank -%}
             {%- assign q_hl = b.highlight | escape -%}
             {%- assign q_mark = '<mark>' | append: q_hl | append: '</mark>' -%}
             {%- assign q_txt = q_txt | replace_first: q_hl, q_mark -%}
+          {%- endif -%}
+          {%- if gfl_mq -%}
+            {%- comment -%} dans un bandeau « Avis qui défilent » : la carte est rangée dans sa rangée (2 rangées → une sur deux), puis recopiée pour la boucle sans fin {%- endcomment -%}
+            {%- capture q_body -%}<figcaption class="gfl-quote-top"><span class="gfl-quote-name">{{ b.name }}</span>{%- if b.meta != blank -%}<span class="gfl-quote-meta">{{ b.meta }}</span>{%- endif -%}</figcaption>{%- if b.stars != blank -%}{{ b.stars | image_url: height: 39 | image_tag: class: 'gfl-quote-stars', loading: 'lazy', alt: b.stars.alt }}{%- endif -%}<blockquote class="gfl-quote-txt">{{ q_txt }}</blockquote>{%- endcapture -%}
+            {%- capture q_card -%}<figure class="gfl-quote gfl-mq-card" {{ block.shopify_attributes }}>{{ q_body }}</figure>{%- endcapture -%}
+            {%- capture q_copy -%}<figure class="gfl-quote gfl-mq-card">{{ q_body }}</figure>{%- endcapture -%}
+            {%- assign q_n = gfl_mq_na | plus: gfl_mq_nb | modulo: 2 -%}
+            {%- if gfl_mq_two and q_n == 1 -%}
+              {%- assign gfl_mq_b = gfl_mq_b | append: q_card -%}
+              {%- assign gfl_mq_bc = gfl_mq_bc | append: q_copy -%}
+              {%- assign gfl_mq_nb = gfl_mq_nb | plus: 1 -%}
+            {%- else -%}
+              {%- assign gfl_mq_a = gfl_mq_a | append: q_card -%}
+              {%- assign gfl_mq_ac = gfl_mq_ac | append: q_copy -%}
+              {%- assign gfl_mq_na = gfl_mq_na | plus: 1 -%}
+            {%- endif -%}
+            {%- continue -%}
           {%- endif -%}
           <figure class="gfl-quote" {{ block.shopify_attributes }}>
             <figcaption class="gfl-quote-top"><span class="gfl-quote-name">{{ b.name }}</span>{%- if b.meta != blank -%}<span class="gfl-quote-meta">{{ b.meta }}</span>{%- endif -%}</figcaption>
@@ -505,10 +608,13 @@
       {%- endcase -%}
     {%- endfor -%}
     {%- if gfl_tbl -%}</tbody></table></div></div>{%- endif -%}
+    {%- if gfl_mq -%}
+      {%- render 'gf-landing-marquee', a: gfl_mq_a, ac: gfl_mq_ac, b: gfl_mq_b, bc: gfl_mq_bc, na: gfl_mq_na, nb: gfl_mq_nb, sec: gfl_mq_sec, attrs: gfl_mq_attrs -%}
+    {%- endif -%}
   </div>
   {%- if s.sticky_enabled -%}
     {%- assign stk_link = s.sticky_link | default: '/products/gumforce' -%}
-    <div class="gfl-stk" aria-hidden="true">
+    <div class="gfl-stk{% if gfl_stk_all %} gfl-stk--all{% endif %}" aria-hidden="true">
       <div class="gfl-stk-t">{% render 'gf-landing-ph', text: s.sticky_text, period: gfl_period, bf: gf_bf_on %}</div>
       <a class="gfl-stk-b" href="{{ stk_link }}" tabindex="-1">{% render 'gf-landing-ph', text: s.sticky_cta, period: gfl_period, bf: gf_bf_on %}</a>
     </div>
@@ -520,15 +626,23 @@
   var root = document.getElementById('gfl-{{ sid }}');
   if (!root) return;
   {%- if s.sticky_enabled %}
-  /* bouton collant mobile : visible une fois le 1er bouton passé, caché dès que le dernier bouton arrive à l'écran */
+  /* bouton collant : visible une fois le 1er bouton passé, caché dès que le dernier bouton arrive à l'écran ;
+     mode « toujours visible » : affiché dès l'arrivée, caché seulement pendant que le dernier bouton est à l'écran */
   (function () {
     var stk = root.querySelector('.gfl-stk');
     var ctas = root.querySelectorAll('.gfl-ctawrap');
-    if (!stk || !ctas.length) return;
+    var all = {{ gfl_stk_all | json }};
+    if (!stk || (!ctas.length && !all)) return;
     var first = ctas[0], last = ctas[ctas.length - 1], lnk = stk.querySelector('a'), on = false, tick = false;
     function upd() {
       tick = false;
-      var show = first.getBoundingClientRect().bottom < 0 && last.getBoundingClientRect().top > window.innerHeight;
+      var show;
+      if (all) {
+        var r = last ? last.getBoundingClientRect() : null;
+        show = !r || r.top > window.innerHeight || r.bottom < 0;
+      } else {
+        show = first.getBoundingClientRect().bottom < 0 && last.getBoundingClientRect().top > window.innerHeight;
+      }
       if (show === on) return;
       on = show;
       stk.classList.toggle('is-visible', on);
@@ -539,6 +653,21 @@
     window.addEventListener('resize', upd);
     upd();
   })();
+  {%- endif -%}
+  {%- if gfl_has_mq %}
+  /* avis qui défilent : pause tant que le doigt est posé, et quand le bandeau est hors écran */
+  root.querySelectorAll('.gfl-mq').forEach(function (mq) {
+    function hold() { mq.classList.add('is-paused'); }
+    function free() { mq.classList.remove('is-paused'); }
+    mq.addEventListener('touchstart', hold, { passive: true });
+    mq.addEventListener('touchend', free, { passive: true });
+    mq.addEventListener('touchcancel', free, { passive: true });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) { mq.classList.toggle('is-off', !e.isIntersecting); });
+      }).observe(mq);
+    }
+  });
   {%- endif -%}
   {%- if s.enable_animation -%}
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -609,6 +738,7 @@
 
     { "type": "header", "content": "── Bouton collant (mobile) ──" },
     { "type": "checkbox", "id": "sticky_enabled", "label": "Afficher le bouton collant en bas d'écran", "default": false, "info": "Mobile uniquement. Il apparaît une fois le premier bouton passé et disparaît quand le dernier bouton de la page arrive à l'écran." },
+    { "type": "select", "id": "sticky_mode", "label": "Quand l'afficher", "options": [ {"value":"after","label":"Après le premier bouton (mobile)"}, {"value":"always","label":"Toujours (mobile + ordinateur)"} ], "default": "after", "info": "Toujours : la barre est là dès l'arrivée sur la page et ne s'efface que pendant que le dernier bouton de cette section est à l'écran." },
     { "type": "text", "id": "sticky_text", "label": "Texte", "default": "Offre [période] : tu en paies 2, tu en reçois 4" },
     { "type": "text", "id": "sticky_cta", "label": "Texte du bouton", "default": "J'en profite" },
     { "type": "url", "id": "sticky_link", "label": "Lien du bouton" },
@@ -752,6 +882,25 @@
         { "type": "text", "id": "name", "label": "Prénom (tel qu'affiché)", "default": "Prénom" },
         { "type": "text", "id": "meta", "label": "Source", "default": "Avis Trustpilot" },
         { "type": "image_picker", "id": "stars", "label": "Étoiles (image)" }
+      ]
+    },
+    {
+      "type": "rating",
+      "name": "Note Trustpilot",
+      "settings": [
+        { "type": "image_picker", "id": "stars", "label": "Étoiles (image)" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "[note]/5 Excellent · [avis] avis Trustpilot", "info": "[note] et [avis] = note et nombre d'avis des Réglages du thème › Avis Trustpilot." },
+        { "type": "select", "id": "align", "label": "Alignement", "options": [ {"value":"center","label":"Centré"}, {"value":"left","label":"Gauche"} ], "default": "center" },
+        { "type": "checkbox", "id": "bf_only", "label": "Seulement pendant le mode Black Friday", "default": false }
+      ]
+    },
+    {
+      "type": "marquee",
+      "name": "Avis qui défilent",
+      "settings": [
+        { "type": "paragraph", "content": "Place des blocs « Avis (texte) » juste après ce bloc : ils défilent tout seuls en bandeau, sans fin. Le bandeau s'arrête au premier bloc qui n'est pas un avis. Un doigt posé (ou la souris) met en pause." },
+        { "type": "select", "id": "rows", "label": "Rangées", "options": [ {"value":"1","label":"1 rangée"}, {"value":"2","label":"2 rangées (sens opposés)"} ], "default": "2" },
+        { "type": "select", "id": "speed", "label": "Vitesse", "options": [ {"value":"10","label":"Lente"}, {"value":"8","label":"Normale"}, {"value":"6","label":"Rapide"} ], "default": "8" }
       ]
     }
   ],
