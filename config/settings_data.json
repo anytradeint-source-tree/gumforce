@@ -356,7 +356,7 @@
     "gf_bf_rules_label": "Règlement complet du jeu",
     "gf_bf_cta_label": "Je participe",
     "gf_promo_enabled": true,
-    "gf_promo_all": false,
+    "gf_promo_all": true,
     "gf_promo_code": "BLACK15",
     "gf_promo_text": "-15 % : appuie ici [code]",
     "gf_promo_applied": "Code [code] appliqué",
