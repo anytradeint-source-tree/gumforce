@@ -54,6 +54,9 @@
 <style>
   .gf-promo { --gfpr-lime:#C5FE89; display:none; box-sizing:border-box; height:46px; align-items:center; justify-content:center; gap:14px; padding:0 16px; background:#111; color:#fff; font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; font-size:16px; line-height:1; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap; cursor:pointer; overflow:hidden; -webkit-tap-highlight-color:transparent; touch-action:manipulation; user-select:none; -webkit-user-select:none; transition:background-color .15s; }
   .gf-promo--all, html.gf-promo-on .gf-promo { display:flex; }
+  /* page à en-tête transparent posé sur la 1re section (accueil) : le bandeau se pose sur la vidéo, juste sous l'en-tête, sans prendre de place.
+     Dans le flux, il poussait la vidéo de sa hauteur (le thème ne la remonte que de la hauteur de l'en-tête) : bande vide en haut de page et bandeau caché sous la vidéo. */
+  body:has(.header[transparent]) .gf-promo { position:absolute; top:var(--header-group-height, 0px); left:0; right:0; z-index:3; }
   html.gf-promo-off .gf-promo { display:none !important; }
   .gf-promo b { font-weight:700; color:var(--gfpr-lime); }
   .gf-promo__t { display:inline-flex; align-items:center; }
