@@ -18,6 +18,11 @@
   if settings.gf_promo_enabled and gp_code != blank
     assign gp_ok = true
   endif
+  comment — pages : produit seulement (par défaut) ou tout le site (Réglages du thème › Bandeau code promo)
+  endcomment
+  if gp_ok and settings.gf_promo_pages != 'all' and template.name != 'product'
+    assign gp_ok = false
+  endif
   comment — langue du site hors de la liste → pas de bandeau (vide = toutes les langues)
   endcomment
   assign gp_langs = settings.gf_promo_locales | downcase | remove: ' '

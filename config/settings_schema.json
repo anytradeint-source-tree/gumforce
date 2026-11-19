@@ -358,6 +358,16 @@
         "default": false
       },
       {
+        "type": "select",
+        "id": "gf_promo_pages",
+        "label": "Pages où le bandeau s'affiche",
+        "options": [
+          { "value": "product", "label": "Pages produit seulement" },
+          { "value": "all", "label": "Tout le site" }
+        ],
+        "default": "product"
+      },
+      {
         "type": "text",
         "id": "gf_promo_code",
         "label": "Code promo",
