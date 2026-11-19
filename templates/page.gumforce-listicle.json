@@ -266,8 +266,8 @@
         "img-hero": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-lp-visage-avant-apres.jpg",
-            "image_mobile": "shopify://shop_images/gf-lp-visage-avant-apres-mobile.jpg",
+            "image": "shopify://shop_images/gf-lp2-hero-avis-clients.jpg",
+            "image_mobile": "",
             "size": "full",
             "caption": "",
             "bf_only": false
