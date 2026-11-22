@@ -34,7 +34,7 @@
     "gf_per_4_name": "des Fêtes",
     "gf_per_5_name": "Nouvelle Résolution",
     "gf_per_legacy": "Halloween",
-    "gf_promo_enabled": true,
+    "gf_promo_enabled": false,
     "gf_promo_all": true,
     "gf_promo_code": "BLACK15",
     "gf_promo_text": "-15 % : appuie ici [code]",
