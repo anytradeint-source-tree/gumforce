@@ -42,6 +42,7 @@
         "img-generations": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-a1-generations.jpg",
             "size": "full",
             "caption": "Années 60 contre aujourd'hui. Même âge, pas le même bas de visage.",
             "bf_only": false
@@ -176,6 +177,7 @@
         "img-masseter": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-a2-masseter.jpg",
             "size": "full",
             "caption": "Le masséter part de la pommette et descend jusqu'à l'angle de la mâchoire.",
             "bf_only": false
@@ -193,6 +195,7 @@
         "img-test": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-a3-test-doigts.jpg",
             "size": "medium",
             "caption": "",
             "bf_only": false
@@ -246,6 +249,7 @@
         "img-salle": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-a4-sportive.jpg",
             "size": "full",
             "caption": "",
             "bf_only": false
@@ -308,6 +312,7 @@
         "img-alternatives": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-a5-alternatives.jpg",
             "size": "full",
             "caption": "",
             "bf_only": false
@@ -414,6 +419,7 @@
         "img-bureau": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-a6-bureau-visio.jpg",
             "size": "full",
             "caption": "",
             "bf_only": false
@@ -624,6 +630,7 @@
         "img-profil": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-a7-photo-profil.jpg",
             "size": "medium",
             "caption": "",
             "bf_only": false

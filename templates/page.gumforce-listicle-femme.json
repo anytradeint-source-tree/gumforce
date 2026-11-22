@@ -55,6 +55,7 @@
         "img-visible": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-l1-test-machoire.jpg",
             "size": "full",
             "caption": ""
           }
@@ -104,6 +105,7 @@
         "img-charge": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-l3-muscles-rayons-x.jpg",
             "size": "full",
             "caption": ""
           }
@@ -172,6 +174,7 @@
         "img-aiguille": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-l5-creme-jade-seringue.jpg",
             "size": "full",
             "caption": ""
           }
@@ -196,6 +199,7 @@
         "img-quinze": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-l6-metro.jpg",
             "size": "full",
             "caption": ""
           }
@@ -220,6 +224,7 @@
         "img-garantie": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-a7-photo-profil.jpg",
             "size": "full",
             "caption": ""
           }
@@ -260,6 +265,7 @@
         "img-changer": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/gf-femme-l8-copines.jpg",
             "size": "full",
             "caption": ""
           }
