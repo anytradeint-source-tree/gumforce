@@ -181,6 +181,28 @@
       <img class="gfib-bf-img" src="{{ bd_asset | asset_img_url: '1200x' }}" srcset="{{ bd_asset | asset_img_url: '600x' }} 600w, {{ bd_asset | asset_img_url: '900x' }} 900w, {{ bd_asset | asset_img_url: '1200x' }} 1200w" sizes="(max-width: 749px) 100vw, 640px" alt="" loading="lazy">
     {%- endif -%}
     <div class="gfib-bf-txt">
+      {%- if bd_k == 'gf_bf_' -%}
+        {%- comment -%} Commandes x2 (Réglages du thème › Mode Black Friday › créneaux) : pastille au-dessus du titre, une version par créneau pas encore fini ; snippet gf-bf-head ne montre que celle du créneau en cours (heure de Paris). Pas sur les pages du concours GTA. {%- endcomment -%}
+        {%- liquid
+          assign gfx_now = 'now' | date: '%Y%m%d%H%M' | plus: 0
+          assign gfx_sign = settings.gf_x2_sign | strip
+        -%}
+        {%- for i in (1..4) -%}
+          {%- liquid
+            assign gfx_kt = 'gf_x2_' | append: i | append: '_title'
+            assign gfx_ke = 'gf_x2_' | append: i | append: '_to'
+            assign gfx_t = settings[gfx_kt] | strip
+            assign gfx_e = settings[gfx_ke] | strip | remove: '-' | remove: ' ' | remove: ':' | plus: 0
+            if gfx_t == blank
+              continue
+            endif
+            if gfx_e != 0 and gfx_e < gfx_now
+              continue
+            endif
+          -%}
+          <p class="gfib-bf-x2 gfp-bfv gfp-bfv-{{ i }}">{%- if gfx_sign != blank -%}<span class="gfib-bf-x2s">{{ gfx_sign }}</span>{%- endif -%}<span>{{ gfx_t }}</span></p>
+        {%- endfor -%}
+      {%- endif -%}
       <p class="gfib-bf-t">{{ bd_title }}</p>
       {%- if bd_value != blank -%}<p class="gfib-bf-v">{{ bd_value }}</p>{%- endif -%}
       {%- if bd_note != blank -%}
@@ -244,7 +266,11 @@
   #gfib-bf-{{ uid }} .gfib-bf-c { margin-top:10px; max-width:420px; font-size:13px; line-height:1.4; color:rgba(255,255,255,.86); }
   #gfib-bf-{{ uid }} b, #gfib-bf-{{ uid }} strong { color:var(--gf-bf-lime); font-weight:700; }
   #gfib-bf-{{ uid }} .gfib-bf-d { color:#fff; font-weight:700; }
+  #gfib-bf-{{ uid }} .gfib-bf-x2 { display:inline-flex; align-items:center; gap:8px; margin:0 0 10px; padding:5px 12px 5px 6px; border-radius:999px; background:var(--gf-bf-lime); color:#0A0A0A; text-shadow:none; font-family:var(--font-heading--family, 'Oswald', sans-serif); font-weight:700; text-transform:uppercase; font-size:15px; line-height:1.1; letter-spacing:.01em; }
+  #gfib-bf-{{ uid }} .gfib-bf-x2s { display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:24px; padding:0 6px; border-radius:999px; background:#0A0A0A; color:var(--gf-bf-lime); font-size:15px; }
   @media screen and (max-width: 749px) {
+    #gfib-bf-{{ uid }} .gfib-bf-x2 { margin-bottom:7px; gap:6px; padding:4px 10px 4px 4px; font-size:12.5px; }
+    #gfib-bf-{{ uid }} .gfib-bf-x2s { min-width:26px; height:20px; font-size:13px; }
     #gfib-bf-{{ uid }} .gfib-bf-txt { padding:14px 16px; }
     #gfib-bf-{{ uid }} .gfib-bf-t { font-size:21px; }
     #gfib-bf-{{ uid }}::after { background:linear-gradient(90deg, rgba(8,12,9,.88) 0%, rgba(8,12,9,.7) 40%, rgba(8,12,9,.32) 68%, rgba(8,12,9,0) 92%); }
