@@ -75,8 +75,9 @@
     width: max-content;
     animation: gfab-scroll-{{ uid }} {{ s.speed | default: 30 }}s linear infinite;
     will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
-  #gfab-{{ uid }}:hover .gfab-track { animation-play-state: paused; }
   #gfab-{{ uid }} .gfab-item { display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
   #gfab-{{ uid }} .gfab-msg {
     font-family: var(--font-heading--family, 'Oswald', sans-serif);
@@ -109,8 +110,8 @@
   {%- endif %}
   {%- endif %}
   @keyframes gfab-scroll-{{ uid }} {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
   }
   @media (max-width: 749px) {
     #gfab-{{ uid }} .gfab-msg { font-size: {{ s.font_size_mobile | default: 12 }}px; }
