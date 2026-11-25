@@ -25,7 +25,7 @@
         "intro": {
           "type": "text",
           "settings": {
-            "text": "<p>Compare une photo de ton grand-père à 25 ans avec un mec de 25 ans aujourd'hui. Lui avait une mâchoire carrée, un visage taillé, une vraie tête d'homme. <strong>Aujourd'hui, plein de mecs gardent une mâchoire d'enfant jusqu'à 30 ans.</strong></p><p>C'est pas la génétique, elle n'a pas changé en deux générations. <strong>C'est l'assiette.</strong></p><p>Depuis 50 ans, l'industrie agroalimentaire a tout rendu mou : pain de mie, purée, plats préparés. Le muscle qui construit la mâchoire, <strong>le masséter, ne travaille presque plus.</strong></p>",
+            "text": "<p>Compare une photo de ton grand-père à 25 ans avec un mec de 25 ans aujourd'hui. Lui avait une mâchoire carrée, un visage taillé, une vraie tête d'homme. <strong>Aujourd'hui, plein de mecs gardent une mâchoire d'enfant à vie.</strong></p><p>C'est pas la génétique, elle n'a pas changé en deux générations. <strong>C'est l'assiette.</strong></p><p>Depuis 50 ans, l'industrie agroalimentaire a tout rendu mou : pain de mie, purée, plats préparés. Le muscle qui construit la mâchoire, <strong>le masséter, ne travaille presque plus.</strong></p>",
             "style": "normal",
             "align": "left"
           }
@@ -33,7 +33,7 @@
         "h2-visible": {
           "type": "heading",
           "settings": {
-            "text": "GUMFORCE entraîne le muscle qui fait une mâchoire d'homme",
+            "text": "GUMFORCE entraîne le muscle qui pèse le plus sur la forme de la mâchoire",
             "number": "1",
             "tag": "h2",
             "align": "left"
@@ -42,7 +42,7 @@
         "t-visible": {
           "type": "text",
           "settings": {
-            "text": "<p>Mets deux doigts sur ta mâchoire et serre les dents. La boule dure qui ressort, c'est le masséter.</p><p>C'est lui qui dessine l'angle de la mâchoire. Développé, il donne au bas du visage une forme nette et carrée. Pas entraîné, le visage reste rond.</p><p><strong>La différence entre une mâchoire d'enfant et une mâchoire d'homme, elle est là.</strong></p>",
+            "text": "<p>Mets deux doigts sur ta mâchoire et serre les dents. La boule dure qui ressort, c'est le masséter.</p><p>C'est lui qui recouvre l'angle de la mâchoire et qui donne son volume au bas du visage. Les médecins esthétiques le savent bien : pour adoucir un visage trop carré, ils injectent du botox dans le masséter. Le muscle s'affine, et le bas du visage s'arrondit.</p><p><strong>Visage d'homme ou visage de gamin : c'est ce muscle-là qui pèse le plus dans la balance.</strong></p>",
             "style": "normal",
             "align": "left"
           }
@@ -50,7 +50,7 @@
         "img-visible": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-lp2-homme-r1-masseter.jpg",
+            "image": "shopify://shop_images/gf-lp2-homme-r1-masseter-v2.jpg",
             "size": "full",
             "caption": ""
           }
@@ -125,7 +125,7 @@
         "img-courbatures": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Capture_d_ecran_2026-08-31_a_19.01.31.png",
+            "image": "shopify://shop_images/gf-avis-trustpilot-natrasta.png",
             "size": "full",
             "caption": ""
           }

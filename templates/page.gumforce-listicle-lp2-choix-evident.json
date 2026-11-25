@@ -25,7 +25,7 @@
         "intro": {
           "type": "text",
           "settings": {
-            "text": "<p>Un chewing-gum, tout le monde en mâche. Après le café, dans la voiture, avant de voir quelqu'un.</p><p>Et ce chewing-gum-là, il te sert à quoi ? Cinq minutes d'haleine fraîche, puis plus de goût, et tu mâches du vide.</p><p><strong>Tant qu'à mâcher, autant que ça serve à quelque chose.</strong></p>",
+            "text": "<p>Des chewing-gums, tout le monde en mâche. Après le café, dans la voiture, avant de voir quelqu'un.</p><p>Et ces chewing-gums-là, ils te servent à quoi ? Cinq minutes d'haleine fraîche, puis plus de goût, et tu mâches du vide.</p><p><strong>Tant qu'à mâcher, autant que ça serve à quelque chose.</strong></p>",
             "style": "normal",
             "align": "left"
           }
@@ -50,7 +50,7 @@
         "img-visible": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-lp2-homme-r1-masseter.jpg",
+            "image": "shopify://shop_images/gf-lp2-homme-r1-masseter-v2.jpg",
             "size": "full",
             "caption": ""
           }
@@ -150,7 +150,7 @@
         "img-creatine": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Capture_d_ecran_2026-08-31_a_19.01.31.png",
+            "image": "shopify://shop_images/gf-avis-trustpilot-natrasta.png",
             "size": "full",
             "caption": ""
           }

@@ -42,7 +42,7 @@
         "t-visible": {
           "type": "text",
           "settings": {
-            "text": "<p>En pull, en chemise, en costume, tes pecs disparaissent. Ta mâchoire, non.</p><p>Mets deux doigts sur ta mâchoire et serre les dents. La boule dure qui ressort, c'est le masséter. C'est lui qui donne au bas du visage sa structure et sa définition.</p><p><strong>C'est le muscle qui fait que ton entraînement se voit aussi sur ton visage.</strong></p>",
+            "text": "<p>En pull, en chemise, en costume, tes pecs disparaissent. Ta mâchoire, non.</p><p>Mets deux doigts sur ta mâchoire et serre les dents. La boule dure qui ressort, c'est le masséter. C'est lui qui donne au bas du visage sa structure et sa définition.</p><p><strong>C'est le seul muscle qui se voit toute l'année, été comme hiver. Et qu'on le veuille ou non, il fait partie des critères de beauté.</strong></p>",
             "style": "normal",
             "align": "left"
           }
@@ -50,7 +50,7 @@
         "img-visible": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-lp2-sportif-r1-col-roule.jpg",
+            "image": "shopify://shop_images/gf-lp2-sportif-r1-manteau.jpg",
             "size": "full",
             "caption": ""
           }
@@ -125,7 +125,7 @@
         "img-courbatures": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Capture_d_ecran_2026-08-31_a_19.01.31.png",
+            "image": "shopify://shop_images/gf-avis-trustpilot-natrasta.png",
             "size": "full",
             "caption": ""
           }

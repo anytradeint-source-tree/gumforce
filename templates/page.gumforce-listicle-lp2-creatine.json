@@ -25,7 +25,7 @@
         "intro": {
           "type": "text",
           "settings": {
-            "text": "<p>La créatine, tu connais. <strong>Ce qui te saoule, c'est la poudre.</strong></p><p>Elle crisse sous la dent, elle reste collée au fond du verre, et le pot finit par traîner au fond d'un placard.</p><p>C'est pour ça que les bonbons à la créatine se vendent aussi bien. Les gens ne veulent pas arrêter la créatine, ils veulent arrêter la poudre. GUMFORCE va plus loin, avec la créatine dans un chewing-gum. <strong>Et pendant que tu le mâches, il se passe un truc en plus.</strong></p>",
+            "text": "<p>La créatine, tu connais. <strong>Ce qui te saoule, c'est la poudre.</strong></p><p>Elle crisse sous la dent, elle reste collée au fond du verre, et le pot finit par traîner au fond d'un placard.</p><p>C'est pour ça que les gummies à la créatine se vendent aussi bien. Les gens ne veulent pas arrêter la créatine, ils veulent arrêter la poudre. GUMFORCE va plus loin, avec la créatine dans un chewing-gum. <strong>Et pendant que tu le mâches, il se passe un truc en plus.</strong></p>",
             "style": "normal",
             "align": "left"
           }
@@ -42,7 +42,7 @@
         "t-visible": {
           "type": "text",
           "settings": {
-            "text": "<p>De la créatine monohydrate, la forme la plus étudiée de la nutrition sportive depuis 30 ans. La même que celle que tu trouves en poudre.</p><p><strong>500 mg par chewing-gum.</strong> Au rythme conseillé de 3 chewing-gums par jour, ça fait 1,5 g de créatine.</p>",
+            "text": "<p>De la créatine monohydrate, la forme la plus étudiée de la nutrition sportive depuis 30 ans. La même que celle que tu trouves en poudre, <strong>dans la meilleure qualité, selon les standards les plus exigeants.</strong></p><p><strong>500 mg par chewing-gum.</strong> Au rythme conseillé de 3 chewing-gums par jour, ça fait 1,5 g de créatine.</p>",
             "style": "normal",
             "align": "left"
           }
@@ -125,7 +125,7 @@
         "img-courbatures": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-lp2-creatine-r4-volant.jpg",
+            "image": "shopify://shop_images/gf-lp2-creatine-r4-volant-homme.jpg",
             "size": "full",
             "caption": ""
           }
@@ -175,7 +175,7 @@
         "img-quinze": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Capture_d_ecran_2026-08-31_a_19.01.31.png",
+            "image": "shopify://shop_images/gf-avis-trustpilot-natrasta.png",
             "size": "full",
             "caption": ""
           }

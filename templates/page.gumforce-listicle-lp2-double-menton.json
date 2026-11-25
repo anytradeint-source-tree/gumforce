@@ -125,7 +125,7 @@
         "img-courbatures": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Capture_d_ecran_2026-08-31_a_19.01.31.png",
+            "image": "shopify://shop_images/gf-avis-trustpilot-natrasta.png",
             "size": "full",
             "caption": ""
           }
@@ -133,7 +133,7 @@
         "h2-creatine": {
           "type": "heading",
           "settings": {
-            "text": "500 mg de créatine, l'équivalent d'un steak",
+            "text": "500 mg de créatine, l'équivalent d'un pavé de saumon",
             "number": "5",
             "tag": "h2",
             "align": "left"
@@ -142,7 +142,7 @@
         "t-creatine": {
           "type": "text",
           "settings": {
-            "text": "<p>Le mot créatine fait penser aux pots géants des salles de muscu. Rien à voir.</p><p>Ton corps en fabrique tous les jours, et t'en manges déjà dès qu'il y a de la viande ou du poisson dans ton assiette. <strong>Un chewing-gum, c'est 500 mg, à peu près ce que contient un steak.</strong> Bien loin des doses des sportifs.</p>",
+            "text": "<p>Le mot créatine fait penser aux pots géants des salles de muscu. Rien à voir.</p><p>Ton corps en fabrique tous les jours, et t'en manges déjà dès qu'il y a de la viande ou du poisson dans ton assiette. <strong>Un chewing-gum, c'est 500 mg, à peu près ce que contient un pavé de saumon.</strong> Bien loin des doses des sportifs.</p>",
             "style": "normal",
             "align": "left"
           }
@@ -150,7 +150,7 @@
         "img-creatine": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-lp2-menton-r5-steak.jpg",
+            "image": "shopify://shop_images/gf-lp2-menton-r5-saumon.jpg",
             "size": "full",
             "caption": ""
           }
@@ -266,7 +266,7 @@
         "img-hero": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-lp2-menton-hero.jpg",
+            "image": "shopify://shop_images/gf-lp2-menton-hero-32.jpg",
             "image_mobile": "",
             "size": "full",
             "caption": "",

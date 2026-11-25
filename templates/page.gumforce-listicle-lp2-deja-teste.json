@@ -50,7 +50,7 @@
         "img-visible": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gf-lp2-homme-r1-masseter.jpg",
+            "image": "shopify://shop_images/gf-lp2-homme-r1-masseter-v2.jpg",
             "size": "full",
             "caption": ""
           }
@@ -150,7 +150,7 @@
         "img-creatine": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Capture_d_ecran_2026-08-31_a_19.01.31.png",
+            "image": "shopify://shop_images/gf-avis-trustpilot-natrasta.png",
             "size": "full",
             "caption": ""
           }
