@@ -1,0 +1,506 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "layout": "theme.blank",
+  "sections": {
+    "main": {
+      "type": "gumforce-landing",
+      "blocks": {
+        "h1": {
+          "type": "heading",
+          "settings": {
+            "text": "Déjà testé un chewing-gum pour la mâchoire dur comme de la pierre ? 7 raisons pour lesquelles <em>GUMFORCE n'a rien à voir</em> 💪",
+            "number": "",
+            "tag": "h1",
+            "align": "center"
+          }
+        },
+        "intro": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Si t'as déjà testé un chewing-gum « pour la mâchoire », tu connais la scène. Tu croques, et t'as l'impression de mâcher un caillou. Ça s'effrite en bouche, ça tire dans les dents, et au bout de trois minutes t'as surtout peur d'y laisser un bout de dent.</p><p>Alors t'as lâché. Et t'en as conclu que ces trucs-là, ça ne marche pas.</p><p><strong>Le problème, c'était pas le principe. C'était la charge.</strong> Un chewing-gum dur comme de la pierre, c'est comme charger la barre au maximum dès ta première série à la salle : tu forces, tu te fais mal, et tu ne reviens pas.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "h2-visible": {
+          "type": "heading",
+          "settings": {
+            "text": "Un muscle se construit en répétant, pas en forçant",
+            "number": "1",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-visible": {
+          "type": "text",
+          "settings": {
+            "text": "<p>À la salle, personne ne progresse en soulevant sa charge maximale une seule fois. On progresse en répétant un mouvement propre, sous une charge qu'on peut tenir.</p><p>La mâchoire, c'est pareil. Mets deux doigts dessus et serre les dents : la boule dure qui ressort, c'est le masséter. <strong>Il a besoin de contractions lentes et contrôlées, répétées encore et encore.</strong> Pas d'un bras de fer avec un caillou.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-visible": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-lp2-homme-r1-masseter.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-ecrase": {
+          "type": "heading",
+          "settings": {
+            "text": "Dur, mais pas de la pierre",
+            "number": "2",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-ecrase": {
+          "type": "text",
+          "settings": {
+            "text": "<p>GUMFORCE est 10x plus dur qu'un chewing-gum normal. Assez pour que ta mâchoire travaille vraiment. Pas au point que ce soient tes dents qui encaissent à la place du muscle.</p><p><strong>Tu sens la résistance à chaque coup de dent, sans avoir l'impression de mordre dans un caillou.</strong></p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-ecrase": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-lp2-deja-teste-r2-caillou.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-charge": {
+          "type": "heading",
+          "settings": {
+            "text": "Il ne s'effrite pas, il tient toute la séance",
+            "number": "3",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-charge": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Ni pierre qui s'émiette au bout de deux minutes, ni guimauve qui s'écrase au bout de trente secondes.</p><p>GUMFORCE est formulé pour tenir toute la séance. <strong>15 minutes de répétitions sous la même résistance</strong> : c'est ce qui permet au muscle de travailler proprement, du début à la fin.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-charge": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/hf_20260831_111709_f50e57ee-220c-4def-8ee7-ee521e702006.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-courbatures": {
+          "type": "heading",
+          "settings": {
+            "text": "C'est ton muscle qui travaille, pas tes dents",
+            "number": "4",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-courbatures": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Tout est remède ou poison, c'est la dose qui décide. Une résistance excessive, ce sont tes dents et ton articulation qui prennent. Une résistance juste, c'est ton muscle qui bosse.</p><p>Au rythme conseillé, c'est 3 chewing-gums par jour, 15 minutes chacun. <strong>Une dose pensée pour durer, pas un défi.</strong></p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-courbatures": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-lp2-deja-teste-r4-volant.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-creatine": {
+          "type": "heading",
+          "settings": {
+            "text": "Tu sens que ça travaille, sans avoir mal aux dents",
+            "number": "5",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-creatine": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Les premières séances, tu vas sentir des courbatures sur les côtés de la mâchoire. Comme après une première séance de jambes.</p><p><strong>Une courbature dans le muscle, c'est le signe qu'il a bossé.</strong> Une douleur dans les dents ou dans l'articulation, c'est pas de l'entraînement : c'est le signal d'arrêter.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-creatine": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Capture_d_ecran_2026-08-31_a_19.01.31.png",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-quinze": {
+          "type": "heading",
+          "settings": {
+            "text": "500 mg de créatine monohydrate dans chaque chewing-gum",
+            "number": "6",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-quinze": {
+          "type": "text",
+          "settings": {
+            "text": "<p>La molécule la plus étudiée de la nutrition sportive depuis 30 ans. Et ce n'est pas un produit de labo : ton corps en fabrique tous les jours, et tu en manges déjà dans la viande et le poisson.</p><p><strong>500 mg par chewing-gum, c'est à peu près ce que contient un steak.</strong></p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-quinze": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/hf_20260831_114724_da3629b5-c7f6-4fe6-8287-14353c221eea.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "h2-tempsmorts": {
+          "type": "heading",
+          "settings": {
+            "text": "Ça se mâche pendant les temps morts",
+            "number": "7",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-tempsmorts": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Dans la voiture. Au bureau. Devant un film. Dans les transports.</p><p>Tu ne rajoutes rien à ta journée, tu remplis juste des moments où tu ne faisais rien. <strong>Et comme tu ne te bats pas avec un caillou, tu tiens.</strong></p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "img-tempsmorts": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/hf_20260831_110820_3b1a70f2-6a04-42af-90d3-7ccbb029460b.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "spacer_hBBf9E": {
+          "type": "spacer",
+          "settings": {
+            "size": "l"
+          }
+        },
+        "h2-changer": {
+          "type": "heading",
+          "disabled": true,
+          "settings": {
+            "text": "Ce qui va changer",
+            "number": "",
+            "tag": "h2",
+            "align": "left"
+          }
+        },
+        "t-changer": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "text": "<p>La mâchoire, c'est la première chose qu'on voit d'un visage. Avant les fringues, avant la salle, avant tout le reste. Tu ne peux ni la cacher ni la couvrir.</p>",
+            "style": "normal",
+            "align": "left"
+          }
+        },
+        "t-photo": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Prends une photo de profil aujourd'hui et reprends exactement la même dans 90 jours.</p>",
+            "style": "punch",
+            "align": "center"
+          }
+        },
+        "img-changer": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/1_5c5f7bd8-e26c-4dd7-ad45-efbf905c8400.jpg",
+            "size": "full",
+            "caption": ""
+          }
+        },
+        "t-rejoins": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Rejoins les 15 000 mâchoires déjà entraînées avec GUMFORCE.</p>",
+            "style": "punch",
+            "align": "center"
+          }
+        },
+        "rating-top": {
+          "type": "rating",
+          "settings": {
+            "stars": "shopify://shop_images/trust5_1.svg",
+            "text": "[note]/5 Excellent · [avis] avis Trustpilot",
+            "align": "center",
+            "bf_only": false
+          }
+        },
+        "img-hero": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gf-lp2-hero-avis-clients.jpg",
+            "image_mobile": "",
+            "size": "full",
+            "caption": "",
+            "bf_only": false
+          }
+        },
+        "t-photo-suite": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Et cette fois, tu vas tenir jusqu'au bout.</strong></p>",
+            "style": "normal",
+            "align": "center"
+          }
+        }
+      },
+      "block_order": [
+        "h1",
+        "rating-top",
+        "img-hero",
+        "intro",
+        "h2-visible",
+        "t-visible",
+        "img-visible",
+        "h2-ecrase",
+        "t-ecrase",
+        "img-ecrase",
+        "h2-charge",
+        "t-charge",
+        "img-charge",
+        "h2-courbatures",
+        "t-courbatures",
+        "img-courbatures",
+        "h2-creatine",
+        "t-creatine",
+        "img-creatine",
+        "h2-quinze",
+        "t-quinze",
+        "img-quinze",
+        "h2-tempsmorts",
+        "t-tempsmorts",
+        "img-tempsmorts",
+        "spacer_hBBf9E",
+        "h2-changer",
+        "t-changer",
+        "t-photo",
+        "t-photo-suite",
+        "img-changer",
+        "t-rejoins"
+      ],
+      "settings": {
+        "h1_size": 40,
+        "h2_size": 28,
+        "transparent_bg": false,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#1c1c1e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "cta_bg": "#111111",
+        "cta_text_color": "#ffffff",
+        "img_radius": 16,
+        "enable_animation": true,
+        "padding_top": 40,
+        "padding_bottom": 0,
+        "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
+        "sticky_cta": "J'en profite"
+      }
+    },
+    "avis-offre": {
+      "type": "gumforce-landing",
+      "blocks": {
+        "h2-avis": {
+          "type": "heading",
+          "settings": {
+            "text": "Ils en parlent mieux que nous",
+            "number": "",
+            "tag": "h2",
+            "align": "center",
+            "bf_only": false
+          }
+        },
+        "rating-avis": {
+          "type": "rating",
+          "settings": {
+            "stars": "shopify://shop_images/trust5_1.svg",
+            "text": "[note]/5 Excellent · [avis] avis Trustpilot",
+            "align": "center",
+            "bf_only": false
+          }
+        },
+        "avis-defilent": {
+          "type": "marquee",
+          "settings": {
+            "rows": "2",
+            "speed": "8"
+          }
+        },
+        "avis-r01": {
+          "type": "quote",
+          "settings": {
+            "text": "Ca fonctionne vraiment de ouf. J'en mâche 4 par jour, depuis 5 mois et ma mâchoire s'est complètement transformé. Mes joues sont hyper creuses et mon visage s'est affiné. Et à chaque commande je suis livré en moins de 24h.",
+            "highlight": "ma mâchoire s'est complètement transformé",
+            "name": "Alex M.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r14": {
+          "type": "quote",
+          "settings": {
+            "text": "Je m'entraîne tous les jours et Gumforce vient compléter mon entraînement à la salle, j’en mâche 5 par jour depuis plus de 3 mois et l'évolution est incroyable les gars",
+            "highlight": "l'évolution est incroyable",
+            "name": "Christopher D.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r29": {
+          "type": "quote",
+          "settings": {
+            "text": "J'ai testé ces gums après avoir testé d'autres marques et c'est de loin la meilleure, j'ai jamais aimé mes joues mais là je vois une différence en quelques semaines d'utilisation",
+            "highlight": "c'est de loin la meilleure",
+            "name": "Myron U.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r27": {
+          "type": "quote",
+          "settings": {
+            "text": "La résistance est dingue, la première fois j'ai pas tenu 5 min mais maintenant j'arrive à respecter des sessions d'environ 15 min à chaque fois",
+            "highlight": "La résistance est dingue",
+            "name": "Mathéo W.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r05": {
+          "type": "quote",
+          "settings": {
+            "text": "Pour avoir tester d’autres marques gumforce est clairement au dessus avec la créatine déjà intégrée, je recommande merci gumforce",
+            "highlight": "gumforce est clairement au dessus avec la créatine déjà intégrée",
+            "name": "Ben T.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r28": {
+          "type": "quote",
+          "settings": {
+            "text": "3ème commande chez gumforce, j'en prends tous les jours le secret c'est vraiment la régularité des entraînements",
+            "highlight": "le secret c'est vraiment la régularité",
+            "name": "Elliot P.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "avis-r32": {
+          "type": "quote",
+          "settings": {
+            "text": "Les chewing-gum de chez GumForce sont vraiment top honnêtement. Que ce soit au niveau de la texture, de la résistance et du goût, c’est vraiment bon. Je recommande vivement",
+            "highlight": "",
+            "name": "Maxence N.",
+            "meta": "Avis Trustpilot",
+            "stars": "shopify://shop_images/trust5_1.svg"
+          }
+        },
+        "h2-offre": {
+          "type": "heading",
+          "settings": {
+            "text": "Offre [période] : tu en paies 2, tu en reçois 4",
+            "number": "",
+            "tag": "h2",
+            "align": "center"
+          }
+        },
+        "t-offre": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Livraison offerte en 48 h. On a tellement confiance en GUMFORCE qu'on te <strong>rembourse à 100 % si tu ne vois rien au bout de 90 jours.</strong></p>",
+            "style": "normal",
+            "align": "center"
+          }
+        },
+        "cta-fin": {
+          "type": "cta",
+          "settings": {
+            "bf_strip": true,
+            "text": "Offre [période]",
+            "link": "shopify://products/gumforce",
+            "note": "Livraison offerte en 48 h · Remboursé 90 jours"
+          }
+        }
+      },
+      "block_order": [
+        "h2-avis",
+        "rating-avis",
+        "avis-defilent",
+        "avis-r29",
+        "avis-r05",
+        "avis-r27",
+        "avis-r32",
+        "avis-r28",
+        "avis-r14",
+        "avis-r01",
+        "h2-offre",
+        "t-offre",
+        "cta-fin"
+      ],
+      "settings": {
+        "h1_size": 40,
+        "h2_size": 28,
+        "transparent_bg": false,
+        "color_bg": "#ffffff",
+        "color_heading": "#0e0e0e",
+        "color_text": "#1c1c1e",
+        "color_muted": "#6b6b6b",
+        "accent_color": "#2ab5b4",
+        "cta_bg": "#111111",
+        "cta_text_color": "#ffffff",
+        "img_radius": 16,
+        "enable_animation": true,
+        "padding_top": 0,
+        "padding_bottom": 64,
+        "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
+        "sticky_cta": "J'en profite",
+        "eager_first_img": false,
+        "sticky_enabled": true,
+        "sticky_mode": "always"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "avis-offre"
+  ]
+}
