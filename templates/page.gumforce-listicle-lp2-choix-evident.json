@@ -33,7 +33,7 @@
         "h2-visible": {
           "type": "heading",
           "settings": {
-            "text": "Le même geste, mais ta mâchoire travaille",
+            "text": "Le même geste qu'avant, mais cette fois c'est un entraînement",
             "number": "1",
             "tag": "h2",
             "align": "left"
@@ -42,7 +42,7 @@
         "t-visible": {
           "type": "text",
           "settings": {
-            "text": "<p>Mets deux doigts sur ta mâchoire et serre les dents. La boule dure qui ressort, c'est le masséter. C'est lui qui donne au bas du visage sa structure.</p><p>Avec un chewing-gum normal, il ne force pas : la texture cède en une minute. GUMFORCE est 10x plus dur, alors chaque fois que tu mâches, il travaille. 15 minutes, ça fait des centaines de répétitions.</p><p><strong>Tu mâchais déjà. Maintenant, ça compte.</strong></p>",
+            "text": "<p>Mets deux doigts sur ta mâchoire et serre les dents. La boule dure qui ressort, c'est le masséter. C'est lui qui donne au bas du visage sa structure.</p><p>Avec un chewing-gum normal, il ne force pas : la texture cède en une minute. GUMFORCE est 10x plus dur, alors chaque fois que tu mâches, il travaille. 15 minutes, ça fait des centaines de répétitions.</p><p><strong>Ton visage se dessine au fur et à mesure.</strong></p>",
             "style": "normal",
             "align": "left"
           }
@@ -346,7 +346,8 @@
             "tag": "h2",
             "align": "center",
             "bf_only": false
-          }
+          },
+          "disabled": true
         },
         "rating-avis": {
           "type": "rating",
@@ -355,14 +356,16 @@
             "text": "[note]/5 Excellent · [avis] avis Trustpilot",
             "align": "center",
             "bf_only": false
-          }
+          },
+          "disabled": true
         },
         "avis-defilent": {
           "type": "marquee",
           "settings": {
             "rows": "2",
             "speed": "8"
-          }
+          },
+          "disabled": true
         },
         "avis-r03": {
           "type": "quote",
@@ -372,7 +375,8 @@
             "name": "Ethan P.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r48": {
           "type": "quote",
@@ -382,7 +386,8 @@
             "name": "Molly P.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r15": {
           "type": "quote",
@@ -392,7 +397,8 @@
             "name": "Yann Y.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r25": {
           "type": "quote",
@@ -402,7 +408,8 @@
             "name": "Gaëtan U.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r40": {
           "type": "quote",
@@ -412,7 +419,8 @@
             "name": "Léandre I.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r32": {
           "type": "quote",
@@ -422,7 +430,8 @@
             "name": "Maxence N.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r21": {
           "type": "quote",
@@ -432,7 +441,8 @@
             "name": "Nicolas D.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "h2-offre": {
           "type": "heading",

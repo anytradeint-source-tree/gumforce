@@ -33,7 +33,7 @@
         "h2-visible": {
           "type": "heading",
           "settings": {
-            "text": "GUMFORCE entraîne le muscle qui pèse le plus sur la forme de la mâchoire",
+            "text": "GUMFORCE entraîne le muscle avec le plus gros impact",
             "number": "1",
             "tag": "h2",
             "align": "left"
@@ -42,7 +42,7 @@
         "t-visible": {
           "type": "text",
           "settings": {
-            "text": "<p>Mets deux doigts sur ta mâchoire et serre les dents. La boule dure qui ressort, c'est le masséter.</p><p>C'est lui qui recouvre l'angle de la mâchoire et qui donne son volume au bas du visage. Les médecins esthétiques le savent bien : pour adoucir un visage trop carré, ils injectent du botox dans le masséter. Le muscle s'affine, et le bas du visage s'arrondit.</p><p><strong>Visage d'homme ou visage de gamin : c'est ce muscle-là qui pèse le plus dans la balance.</strong></p>",
+            "text": "<p>Mets deux doigts sur ta mâchoire et serre les dents. La boule dure qui ressort, c'est le masséter.</p><p>C'est lui qui recouvre l'angle de la mâchoire et qui donne son volume au bas du visage.</p><p><strong>Et d'après les études, c'est la mâchoire qui pèse le plus dans l'image qu'un visage renvoie.</strong></p>",
             "style": "normal",
             "align": "left"
           }
@@ -346,7 +346,8 @@
             "tag": "h2",
             "align": "center",
             "bf_only": false
-          }
+          },
+          "disabled": true
         },
         "rating-avis": {
           "type": "rating",
@@ -355,14 +356,16 @@
             "text": "[note]/5 Excellent · [avis] avis Trustpilot",
             "align": "center",
             "bf_only": false
-          }
+          },
+          "disabled": true
         },
         "avis-defilent": {
           "type": "marquee",
           "settings": {
             "rows": "2",
             "speed": "8"
-          }
+          },
+          "disabled": true
         },
         "avis-r06": {
           "type": "quote",
@@ -372,7 +375,8 @@
             "name": "Quentin B.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r01": {
           "type": "quote",
@@ -382,7 +386,8 @@
             "name": "Alex M.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r26": {
           "type": "quote",
@@ -392,7 +397,8 @@
             "name": "Yannick P.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r04": {
           "type": "quote",
@@ -402,7 +408,8 @@
             "name": "Elio P.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r15": {
           "type": "quote",
@@ -412,7 +419,8 @@
             "name": "Yann Y.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r50": {
           "type": "quote",
@@ -422,7 +430,8 @@
             "name": "Louis I.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r41": {
           "type": "quote",
@@ -432,7 +441,8 @@
             "name": "Gaël W.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r19": {
           "type": "quote",
@@ -442,7 +452,8 @@
             "name": "Antoine A.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r29": {
           "type": "quote",
@@ -452,7 +463,8 @@
             "name": "Myron U.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "h2-offre": {
           "type": "heading",

@@ -346,7 +346,8 @@
             "tag": "h2",
             "align": "center",
             "bf_only": false
-          }
+          },
+          "disabled": true
         },
         "rating-avis": {
           "type": "rating",
@@ -355,14 +356,16 @@
             "text": "[note]/5 Excellent · [avis] avis Trustpilot",
             "align": "center",
             "bf_only": false
-          }
+          },
+          "disabled": true
         },
         "avis-defilent": {
           "type": "marquee",
           "settings": {
             "rows": "2",
             "speed": "8"
-          }
+          },
+          "disabled": true
         },
         "avis-r48": {
           "type": "quote",
@@ -372,7 +375,8 @@
             "name": "Molly P.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r14": {
           "type": "quote",
@@ -382,7 +386,8 @@
             "name": "Christopher D.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r05": {
           "type": "quote",
@@ -392,7 +397,8 @@
             "name": "Ben T.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r28": {
           "type": "quote",
@@ -402,7 +408,8 @@
             "name": "Elliot P.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r40": {
           "type": "quote",
@@ -412,7 +419,8 @@
             "name": "Léandre I.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r32": {
           "type": "quote",
@@ -422,7 +430,8 @@
             "name": "Maxence N.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "avis-r21": {
           "type": "quote",
@@ -432,7 +441,8 @@
             "name": "Nicolas D.",
             "meta": "Avis Trustpilot",
             "stars": "shopify://shop_images/trust5_1.svg"
-          }
+          },
+          "disabled": true
         },
         "h2-offre": {
           "type": "heading",
