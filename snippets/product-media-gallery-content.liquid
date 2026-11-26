@@ -187,6 +187,43 @@
   assign sorted_media = gf_visible_media
 
   comment
+    GUMFORCE : GALERIE FEMMES (template product.gumforce-femme, réglage « Test A/B photos : version » = femme).
+    2 métachamps produit (texte, identifiants de médias séparés par des virgules) :
+      custom.gf_femme      : médias de la galerie femmes, dans l'ordre d'affichage (peut reprendre des médias communs)
+      custom.gf_femme_seul : médias réservés à la galerie femmes, masqués dans toutes les autres galeries
+    Métachamps vides = aucun effet.
+  endcomment
+  assign gf_femme = selected_product.metafields.custom.gf_femme.value | default: '' | remove: ' ' | split: ','
+  assign gf_femme_seul = selected_product.metafields.custom.gf_femme_seul.value | default: '' | remove: ' ' | split: ','
+  assign gf_is_femme = false
+  if block_settings.gf_photos_version == 'femme' and gf_femme.size > 0
+    assign gf_is_femme = true
+    assign gf_fem_media = '' | split: ','
+    for gf_fid in gf_femme
+      for media in sorted_media
+        assign gf_mid = media.id | append: ''
+        if gf_mid == gf_fid
+          assign gf_found = sorted_media | where: 'id', media.id
+          assign gf_fem_media = gf_fem_media | concat: gf_found
+          break
+        endif
+      endfor
+    endfor
+    assign sorted_media = gf_fem_media
+  elsif gf_femme_seul.size > 0
+    assign gf_fem_media = '' | split: ','
+    for media in sorted_media
+      assign gf_mid = media.id | append: ''
+      if gf_femme_seul contains gf_mid
+        continue
+      endif
+      assign gf_found = sorted_media | where: 'id', media.id
+      assign gf_fem_media = gf_fem_media | concat: gf_found
+    endfor
+    assign sorted_media = gf_fem_media
+  endif
+
+  comment
     GUMFORCE : TEST A/B DES PHOTOS PRODUIT (Intelligems, template product.gumforce-fr-photos-b).
     Réglé par 3 métachamps produit (texte, identifiants de médias séparés par des virgules) :
       custom.gf_ab_commun : médias affichés dans les deux versions
@@ -201,6 +238,10 @@
   assign gf_ab_a = selected_product.metafields.custom.gf_ab_a.value | default: '' | remove: ' ' | split: ','
   assign gf_ab_b = selected_product.metafields.custom.gf_ab_b.value | default: '' | remove: ' ' | split: ','
   assign gf_ab_commun = selected_product.metafields.custom.gf_ab_commun.value | default: '' | remove: ' ' | split: ','
+  if gf_is_femme
+    assign gf_ab_a = '' | split: ','
+    assign gf_ab_b = '' | split: ','
+  endif
   if gf_ab_a.size > 0 or gf_ab_b.size > 0
     assign gf_ab_media = '' | split: ','
     for media in sorted_media
