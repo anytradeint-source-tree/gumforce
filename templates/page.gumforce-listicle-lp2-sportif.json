@@ -142,7 +142,7 @@
         "t-creatine": {
           "type": "text",
           "settings": {
-            "text": "<p>Tu la connais : la molécule la plus étudiée de la nutrition sportive depuis 30 ans.</p><p><strong>500 mg par chewing-gum, c'est à peu près ce que contient un steak.</strong> Si t'en prends déjà, ça ne remplace pas ta dose : ça vient en plus.</p>",
+            "text": "<p>Tu la connais : la molécule la plus étudiée de la nutrition sportive depuis 30 ans.</p><p><strong>500 mg par chewing-gum, c'est à peu près ce que contient un steak.</strong> Si t'en prends déjà, ça vient s'ajouter à ta dose.</p>",
             "style": "normal",
             "align": "left"
           }

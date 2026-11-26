@@ -142,7 +142,7 @@
         "t-creatine": {
           "type": "text",
           "settings": {
-            "text": "<p>Le mot créatine fait penser aux pots géants des salles de muscu. Rien à voir.</p><p>Ton corps en fabrique tous les jours, et t'en manges déjà dès qu'il y a de la viande ou du poisson dans ton assiette. <strong>Un chewing-gum, c'est 500 mg, à peu près ce que contient un pavé de saumon.</strong> Bien loin des doses des sportifs.</p>",
+            "text": "<p>La créatine monohydrate, c'est la molécule la plus étudiée de la nutrition sportive depuis 30 ans. Et ce n'est pas un produit de labo : ton corps en fabrique tous les jours, et t'en manges déjà dès qu'il y a de la viande ou du poisson dans ton assiette.</p><p><strong>Un chewing-gum, c'est 500 mg, à peu près ce que contient un pavé de saumon.</strong></p>",
             "style": "normal",
             "align": "left"
           }
