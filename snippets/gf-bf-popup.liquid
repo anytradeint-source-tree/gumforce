@@ -32,7 +32,7 @@
       assign gfbfp_cta_url = '/products/gumforce'
     endif
   endif
-  comment — pages femmes (double menton) et page produit femmes : le bouton mène à la page produit femmes endcomment
+  # pages femmes (double menton) et page produit femmes : le bouton mène à la page produit femmes
   if gfbfp_cta_url == '/products/gumforce'
     if template.suffix contains 'femme' or template.suffix contains 'double-menton'
       assign gfbfp_cta_url = '/products/gumforce?view=gumforce-femme'
