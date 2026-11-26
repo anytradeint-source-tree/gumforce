@@ -395,7 +395,7 @@
           "settings": {
             "style": "normal",
             "align": "center",
-            "text": "<p><strong><a href=\"/products/gumforce?variant=54986619584817\">Voir l'offre [période] →</a></strong></p>"
+            "text": "<p><strong><a href=\"/products/gumforce?variant=54986619584817&view=gumforce-femme\">Voir l'offre [période] →</a></strong></p>"
           }
         },
         "h-zero": {
@@ -439,7 +439,7 @@
           "settings": {
             "style": "normal",
             "align": "center",
-            "text": "<p><strong><a href=\"/products/gumforce?variant=54986619584817\">Voir l'offre [période] →</a></strong></p>"
+            "text": "<p><strong><a href=\"/products/gumforce?variant=54986619584817&view=gumforce-femme\">Voir l'offre [période] →</a></strong></p>"
           }
         }
       },
@@ -518,7 +518,8 @@
         "padding_top": 40,
         "padding_bottom": 0,
         "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
-        "sticky_cta": "J'en profite"
+        "sticky_cta": "J'en profite",
+        "sticky_link": "/products/gumforce?view=gumforce-femme"
       }
     },
     "offre": {
@@ -874,7 +875,7 @@
           "type": "cta",
           "settings": {
             "text": "VOIR L'OFFRE [PÉRIODE]",
-            "link": "/products/gumforce?variant=54986619584817",
+            "link": "/products/gumforce?variant=54986619584817&view=gumforce-femme",
             "bf_strip": true,
             "note": "Livraison offerte en 48h · Remboursé à 100 % si aucun résultat en 90 jours"
           }
@@ -954,7 +955,8 @@
         "padding_top": 0,
         "padding_bottom": 64,
         "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
-        "sticky_cta": "J'en profite"
+        "sticky_cta": "J'en profite",
+        "sticky_link": "/products/gumforce?view=gumforce-femme"
       }
     }
   },

@@ -332,7 +332,8 @@
         "padding_top": 40,
         "padding_bottom": 0,
         "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
-        "sticky_cta": "J'en profite"
+        "sticky_cta": "J'en profite",
+        "sticky_link": "/products/gumforce?view=gumforce-femme"
       }
     },
     "avis-offre": {
@@ -466,7 +467,7 @@
           "settings": {
             "bf_strip": true,
             "text": "Offre [période]",
-            "link": "shopify://products/gumforce",
+            "link": "/products/gumforce?view=gumforce-femme",
             "note": "Livraison offerte en 48 h · Remboursé 90 jours"
           }
         }
@@ -505,7 +506,8 @@
         "sticky_cta": "J'en profite",
         "eager_first_img": false,
         "sticky_enabled": true,
-        "sticky_mode": "always"
+        "sticky_mode": "always",
+        "sticky_link": "/products/gumforce?view=gumforce-femme"
       }
     }
   },
