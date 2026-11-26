@@ -32,6 +32,12 @@
       assign gfbfp_cta_url = '/products/gumforce'
     endif
   endif
+  comment — pages femmes (double menton) et page produit femmes : le bouton mène à la page produit femmes endcomment
+  if gfbfp_cta_url == '/products/gumforce'
+    if template.suffix contains 'femme' or template.suffix contains 'double-menton'
+      assign gfbfp_cta_url = '/products/gumforce?view=gumforce-femme'
+    endif
+  endif
 -%}
 <style>
   dialog.gfbfp { width:min(460px, calc(100% - 32px)); max-width:none; max-height:min(86vh, 780px); margin:auto; padding:0; border:0; border-radius:24px; background:#fff; color:#111; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.35); font-family:var(--font-body--family, 'Manrope', sans-serif); }
