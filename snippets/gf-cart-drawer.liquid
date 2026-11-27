@@ -474,6 +474,7 @@
         {%- liquid
           assign l_name = item.product.title | split: ' - ' | first | strip
           assign l_opts = ''
+          assign l_opts_p = ''
           unless item.product.has_only_default_variant
             for o in item.options_with_values
               if l_opts != ''
@@ -491,6 +492,8 @@
               if s_h != blank and all_products[s_h].selected_or_first_available_variant.id == item.variant_id
                 assign k = pre | append: '_line_sub'
                 assign l_opts = settings[k] | strip
+                assign k = pre | append: '_per_line_sub'
+                assign l_opts_p = settings[k] | strip
                 break
               endif
             endfor
@@ -518,7 +521,7 @@
             <div class="gfc-line__top">
               <div class="gfc-line__txt">
                 <p class="gfc-line__name">{{ l_name | escape }}</p>
-                {%- if l_opts != blank -%}<p class="gfc-line__opt">{{ l_opts | escape }}</p>{%- endif -%}
+                {%- if l_opts != blank -%}<p class="gfc-line__opt">{% render 'gf-up-per', text: l_opts, per: l_opts_p, esc: true %}</p>{%- endif -%}
                 {%- for p in item.properties -%}
                   {%- assign p_first = p.first | slice: 0 -%}
                   {%- if p.last != blank and p_first != '_' -%}<p class="gfc-line__prop">{{ p.first | escape }} : {{ p.last | escape }}</p>{%- endif -%}
@@ -602,6 +605,12 @@
         assign up_max_s = up_max | append: ''
         assign k = pre | append: '_badge'
         assign up_badge = settings[k] | replace: '[remise]', up_pct | strip
+        comment — textes de période (Réglages › Panier GUMFORCE › Upsells pendant une période du calendrier), snippet gf-up-per
+        endcomment
+        assign k = pre | append: '_per_badge'
+        assign up_badge_p = settings[k] | replace: '[remise]', up_pct | strip
+        assign k = pre | append: '_per_line_sub'
+        assign up_line_sub_p = settings[k] | strip
         assign k = pre | append: '_sub'
         assign up_sub = settings[k] | replace: '[max]', up_max_s | strip
         assign k = pre | append: '_heading'
@@ -618,6 +627,8 @@
           assign upb_was_money = up_was | money
           assign k = pre | append: '_b_heading'
           assign upb_head = settings[k] | replace: '[prix]', up_price_money | replace: '[barré]', upb_was_money
+          assign k = pre | append: '_per_b_heading'
+          assign upb_head_p = settings[k] | replace: '[prix]', up_price_money | replace: '[barré]', upb_was_money
           assign k = pre | append: '_b_photo'
           assign upb_photo = settings[k]
           comment — rendu directement à la quantité cochée à l'ouverture (réglage, plafonnée au maximum)
@@ -650,7 +661,7 @@
             <img class="gfc-up__bg" src="{{ up_bg | image_url: width: 800 }}" srcset="{{ up_bg | image_url: width: 600 }} 600w, {{ up_bg | image_url: width: 800 }} 800w, {{ up_bg | image_url: width: 1000 }} 1000w" sizes="(min-width: 750px) 370px, calc(100vw - 32px)" alt="" width="800" height="800" loading="lazy" style="object-position:50% {{ up_focus }}%">
           {%- endif -%}
           <div class="gfc-up__top">
-            {%- if up_badge != blank -%}<span class="gfc-up__badge">{{ up_badge | escape }}</span>{%- endif -%}
+            {%- if up_badge != blank -%}<span class="gfc-up__badge">{% render 'gf-up-per', text: up_badge, per: up_badge_p, esc: true %}</span>{%- endif -%}
             {%- if settings.gfc_up_timer and settings.gfc_up_timer_text != blank -%}
               <div class="gfc-up__tw" data-skip-subtree-update><p class="gfc-up__timer" data-gfc-timer data-min="{{ settings.gfc_up_timer_min | default: 10 }}" data-tpl="{{ settings.gfc_up_timer_text | escape }}" hidden></p></div>
             {%- endif -%}
@@ -681,9 +692,9 @@
           <div class="gfc-up__vb" data-gfc-vb data-def="{{ upb_def }}" data-pick="{{ upb_def }}" data-cg="{{ upb_cg }}" data-pd="{{ upb_pd }}" data-one="{{ settings.gfc_upb_one | escape }}" data-many="{{ settings.gfc_upb_many | escape }}" data-days="{{ settings.gfc_upb_days | escape }}" data-save="{{ settings.gfc_upb_save | escape }}" data-add1="{{ settings.gfc_upb_add_one | escape }}" data-addn="{{ settings.gfc_upb_add_many | escape }}">
             {%- if upb_head != blank -%}
               {%- if upb_photo -%}
-                <div class="gfc-upb__hero"><img src="{{ upb_photo | image_url: width: 700 }}" srcset="{{ upb_photo | image_url: width: 500 }} 500w, {{ upb_photo | image_url: width: 700 }} 700w, {{ upb_photo | image_url: width: 900 }} 900w" sizes="240px" alt="" width="{{ upb_photo.width }}" height="{{ upb_photo.height }}" loading="lazy" data-gfc-hero><p class="gfc-upb__title">{{ upb_head }}</p></div>
+                <div class="gfc-upb__hero"><img src="{{ upb_photo | image_url: width: 700 }}" srcset="{{ upb_photo | image_url: width: 500 }} 500w, {{ upb_photo | image_url: width: 700 }} 700w, {{ upb_photo | image_url: width: 900 }} 900w" sizes="240px" alt="" width="{{ upb_photo.width }}" height="{{ upb_photo.height }}" loading="lazy" data-gfc-hero><p class="gfc-upb__title">{% render 'gf-up-per', text: upb_head, per: upb_head_p %}</p></div>
               {%- endif -%}
-              <p class="gfc-upb__title{% if upb_photo %} gfc-upb__title--plain{% endif %}">{{ upb_head }}</p>
+              <p class="gfc-upb__title{% if upb_photo %} gfc-upb__title--plain{% endif %}">{% render 'gf-up-per', text: upb_head, per: upb_head_p %}</p>
             {%- endif -%}
             <div class="gfc-upb__row" style="--gfc-upb-n:{{ up_max }}">
               {%- for i in (1..up_max) -%}
@@ -701,6 +712,7 @@
           </div>
           {%- endif -%}
         </div>
+        {%- if up_line_sub_p != blank -%}<span data-gfc-sub hidden>{% render 'gf-up-per', text: up_line_sub, per: up_line_sub_p, esc: true %}</span>{%- endif -%}
       </div>
     {%- endfor -%}
 
@@ -876,6 +888,16 @@
 
     function q(sel, el) { return (el || document).querySelector(sel); }
     function qa(sel, el) { return Array.prototype.slice.call((el || document).querySelectorAll(sel)); }
+    /* ligne d'upsell ajoutée : sous-titre de la période du jour (data-gfc-sub, snippet gf-up-per), sinon data-sub */
+    function subOf(card) {
+      var h = q('[data-gfc-sub]', card), sp = h ? qa('.gf-per', h) : [];
+      if (!sp.length) return h ? h.textContent : (card.getAttribute('data-sub') || '');
+      var per = document.documentElement.getAttribute('data-gf-per');
+      for (var i = 0; i < sp.length; i++) {
+        if (per !== null ? sp[i].classList.contains('gf-per-' + per) : sp[i].classList.contains('gf-per-on')) return sp[i].textContent;
+      }
+      return sp[0].textContent;
+    }
     function root() { return q('[data-gfc]'); }
     function drawer() { return q('cart-drawer-component'); }
     function sectionId() { var c = q('cart-items-component[data-drawer]'); return c ? c.getAttribute('data-section-id') : ''; }
@@ -1195,7 +1217,7 @@
       });
       var pb = q('.gfc-up__price b', card), ps = q('.gfc-up__price s', card);
       list.appendChild(makeLine(vid, n, {
-        img: card.getAttribute('data-img'), name: card.getAttribute('data-name'), opt: card.getAttribute('data-sub') || '',
+        img: card.getAttribute('data-img'), name: card.getAttribute('data-name'), opt: subOf(card),
         cents: unit, was_cents: was, price: pb ? pb.textContent : '', was: ps ? ps.textContent : ''
       }, cents(card, 'data-max')));
       card.hidden = true;

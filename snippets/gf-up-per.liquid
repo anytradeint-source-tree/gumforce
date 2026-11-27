@@ -1,0 +1,90 @@
+{%- comment -%}
+  Texte d'upsell du panier qui suit le calendrier des offres (Réglages du thème › Panier GUMFORCE › Upsells pendant
+  une période du calendrier) : pendant les périodes listées dans « Périodes concernées », `per` ([période] = nom de la
+  période) ; le reste du temps, `text`. Rend un <span class="gf-per gf-per-N"> par version ; snippet gf-per-head ne
+  laisse visible que celle du jour (heure de Paris), aperçu ?gf_per=N compris. Sans période listée ou `per` vide :
+  `text` tel quel, sans <span>. Paramètres : text, per, esc (true = texte échappé, false = HTML du réglage).
+{%- endcomment -%}
+{%- liquid
+  assign gp_list = settings.gfc_up_per_list | remove: ' ' | split: ','
+  assign gp_per = per | strip
+
+  if gp_list.size == 0 or gp_per == blank
+    if esc
+      echo text | escape
+    else
+      echo text
+    endif
+  else
+    assign gp_today = 'now' | date: '%Y%m%d' | plus: 0
+    assign gp_on = 0
+    for i in (1..6)
+      assign gp_kn = 'gf_per_' | append: i | append: '_name'
+      assign gp_kf = 'gf_per_' | append: i | append: '_from'
+      assign gp_kt = 'gf_per_' | append: i | append: '_to'
+      assign gp_n = settings[gp_kn] | strip
+      assign gp_f = settings[gp_kf] | strip | remove: '-' | plus: 0
+      assign gp_e = settings[gp_kt] | strip | remove: '-' | plus: 0
+      if gp_n != blank
+        if gp_f == 0 or gp_today >= gp_f
+          if gp_e == 0 or gp_today <= gp_e
+            assign gp_on = i
+            break
+          endif
+        endif
+      endif
+    endfor
+
+    # une version par période listée, nommée et pas encore terminée ; les autres numéros gardent le texte habituel
+    assign gp_rest = 'gf-per gf-per-0'
+    assign gp_rest_on = true
+    if gp_on > 0
+      assign gp_rest_on = false
+    endif
+    assign gp_out = ''
+    for i in (1..6)
+      assign gp_is = i | append: ''
+      assign gp_kn = 'gf_per_' | append: i | append: '_name'
+      assign gp_kt = 'gf_per_' | append: i | append: '_to'
+      assign gp_n = settings[gp_kn] | strip
+      assign gp_e = settings[gp_kt] | strip | remove: '-' | plus: 0
+      assign gp_use = false
+      if gp_list contains gp_is and gp_n != blank
+        if gp_e == 0 or gp_e >= gp_today
+          assign gp_use = true
+        endif
+      endif
+      if gp_use
+        assign gp_nu = gp_n | upcase
+        assign gp_t = gp_per | replace: '[période]', gp_n | replace: '[PÉRIODE]', gp_nu
+        if esc
+          assign gp_t = gp_t | escape
+        endif
+        assign gp_out = gp_out | append: '<span class="gf-per gf-per-' | append: i
+        if gp_on == i
+          assign gp_out = gp_out | append: ' gf-per-on'
+        endif
+        assign gp_out = gp_out | append: '">' | append: gp_t | append: '</span>'
+      else
+        assign gp_rest = gp_rest | append: ' gf-per-' | append: i
+        if gp_on == i
+          assign gp_rest_on = true
+        endif
+      endif
+    endfor
+
+    echo '<span class="'
+    echo gp_rest
+    if gp_rest_on
+      echo ' gf-per-on'
+    endif
+    echo '">'
+    if esc
+      echo text | escape
+    else
+      echo text
+    endif
+    echo '</span>'
+    echo gp_out
+  endif
+-%}

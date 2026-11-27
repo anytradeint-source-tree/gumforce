@@ -1421,6 +1421,52 @@
         "max": 10,
         "step": 1,
         "default": 3
+      },
+      {
+        "type": "header",
+        "content": "Upsells pendant une période du calendrier"
+      },
+      {
+        "type": "paragraph",
+        "content": "Pendant les périodes choisies (Réglages du thème › Calendrier des offres), ces textes remplacent le badge, le titre (version sachets) et la ligne du panier des upsells, et [période] devient le nom de la période. Le changement se fait tout seul à minuit, heure de Paris. Hors de ces périodes, ou si un texte est vide, ce sont les textes habituels. Aperçu : ajoute ?gf_per=3 à l'adresse (numéro de la période), ?gf_per=off pour revenir."
+      },
+      {
+        "type": "text",
+        "id": "gfc_up_per_list",
+        "label": "Périodes concernées (numéros)",
+        "info": "Exemple : 2,3 pour Black Friday et Cyber Monday. Vide = textes habituels toute l'année."
+      },
+      {
+        "type": "text",
+        "id": "gfc_up_per_badge",
+        "label": "Badge (upsell 1)",
+        "info": "[période] = nom de la période, [remise] = remise en %."
+      },
+      {
+        "type": "inline_richtext",
+        "id": "gfc_up_per_b_heading",
+        "label": "Titre version sachets (upsell 1)",
+        "info": "[période], [prix] = prix d'un sachet, [barré] = prix barré."
+      },
+      {
+        "type": "text",
+        "id": "gfc_up_per_line_sub",
+        "label": "Ligne dans le panier (upsell 1)"
+      },
+      {
+        "type": "text",
+        "id": "gfc_up2_per_badge",
+        "label": "Badge (upsell 2)"
+      },
+      {
+        "type": "inline_richtext",
+        "id": "gfc_up2_per_b_heading",
+        "label": "Titre version sachets (upsell 2)"
+      },
+      {
+        "type": "text",
+        "id": "gfc_up2_per_line_sub",
+        "label": "Ligne dans le panier (upsell 2)"
       }
     ]
   },
