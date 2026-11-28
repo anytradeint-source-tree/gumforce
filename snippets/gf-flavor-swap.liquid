@@ -29,12 +29,14 @@
     function pathOf(u) { try { return new URL(u, location.href).pathname; } catch (e) { return ''; } }
     function drawerData() { return document.querySelector('[data-gfc-data]'); }
 
-    function load(p) {
+    /* adresse à télécharger : chemin + ?view= de la carte (version de page du goût, ex. pages femmes) */
+    function viewOf(u) { try { return new URL(u, location.href).searchParams.get('view') || ''; } catch (e) { return ''; } }
+    function load(p, view) {
       var e = pages[p];
       if (e && e.nodes) return Promise.resolve(e);
       if (e && e.wait) return e.wait;
-      e = pages[p] = {};
-      e.wait = fetch(p, { credentials: 'same-origin', headers: { 'Accept': 'text/html' } })
+      e = pages[p] = { view: view || '' };
+      e.wait = fetch(view ? p + '?view=' + encodeURIComponent(view) : p, { credentials: 'same-origin', headers: { 'Accept': 'text/html' } })
         .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
         .then(function (html) {
           var doc = new DOMParser().parseFromString(html, 'text/html');
@@ -83,10 +85,10 @@
       });
     }
 
-    function swap(p, push) {
-      return load(p).then(function (e) {
+    function swap(p, push, view) {
+      return load(p, view).then(function (e) {
         resetPicker();
-        var here = pages[cur] = pages[cur] || {}, d = drawerData();
+        var here = pages[cur] = pages[cur] || { view: viewOf(location.href) }, d = drawerData();
         here.nodes = [].slice.call(main.childNodes);
         here.title = document.title;
         here.data = d ? d.textContent : null;
@@ -98,8 +100,11 @@
         if (d && e.data) d.textContent = e.data;
         cur = p;
         if (push) {
-          var q = location.search.replace(/([?&])variant=[^&]*&?/, '$1').replace(/[?&]$/, '');
-          history.pushState({ gfFlav: p }, '', p + q + location.hash);
+          var sp = new URLSearchParams(location.search);
+          sp.delete('variant'); sp.delete('view');
+          if (e.view) sp.set('view', e.view);
+          var q = sp.toString();
+          history.pushState({ gfFlav: p }, '', p + (q ? '?' + q : '') + location.hash);
         }
         window.scrollTo(0, y);
         document.dispatchEvent(new CustomEvent('gf:flavor', { detail: { path: p } }));
@@ -120,7 +125,7 @@
       if (box) [].forEach.call(box.querySelectorAll('.gfp-flav-opt'), function (o) { o.classList.remove('gfp-sel'); });
       a.classList.add('gfp-sel', 'gfp-flav-go');
       if (head && n) head.textContent = n.textContent;
-      swap(p, true).catch(function () { window.location.href = a.href; });
+      swap(p, true, viewOf(a.getAttribute('href'))).catch(function () { window.location.href = a.href; });
     }, true);
 
     window.addEventListener('popstate', function () {
@@ -134,7 +139,7 @@
       if (navigator.connection && navigator.connection.saveData) return;
       [].forEach.call(main.querySelectorAll('.gfp-flav-opt'), function (a) {
         var p = pathOf(a.getAttribute('href'));
-        if (p && p !== cur && !hard(p)) load(p).catch(function () {});
+        if (p && p !== cur && !hard(p)) load(p, viewOf(a.getAttribute('href'))).catch(function () {});
       });
     }
     function idle() { if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 4000 }); else setTimeout(warm, 2000); }

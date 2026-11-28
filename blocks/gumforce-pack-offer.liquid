@@ -634,8 +634,14 @@
                 assign fname = s[fk] | default: fp.title
                 assign fk = 'flav' | append: fi | append: '_image'
                 assign fimg = s[fk] | default: fp.featured_image
+                assign fk = 'flav' | append: fi | append: '_view'
+                assign fview = s[fk] | strip
+                assign furl = fp.url
+                if fview != blank
+                  assign furl = fp.url | append: '?view=' | append: fview
+                endif
               -%}
-              <a class="gfp-flav-opt{% if fh == pr.handle %} gfp-sel{% endif %}" href="{{ fp.url }}"{% if fh == pr.handle %} aria-current="page"{% elsif fp.featured_image %} data-gfp-flav-img="{{ fp.featured_image | image_url }}"{% endif %}>
+              <a class="gfp-flav-opt{% if fh == pr.handle %} gfp-sel{% endif %}" href="{{ furl }}"{% if fh == pr.handle %} aria-current="page"{% elsif fp.featured_image %} data-gfp-flav-img="{{ fp.featured_image | image_url }}"{% endif %}>
                 <span class="gfp-flav-thumb">
                   {%- if fimg -%}<img src="{{ fimg | image_url: width: 76 }}" srcset="{{ fimg | image_url: width: 76 }} 2x, {{ fimg | image_url: width: 114 }} 3x" alt="" width="38" height="38" loading="lazy">{%- endif -%}
                   <span class="gfp-flav-spin" aria-hidden="true"></span>
@@ -1586,12 +1592,15 @@
     { "type": "text", "id": "flav1_handle", "label": "Goût 1 — produit (identifiant)", "default": "gumforce", "info": "Fin de l'adresse du produit (gumforce.co/products/gumforce → gumforce)." },
     { "type": "text", "id": "flav1_name", "label": "Goût 1 — nom", "default": "Menthe fraîche" },
     { "type": "image_picker", "id": "flav1_image", "label": "Goût 1 — vignette", "info": "Vide = photo principale du produit." },
+    { "type": "text", "id": "flav1_view", "label": "Goût 1 — version de page (optionnel)", "info": "Nom du modèle à ouvrir pour ce goût (ex. gumforce-femme → /products/…?view=gumforce-femme). Vide = page normale du produit." },
     { "type": "text", "id": "flav2_handle", "label": "Goût 2 — produit (identifiant)", "default": "pasteque" },
     { "type": "text", "id": "flav2_name", "label": "Goût 2 — nom", "default": "Pastèque" },
     { "type": "image_picker", "id": "flav2_image", "label": "Goût 2 — vignette" },
+    { "type": "text", "id": "flav2_view", "label": "Goût 2 — version de page (optionnel)", "info": "Nom du modèle à ouvrir pour ce goût (ex. gumforce-femme → /products/…?view=gumforce-femme). Vide = page normale du produit." },
     { "type": "text", "id": "flav3_handle", "label": "Goût 3 — produit (identifiant)" },
     { "type": "text", "id": "flav3_name", "label": "Goût 3 — nom" },
     { "type": "image_picker", "id": "flav3_image", "label": "Goût 3 — vignette" },
+    { "type": "text", "id": "flav3_view", "label": "Goût 3 — version de page (optionnel)", "info": "Nom du modèle à ouvrir pour ce goût (ex. gumforce-femme → /products/…?view=gumforce-femme). Vide = page normale du produit." },
     { "type": "text", "id": "flav_hard", "label": "Produits ouverts avec rechargement", "info": "Fiche produit : on change de goût sans recharger, sauf vers ces produits (identifiants, séparés par des virgules) quand on n'en vient pas. À remplir pendant un test A/B Intelligems sur leur page, pour que chaque visiteur voie sa version. Vide = jamais de rechargement." },
     { "type": "header", "content": "── Infos nutritionnelles (popup) ──" },
     { "type": "text", "id": "nut_label", "label": "Texte du lien (vide = masqué)", "default": "Informations nutritionnelles" },

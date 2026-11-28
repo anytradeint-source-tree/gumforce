@@ -450,7 +450,9 @@
                 "nut_col2": "Pour 100g",
                 "nut_rows": "Énergie;12 kJ / 3 kcal;445 kJ / 106 kcal\nMatières grasses;0 g;0 g\n-dont saturées;0 g;0 g\nGlucides;1 g;37 g\n-dont sucres;0 g;0 g\nProtéines;0 g;0 g\nSel;0 g;0 g",
                 "nut_ref": "Apports de référence pour un adulte type (8400 kJ / 2000 kcal).",
-                "nut_notes": "<p>Une consommation excessive peut avoir des effets laxatifs.</p><p><strong>Créatine Monohydrate : 500 mg par pièce.</strong></p>"
+                "nut_notes": "<p>Une consommation excessive peut avoir des effets laxatifs.</p><p><strong>Créatine Monohydrate : 500 mg par pièce.</strong></p>",
+                "flav1_view": "gumforce-femme",
+                "flav2_view": "gumforce-pasteque-femme"
               },
               "blocks": {}
             },
