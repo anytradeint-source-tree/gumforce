@@ -719,7 +719,8 @@
             "video": "shopify://files/videos/0722(1).mp4",
             "name": "Fanny, 32 ans",
             "role": "1 mois d'utilisation"
-          }
+          },
+          "disabled": true
         },
         "video_4AtHWX": {
           "type": "video",
@@ -756,9 +757,16 @@
             "role": "1 mois d'utilisation"
           },
           "disabled": true
+        },
+        "video_co446": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/CO446.mp4"
+          }
         }
       },
       "block_order": [
+        "video_co446",
         "video_nKaAfL",
         "video_Ah3GFN",
         "video_D3Hpc9",
