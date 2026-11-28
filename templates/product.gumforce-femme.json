@@ -761,7 +761,9 @@
         "video_co446": {
           "type": "video",
           "settings": {
-            "video": "shopify://files/videos/CO446.mp4"
+            "video": "shopify://files/videos/CO446.mp4",
+            "name": "",
+            "role": ""
           }
         }
       },
