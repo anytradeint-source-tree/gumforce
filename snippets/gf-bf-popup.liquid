@@ -32,9 +32,14 @@
       assign gfbfp_cta_url = '/products/gumforce'
     endif
   endif
-  # Pages femmes (double menton) et page produit femmes : le bouton mène à la page produit femmes.
+  # Pages femmes (double menton) : le bouton mène à la page produit femmes (le listicle double menton → Pastèque femmes).
+  # Sur une page produit femmes, il reste sur ce produit et cette version.
   if gfbfp_cta_url == '/products/gumforce'
-    if template.suffix contains 'femme' or template.suffix contains 'double-menton'
+    if template.name == 'product' and template.suffix contains 'femme'
+      assign gfbfp_cta_url = product.url | append: '?view=' | append: template.suffix
+    elsif template.suffix == 'gumforce-listicle-femme'
+      assign gfbfp_cta_url = '/products/pasteque?view=gumforce-pasteque-femme'
+    elsif template.suffix contains 'femme' or template.suffix contains 'double-menton'
       assign gfbfp_cta_url = '/products/gumforce?view=gumforce-femme'
     endif
   endif
