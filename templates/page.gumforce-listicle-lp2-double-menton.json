@@ -333,7 +333,7 @@
         "padding_bottom": 0,
         "sticky_text": "Offre [période] : tu en paies 2, tu en reçois 4",
         "sticky_cta": "J'en profite",
-        "sticky_link": "/products/gumforce?view=gumforce-femme"
+        "sticky_link": "/products/pasteque?view=gumforce-pasteque-femme"
       }
     },
     "avis-offre": {
@@ -467,7 +467,7 @@
           "settings": {
             "bf_strip": true,
             "text": "Offre [période]",
-            "link": "/products/gumforce?view=gumforce-femme",
+            "link": "/products/pasteque?view=gumforce-pasteque-femme",
             "note": "Livraison offerte en 48 h · Remboursé 90 jours"
           }
         }
@@ -507,7 +507,7 @@
         "eager_first_img": false,
         "sticky_enabled": true,
         "sticky_mode": "always",
-        "sticky_link": "/products/gumforce?view=gumforce-femme"
+        "sticky_link": "/products/pasteque?view=gumforce-pasteque-femme"
       }
     }
   },
